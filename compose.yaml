@@ -1,0 +1,37 @@
+services:
+  loci-db:
+    container_name: loci-db
+    image: postgres
+    environment:
+      POSTGRES_USER: kai
+      POSTGRES_PASSWORD: example_123
+      PGDATA: /var/lib/postgresql/data
+      POSTGRES_DB: loci
+    volumes:
+      - loci-db:/data/postgres
+
+    ports:
+      - 5432:5432
+    networks:
+      - loci-net
+
+  loci-keycloak:
+    container_name: loci-keycloak
+    image: quay.io/keycloak/keycloak:26.0.0
+    ports:
+      - 9090:8080
+    environment:
+        KEYCLOAK_ADMIN: admin
+        KEYCLOAK_ADMIN_PASSWORD: admin
+    networks:
+      - loci-net
+    command:
+      - "start-dev"
+networks:
+  loci-net:
+    driver: bridge
+volumes:
+  loci-db:
+    driver: local
+  loci-keycloak:
+    driver: local

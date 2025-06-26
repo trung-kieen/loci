@@ -1,0 +1,128 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ----------------------< com.example:loci-backend >----------------------
+[INFO] Building loci 0.0.1-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] >>> spring-boot:3.5.3:run (default-cli) > test-compile @ loci-backend >>>
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ loci-backend ---
+[INFO] Copying 1 resource from src/main/resources to target/classes
+[INFO] Copying 0 resource from src/main/resources to target/classes
+[INFO] 
+[INFO] --- compiler:3.14.0:compile (default-compile) @ loci-backend ---
+[INFO] Recompiling the module because of changed source code.
+[INFO] Compiling 14 source files with javac [debug parameters release 21] to target/classes
+[INFO] /home/trungkieen/projects/whatsapp-clone/loci-backend/src/main/java/com/trungkieen/loci/security/KeycloakJwtAuthenticationConverter.java: /home/trungkieen/projects/whatsapp-clone/loci-backend/src/main/java/com/trungkieen/loci/security/KeycloakJwtAuthenticationConverter.java uses unchecked or unsafe operations.
+[INFO] /home/trungkieen/projects/whatsapp-clone/loci-backend/src/main/java/com/trungkieen/loci/security/KeycloakJwtAuthenticationConverter.java: Recompile with -Xlint:unchecked for details.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ loci-backend ---
+[INFO] skip non existing resourceDirectory /home/trungkieen/projects/whatsapp-clone/loci-backend/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.14.0:testCompile (default-testCompile) @ loci-backend ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 1 source file with javac [debug parameters release 21] to target/test-classes
+[INFO] 
+[INFO] <<< spring-boot:3.5.3:run (default-cli) < test-compile @ loci-backend <<<
+[INFO] 
+[INFO] 
+[INFO] --- spring-boot:3.5.3:run (default-cli) @ loci-backend ---
+[INFO] Attaching agents: []
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.5.3)
+
+2025-06-26T21:54:04.591+07:00  INFO 2729371 --- [  restartedMain] com.trungkieen.loci.LociApplication      : Starting LociApplication using Java 21.0.7 with PID 2729371 (/home/trungkieen/projects/whatsapp-clone/loci-backend/target/classes started by trungkieen in /home/trungkieen/projects/whatsapp-clone/loci-backend)
+2025-06-26T21:54:04.593+07:00  INFO 2729371 --- [  restartedMain] com.trungkieen.loci.LociApplication      : No active profile set, falling back to 1 default profile: "default"
+2025-06-26T21:54:04.650+07:00  INFO 2729371 --- [  restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2025-06-26T21:54:04.650+07:00  INFO 2729371 --- [  restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2025-06-26T21:54:05.800+07:00  INFO 2729371 --- [  restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-06-26T21:54:05.829+07:00  INFO 2729371 --- [  restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 18 ms. Found 0 JPA repository interfaces.
+2025-06-26T21:54:06.655+07:00  INFO 2729371 --- [  restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2025-06-26T21:54:06.672+07:00  INFO 2729371 --- [  restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-06-26T21:54:06.673+07:00  INFO 2729371 --- [  restartedMain] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.42]
+2025-06-26T21:54:06.718+07:00  INFO 2729371 --- [  restartedMain] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2025-06-26T21:54:06.719+07:00  INFO 2729371 --- [  restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 2068 ms
+2025-06-26T21:54:06.914+07:00  INFO 2729371 --- [  restartedMain] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-06-26T21:54:06.964+07:00  INFO 2729371 --- [  restartedMain] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.18.Final
+2025-06-26T21:54:07.014+07:00  INFO 2729371 --- [  restartedMain] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-06-26T21:54:07.358+07:00  INFO 2729371 --- [  restartedMain] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-06-26T21:54:07.391+07:00  INFO 2729371 --- [  restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-06-26T21:54:07.614+07:00  INFO 2729371 --- [  restartedMain] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@1f2c5372
+2025-06-26T21:54:07.617+07:00  INFO 2729371 --- [  restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-06-26T21:54:07.663+07:00  WARN 2729371 --- [  restartedMain] org.hibernate.orm.deprecation            : HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-06-26T21:54:07.693+07:00  INFO 2729371 --- [  restartedMain] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 17.5
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-06-26T21:54:07.965+07:00 ERROR 2729371 --- [  restartedMain] j.LocalContainerEntityManagerFactoryBean : Failed to initialize JPA EntityManagerFactory: Could not determine recommended JdbcType for Java type 'com.trungkieen.loci.user.User'
+2025-06-26T21:54:07.966+07:00  WARN 2729371 --- [  restartedMain] ConfigServletWebServerApplicationContext : Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'entityManagerFactory' defined in class path resource [org/springframework/boot/autoconfigure/orm/jpa/HibernateJpaConfiguration.class]: Could not determine recommended JdbcType for Java type 'com.trungkieen.loci.user.User'
+2025-06-26T21:54:07.968+07:00  INFO 2729371 --- [  restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-06-26T21:54:07.988+07:00  INFO 2729371 --- [  restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-06-26T21:54:07.992+07:00  INFO 2729371 --- [  restartedMain] o.apache.catalina.core.StandardService   : Stopping service [Tomcat]
+2025-06-26T21:54:08.012+07:00  INFO 2729371 --- [  restartedMain] .s.b.a.l.ConditionEvaluationReportLogger : 
+
+Error starting ApplicationContext. To display the condition evaluation report re-run your application with 'debug' enabled.
+2025-06-26T21:54:08.038+07:00 ERROR 2729371 --- [  restartedMain] o.s.boot.SpringApplication               : Application run failed
+
+org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'entityManagerFactory' defined in class path resource [org/springframework/boot/autoconfigure/orm/jpa/HibernateJpaConfiguration.class]: Could not determine recommended JdbcType for Java type 'com.trungkieen.loci.user.User'
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1826) ~[spring-beans-6.2.8.jar:6.2.8]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:607) ~[spring-beans-6.2.8.jar:6.2.8]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:529) ~[spring-beans-6.2.8.jar:6.2.8]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:339) ~[spring-beans-6.2.8.jar:6.2.8]
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:373) ~[spring-beans-6.2.8.jar:6.2.8]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:337) ~[spring-beans-6.2.8.jar:6.2.8]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:207) ~[spring-beans-6.2.8.jar:6.2.8]
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:970) ~[spring-context-6.2.8.jar:6.2.8]
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:627) ~[spring-context-6.2.8.jar:6.2.8]
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:146) ~[spring-boot-3.5.3.jar:3.5.3]
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:752) ~[spring-boot-3.5.3.jar:3.5.3]
+	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:439) ~[spring-boot-3.5.3.jar:3.5.3]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:318) ~[spring-boot-3.5.3.jar:3.5.3]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1361) ~[spring-boot-3.5.3.jar:3.5.3]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1350) ~[spring-boot-3.5.3.jar:3.5.3]
+	at com.trungkieen.loci.LociApplication.main(LociApplication.java:12) ~[classes/:na]
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580) ~[na:na]
+	at org.springframework.boot.devtools.restart.RestartLauncher.run(RestartLauncher.java:50) ~[spring-boot-devtools-3.5.3.jar:3.5.3]
+Caused by: org.hibernate.type.descriptor.java.spi.JdbcTypeRecommendationException: Could not determine recommended JdbcType for Java type 'com.trungkieen.loci.user.User'
+	at org.hibernate.type.descriptor.java.spi.UnknownBasicJavaType.getRecommendedJdbcType(UnknownBasicJavaType.java:50) ~[hibernate-core-6.6.18.Final.jar:6.6.18.Final]
+	at org.hibernate.boot.model.process.internal.InferredBasicValueResolver.from(InferredBasicValueResolver.java:195) ~[hibernate-core-6.6.18.Final.jar:6.6.18.Final]
+	at org.hibernate.mapping.BasicValue.resolution(BasicValue.java:664) ~[hibernate-core-6.6.18.Final.jar:6.6.18.Final]
+	at org.hibernate.mapping.BasicValue.buildResolution(BasicValue.java:461) ~[hibernate-core-6.6.18.Final.jar:6.6.18.Final]
+	at org.hibernate.mapping.BasicValue.resolve(BasicValue.java:351) ~[hibernate-core-6.6.18.Final.jar:6.6.18.Final]
+	at org.hibernate.mapping.BasicValue.resolve(BasicValue.java:341) ~[hibernate-core-6.6.18.Final.jar:6.6.18.Final]
+	at org.hibernate.boot.internal.InFlightMetadataCollectorImpl.lambda$processValueResolvers$6(InFlightMetadataCollectorImpl.java:1827) ~[hibernate-core-6.6.18.Final.jar:6.6.18.Final]
+	at java.base/java.util.ArrayList.removeIf(ArrayList.java:1765) ~[na:na]
+	at java.base/java.util.ArrayList.removeIf(ArrayList.java:1743) ~[na:na]
+	at org.hibernate.boot.internal.InFlightMetadataCollectorImpl.processValueResolvers(InFlightMetadataCollectorImpl.java:1826) ~[hibernate-core-6.6.18.Final.jar:6.6.18.Final]
+	at org.hibernate.boot.internal.InFlightMetadataCollectorImpl.processSecondPasses(InFlightMetadataCollectorImpl.java:1812) ~[hibernate-core-6.6.18.Final.jar:6.6.18.Final]
+	at org.hibernate.boot.model.process.spi.MetadataBuildingProcess.complete(MetadataBuildingProcess.java:334) ~[hibernate-core-6.6.18.Final.jar:6.6.18.Final]
+	at org.hibernate.jpa.boot.internal.EntityManagerFactoryBuilderImpl.metadata(EntityManagerFactoryBuilderImpl.java:1442) ~[hibernate-core-6.6.18.Final.jar:6.6.18.Final]
+	at org.hibernate.jpa.boot.internal.EntityManagerFactoryBuilderImpl.build(EntityManagerFactoryBuilderImpl.java:1513) ~[hibernate-core-6.6.18.Final.jar:6.6.18.Final]
+	at org.springframework.orm.jpa.vendor.SpringHibernateJpaPersistenceProvider.createContainerEntityManagerFactory(SpringHibernateJpaPersistenceProvider.java:66) ~[spring-orm-6.2.8.jar:6.2.8]
+	at org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean.createNativeEntityManagerFactory(LocalContainerEntityManagerFactoryBean.java:390) ~[spring-orm-6.2.8.jar:6.2.8]
+	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.buildNativeEntityManagerFactory(AbstractEntityManagerFactoryBean.java:419) ~[spring-orm-6.2.8.jar:6.2.8]
+	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.afterPropertiesSet(AbstractEntityManagerFactoryBean.java:400) ~[spring-orm-6.2.8.jar:6.2.8]
+	at org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean.afterPropertiesSet(LocalContainerEntityManagerFactoryBean.java:366) ~[spring-orm-6.2.8.jar:6.2.8]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.invokeInitMethods(AbstractAutowireCapableBeanFactory.java:1873) ~[spring-beans-6.2.8.jar:6.2.8]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1822) ~[spring-beans-6.2.8.jar:6.2.8]
+	... 18 common frames omitted
+
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  9.944 s
+[INFO] Finished at: 2025-06-26T21:54:08+07:00
+[INFO] ------------------------------------------------------------------------
