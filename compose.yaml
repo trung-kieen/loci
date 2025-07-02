@@ -3,8 +3,8 @@ services:
     container_name: loci-db
     image: postgres
     environment:
-      POSTGRES_USER: kai
-      POSTGRES_PASSWORD: example_123
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
       PGDATA: /var/lib/postgresql/data
       POSTGRES_DB: loci
     volumes:
@@ -14,6 +14,21 @@ services:
       - 5432:5432
     networks:
       - loci-net
+
+  loci-pgadmin:
+    container_name: loci-pgadmin
+    image: dpage/pgadmin4:latest
+    restart: always
+    ports:
+      - "81:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    networks:
+      - loci-net
+
+
+
 
   loci-keycloak:
     container_name: loci-keycloak
@@ -25,8 +40,15 @@ services:
         KEYCLOAK_ADMIN_PASSWORD: admin
     networks:
       - loci-net
+    depends_on:
+      - loci-db
+    volumes:
+      - ./apps/keycloak/import:/opt/keycloak/data/import
+      - loci-keycloak:/opt/keycloak/data
     command:
-      - "start-dev"
+      start-dev --import-realm
+
+
 networks:
   loci-net:
     driver: bridge
