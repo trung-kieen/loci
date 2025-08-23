@@ -1,12 +1,13 @@
 package com.loci.loci_backend.test;
 
 
-import com.loci.loci_backend.user.User;
-import com.loci.loci_backend.user.UserService;
+import com.loci.loci_backend.common.user.domain.aggregate.User;
+import com.loci.loci_backend.common.user.domain.service.UserService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,12 +27,13 @@ public class WebController {
 
     @GetMapping(path = "/userInfo1")
     public ResponseEntity<StringResponse>  getUserInfo1() {
-        User user = userService.getLoggedUser();
+        User user = userService.getAuthenticatedUser();
         return ResponseEntity.ok(new StringResponse(user.getFirstname() + " " + user.getLastname() + ", " + user.getEmail()));
     }
 
     @GetMapping("/userInfo2")
-    public ResponseEntity<StringResponse> getUserInfo2(JwtAuthenticationToken auth) {
+    public ResponseEntity<StringResponse> getUserInfo2() {
+        JwtAuthenticationToken auth = (JwtAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
         String firstname = auth.getTokenAttributes().get("given_name").toString();
         String lastname = auth.getTokenAttributes().get("family_name").toString();
         String email = auth.getTokenAttributes().get("email").toString();

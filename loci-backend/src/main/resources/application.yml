@@ -1,0 +1,64 @@
+
+
+spring:
+  application:
+    name: loci
+
+  threads:
+    virtual:
+      enabled: true
+
+
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/loci
+    username: admin
+    password: admin
+    hikari:
+      poolName: Hikari
+      # Require to specify commit use like @Transactional
+      # auto-commit: false
+    type: com.zaxxer.hikari.HikariDataSource
+  jpa:
+    hibernate:
+      ddl-auto: create
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt.issuer-uri: http://localhost:9090/realms/loci-realm
+
+  devtools:
+    restart:
+      enabled: false
+    livereload:
+      enabled: false
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 100MB
+      max-request-size: 100MB
+
+
+
+application:
+  client-base-url: http://localhost:4200
+  cors:
+    allowed-origins: http://localhost:4200
+    allowed-methods: "*"
+    # allowed-mappings: "/**"
+    allowed-headers: "*"
+    exposed-headers: "*"
+    allow-credentials: false
+    max-age: 300
+
+management:
+  endpoints:
+    jmx:
+      exposure:
+        include: health,info
+
+    web:
+      exposure:
+        include: "*"
+        exclude: env,beans

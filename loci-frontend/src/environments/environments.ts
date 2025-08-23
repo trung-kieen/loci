@@ -6,6 +6,6 @@ export const environment = {
     issuer: 'http://localhost:9090',
     // Realm
     realm: 'loci-realm',
-    clientId: 'loci-angular'
+    clientId: 'angular'
   },
 };
