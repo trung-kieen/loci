@@ -1,32 +1,29 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { AuthService } from '../../auth/auth.service';
-import { HttpClient } from '@angular/common/http';
 import { WebApiService } from '../api/web-api.service';
 
 @Component({
   selector: 'app-user-info',
-  standalone: false,
   templateUrl: './user-info.html',
-  styleUrl: './user-info.css'
+  styleUrl: './user-info.css',
 })
 export class UserInfo implements OnInit {
+  message = 'N/A';
 
-  message: string = 'N/A';
-
-  constructor(private authService: AuthService, private webApiService: WebApiService, private http: HttpClient) { }
-
+  private authService = inject(AuthService);
+  private webApiService = inject(WebApiService);
+  // private httpClient = inject(HttpClient);
   ngOnInit(): void {
     this.message = this.authService.getUsername();
     console.log(this.message);
 
-
     this.webApiService.getUserInfo().subscribe({
-      next: data => {
+      next: (data) => {
         this.message = data.content;
-      }, error: err => {
+      },
+      error: (err) => {
         console.log(err);
-      }
+      },
     });
-
   }
 }

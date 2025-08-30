@@ -8,9 +8,8 @@ describe('AccessDenied', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AccessDenied]
-    })
-    .compileComponents();
+      imports: [AccessDenied],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(AccessDenied);
     component = fixture.componentInstance;

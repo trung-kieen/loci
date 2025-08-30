@@ -1,4 +1,8 @@
-import { APP_INITIALIZER, NgModule, provideBrowserGlobalErrorListeners } from '@angular/core';
+import {
+  APP_INITIALIZER,
+  NgModule,
+  provideBrowserGlobalErrorListeners,
+} from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -6,21 +10,25 @@ import { MatInputModule } from '@angular/material/input';
 
 import { App } from './app';
 import { RouterOutlet } from '@angular/router';
-import { HttpClientModule, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import {
+  HttpClientModule,
+  provideHttpClient,
+  withInterceptorsFromDi,
+} from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { AccessDenied } from './access-denied/access-denied';
 import { UserInfo } from './user-info/user-info';
-import { KeycloakAngularModule, KeycloakService, provideKeycloak } from 'keycloak-angular';
+import {
+  KeycloakAngularModule,
+  KeycloakService,
+  provideKeycloak,
+} from 'keycloak-angular';
 import { environment } from '../environments/environments';
 import { initializeKeycloak } from '../utils/app-init';
 import { AppRoutingModule } from './app.routes';
 
 @NgModule({
-  declarations: [
-    AccessDenied,
-    UserInfo,
-    App
-  ],
+  declarations: [AccessDenied, UserInfo, App],
   imports: [
     AppRoutingModule,
     BrowserModule,
@@ -30,7 +38,7 @@ import { AppRoutingModule } from './app.routes';
     KeycloakAngularModule,
     BrowserModule,
     BrowserAnimationsModule,
-    MatInputModule
+    MatInputModule,
   ],
   providers: [
     provideBrowserGlobalErrorListeners(),
@@ -39,18 +47,16 @@ import { AppRoutingModule } from './app.routes';
       config: {
         url: environment.keycloak.issuer,
         realm: environment.keycloak.realm,
-        clientId: environment.keycloak.clientId
-      }
+        clientId: environment.keycloak.clientId,
+      },
     }),
     {
       provide: APP_INITIALIZER,
       useFactory: initializeKeycloak,
       multi: true,
-      deps: [KeycloakService]
-    }
+      deps: [KeycloakService],
+    },
   ],
-  bootstrap: [
-    App
-  ]
+  bootstrap: [App],
 })
-export class AppModule { }
+export class AppModule {}

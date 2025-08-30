@@ -1,12 +1,11 @@
-import {Injectable} from "@angular/core";
-import {KeycloakService} from "keycloak-angular";
+import { Injectable, inject } from '@angular/core';
+import { KeycloakService } from 'keycloak-angular';
 
 @Injectable({
-  providedIn: "root"
+  providedIn: 'root',
 })
-export class  AuthService {
-
-  constructor(private keycloakService: KeycloakService) { }
+export class AuthService {
+  private keycloakService = inject(KeycloakService);
 
   public getUsername(): string {
     return this.keycloakService.getUsername();
@@ -15,5 +14,4 @@ export class  AuthService {
   public logout(): void {
     this.keycloakService.logout().then(() => this.keycloakService.clearToken());
   }
-
 }
