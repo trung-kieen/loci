@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <!-- Include defaults từ Spring Boot -->
+    <include resource="org/springframework/boot/logging/logback/defaults.xml" />
+
+    <!-- Appender cho Console với JSON -->
+    <appender name="CONSOLE_JSON" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+            <!-- Providers: Các trường JSON cần include -->
+            <providers>
+                <timestamp />  <!-- Timestamp -->
+                <message />    <!-- Message log -->
+                <logger />     <!-- Logger name -->
+                <logLevel />   <!-- Level (INFO, ERROR,...) -->
+                <threadName /> <!-- Thread name -->
+                <mdc />        <!-- MDC values (nếu có) -->
+                <s />  <!-- Log arguments -->
+                <stackTrace /> <!-- Stacktrace nếu có lỗi -->
+            </providers>
+            <!-- Tùy chọn: Pretty print cho dev -->
+            <springProfile name="dev">
+                <prettyPrint>true</prettyPrint>
+            </springProfile>
+        </encoder>
+    </appender>
+
+    <!-- Profile-specific: JSON cho production, plain cho dev -->
+    <springProfile name="dev">
+        <root level="DEBUG">
+            <appender-ref ref="CONSOLE" />  <!-- Sử dụng default console nếu cần -->
+        </root>
+    </springProfile>
+
+    <springProfile name="!dev">  <!-- Production/default: JSON -->
+        <root level="INFO">
+            <appender-ref ref="CONSOLE_JSON" />
+        </root>
+    </springProfile>
+</configuration>

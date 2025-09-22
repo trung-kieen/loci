@@ -1,5 +1,6 @@
 import {
   APP_INITIALIZER,
+  ErrorHandler,
   NgModule,
   provideBrowserGlobalErrorListeners,
 } from '@angular/core';
@@ -11,6 +12,7 @@ import { MatInputModule } from '@angular/material/input';
 import { App } from './app';
 import { RouterOutlet } from '@angular/router';
 import {
+  HTTP_INTERCEPTORS,
   HttpClientModule,
   provideHttpClient,
   withInterceptorsFromDi,
@@ -26,9 +28,10 @@ import {
 import { environment } from '../environments/environments';
 import { initializeKeycloak } from '../utils/app-init';
 import { AppRoutingModule } from './app.routes';
+import { ErrorHandlerService } from './service/error-handler.service';
+import { HttpErrorInterceptor } from '../core/middleware/http-error.interceptor';
 
 @NgModule({
-  declarations: [AccessDenied, UserInfo, App],
   imports: [
     AppRoutingModule,
     BrowserModule,
@@ -38,7 +41,8 @@ import { AppRoutingModule } from './app.routes';
     KeycloakAngularModule,
     BrowserModule,
     BrowserAnimationsModule,
-    MatInputModule,
+    AccessDenied,
+    UserInfo,
   ],
   providers: [
     provideBrowserGlobalErrorListeners(),
@@ -56,7 +60,13 @@ import { AppRoutingModule } from './app.routes';
       multi: true,
       deps: [KeycloakService],
     },
+    {
+      provide: ErrorHandler,
+      useClass: ErrorHandlerService
+    },
+    {
+      provide: HTTP_INTERCEPTORS, useClass: HttpErrorInterceptor, multi: true
+    }
   ],
-  bootstrap: [App],
 })
-export class AppModule {}
+export class AppModule { }

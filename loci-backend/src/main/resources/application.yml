@@ -13,6 +13,7 @@ spring:
 
 
 
+
   datasource:
     url: jdbc:postgresql://localhost:5432/loci
     username: admin
@@ -65,8 +66,17 @@ management:
 
     web:
       exposure:
-        include: "*"
+        # Access /actuator/metrics or /actuator/prometheus
+        # include: "*"
+        include: health,info,metrics,prometheus
+
         exclude: env,beans
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+    tags:
+      application: loci-app  # tag for app-server metrics
 
 
 flyway:
@@ -79,3 +89,15 @@ flyway:
 server:
   servlet:
     context-path: /api
+
+
+logging:
+  structured:
+    json:
+      enabled: true
+      format: logstash  # Or 'ecs' for Elastic Common Schema
+      stacktrace:
+        root: first
+        max-length: 1024
+        include-common-frames: true
+        include-hashes: true
