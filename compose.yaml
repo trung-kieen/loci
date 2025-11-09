@@ -6,9 +6,13 @@ services:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: admin
       PGDATA: /var/lib/postgresql/data
-      POSTGRES_DB: loci
+      POSTGRES_DB: locidb
     volumes:
-      - loci-db:/data/postgres
+      # - ./loci-db:/data/postgres
+      - ./postgres-data:/var/lib/postgresql/data
+      - ./backups:/backups
+      - ./postgres-entrypoint.sh:/postgres-entrypoint.sh
+    # entrypoint: ["postgres-entrypoint.sh"]
 
     ports:
       - 5432:5432
@@ -38,15 +42,22 @@ services:
     environment:
         KEYCLOAK_ADMIN: admin
         KEYCLOAK_ADMIN_PASSWORD: admin
+        KC_DB: postgres
+        KC_DB_URL_HOST: loci-db
+        KC_DB_URL_DATABASE: locidb
+        KC_DB_USERNAME: admin
+        KC_DB_PASSWORD: admin
     networks:
       - loci-net
     depends_on:
       - loci-db
     volumes:
-      - ./apps/keycloak/import:/opt/keycloak/data/import
-      - loci-keycloak:/opt/keycloak/data
+      # - ./apps/keycloak/import:/opt/keycloak/data/import
+      # - loci-keycloak:/opt/keycloak/data
+      - ./keycloak-data:/opt/keycloak/data/
     command:
       start-dev --import-realm
+
 
 
 networks:
