@@ -14,6 +14,7 @@ import { initializeKeycloak } from '../utils/app-init';
 import { provideKeycloak } from '../auth/keycloak.provider';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
+// TOOD: legacy for standalone app component
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
@@ -27,13 +28,6 @@ export const appConfig: ApplicationConfig = {
         clientId: environment.keycloak.clientId,
       },
     }),
-    // provideKeycloak({
-    //   config: {
-    //     url: environment.keycloak.issuer,
-    //     realm: environment.keycloak.realm,
-    //     clientId: environment.keycloak.clientId,
-    //   },
-    // }),
     {
       provide: APP_INITIALIZER,
       useFactory: initializeKeycloak,

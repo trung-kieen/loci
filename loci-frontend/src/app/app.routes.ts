@@ -13,9 +13,9 @@ export const routes: Routes = [
   {
     path: 'user-info',
     component: UserInfo,
-    canActivate: [AuthGuard],
+    // canActivate: [AuthGuard],
     // The user need to have these roles to access page
-    data: { roles: ['user'] },
+    // data: { roles: ['user'] },
   },
 ];
 

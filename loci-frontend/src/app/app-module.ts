@@ -3,11 +3,11 @@ import {
   ErrorHandler,
   NgModule,
   provideBrowserGlobalErrorListeners,
+  provideZoneChangeDetection,
 } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { RouterModule } from '@angular/router';
 import {
   HTTP_INTERCEPTORS,
   HttpClientModule,
@@ -31,13 +31,13 @@ import { environment } from '../environments/environments';
 import { initializeKeycloak } from '../utils/app-init';
 import { ErrorHandlerService } from './service/error-handler.service';
 import { HttpErrorInterceptor } from '../core/middleware/http-error.interceptor';
+import { provideRouter } from '@angular/router';
 
 @NgModule({
   imports: [
     AppRoutingModule,
     BrowserModule,
     FormsModule,
-    // RouterModule.forRoot(routes),
     HttpClientModule,
     KeycloakAngularModule,
     BrowserModule,
@@ -45,35 +45,32 @@ import { HttpErrorInterceptor } from '../core/middleware/http-error.interceptor'
     AccessDenied,
     MatInputModule,
     UserInfo,
-    App
+    // App
   ],
-  // declarations: [App],
-  // bootstrap: [App],
+  declarations: [App ],
+  bootstrap: [App],
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideHttpClient(withInterceptorsFromDi()),
-    // provideKeycloak({
-    //   config: {
-    //     url: environment.keycloak.issuer,
-    //     realm: environment.keycloak.realm,
-    //     clientId: environment.keycloak.clientId,
-    //   },
-    // }),
-    // {
-    //   provide: APP_INITIALIZER,
-    //   useFactory: initializeKeycloak,
-    //   multi: true,
-    //   // deps: [Keycloak]
-    //   deps: [KeycloakService]
+    provideBrowserGlobalErrorListeners(),
+    provideZoneChangeDetection({ eventCoalescing: true }),
+    provideHttpClient(withInterceptorsFromDi()),
+    provideRouter(routes),
+    provideKeycloak({
+      config: {
+        url: environment.keycloak.issuer,
+        realm: environment.keycloak.realm,
+        clientId: environment.keycloak.clientId,
+      },
+    }),
+    {
+      provide: APP_INITIALIZER,
+      useFactory: initializeKeycloak,
+      multi: true,
+      // deps: [Keycloak]
+      deps: [KeycloakService]
 
-    // },
-    // {
-    //   provide: ErrorHandler,
-    //   useClass: ErrorHandlerService
-    // },
-    // {
-    //   provide: HTTP_INTERCEPTORS, useClass: HttpErrorInterceptor, multi: true
-    // }
+    },
   ],
   exports: [UserInfo],
 })

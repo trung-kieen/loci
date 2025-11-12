@@ -7,8 +7,8 @@ import { MatFormField, MatInput, MatInputModule, MatLabel } from '@angular/mater
   selector: 'app-root',
   templateUrl: './app.html',
   styleUrl: './app.css',
-  // standalone: false,
-  imports: [RouterOutlet, MatInputModule, RouterOutlet, RouterLink],
+  standalone: false,
+  // imports: [RouterOutlet, MatInputModule, RouterOutlet, RouterLink],
   // imports: [AppModule],
 
 })
