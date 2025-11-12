@@ -13,7 +13,7 @@ export class WebApiService {
   private http = inject(HttpClient);
 
   public getUserInfo(): Observable<StringResponse> {
-    return this.http.get<StringResponse>(`${environment.apiUrl}/userInfo1`, {
+    return this.http.get<StringResponse>(`${environment.apiUrl}/userInfo2`, {
       responseType: 'json',
     });
   }

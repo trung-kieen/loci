@@ -13,8 +13,8 @@ export class UserInfo implements OnInit {
   private authService = inject(AuthService);
   private webApiService = inject(WebApiService);
   // private httpClient = inject(HttpClient);
-  ngOnInit(): void {
-    this.message = this.authService.getUsername();
+  async ngOnInit() {
+    this.message = await this.authService.getUsername();
     console.log(this.message);
 
     this.webApiService.getUserInfo().subscribe({

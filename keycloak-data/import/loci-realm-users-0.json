@@ -1,0 +1,27 @@
+{
+  "realm" : "loci-realm",
+  "users" : [ {
+    "id" : "be4129e1-7a3e-4788-a8b6-17cf25d31a86",
+    "username" : "testuser1@gmail.com",
+    "firstName" : "John",
+    "lastName" : "Smith",
+    "email" : "testuser1@gmail.com",
+    "emailVerified" : true,
+    "createdTimestamp" : 1762689192805,
+    "enabled" : true,
+    "totp" : false,
+    "credentials" : [ {
+      "id" : "bd1fd5d7-621a-4c3a-85ac-49f063febfae",
+      "type" : "password",
+      "userLabel" : "My password",
+      "createdDate" : 1762689267814,
+      "secretData" : "{\"value\":\"zg4pwZLMSLfFnWGNuOXWlzvnGxDXgchFt4AL2aFZjiM=\",\"salt\":\"4vQAbzC5FN6gJUuJFFsioQ==\",\"additionalParameters\":{}}",
+      "credentialData" : "{\"hashIterations\":5,\"algorithm\":\"argon2\",\"additionalParameters\":{\"hashLength\":[\"32\"],\"memory\":[\"7168\"],\"type\":[\"id\"],\"version\":[\"1.3\"],\"parallelism\":[\"1\"]}}"
+    } ],
+    "disableableCredentialTypes" : [ ],
+    "requiredActions" : [ ],
+    "realmRoles" : [ "default-roles-loci-realm" ],
+    "notBefore" : 0,
+    "groups" : [ ]
+  } ]
+}

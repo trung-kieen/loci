@@ -19,3 +19,5 @@ export function initializeKeycloak(keycloak: KeycloakService) {
       bearerExcludedUrls: ['/assets'],
     });
 }
+
+

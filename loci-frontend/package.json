@@ -32,14 +32,15 @@
   },
   "private": true,
   "dependencies": {
-    "@angular/animations": "^20.0.0",
-    "@angular/cdk": "^20.2.0",
+    "@angular/animations": "^20.2.1",
+    "@angular/cdk": "^20.2.1",
     "@angular/common": "^20.2.1",
     "@angular/compiler": "^20.2.1",
     "@angular/core": "^20.2.1",
     "@angular/forms": "^20.2.1",
-    "@angular/material": "^20.2.0",
+    "@angular/material": "^20.2.1",
     "@angular/platform-browser": "^20.2.1",
+    "@angular/platform-browser-dynamic": "^20.3.10",
     "@angular/router": "^20.2.1",
     "keycloak-angular": "^20.0.0",
     "keycloak-js": "^26.2.0",
@@ -49,7 +50,7 @@
     "zone.js": "~0.15.0"
   },
   "devDependencies": {
-    "@angular/build": "^20.2.0",
+    "@angular/build": "^20.2.1",
     "@angular/cli": "^20.2.0",
     "@angular/compiler-cli": "^20.2.1",
     "@types/jasmine": "~5.1.0",
