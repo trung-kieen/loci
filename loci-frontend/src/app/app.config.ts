@@ -1,7 +1,6 @@
 import {
   APP_INITIALIZER,
   ApplicationConfig,
-  ErrorHandler,
   provideBrowserGlobalErrorListeners,
   provideZoneChangeDetection,
 } from '@angular/core';
@@ -10,9 +9,12 @@ import { provideRouter } from '@angular/router';
 import { routes } from './app.routes';
 import { KeycloakService } from 'keycloak-angular';
 import { environment } from '../environments/environments';
-import { initializeKeycloak } from '../utils/app-init';
-import { provideKeycloak } from '../auth/keycloak.provider';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { initializeKeycloak } from './core/auth/keycloak/keycloak.init';
+import {
+  provideHttpClient,
+  withInterceptorsFromDi,
+} from '@angular/common/http';
+import { provideKeycloak } from './core/auth/keycloak/keycloak.provider';
 
 // TOOD: legacy for standalone app component
 export const appConfig: ApplicationConfig = {
@@ -32,11 +34,7 @@ export const appConfig: ApplicationConfig = {
       provide: APP_INITIALIZER,
       useFactory: initializeKeycloak,
       multi: true,
-      // deps: [Keycloak]
-      deps: [KeycloakService]
-
+      deps: [KeycloakService],
     },
   ],
 };
-
-

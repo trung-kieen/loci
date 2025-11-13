@@ -1,0 +1,8 @@
+<button (click)="onClick()" [disabled]="isDisabled()" [class]="computedClasses()"
+  [attr.aria-label]="loading() ? 'Loading' : undefined">
+  @if (loading()) {
+  <span class="inline-block animate-spin rounded-full h-4 w-4 border-b-2 border-current"></span>
+  } @else {
+  <ng-content></ng-content>
+  }
+</button>

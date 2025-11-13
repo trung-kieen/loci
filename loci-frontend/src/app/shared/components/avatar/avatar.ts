@@ -1,14 +1,12 @@
 import { Component, input, output, computed, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { NgOptimizedImage } from '@angular/common';
 
 type AvatarSize = 'small' | 'medium' | 'big';
 
 @Component({
   selector: 'app-avatar',
-  standalone: true,
-  imports: [CommonModule, NgOptimizedImage],
   templateUrl: './avatar.html',
+  // imports: [NgOptimizedImage],
+  standalone: false,
   host: {
     '[class.avatar-small]': 'size() === "small"',
     '[class.avatar-medium]': 'size() === "medium"',
@@ -16,7 +14,7 @@ type AvatarSize = 'small' | 'medium' | 'big';
   },
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class AvatarComponent {
+export class Avatar {
   // Inputs using signal-based input()
   size = input<AvatarSize>('medium');
   src = input<string | null>(null);

@@ -1,41 +1,56 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule } from '@angular/forms';
-import { AvatarComponent } from './components/avatar/avatar';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { CommonModule, NgOptimizedImage } from '@angular/common';
+import { LucideAngularModule, Check, X, Search, Send } from 'lucide-angular';
 
-// Import standalone components
+import { NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms';
+import { Avatar } from './components/avatar/avatar';
+import { MatInputModule } from '@angular/material/input';
+import { Demo } from './components/demo/demo';
+import { Badge } from './components/badge/badge';
+import { BrowserModule } from '@angular/platform-browser';
+import { Button } from './components/button/button';
+import { Loading } from './components/loading/loading';
+import { Input } from './components/input/input';
+import { ErrorCardComponent } from '../core/components/error-card/error-card';
 
-/**
- * SharedModule - Optional export module for shared components
- * Note: Since we're using standalone components, this module is optional.
- * Components can be imported directly in other standalone components.
- * This module exists for convenience when importing multiple shared components.
- */
 @NgModule({
   imports: [
-    // CommonModule,
-    ReactiveFormsModule,
-    // Import standalone components
-    AvatarComponent,
-  ],
-  exports: [
-    // Re-export for convenience
     CommonModule,
     ReactiveFormsModule,
-    AvatarComponent,
+    NgOptimizedImage,
+    MatInputModule,
+    BrowserModule,
+    LucideAngularModule.pick({ Check, Search, X, Send }),
+    ErrorCardComponent
+  ],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
+
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: Input,
+      multi: true,
+    },
+  ],
+  declarations: [
+    Demo,
+    Badge,
+    Avatar,
+    Button,
+    Loading,
+    Input
+  ],
+  exports: [
+    CommonModule,
+    ReactiveFormsModule,
+    Demo,
+    Avatar,
+    Badge,
+    Button,
+    Loading,
+    Input,
+    ErrorCardComponent
   ]
 })
 export class SharedModule { }
 
-/**
- * Standalone Components Array
- * Use this array to import all shared components at once in standalone components
- *
- * Usage:
- * @Component({
- *   imports: [...SHARED_COMPONENTS]
- * })
- */
-export const SHARED_COMPONENTS = [
-  AvatarComponent,
-] as const;

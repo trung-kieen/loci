@@ -1,0 +1,14 @@
+@switch (variant()) {
+      @case ('spinner') {
+        <div class="flex justify-center items-center" [class]="sizeClass()">
+          <div class="animate-spin rounded-full border-4 border-accent border-t-transparent w-full h-full"></div>
+        </div>
+      }
+      @case ('skeleton') {
+        <div class="w-full space-y-2">
+          <div class="h-4 bg-gray-200 rounded animate-pulse w-full"></div>
+          <div class="h-4 bg-gray-200 rounded animate-pulse w-3/4"></div>
+          <div class="h-4 bg-gray-200 rounded animate-pulse w-1/2"></div>
+        </div>
+      }
+    }

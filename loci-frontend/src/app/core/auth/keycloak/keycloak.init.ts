@@ -1,5 +1,5 @@
 import { KeycloakService } from 'keycloak-angular';
-import { environment } from '../environments/environments';
+import { environment } from '../../../../environments/environments';
 
 // Call initialize function when call keycloak service as provider
 export function initializeKeycloak(keycloak: KeycloakService) {
@@ -19,5 +19,3 @@ export function initializeKeycloak(keycloak: KeycloakService) {
       bearerExcludedUrls: ['/assets'],
     });
 }
-
-

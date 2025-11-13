@@ -1,6 +1,5 @@
 import {
   APP_INITIALIZER,
-  ErrorHandler,
   NgModule,
   provideBrowserGlobalErrorListeners,
   provideZoneChangeDetection,
@@ -9,28 +8,25 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {
-  HTTP_INTERCEPTORS,
   HttpClientModule,
   provideHttpClient,
   withInterceptorsFromDi,
 } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
-import { AccessDenied } from './access-denied/access-denied';
-import { UserInfo } from './user-info/user-info';
+import { AccessDenied } from './core/components/access-denied/access-denied';
+import { UserInfo } from './core/components/user-info/user-info';
 import {
   KeycloakAngularModule,
   KeycloakService,
   provideKeycloak,
 } from 'keycloak-angular';
 
-import Keycloak from 'keycloak-js';
+// import Keycloak from 'keycloak-js';
 import { AppRoutingModule, routes } from './app.routes';
 import { App } from './app';
 import { MatInputModule } from '@angular/material/input';
 import { environment } from '../environments/environments';
-import { initializeKeycloak } from '../utils/app-init';
-import { ErrorHandlerService } from './service/error-handler.service';
-import { HttpErrorInterceptor } from '../core/middleware/http-error.interceptor';
+import { initializeKeycloak } from './core/auth/keycloak/keycloak.init';
 import { provideRouter } from '@angular/router';
 import { SharedModule } from './shared/shared.module';
 
@@ -47,9 +43,8 @@ import { SharedModule } from './shared/shared.module';
     AccessDenied,
     MatInputModule,
     UserInfo,
-    // App
-  ],
-  declarations: [App ],
+],
+  declarations: [App],
   bootstrap: [App],
   providers: [
     provideBrowserGlobalErrorListeners(),
@@ -70,10 +65,9 @@ import { SharedModule } from './shared/shared.module';
       useFactory: initializeKeycloak,
       multi: true,
       // deps: [Keycloak]
-      deps: [KeycloakService]
-
+      deps: [KeycloakService],
     },
   ],
   exports: [UserInfo],
 })
-export class AppModule { }
+export class AppModule {}

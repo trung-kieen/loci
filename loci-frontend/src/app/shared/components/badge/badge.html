@@ -1,0 +1,29 @@
+@switch (type()) {
+      @case ('unread') {
+        @if (count() && count() > 0) {
+          <div class="bg-red-500 text-white rounded-full px-2 py-0.5 text-xs font-bold min-w-[20px] text-center"
+               [attr.aria-label]="displayCount() + ' unread messages'">
+            {{ displayCount() }}
+          </div>
+        }
+      }
+      @case ('online') {
+        <div class="w-2 h-2 bg-green-500 rounded-full" aria-hidden="true"></div>
+      }
+      @case ('edited') {
+        <span class="text-neutral-500 text-xs italic" role="status">(edited)</span>
+      }
+      @case ('status') {
+        @switch (status()) {
+          @case ('sent') {
+            <lucide-icon name="check" class="w-4 h-4 text-neutral-500"></lucide-icon>
+          }
+          @case ('delivered') {
+            <lucide-icon name="check-check" class="w-4 h-4 text-neutral-500"></lucide-icon>
+          }
+          @case ('read') {
+            <lucide-icon name="check-check" class="w-4 h-4 text-blue-500"></lucide-icon>
+          }
+        }
+      }
+    }

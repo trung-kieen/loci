@@ -1,6 +1,6 @@
 import { Component, OnInit, inject } from '@angular/core';
+import { WebApiService } from '../../../api/web-api.service';
 import { AuthService } from '../../auth/auth.service';
-import { WebApiService } from '../api/web-api.service';
 
 @Component({
   selector: 'app-user-info',

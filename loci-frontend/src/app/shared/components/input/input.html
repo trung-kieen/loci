@@ -1,0 +1,57 @@
+@if (type() === 'textarea') {
+  <textarea
+    [id]="uniqueId"
+    [placeholder]="placeholder()"
+    [disabled]="disabled()"
+    [maxLength]="maxLength()"
+    [rows]="rows()"
+    [value]="value()"
+    (input)="onInput($event)"
+    (keydown)="onKeydown($event)"
+    (blur)="onBlur()"
+    [attr.aria-describedby]="maxLength() ? counterId : null"
+    [attr.aria-invalid]="error()"
+    #textareaElement
+    class="w-full border border-neutral-300 rounded-lg px-4 py-2 focus:border-accent focus:ring-2 focus:ring-accent/20 resize-none disabled:bg-neutral-100 disabled:cursor-not-allowed"
+    [class.border-error]="error()"
+    [class.text-error]="error()"
+  ></textarea>
+} @else {
+  <div class="relative">
+    @if (type() === 'search') {
+      <lucide-icon name="search" size="20" class="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-500"></lucide-icon>
+    }
+    <input
+      [id]="uniqueId"
+      [type]="type() === 'search' ? 'text' : type()"
+      [placeholder]="placeholder()"
+      [disabled]="disabled()"
+      [maxLength]="maxLength()"
+      [value]="value()"
+      (input)="onInput($event)"
+      (keydown)="onKeydown($event)"
+      (blur)="onBlur()"
+      [attr.aria-describedby]="maxLength() ? counterId : null"
+      [attr.aria-invalid]="error()"
+      #inputElement
+      class="w-full border border-neutral-300 rounded-lg px-4 py-2 focus:border-accent focus:ring-2 focus:ring-accent/20 disabled:bg-neutral-100 disabled:cursor-not-allowed"
+      [class.pl-15]="type() === 'search'"
+      [class.pr-10]="type() === 'search' && value() !== ''"
+      [class.border-error]="error()"
+      [class.text-error]="error()"
+    />
+    @if (type() === 'search' && value() !== '') {
+      <button
+        type="button"
+        (click)="clear()"
+        class="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-500 hover:text-neutral-700 focus:outline-none"
+        aria-label="Clear input"
+      >
+        <lucide-icon name="x" size="20"></lucide-icon>
+      </button>
+    }
+  </div>
+}
+@if (maxLength()) {
+  <span [id]="counterId" class="text-sm text-neutral-500 block mt-1 text-right">{{ value().length }} / {{ maxLength() }}</span>
+}

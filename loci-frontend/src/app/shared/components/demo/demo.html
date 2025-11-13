@@ -1,0 +1,104 @@
+<p>This is material component</p>
+<mat-form-field>
+  <mat-label>Username</mat-label>
+  <input matInput />
+</mat-form-field>
+
+<div class="bg-primary text-primary-content p-4">
+  This uses the primary color as background.
+</div>
+<button class="btn btn-secondary">Secondary Button</button> <!-- If using DaisyUI components -->
+<div class="bg-blue-500 text-white inline ">Standard Tailwind blue</div>
+<div>
+  Avatar
+  <app-avatar size="small" src="avatar1.svg" alt="avatar1" [showOnline]="true" />
+</div>
+<div>
+  Badge
+  <app-badge type="status"></app-badge>
+  <app-badge type="edited"></app-badge>
+  <app-badge type="online"></app-badge>
+</div>
+
+<div>
+  Button
+  <app-button variant="primary" (clicked)="saveProfile()">Save Changes</app-button>
+
+  <app-button variant="secondary" [disabled]="isSaving" (clicked)="cancel()">Cancel</app-button>
+
+  <app-button variant="danger" [loading]="isDeleting" [fullWidth]="true" (clicked)="deleteAccount()">Delete
+    Account</app-button>
+
+</div>
+
+<div>
+  Loading indicator
+  <div class="flex flex-col h-full">
+    @if (isLoading()) {
+    <app-loading size="large" variant="spinner"></app-loading>
+    } @else {
+    <p>No chats available</p>
+    }
+  </div>
+</div>
+
+<div>
+  Input
+  <app-input [(value)]="searchValue" type="search"></app-input>
+
+</div>
+
+<div>
+  Error card
+  <app-error-card message="unknow"></app-error-card>
+
+</div>
+
+<div>
+  Input
+  <form [formGroup]="form" class="flex flex-col gap-4 p-4 bg-white  rounded-lg shadow-md md:p-6">
+  <!-- Variant 1: Text (Single-line, e.g., for group name input) -->
+  <app-input
+    [type]="'text'"
+    [placeholder]="'Enter group name...'"
+    [formControl]="groupNameControl"
+    [maxLength]="50"
+    [error]="groupNameControl.invalid && groupNameControl.touched"
+    (valueChanged)="onValueChanged($event)"
+    (enterPressed)="onEnterPressed()"
+  ></app-input>
+
+  <!-- Variant 2: Search (With icon and clear button, e.g., for searching users or messages) -->
+  <app-input
+    [type]="'search'"
+    [placeholder]="'Search users...'"
+    [formControl]="searchControl"
+    [disabled]="false"
+    (valueChanged)="onValueChanged($event)"
+  ></app-input>
+
+  <!-- Variant 3: Textarea (Multi-line, auto-expand, e.g., for message input) -->
+  <div class="relative flex items-end">
+    <app-input
+      [type]="'textarea'"
+      [placeholder]="'Type a message...'"
+      [formControl]="messageControl"
+      [maxLength]="500"
+      [rows]="1"
+      [error]="messageControl.invalid && messageControl.touched"
+      (valueChanged)="onValueChanged($event)"
+      (enterPressed)="onEnterPressed()"
+    ></app-input>
+    <button
+      type="button"
+      (click)="onSend()"
+      [disabled]="form.invalid"
+      class="ml-2 p-2 bg-accent text-white rounded-full focus:ring-2 focus:ring-accent/20 disabled:opacity-50 disabled:cursor-not-allowed"
+      aria-label="Send message"
+    >
+      <lucide-icon name="send" size="20"></lucide-icon>
+    </button>
+  </div>
+</form>
+
+</div>

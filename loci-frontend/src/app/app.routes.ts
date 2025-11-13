@@ -1,8 +1,8 @@
 import { RouterModule, Routes } from '@angular/router';
-import { AccessDenied } from './access-denied/access-denied';
-import { AuthGuard } from '../auth/auth.guard';
-import { UserInfo } from './user-info/user-info';
+import { AccessDenied } from './core/components/access-denied/access-denied';
+import { UserInfo } from './core/components/user-info/user-info';
 import { NgModule } from '@angular/core';
+import { AuthGuard } from './core/auth/auth.guard';
 
 export const routes: Routes = [
   {

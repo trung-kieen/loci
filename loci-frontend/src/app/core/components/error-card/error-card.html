@@ -1,0 +1,55 @@
+<div
+  role="alert"
+  aria-live="assertive"
+  class="rounded-lg p-4 flex items-start gap-3"
+  [ngClass]="colorClasses()"
+>
+  <!-- Icon -->
+  <div class="mt-0.5 flex-shrink-0">
+    @switch (iconVariant()) {
+      @case ('error') {
+        <!-- <lucide-icon name="alert-circle" class="h-5 w-5"></lucide-icon> -->
+        <lucide-alert-circle class="h-5 w-5"></lucide-alert-circle>
+
+      }
+
+
+      @case ('warning') {
+        <lucide-alert-triangle class="h-5 w-5"></lucide-alert-triangle>
+        <!-- <lucide-icon name="alert-triangle" class="h-5 w-5"></lucide-icon> -->
+      }
+      @case ('info') {
+        <!-- <lucide-icon name="info" class="h-5 w-5"></lucide-icon> -->
+        <lucide-info class="h-5 w-5"></lucide-info>
+
+      }
+    }
+  </div>
+
+  <!-- Message -->
+  <div class="flex-1 text-sm">
+    {{ message() }}
+  </div>
+
+  <!-- Actions -->
+  <div class="flex items-center gap-2">
+    @if (showRetry()) {
+      <!--
+        #retryBtn is placed on host of <app-button>.
+        ViewChild reads ElementRef<HTMLElement> for focus.
+      -->
+      <app-button #retryBtn (click)="onRetryClick()">
+        Retry
+      </app-button>
+    }
+
+    <button
+      type="button"
+      (click)="onDismissClick()"
+      class="p-1 rounded-full hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+      aria-label="Dismiss"
+    >
+      <lucide-x class="h-4 w-4"></lucide-x>
+    </button>
+  </div>
+</div>
