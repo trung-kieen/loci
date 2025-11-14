@@ -1,8 +1,8 @@
 /* You can add global styles to this file, and also import other style files */
-// @tailwind base;
-// @tailwind components;
-// @tailwind utilities;
-@use "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+// @use "tailwindcss";
 
 
 html,
@@ -15,23 +15,23 @@ body {
 }
 
 
-:root {
-  --color-primary: #3b82f6; /* blue-500 */
-  --color-primary-50: #eff6ff;
-  --color-primary-100: #dbeafe;
-  --color-primary-200: #bfdbfe;
-  --color-primary-300: #93c5fd;
-  --color-primary-400: #60a5fa;
-  --color-primary-500: #3b82f6;
-  --color-primary-600: #2563eb;
-  --color-primary-700: #1d4ed8;
-  --color-primary-800: #1e40af;
-  --color-primary-900: #1e3a8a;
-  --color-primary-focus: #1d4ed8; /* Darker shade for focus */
-  --color-primary-content: #ffffff; /* Text color on primary bg */
+// :root {
+//   --color-primary: #3b82f6; /* blue-500 */
+//   --color-primary-50: #eff6ff;
+//   --color-primary-100: #dbeafe;
+//   --color-primary-200: #bfdbfe;
+//   --color-primary-300: #93c5fd;
+//   --color-primary-400: #60a5fa;
+//   --color-primary-500: #3b82f6;
+//   --color-primary-600: #2563eb;
+//   --color-primary-700: #1d4ed8;
+//   --color-primary-800: #1e40af;
+//   --color-primary-900: #1e3a8a;
+//   --color-primary-focus: #1d4ed8; /* Darker shade for focus */
+//   --color-primary-content: #ffffff; /* Text color on primary bg */
 
-  /* Repeat for secondary, accent, neutral, info, success, warning, error, etc. */
-  --color-secondary: #6366f1; /* indigo-500 */
-  --color-secondary-50: #eef2ff;
-  /* ... and so on */
-}
+//   /* Repeat for secondary, accent, neutral, info, success, warning, error, etc. */
+//   --color-secondary: #6366f1; /* indigo-500 */
+//   --color-secondary-50: #eef2ff;
+//   /* ... and so on */
+// }
