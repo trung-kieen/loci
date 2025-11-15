@@ -1,0 +1,79 @@
+<header
+  role="banner"
+  class="sticky top-0 bg-white shadow-sm p-4 flex items-center gap-3 z-10 border-b border-neutral-200"
+>
+  @if (showBackButton()) {
+    <!-- back button unchanged -->
+    <button
+      type="button"
+      class="p-2 rounded-full text-neutral-500 hover:bg-neutral-100 hover:text-neutral-700
+             focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2
+             focus-visible:ring-[var(--color-primary)] flex-shrink-0"
+      (click)="onBackClicked()"
+      aria-label="Go back"
+    >
+      <svg
+        class="w-5 h-5"
+        viewBox="0 0 20 20"
+        fill="none"
+        stroke="currentColor"
+        aria-hidden="true"
+        focusable="false"
+      >
+        <path
+          d="M11.5 5l-4 5 4 5"
+          stroke-width="1.6"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </svg>
+    </button>
+  }
+
+  <div class="flex items-center gap-3 min-w-0 flex-1">
+    @if (hasAvatar()) {
+      <app-avatar
+        [size]="'small'"
+        [src]="avatar()!.src"
+        [alt]="avatar()!.alt"
+      ></app-avatar>
+    }
+
+    <div class="flex flex-col min-w-0">
+      <div class="font-semibold text-base truncate text-neutral-900">
+        {{ title() }}
+      </div>
+
+      @if (hasSubtitle()) {
+        <div class="text-xs text-neutral-500 truncate">
+          {{ subtitle() }}
+        </div>
+      }
+    </div>
+  </div>
+
+  <!-- actions unchanged -->
+  <div class="flex items-center gap-1 flex-shrink-0">
+    @for (action of displayActions(); track action.action) {
+      <button
+        type="button"
+        class="p-2 hover:bg-neutral-100 rounded-full text-neutral-500 hover:text-neutral-700
+               focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2
+               focus-visible:ring-[var(--color-primary)]"
+        (click)="onActionClicked(action.action)"
+        [attr.aria-label]="action.label"
+      >
+        <svg
+          class="w-5 h-5"
+          viewBox="0 0 20 20"
+          stroke="currentColor"
+          fill="none"
+          aria-hidden="true"
+          focusable="false"
+        >
+          <circle cx="10" cy="10" r="7" stroke-width="1.5" />
+        </svg>
+      </button>
+    }
+  </div>
+</header>

@@ -29,6 +29,8 @@ import { environment } from '../environments/environments';
 import { initializeKeycloak } from './core/auth/keycloak/keycloak.init';
 import { provideRouter } from '@angular/router';
 import { SharedModule } from './shared/shared.module';
+import { MyProfile } from './features/user/components/my-profile/my-profile';
+import { OtherProfile } from './features/user/components/other-profile/other-profile';
 
 @NgModule({
   imports: [
@@ -43,6 +45,8 @@ import { SharedModule } from './shared/shared.module';
     AccessDenied,
     MatInputModule,
     UserInfo,
+    MyProfile,
+    OtherProfile,
 ],
   declarations: [App],
   bootstrap: [App],

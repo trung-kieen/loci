@@ -1,5 +1,6 @@
 import { Component, inject, input, model, output, signal } from '@angular/core';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
+import { FilePreview } from '../file-preview-card/file-preview-card';
 
 @Component({
   standalone: false,
@@ -12,7 +13,7 @@ export class Demo {
   isDeleting = false;
   isLoading = signal(true);
   inputValue = model('');
-  searchValue= model('');
+  searchValue = model('');
 
   saveProfile() {
     console.log("save")
@@ -67,5 +68,61 @@ export class Demo {
   onValueChanged(value: string) {
     console.log('Value changed:', value); // Example: Could trigger typing indicator via WebSocket
   }
+
+
+  readonly attachments = signal<FilePreview[]>([
+    {
+      filename: 'project-proposal.pdf',
+      size: '245 KB',
+      type: 'application/pdf',
+      url: '/assets/mocks/project-proposal.pdf',
+    },
+    {
+      filename: 'screenshot-long-name-preview-example-01.png',
+      size: '1.2 MB',
+      type: 'image/png',
+      url: 'avatar6.svg',
+    },
+  ]);
+
+  removeAttachment(index: number): void {
+    const next = [...this.attachments()];
+    next.splice(index, 1);
+    this.attachments.set(next);
+  }
+
+
+  // Modal
+  readonly modalOpen = signal(false);
+
+  openModal(): void {
+    this.modalOpen.set(true);
+  }
+
+  closeModal(): void {
+    this.modalOpen.set(false);
+  }
+
+  onConfirm(): void {
+    // TODO: Hook delete logic (API call, service)
+    console.log('Conversation deleted');
+
+    this.modalOpen.set(false);
+  }
+
+  onCancel(): void {
+    this.modalOpen.set(false);
+  }
+  onBack(): void {
+    console.log("Go backed")
+  }
+
+  onHeaderAction(event: string) {
+    console.log("Header action called", event);
+  }
+
+  // onHeaderAction(event: Event): void {
+  //   console.log("Header action")
+  // }
 
 }

@@ -1,0 +1,96 @@
+<div class="relative w-full">
+  <!-- Visually hidden label for accessibility -->
+  <label class="sr-only" [for]="inputId">Search</label>
+
+  <div
+    class="border border-neutral-200 rounded-full px-4 py-2 flex items-center gap-2 bg-neutral-50 focus-within:bg-white focus-within:border-accent transition-colors duration-150"
+    role="search"
+  >
+    <!-- Left: Search icon (lucide Search path) -->
+    <svg
+      class="w-4 h-4 shrink-0 text-neutral-500"
+      aria-hidden="true"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    >
+      <circle cx="11" cy="11" r="8"></circle>
+      <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+    </svg>
+
+    <!-- Input -->
+    <input
+      [id]="inputId"
+      type="search"
+      class="flex-1 bg-transparent outline-none text-sm text-neutral-900 placeholder:text-neutral-400"
+      [placeholder]="placeholder()"
+      [formControl]="searchControl"
+      role="combobox"
+      aria-autocomplete="list"
+      [attr.aria-expanded]="autocompleteOpenSignal()"
+      [attr.aria-controls]="autocompleteOpenSignal() ? autocompleteListId : null"
+      (focus)="onFocus()"
+      (blur)="onBlur()"
+      (keydown)="onKeydown($event)"
+    />
+
+    <!-- Right: Clear or Cancel (mobile) -->
+    @if (showCancel() && isFocused()) {
+      <!-- Cancel button (mobile pattern) -->
+      <button
+        type="button"
+        class="ml-1 text-sm font-medium text-[color:var(--color-primary)] focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[color:var(--color-primary)] rounded-full px-2"
+        (click)="onCancelClicked()"
+      >
+        Cancel
+      </button>
+    } @else if (showClearButton()) {
+      <!-- Clear button -->
+      <button
+        type="button"
+        class="ml-1 inline-flex items-center justify-center rounded-full p-1 text-neutral-500 hover:text-neutral-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[color:var(--color-primary)]"
+        aria-label="Clear search"
+        (click)="onClearClicked()"
+      >
+        <svg
+          class="w-4 h-4"
+          aria-hidden="true"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    }
+  </div>
+
+  <!-- Autocomplete dropdown -->
+  @if (autocompleteOpenSignal()) {
+    <ul
+      [id]="autocompleteListId"
+      role="listbox"
+      class="absolute top-full mt-2 w-full bg-white border border-neutral-200 rounded-lg shadow-lg max-h-60 overflow-y-auto z-20"
+    >
+      @for (item of autocompleteItems(); track trackByItem(i, item); let i = $index) {
+        <li
+          role="option"
+          class="px-4 py-2 text-sm cursor-pointer text-neutral-900 hover:bg-neutral-100"
+          [class.bg-neutral-100]="highlightedIndexSignal() === i"
+          [attr.aria-selected]="highlightedIndexSignal() === i"
+          (mouseenter)="onItemMouseEnter(i)"
+          (mousedown)="onItemMouseDown($event, item, i)"
+        >
+          {{ getItemLabel(item) || (item | json) }}
+        </li>
+      }
+    </ul>
+  }
+</div>

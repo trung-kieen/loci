@@ -1,0 +1,14 @@
+<section class="flex flex-col items-center justify-center text-center p-8 min-h-[300px]" role="status"
+  aria-live="polite">
+  <lucide-icon [name]="iconName()" class="text-neutral-400 w-12 h-12" aria-hidden="true"></lucide-icon>
+
+  <p class="text-neutral-500 text-sm mt-4">
+    {{ message() }}
+  </p>
+
+  @if (actionText()) {
+  <app-button class="mt-6" type="button" (click)="onActionClick()">
+    {{ actionText() }}
+  </app-button>
+  }
+</section>

@@ -1,0 +1,213 @@
+<header id="header" class="h-16 bg-white border-b border-neutral-200 flex items-center justify-between px-6">
+  <div class="flex items-center space-x-4">
+    <i class="fa-solid fa-comment text-xl text-neutral-700"></i>
+    <h1 class="text-xl text-black">ChatApp</h1>
+  </div>
+  <div class="flex items-center space-x-4">
+    <button class="p-2 hover:bg-neutral-100 rounded-lg">
+      <i class="fa-solid fa-bell text-neutral-600"></i>
+    </button>
+    <button class="p-2 hover:bg-neutral-100 rounded-lg">
+      <i class="fa-solid fa-cog text-neutral-600"></i>
+    </button>
+  </div>
+</header>
+
+<main id="main-content" class="flex h-[calc(100vh-4rem)]">
+  <aside id="sidebar" class="w-60 bg-white border-r border-neutral-200 flex flex-col">
+    <div class="p-4">
+      <div class="relative">
+        <input type="text" placeholder="Search..." class="w-full pl-10 pr-4 py-2 border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-neutral-500">
+        <i class="fa-solid fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-neutral-400"></i>
+      </div>
+    </div>
+
+    <nav class="flex-1 px-4">
+      <ul class="space-y-2">
+        <li>
+          <span class="flex items-center space-x-3 px-3 py-2 rounded-lg hover:bg-neutral-100 cursor-pointer">
+            <i class="fa-solid fa-chart-line text-neutral-600"></i>
+            <span class="text-neutral-700">Dashboard</span>
+          </span>
+        </li>
+        <li>
+          <span class="flex items-center space-x-3 px-3 py-2 rounded-lg hover:bg-neutral-100 cursor-pointer">
+            <i class="fa-solid fa-comment text-neutral-600"></i>
+            <span class="text-neutral-700">Chat</span>
+          </span>
+        </li>
+        <li>
+          <span class="flex items-center space-x-3 px-3 py-2 rounded-lg hover:bg-neutral-100 cursor-pointer">
+            <i class="fa-solid fa-users text-neutral-600"></i>
+            <span class="text-neutral-700">CRM</span>
+          </span>
+        </li>
+        <li>
+          <span class="flex items-center space-x-3 px-3 py-2 rounded-lg hover:bg-neutral-100 cursor-pointer">
+            <i class="fa-solid fa-user text-neutral-600"></i>
+            <span class="text-neutral-700">My Profile</span>
+          </span>
+        </li>
+        <li>
+          <span class="flex items-center space-x-3 px-3 py-2 rounded-lg hover:bg-neutral-100 cursor-pointer">
+            <i class="fa-solid fa-user-friends text-neutral-600"></i>
+            <span class="text-neutral-700">Accounts</span>
+          </span>
+        </li>
+      </ul>
+    </nav>
+
+    <div class="p-4 border-t border-neutral-200">
+      <button class="flex items-center space-x-3 px-3 py-2 rounded-lg hover:bg-neutral-100 w-full">
+        <i class="fa-solid fa-sign-out-alt text-neutral-600"></i>
+        <span class="text-neutral-700">Logout</span>
+      </button>
+    </div>
+  </aside>
+
+  <section id="chat-list" class="w-96 bg-white border-r border-neutral-200 flex flex-col">
+    <div class="p-4 border-b border-neutral-200">
+      <div class="flex space-x-1">
+        <button class="px-4 py-2 text-sm text-neutral-500 hover:text-neutral-700">Inbox</button>
+        <button class="px-4 py-2 text-sm text-neutral-500 hover:text-neutral-700">Unread</button>
+        <button class="px-4 py-2 text-sm text-neutral-500 hover:text-neutral-700">Follow-ups</button>
+        <button class="px-4 py-2 text-sm text-neutral-500 hover:text-neutral-700">Archived</button>
+      </div>
+    </div>
+
+    <div class="flex-1 overflow-y-auto">
+      <div class="p-4">
+        <div class="flex items-center space-x-3 p-3 rounded-lg bg-neutral-50 cursor-pointer">
+          <img src="https://api.dicebear.com/7.x/notionists/svg?scale=200&seed=7891" alt="Contact" class="w-10 h-10 rounded-full">
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center justify-between">
+              <p class="text-sm text-neutral-900 truncate">Emily Davis</p>
+              <p class="text-xs text-neutral-500">3:45 PM</p>
+            </div>
+            <p class="text-sm text-neutral-500 truncate">Can we schedule a meeting?</p>
+          </div>
+        </div>
+
+        <div class="flex items-center space-x-3 p-3 rounded-lg hover:bg-neutral-50 cursor-pointer">
+          <img src="https://api.dicebear.com/7.x/notionists/svg?scale=200&seed=1234" alt="Contact" class="w-10 h-10 rounded-full">
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center justify-between">
+              <p class="text-sm text-neutral-900 truncate">John Smith</p>
+              <p class="text-xs text-neutral-500">2:30 PM</p>
+            </div>
+            <p class="text-sm text-neutral-500 truncate">Hey, how are you doing?</p>
+          </div>
+        </div>
+
+        <div class="flex items-center space-x-3 p-3 rounded-lg hover:bg-neutral-50 cursor-pointer">
+          <img src="https://api.dicebear.com/7.x/notionists/svg?scale=200&seed=5678" alt="Contact" class="w-10 h-10 rounded-full">
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center justify-between">
+              <p class="text-sm text-neutral-900 truncate">Sarah Johnson</p>
+              <p class="text-xs text-neutral-500">1:15 PM</p>
+            </div>
+            <p class="text-sm text-neutral-500 truncate">Thanks for the update!</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="user-profile-panel" class="flex-1 bg-white flex flex-col">
+    <div class="p-6 border-b border-neutral-200">
+      <div class="flex items-center space-x-4">
+        <button class="p-2 hover:bg-neutral-100 rounded-lg">
+          <i class="fa-solid fa-arrow-left text-neutral-600"></i>
+        </button>
+        <div>
+          <h2 class="text-2xl text-black">User Profile</h2>
+          <p class="text-neutral-500 mt-1">View user information and manage connection</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex-1 overflow-y-auto p-6">
+      <div class="max-w-2xl">
+        <div class="bg-white border border-neutral-200 rounded-lg p-6 mb-6">
+          <div class="flex flex-col items-center text-center mb-6">
+            <img src="https://api.dicebear.com/7.x/notionists/svg?scale=200&seed=7891" alt="Emily Davis" class="w-24 h-24 rounded-full mb-4">
+            <h3 class="text-2xl text-black mb-1">Emily Davis</h3>
+            <p class="text-neutral-500 mb-2">@emilydavis</p>
+            <div class="flex items-center space-x-2 text-sm text-neutral-500">
+              <i class="fa-solid fa-circle text-neutral-500 text-xs"></i>
+              <span>Active 5 minutes ago</span>
+            </div>
+          </div>
+
+          <div class="space-y-4 mb-6">
+            <div class="flex items-center justify-between py-2">
+              <span class="text-sm text-neutral-700">Email</span>
+              <span class="text-sm text-neutral-900">emily.davis@company.com</span>
+            </div>
+            <div class="flex items-center justify-between py-2">
+              <span class="text-sm text-neutral-700">Member since</span>
+              <span class="text-sm text-neutral-900">March 2025</span>
+            </div>
+            <div class="flex items-center justify-between py-2">
+              <span class="text-sm text-neutral-700">Mutual friends</span>
+              <span class="text-sm text-neutral-900">12 connections</span>
+            </div>
+          </div>
+
+          <div class="flex flex-col space-y-3">
+            <button class="w-full bg-neutral-500 text-white px-6 py-3 rounded-lg hover:bg-neutral-600 focus:outline-none focus:ring-2 focus:ring-neutral-500 flex items-center justify-center space-x-2">
+              <i class="fa-solid fa-user-plus"></i>
+              <span>Add Friend</span>
+            </button>
+
+            <div class="flex space-x-3">
+              <button class="flex-1 bg-white border border-neutral-200 text-neutral-700 px-4 py-3 rounded-lg hover:bg-neutral-50 focus:outline-none focus:ring-2 focus:ring-neutral-500 flex items-center justify-center space-x-2">
+                <i class="fa-solid fa-comment"></i>
+                <span>Message</span>
+              </button>
+
+              <button class="flex-1 bg-white border border-neutral-200 text-neutral-700 px-4 py-3 rounded-lg hover:bg-neutral-50 focus:outline-none focus:ring-2 focus:ring-neutral-500 flex items-center justify-center space-x-2">
+                <i class="fa-solid fa-user-slash"></i>
+                <span>Block</span>
+              </button>
+            </div>
+
+            <button class="w-full bg-white border border-neutral-200 text-neutral-600 px-6 py-3 rounded-lg hover:bg-neutral-50 focus:outline-none focus:ring-2 focus:ring-neutral-500 flex items-center justify-center space-x-2">
+              <i class="fa-solid fa-flag"></i>
+              <span>Report User</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="bg-white border border-neutral-200 rounded-lg p-6">
+          <h4 class="text-lg text-black mb-4">Recent Activity</h4>
+          <div class="space-y-3">
+            <div class="flex items-center space-x-3 p-3 bg-neutral-50 rounded-lg">
+              <i class="fa-solid fa-comment text-neutral-400"></i>
+              <div>
+                <p class="text-sm text-neutral-700">Sent a message in Marketing Team</p>
+                <p class="text-xs text-neutral-500">2 hours ago</p>
+              </div>
+            </div>
+
+            <div class="flex items-center space-x-3 p-3 bg-neutral-50 rounded-lg">
+              <i class="fa-solid fa-user-plus text-neutral-400"></i>
+              <div>
+                <p class="text-sm text-neutral-700">Connected with 3 new colleagues</p>
+                <p class="text-xs text-neutral-500">1 day ago</p>
+              </div>
+            </div>
+
+            <div class="flex items-center space-x-3 p-3 bg-neutral-50 rounded-lg">
+              <i class="fa-solid fa-file text-neutral-400"></i>
+              <div>
+                <p class="text-sm text-neutral-700">Shared project documents</p>
+                <p class="text-xs text-neutral-500">3 days ago</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>

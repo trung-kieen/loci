@@ -1,0 +1,46 @@
+@if (isOpen()) {
+<!-- Backdrop with body scroll lock -->
+<div class="fixed inset-0 bg-black/50 flex items-center justify-center z-50" [appBodyScrollLock]="isOpen()"
+  (click)="onBackdropClick()">
+  <!-- Modal Card -->
+  <div #dialogCard class="bg-white rounded-lg shadow-xl p-6 max-w-md w-full mx-4" role="dialog" [attr.aria-modal]="true"
+    [attr.aria-labelledby]="titleId" (click)="stopClickPropagation($event)" (keydown)="onKeydown($event)">
+    <!-- Header -->
+    <div class="flex justify-between items-center mb-4">
+      <h2 class="text-base font-semibold text-neutral-900" [id]="titleId">
+        {{ title() }}
+      </h2>
+
+      <!-- Close button (X) -->
+      <button type="button"
+        class="inline-flex items-center justify-center rounded-md p-1 text-neutral-500 hover:text-neutral-700 hover:bg-neutral-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[var(--color-primary)]"
+        (click)="handleCancel()" aria-label="Close dialog">
+        <!-- Replace with lucide X icon in your icon system if desired -->
+        <svg class="w-4 h-4" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+          <path d="M3.5 3.5l9 9m0-9l-9 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+        </svg>
+      </button>
+    </div>
+
+    <!-- Content slot -->
+    <div class="mt-2 text-sm text-neutral-600">
+      <ng-content></ng-content>
+    </div>
+
+    <!-- Footer -->
+    <div class="flex justify-end gap-3 mt-6">
+      <!-- Cancel button (Button component can be used here) -->
+      <!-- Example using native button; replace with your Button component if desired -->
+      <button type="button" class="{{ cancelButtonClasses() }}" (click)="handleCancel()
+          ">
+        {{ cancelText() }}
+      </button>
+
+      <!-- Confirm button (danger / default) -->
+      <button type="button" class="{{ confirmButtonClasses() }}" (click)="handleConfirm()">
+        {{ confirmText() }}
+      </button>
+    </div>
+  </div>
+</div>
+}

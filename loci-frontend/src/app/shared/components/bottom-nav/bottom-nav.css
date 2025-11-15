@@ -1,0 +1,10 @@
+:host {
+  display: none;
+}
+
+/* Mobile-only display (max-width: 767px) */
+@media (max-width: 767px) {
+  :host {
+    display: block;
+  }
+}

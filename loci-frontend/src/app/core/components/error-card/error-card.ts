@@ -9,6 +9,9 @@ import {
   output,
   afterNextRender,
   CUSTOM_ELEMENTS_SCHEMA,
+  inject,
+  EnvironmentInjector,
+  runInInjectionContext,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
@@ -18,10 +21,6 @@ import {
   // Info,
   // X,
 } from 'lucide-angular';
-// import { SharedModule } from '../../../shared/shared.module';
-// import { Button } from '../../../shared/components/button/button';
-
-// Adjust this import path to your actual Button component location
 
 @Component({
   selector: 'app-error-card',
@@ -76,13 +75,16 @@ export class ErrorCardComponent {
   @ViewChild('retryBtn', { read: ElementRef }) retryBtn?: ElementRef<HTMLElement>;
 
   constructor() {
+    const injector = inject(EnvironmentInjector);
     // Ensure focus effect runs after initial render
     afterNextRender(() => {
-      effect(() => {
-        if (this.showRetry() && this.retryBtn?.nativeElement) {
-          this.retryBtn.nativeElement.focus();
-        }
-      });
+      runInInjectionContext(injector, () => {
+        effect(() => {
+          if (this.showRetry() && this.retryBtn?.nativeElement) {
+            this.retryBtn.nativeElement.focus();
+          }
+        });
+      })
     });
   }
 

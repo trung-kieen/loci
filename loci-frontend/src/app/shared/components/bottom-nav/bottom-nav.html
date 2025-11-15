@@ -1,0 +1,25 @@
+<nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-neutral-200 flex justify-around py-2 z-40"
+  role="navigation" aria-label="Main navigation">
+  @for (tab of tabs(); track tab.id) {
+  <button type="button" class="flex flex-col items-center gap-1 px-4 py-2 relative" (click)="onTabClick(tab.id)"
+    [attr.aria-current]="activeTabComputed() === tab.id ? 'page' : null" [attr.tabindex]="0"
+    [class.text-accent]="activeTabComputed() === tab.id" [class.text-neutral-500]="activeTabComputed() !== tab.id">
+    <!-- Icon -->
+    <span class="relative inline-flex">
+      <!-- TODO: Assuming a shared Icon component using lucide icons -->
+      <!-- <app-icon [name]="tab.icon" class="w-6 h-6" aria-hidden="true"></app-icon> -->
+
+
+      <!-- Notification badge (uses Badge component dependency) -->
+      @if (tab.id === 'notifications' && notificationCount() > 0) {
+      <app-badge  [count]="notificationCount()"  type="status"></app-badge>
+      }
+    </span>
+
+    <!-- Label -->
+    <span class="text-xs">
+      {{ tab.label }}
+    </span>
+  </button>
+  }
+</nav>

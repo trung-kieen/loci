@@ -10,9 +10,25 @@ module.exports = {
         transparent: 'transparent',
         current: 'currentColor',
 
+        // --- App palette from the image ---
+        background: '#000000',     // main page background
+        surface: '#242423',        // cards / panels
+        'surface-soft': '#000000', // darker variant if needed
+
+        // text colors
+        text: {
+          DEFAULT: '#F6F6F6',      // main text
+          soft: '#EBEDF0',         // subtle text / secondary
+          muted: '#767C8C',        // captions / placeholders
+          inverse: '#000000',      // text on light elements
+        },
+
+        // borders / separators
+        border: '#EBEDF0',
+
         // === PRIMARY (for main actions, etc.) ===
         primary: {
-          50:  '#f9fafb',
+          50: '#f9fafb',
           100: '#f3f4f6',
           200: '#e5e7eb',
           300: '#d1d5db',
@@ -23,13 +39,13 @@ module.exports = {
           800: '#1f2937',
           900: '#111827',
           DEFAULT: '#111827',
-          focus:   '#020617',
+          focus: '#020617',
           content: '#ffffff',
         },
 
         // === NEUTRAL (borders, cards, backgrounds) ===
         neutral: {
-          50:  '#f9fafb',
+          50: '#f9fafb',
           100: '#f3f4f6',
           200: '#e5e7eb',
           300: '#e5e7eb',
@@ -40,13 +56,13 @@ module.exports = {
           800: '#374151',
           900: '#111827',
           DEFAULT: '#f5f7fb',
-          focus:   '#e5e7eb',
+          focus: '#e5e7eb',
           content: '#111827',
         },
 
         // === SECONDARY ===
         secondary: {
-          50:  '#eff6ff',
+          50: '#eff6ff',
           100: '#dbeafe',
           200: '#bfdbfe',
           300: '#93c5fd',
@@ -57,13 +73,13 @@ module.exports = {
           800: '#1e40af',
           900: '#1e3a8a',
           DEFAULT: '#3b82f6',
-          focus:   '#1d4ed8',
+          focus: '#1d4ed8',
           content: '#ffffff',
         },
 
         // === INFO ===
         info: {
-          50:  '#f0f9ff',
+          50: '#f0f9ff',
           100: '#e0f2fe',
           200: '#bae6fd',
           300: '#7dd3fc',
@@ -74,13 +90,13 @@ module.exports = {
           800: '#075985',
           900: '#0c4a6e',
           DEFAULT: '#0ea5e9',
-          focus:   '#0369a1',
+          focus: '#0369a1',
           content: '#ffffff',
         },
 
         // === SUCCESS ===
         success: {
-          50:  '#f0fdf4',
+          50: '#f0fdf4',
           100: '#dcfce7',
           200: '#bbf7d0',
           300: '#86efac',
@@ -91,13 +107,13 @@ module.exports = {
           800: '#166534',
           900: '#14532d',
           DEFAULT: '#22c55e',
-          focus:   '#15803d',
+          focus: '#15803d',
           content: '#ffffff',
         },
 
         // === WARNING ===
         warning: {
-          50:  '#fffbeb',
+          50: '#fffbeb',
           100: '#fef3c7',
           200: '#fde68a',
           300: '#fcd34d',
@@ -108,13 +124,13 @@ module.exports = {
           800: '#92400e',
           900: '#78350f',
           DEFAULT: '#f59e0b',
-          focus:   '#b45309',
+          focus: '#b45309',
           content: '#111827',
         },
 
         // === ERROR / DANGER ===
         error: {
-          50:  '#fef2f2',
+          50: '#fef2f2',
           100: '#fee2e2',
           200: '#fecaca',
           300: '#fca5a5',
@@ -125,31 +141,27 @@ module.exports = {
           800: '#991b1b',
           900: '#7f1d1d',
           DEFAULT: '#ef4444',
-          focus:   '#b91c1c',
+          focus: '#b91c1c',
           content: '#ffffff',
         },
 
-        // Aliases if you still want them
-        danger:  '#ef4444',
-        failure: '#ef4444',
-
-        // === APP-SPECIFIC TOKENS ===
+        // app-specific
         app: {
-          background: '#f5f7fb',
+          background: '#000000',
         },
         sidebar: {
-          bg: '#f9fafb',
-          active: '#e5edff',
-          icon: '#6b7280',
-          'icon-active': '#111827',
+          bg: '#242423',
+          active: '#000000',
+          icon: '#F6F6F6',
+          'icon-active': '#FFFFFF',
         },
         card: {
-          bg: '#ffffff',
-          border: '#e5e7eb',
+          bg: '#242423',
+          border: '#EBEDF0',
         },
         input: {
-          bg: '#f9fafb',
-          border: '#e5e7eb',
+          bg: '#242423',
+          border: '#767C8C',
         },
       },
 
@@ -162,7 +174,7 @@ module.exports = {
         '2xl': '1.25rem',
       },
       boxShadow: {
-        card: '0 18px 45px rgba(15, 23, 42, 0.06)',
+        card: '0 18px 45px rgba(0, 0, 0, 0.6)',
       },
     },
   },

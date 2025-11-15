@@ -1,4 +1,4 @@
-<div class="bg-secondary">Example</div>
+<!-- App shell -->
 <p>This is material component</p>
 <mat-form-field>
   <mat-label>Username</mat-label>
@@ -8,7 +8,7 @@
 <div class="bg-primary text-primary-content p-4">
   This uses the primary color as background.
 </div>
-<button class="btn btn-secondary">Secondary Button</button> <!-- If using DaisyUI components -->
+<button class="btn btn-secondary">Secondary Button</button>
 <div class="bg-blue-500 text-white inline ">Standard Tailwind blue</div>
 <div>
   Avatar
@@ -101,5 +101,83 @@
     </button>
   </div>
 </form>
+</div>
+  <div>
+  Search bar
+    <app-search-bar></app-search-bar>
+  </div>
+
+<div>
+  No result card
+  <app-no-results></app-no-results>
+
+</div>
+
+
+<div>
+  File
+<!-- Attachments Preview List -->
+<div class="flex flex-col gap-2 mt-3">
+
+  @for (file of attachments(); track $index) {
+    <app-file-preview-card
+      [file]="file"
+      [removable]="true"
+      (removeClicked)="removeAttachment($index)"
+    />
+  }
+
+</div>
+</div>
+
+<div>
+<!-- Trigger button -->
+<button
+  type="button"
+  class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
+  (click)="openModal()"
+>
+  Delete Conversation
+</button>
+
+<!-- Modal -->
+<app-modal
+  [isOpen]="modalOpen()"
+  title="Delete Conversation"
+  confirmText="Delete"
+  cancelText="Cancel"
+  type="danger"
+  (confirmed)="onConfirm()"
+  (canceled)="onCancel()"
+>
+  <p>
+    Are you sure you want to permanently delete this conversation?
+    This action cannot be undone.
+  </p>
+</app-modal>
+</div>
+
+<div>
+  Header bar
+  <app-header-bar
+  [avatar]="{ src: 'avatar2.svg', alt: 'Emily Davis' }"
+  title="Emily Davis"
+  subtitle="Active now"
+  [showBackButton]="true"
+  [actions]="[
+    { icon: 'User', label: 'View profile', action: 'profile' },
+    { icon: 'Phone', label: 'Start call', action: 'call' }
+  ]"
+  (backClicked)="onBack()"
+  (actionClicked)="onHeaderAction($event)"
+>
+</app-header-bar>
+
+
+</div>
+
+<div>
+  Bottom nav
+  <app-bottom-nav></app-bottom-nav>
 
 </div>
