@@ -14,12 +14,13 @@ export const appRoutes: Routes = [
   },
   {
     path: 'demo',
-    // loadChildren: () => import("./shared/components/demo/demo").then(m => m.Demo),
+    // loadComponent: () => import("./shared/components/demo/demo").then(m => m.Demo),
     component: Demo,
   },
   {
     path: 'user-info',
-    component: UserInfo,
+    loadComponent: () => import("./core/components/user-info/user-info").then(m => m.UserInfo),
+    // component: UserInfo,
     canActivate: [AuthGuard],
     // The user need to have these roles to access page
     data: { roles: ['user'] },
@@ -44,7 +45,7 @@ export const appRoutes: Routes = [
     loadChildren: () => import("./features/notification/notification.module").then(m => m.NotificationModule),
   },
   // Fallback
-  { path: '**', redirectTo: '/chat' }
+  { path: '**', redirectTo: '/demo' }
 
 ];
 

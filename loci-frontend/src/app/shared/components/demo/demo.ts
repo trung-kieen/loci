@@ -2,9 +2,9 @@ import { Component, inject, input, model, OnDestroy, OnInit, output, signal } fr
 import { Message } from '@stomp/stompjs';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { FilePreview } from '../file-preview-card/file-preview-card';
-import { RxStompService } from '../../../core/socket/rx-stomp.service';
 import { environment } from '../../../../environments/environments';
-import { AuthService } from '../../../core/auth/auth.service';
+import { RxStomp } from '@stomp/rx-stomp';
+import { KeycloakAuthenticationManager } from '../../../core/auth/keycloak-auth-manager';
 
 interface ChatMessage {
   content: string
@@ -17,11 +17,20 @@ interface ChatMessage {
 })
 export class Demo implements OnInit {
 
-  private stomp = inject(RxStompService)
+  receivesMessage = signal<ChatMessage[]>([]);
+  private rxStompService = inject(RxStomp);
+  private authService = inject(KeycloakAuthenticationManager);
+  // private authService= inject(AuthService);
+  private stomp = inject(RxStomp)
   greetings: ChatMessage[] = [];
 
 
-  send() {
+  async send() {
+    console.log("HI")
+    console.log(this.authService)
+    const token = await this.authService.getBearerToken();
+    console.log(token);
+    console.log(this.authService)
     this.stomp.publish({
       destination: '/app/chat.send',
       body: JSON.stringify({ content: "Hello" })
@@ -31,9 +40,6 @@ export class Demo implements OnInit {
 
 
 
-  receivesMessage = signal<ChatMessage[]>([]);
-  private rxStompService = inject(RxStompService);
-  private authService = inject(AuthService);
   async ngOnInit(): Promise<void> {
     console.log(this.rxStompService);
     this.rxStompService.watch("/topic/messages").subscribe((message: Message) => {

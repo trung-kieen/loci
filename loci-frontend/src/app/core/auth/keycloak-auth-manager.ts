@@ -1,15 +1,14 @@
 import { Injectable, inject } from '@angular/core';
 import { KeycloakService } from 'keycloak-angular';
 
-@Injectable()
-export class AuthService {
+export class KeycloakAuthenticationManager {
   private keycloakService = inject(KeycloakService);
 
-  public async getBearerToken(){
+  public async getBearerToken(): Promise<string> {
     const token = await this.keycloakService.getToken();
-    return  'Bearer ' + token;
+    return 'Bearer ' + token;
   }
- public  async getUsername(): Promise<string> {
+  public async getUsername(): Promise<string> {
     const profile = await this.keycloakService.loadUserProfile();
     return profile.username || 'unknow user';
     // return this.keycloakService.getUsername();

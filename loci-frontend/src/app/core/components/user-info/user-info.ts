@@ -1,6 +1,7 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { WebApiService } from '../../../api/web-api.service';
-import { AuthService } from '../../auth/auth.service';
+import { KeycloakAuthenticationManager } from '../../auth/keycloak-auth-manager';
+import { RxStomp } from '@stomp/rx-stomp';
 
 @Component({
   selector: 'app-user-info',
@@ -10,13 +11,15 @@ import { AuthService } from '../../auth/auth.service';
 export class UserInfo implements OnInit {
   username = 'N/A';
 
-  private authService = inject(AuthService);
+  private rxStompService = inject(RxStomp);
+  private authService = inject(KeycloakAuthenticationManager);
   private webApiService = inject(WebApiService);
 
 
 
   async ngOnInit() {
     this.username = await this.authService.getUsername();
+    console.log(Object.getOwnPropertyNames(this.authService))
     console.log(this.username);
 
     this.webApiService.getUserInfo().subscribe({

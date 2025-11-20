@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { AuthService } from './core/auth/auth.service';
+import { KeycloakAuthenticationManager } from './core/auth/keycloak-auth-manager';
 
 @Component({
   selector: 'app-root',
@@ -10,7 +10,7 @@ import { AuthService } from './core/auth/auth.service';
 export class App {
 
   protected title = 'loci-frontend';
-  private authService = inject(AuthService);
+  private authService = inject(KeycloakAuthenticationManager);
   public logout() {
     this.authService.logout();
   }
