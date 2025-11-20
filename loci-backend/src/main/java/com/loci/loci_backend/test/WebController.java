@@ -17,7 +17,6 @@ import lombok.RequiredArgsConstructor;
 
 
 @RestController
-@CrossOrigin(origins = "http://localhost:4200")
 @RequiredArgsConstructor
 public class WebController {
 

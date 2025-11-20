@@ -3,6 +3,7 @@ import { AccessDenied } from './core/components/access-denied/access-denied';
 import { UserInfo } from './core/components/user-info/user-info';
 import { NgModule } from '@angular/core';
 import { AuthGuard } from './core/auth/auth.guard';
+import { Demo } from './shared/components/demo/demo';
 
 export const appRoutes: Routes = [
   { path: '', redirectTo: '/chat', pathMatch: 'full' },
@@ -10,6 +11,11 @@ export const appRoutes: Routes = [
     path: 'access-denied',
     component: AccessDenied,
     canActivate: [AuthGuard],
+  },
+  {
+    path: 'demo',
+    // loadChildren: () => import("./shared/components/demo/demo").then(m => m.Demo),
+    component: Demo,
   },
   {
     path: 'user-info',

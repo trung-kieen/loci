@@ -15,10 +15,13 @@ spring:
       enabled: true
       max-file-size: 100MB
       max-request-size: 100MB
+
+  # mvc:
+  #   servlet:
+  #     path: /api/v1
 server:
   servlet:
     context-path: /api/v1
-
 springdoc:
   api-docs:
     path: /api-docs

@@ -1,14 +1,58 @@
-import { Component, inject, input, model, output, signal } from '@angular/core';
+import { Component, inject, input, model, OnDestroy, OnInit, output, signal } from '@angular/core';
+import { Message } from '@stomp/stompjs';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { FilePreview } from '../file-preview-card/file-preview-card';
+import { RxStompService } from '../../../core/socket/rx-stomp.service';
+import { environment } from '../../../../environments/environments';
+import { AuthService } from '../../../core/auth/auth.service';
 
+interface ChatMessage {
+  content: string
+}
 @Component({
   standalone: false,
   selector: 'app-demo',
   templateUrl: './demo.html',
   styleUrl: './demo.css',
 })
-export class Demo {
+export class Demo implements OnInit {
+
+  private stomp = inject(RxStompService)
+  greetings: ChatMessage[] = [];
+
+
+  send() {
+    this.stomp.publish({
+      destination: '/app/chat.send',
+      body: JSON.stringify({ content: "Hello" })
+    });
+  }
+
+
+
+
+  receivesMessage = signal<ChatMessage[]>([]);
+  private rxStompService = inject(RxStompService);
+  private authService = inject(AuthService);
+  async ngOnInit(): Promise<void> {
+    console.log(this.rxStompService);
+    this.rxStompService.watch("/topic/messages").subscribe((message: Message) => {
+      console.log("receive the message ", message.body);
+      const chatMessage = JSON.parse(message.body) as ChatMessage;
+      console.log("content", chatMessage.content);
+      // const newMessage = message.body as ChatMessage;
+      // this.receivesMessage.update(m => [...m,  newMessage]);
+    })
+  }
+
+
+  public onSendMessage() {
+    const bodyMessage = `Message created at ${new Date()}`;
+    console.log(`the env config ${environment.socketEndpoint}`);
+    console.log("send message to server", bodyMessage);
+    this.rxStompService.publish({ destination: "/app/messages", body: bodyMessage });
+  }
+
   isSaving = false;
   isDeleting = false;
   isLoading = signal(true);

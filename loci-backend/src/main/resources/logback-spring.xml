@@ -5,7 +5,7 @@
     <!-- 1.  A single console appender -->
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <!-- switch encoder per profile -->
-        <springProfile name="dev">
+        <springProfile name="prod">
             <!-- plain text, coloured, debug level -->
             <encoder>
                 <pattern>%clr(%d{HH:mm:ss.SSS}){faint} %clr(%5p) %clr(${PID:- }){magenta} %clr(---){faint}
@@ -14,20 +14,20 @@
             </encoder>
         </springProfile>
 
-        <springProfile name="!dev">
+        <springProfile name="!prod">
             <!-- JSON for prod -->
             <encoder class="net.logstash.logback.encoder.LogstashEncoder"/>
         </springProfile>
     </appender>
 
     <!-- 2.  Root logger -->
-    <springProfile name="dev">
+    <springProfile name="prod">
         <root level="DEBUG">
             <appender-ref ref="CONSOLE"/>
         </root>
     </springProfile>
 
-    <springProfile name="!dev">
+    <springProfile name="!prod">
         <root level="INFO">
             <appender-ref ref="CONSOLE"/>
         </root>

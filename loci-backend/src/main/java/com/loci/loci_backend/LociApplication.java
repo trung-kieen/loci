@@ -11,7 +11,6 @@ public class LociApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(LociApplication.class, args);
-    log.info("Hello {}", "Word");
 	}
 
 }

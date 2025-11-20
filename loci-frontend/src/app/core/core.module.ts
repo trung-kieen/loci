@@ -5,6 +5,8 @@ import { HTTP_INTERCEPTORS } from "@angular/common/http";
 import { AuthGuard } from "./auth/auth.guard";
 import { HttpErrorInterceptor } from "./middleware/http-error.interceptor";
 import { initializeKeycloak } from "./auth/keycloak/keycloak.init";
+import { RxStompService } from "./socket/rx-stomp.service";
+import { rxStompServiceFactory } from "./socket/rx-stomp-service-factory";
 
 @NgModule({
   imports: [
@@ -36,6 +38,12 @@ export class CoreModule {
           useClass: KeycloakBearerInterceptor,
           multi: true
         },
+        {
+          // provide: APP_INITIALIZER,
+          provide: RxStompService,
+          useFactory: rxStompServiceFactory,
+          // multi: true,
+        }
       ]
     };
   }

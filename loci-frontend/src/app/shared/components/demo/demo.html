@@ -181,3 +181,25 @@
   <app-bottom-nav></app-bottom-nav>
 
 </div>
+
+
+<div>
+  Messageing testing place
+  <div id="messages" class="p-10">
+  <button class="btn btn-primary p-2 bg-neutral-200" (click) = "send()">Send Test Message</button>
+  <h2>Received messages</h2>
+  <ol>
+      @for(message of receivesMessage(); track message){
+      <li class="message" >{{message}}</li>
+    }
+  </ol>
+</div>
+</div>
+
+
+    <h2>Angular ↔ Spring Boot WebSocket</h2>
+
+
+    <ul>
+      <li *ngFor="let g of greetings">{{ g.content }}</li>
+    </ul>

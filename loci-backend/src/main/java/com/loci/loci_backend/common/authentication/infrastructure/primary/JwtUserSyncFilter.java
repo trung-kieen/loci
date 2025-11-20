@@ -31,7 +31,13 @@ public class JwtUserSyncFilter extends OncePerRequestFilter {
   protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
       throws ServletException, IOException {
 
+    log.info("Request is authenticate by keycloak {}", request);
     try {
+      // log.info("Skip due to websocket request" );
+      // if ("websocket".equalsIgnoreCase(request.getHeader("Upgrade"))) {
+      //   filterChain.doFilter(request, response); // skip auth
+      //   return;
+      // }
       JwtAuthenticationToken token = (JwtAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
 
       Map<String, Object> attributes = token.getTokenAttributes();

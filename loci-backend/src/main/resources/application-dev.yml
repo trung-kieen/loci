@@ -2,6 +2,9 @@ spring:
   application:
     name: loci
 
+  security:
+    websocket:
+      same-origin-disabled: true
   flyway:
     enabled: true
     locations: classpath:db/migration
@@ -52,7 +55,7 @@ management:
       exposure:
         # Access /actuator/metrics or /actuator/prometheus
         # include: "*"
-        include: health,info,metrics,prometheus
+        include: health,info,metrics,prometheus,httpexchanges
 
         exclude: env,beans
   metrics:
@@ -70,7 +73,18 @@ flyway:
 
 
 
+logging:
+  level:
+    root: INFO
 
+    org:
+      springframework:
+        messaging: DEBUG
+        web:
+          socket: TRACE
+          filter:
+            CommonsRequestLoggingFilter: DEBUG
+        security: DEBUG
 
 # logging:
 #   structured:

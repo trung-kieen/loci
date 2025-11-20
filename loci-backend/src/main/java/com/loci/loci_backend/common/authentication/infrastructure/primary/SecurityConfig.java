@@ -53,12 +53,13 @@ public class SecurityConfig {
     http.anonymous().disable();
 
     http.sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-    http.oauth2ResourceServer(
-        t -> t.jwt().jwtAuthenticationConverter(jwtAuthenticationConverterForKeycloak()));
 
     http.authorizeHttpRequests(
         request -> request
             .requestMatchers("/actuator/**").permitAll()
+            .requestMatchers("/ws/**").permitAll() // Allow the socket endpoint
+            .requestMatchers("/ws").permitAll() // Allow the socket endpoint
+            .requestMatchers("/api/v1/ws/**","/api/v1/ws").permitAll() // Allow the socket endpoint
             .requestMatchers("/swagger-ui/index.html").permitAll()
             .requestMatchers("/swagger-ui/**").permitAll()
             .requestMatchers("/api-docs/**").permitAll()
@@ -66,6 +67,8 @@ public class SecurityConfig {
 
     );
 
+    http.oauth2ResourceServer(
+        t -> t.jwt().jwtAuthenticationConverter(jwtAuthenticationConverterForKeycloak()));
     http.addFilterAfter(jwtAuthUserFilterBean(), SwitchUserFilter.class);
 
     return http.build();
