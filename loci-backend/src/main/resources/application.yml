@@ -16,6 +16,8 @@ spring:
       max-file-size: 100MB
       max-request-size: 100MB
 
+# keycloak.auth-server-url=https://your-keycloak-server.com
+# keycloak.realm=your-realm-name
   # mvc:
   #   servlet:
   #     path: /api/v1

@@ -1,11 +1,11 @@
 package com.loci.loci_backend.common.authentication.domain;
+
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import com.loci.loci_backend.common.validation.domain.Assert;
-
 
 public enum Role {
   ADMIN,
@@ -33,4 +33,9 @@ public enum Role {
 
     return ROLES.getOrDefault(role, UNKNOWN);
   }
+
+  public static Role fromKeycloak(String role) {
+    return ROLES.getOrDefault(PREFIX + role.strip().toUpperCase(), UNKNOWN);
+  }
+
 }

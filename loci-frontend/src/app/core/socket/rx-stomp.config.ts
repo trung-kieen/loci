@@ -19,7 +19,7 @@ export const rxStompConfig: RxStompConfig = {
   heartbeatOutgoing: 20000,
 
   // Reconnect delay (ms). Set 0 to disable.
-  reconnectDelay: 200,
+  reconnectDelay: 5000,
 
   // Console diagnostics (avoid in production)
   debug: (msg: string): void => {

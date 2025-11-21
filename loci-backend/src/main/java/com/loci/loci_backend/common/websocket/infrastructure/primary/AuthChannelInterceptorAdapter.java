@@ -1,6 +1,9 @@
 package com.loci.loci_backend.common.websocket.infrastructure.primary;
 
+import com.loci.loci_backend.common.authentication.infrastructure.primary.KeycloakWebSocketAuthManager;
 import com.loci.loci_backend.common.validation.domain.Assert;
+import com.loci.loci_backend.common.websocket.domain.aggregate.JWSAuthentication;
+import com.loci.loci_backend.common.websocket.domain.vo.BearerToken;
 
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
@@ -9,6 +12,7 @@ import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.ChannelInterceptor;
 import org.springframework.messaging.support.MessageHeaderAccessor;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.jwt.JwsHeader;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Component;
 
@@ -19,6 +23,7 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 @RequiredArgsConstructor
 public class AuthChannelInterceptorAdapter implements ChannelInterceptor {
+  private final KeycloakWebSocketAuthManager keycloakWebSocketAuthManager;
 
   @Override
   public Message<?> preSend(Message<?> message, MessageChannel channel) {
@@ -28,18 +33,17 @@ public class AuthChannelInterceptorAdapter implements ChannelInterceptor {
     // Assert.notNull("Header accessor", accessor);
     // request is init connect
     if (StompCommand.CONNECT.equals(accessor.getCommand())) {
-      // Authentication user = userRepository.getByUsername(new
-      // Username("testuser1@gmail.com"))
-      // .orElseThrow(() -> new RuntimeException("Unavailable"));
 
-      // JwtAuthenticationToken token = (JwtAuthenticationToken) SecurityContextHolder.getContext()
-      //     .getAuthentication();
       log.info("Init handshake with token with message {}", message);
+      String authorizationHeader = accessor.getFirstNativeHeader("Authorization");
 
-      // TODO: config keycloak to get authenticate object
-      //
-      // https://github.com/andres81/spring-keycloak-websockets-chat-app/blob/master/src/main/java/eu/andreschepers/websocketchatspringsecurity/keycloakauth/BearerTokenAuthenticator.java
-      // accessor.setUser(user);
+      BearerToken bearerToken = BearerToken.fromHeader(authorizationHeader);
+
+      log.debug("Received bearer token {}", bearerToken);
+      JWSAuthentication jwsAuthentication = (JWSAuthentication) keycloakWebSocketAuthManager
+          .authenticate(new JWSAuthentication(bearerToken));
+      accessor.setUser(jwsAuthentication);
+      log.debug("Auth inbound ws channel with principal {}", jwsAuthentication.getPrincipal());
     }
     return message;
   }

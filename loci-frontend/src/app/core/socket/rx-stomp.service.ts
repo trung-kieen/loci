@@ -18,11 +18,11 @@ export class RxStompAdapterService extends RxStomp {
   }
   override configure(rxStompConfig: RxStompConfig): void {
     const headers = {
-      Authentication: '',
+      Authorization: '',
     };
     this.authService.getBearerToken().then((token) => {
-      headers['Authentication'] = token;
-      console.log("Header ", headers.Authentication)
+      headers['Authorization'] = token;
+      console.log("Header ", headers.Authorization)
       super.configure({
         ...rxStompConfig,
         connectHeaders: {
@@ -34,12 +34,12 @@ export class RxStompAdapterService extends RxStomp {
   }
   override publish(parameters: IRxStompPublishParams): void {
     const headers = {
-      Authentication: '',
+      Authorization: '',
     };
     // fetch token asynchronously, then call super.publish to avoid recursive override
     this.authService.getBearerToken().then((token) => {
-      console.log("Header ", headers.Authentication)
-      headers['Authentication'] = token;
+      console.log("Header ", headers.Authorization)
+      headers['Authorization'] = token;
       super.publish({
         ...parameters,
         headers: headers,

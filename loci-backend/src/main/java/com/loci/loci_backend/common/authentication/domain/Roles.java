@@ -8,11 +8,11 @@ import java.util.Set;
 import com.loci.loci_backend.common.validation.domain.Assert;
 
 public record Roles(Set<Role> roles) {
-  public static final Roles EMPTY = new Roles(null);
+  public static final Roles EMPTY = new Roles(Collections.emptySet());
 
   public Roles(Set<Role> roles) {
-    // Use special type of set to store roles as immutable
-    this.roles = Collections.unmodifiableSet(roles);
+    this.roles = Collections.unmodifiableSet(
+        roles == null ? Collections.emptySet() : roles);
   }
 
   public boolean hasRole() {
@@ -27,9 +27,9 @@ public record Roles(Set<Role> roles) {
   public Stream<Role> stream() {
     return this.roles.stream();
   }
-  public Set<Role> get(){
+
+  public Set<Role> get() {
     return roles();
   }
-
 
 }
