@@ -18,6 +18,7 @@ public class CorsFilterConfiguration {
     this.corsConfiguration = corsConfiguration;
   }
 
+
   @Bean
   public FilterRegistrationBean<CorsFilter> simpleCorsFilter() {
     UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

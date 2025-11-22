@@ -2,8 +2,8 @@ package com.loci.loci_backend.test;
 
 import java.security.Principal;
 
+import com.loci.loci_backend.common.authentication.domain.KeycloakPrincipal;
 import com.loci.loci_backend.common.websocket.domain.aggregate.JWSAuthentication;
-import com.loci.loci_backend.common.websocket.domain.aggregate.KeycloakPrincipal;
 
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
@@ -21,9 +21,10 @@ public class ChatController {
   // Listen to the /topic/messages endpoint of server
   @MessageMapping("/chat.send")
   @SendTo("/topic/messages")
-  public ChatMessage sendMessage(@Payload ChatMessage message, JWSAuthentication auth) {
+  public ChatMessage sendMessage(@Payload ChatMessage message, JWSAuthentication auth, KeycloakPrincipal keycloakPrincipal) {
     // JWSAuthentication auth = (JWSAuthentication) principal;
     KeycloakPrincipal keycloakUser = auth.getKeycloakPrincipal();
+    System.out.println(keycloakPrincipal);
     message.setContent(message.getContent() + keycloakUser.getUsername());
     return message;
   }

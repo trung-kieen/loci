@@ -1,6 +1,5 @@
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 import { AccessDenied } from './core/components/access-denied/access-denied';
-import { UserInfo } from './core/components/user-info/user-info';
 import { NgModule } from '@angular/core';
 import { AuthGuard } from './core/auth/auth.guard';
 import { Demo } from './shared/components/demo/demo';
@@ -16,14 +15,6 @@ export const appRoutes: Routes = [
     path: 'demo',
     // loadComponent: () => import("./shared/components/demo/demo").then(m => m.Demo),
     component: Demo,
-  },
-  {
-    path: 'user-info',
-    loadComponent: () => import("./core/components/user-info/user-info").then(m => m.UserInfo),
-    // component: UserInfo,
-    canActivate: [AuthGuard],
-    // The user need to have these roles to access page
-    data: { roles: ['user'] },
   },
   // { path: '', redirectTo: 'chat', pathMatch: 'full'},
 
@@ -45,7 +36,7 @@ export const appRoutes: Routes = [
     loadChildren: () => import("./features/notification/notification.module").then(m => m.NotificationModule),
   },
   // Fallback
-  { path: '**', redirectTo: '/demo' }
+  { path: '**', redirectTo: '/user' }
 
 ];
 

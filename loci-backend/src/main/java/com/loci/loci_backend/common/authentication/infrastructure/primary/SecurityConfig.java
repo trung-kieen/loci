@@ -1,7 +1,7 @@
 package com.loci.loci_backend.common.authentication.infrastructure.primary;
 
 import com.loci.loci_backend.common.authentication.infrastructure.primary.filter.JwtUserSyncFilter;
-import com.loci.loci_backend.common.authentication.infrastructure.primary.filter.KeycloakJwtTokenConverter;
+import com.loci.loci_backend.common.authentication.infrastructure.primary.keycloak.KeycloakJwtTokenConverter;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -77,5 +77,6 @@ public class SecurityConfig {
 
     return http.build();
   }
+
 
 }

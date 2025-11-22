@@ -23,7 +23,7 @@ import lombok.extern.log4j.Log4j2;
 @EnableWebSocketMessageBroker
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
   private final CorsConfiguration corsConfiguration;
-  private final AuthChannelInterceptorAdapter authChannelInterceptorAdapter;
+  private final SecurityChannelInterceptorAdapter authChannelInterceptorAdapter;
 
   @Override
   public void configureMessageBroker(MessageBrokerRegistry config) {

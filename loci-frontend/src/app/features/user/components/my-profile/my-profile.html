@@ -17,7 +17,8 @@
   <aside id="sidebar" class="w-60 bg-white border-r border-neutral-200 flex flex-col">
     <div class="p-4">
       <div class="relative">
-        <input type="text" placeholder="Search..." class="w-full pl-10 pr-4 py-2 border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-neutral-500">
+        <input type="text" placeholder="Search..."
+          class="w-full pl-10 pr-4 py-2 border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-neutral-500">
         <i class="fa-solid fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-neutral-400"></i>
       </div>
     </div>
@@ -78,7 +79,8 @@
     <div class="flex-1 overflow-y-auto">
       <div class="p-4">
         <div class="flex items-center space-x-3 p-3 rounded-lg hover:bg-neutral-50 cursor-pointer">
-          <img src="https://api.dicebear.com/7.x/notionists/svg?scale=200&seed=1234" alt="Contact" class="w-10 h-10 rounded-full">
+          <img src="https://api.dicebear.com/7.x/notionists/svg?scale=200&seed=1234" alt="Contact"
+            class="w-10 h-10 rounded-full">
           <div class="flex-1 min-w-0">
             <div class="flex items-center justify-between">
               <p class="text-sm text-neutral-900 truncate">John Smith</p>
@@ -89,7 +91,8 @@
         </div>
 
         <div class="flex items-center space-x-3 p-3 rounded-lg hover:bg-neutral-50 cursor-pointer">
-          <img src="https://api.dicebear.com/7.x/notionists/svg?scale=200&seed=5678" alt="Contact" class="w-10 h-10 rounded-full">
+          <img src="https://api.dicebear.com/7.x/notionists/svg?scale=200&seed=5678" alt="Contact"
+            class="w-10 h-10 rounded-full">
           <div class="flex-1 min-w-0">
             <div class="flex items-center justify-between">
               <p class="text-sm text-neutral-900 truncate">Sarah Johnson</p>
@@ -103,110 +106,158 @@
   </section>
 
   <section id="profile-panel" class="flex-1 bg-white flex flex-col">
-    <div class="p-6 border-b border-neutral-200">
-      <h2 class="text-2xl text-black">My Profile</h2>
-      <p class="text-neutral-500 mt-1">Manage your personal information and privacy settings</p>
-    </div>
 
-    <div class="flex-1 overflow-y-auto p-6">
-      <div class="max-w-2xl">
-        <div class="bg-white border border-neutral-200 rounded-lg p-6 mb-6">
-          <div class="flex items-center space-x-6 mb-6">
-            <div class="relative">
-              <img src="https://api.dicebear.com/7.x/notionists/svg?scale=200&seed=9999" alt="Profile Avatar" class="w-20 h-20 rounded-full">
-              <button class="absolute -bottom-1 -right-1 bg-neutral-500 text-white p-2 rounded-full hover:bg-neutral-600">
-                <i class="fa-solid fa-camera text-sm"></i>
+    <form [formGroup]="form" (ngSubmit)="save()">
+
+      <!-- Header -->
+      <div class="p-6 border-b border-neutral-200">
+        <h2 class="text-2xl text-black">My Profile</h2>
+        <p class="text-neutral-500 mt-1">Manage your personal information and privacy settings</p>
+      </div>
+
+      <!-- Content -->
+      <div class="flex-1 overflow-y-auto p-6">
+        <div class="max-w-2xl">
+
+          <!-- Profile Info -->
+          <div class="bg-white border border-neutral-200 rounded-lg p-6 mb-6">
+            <div class="flex items-center space-x-6 mb-6">
+              <div class="relative">
+
+                <img [src]="form.value.profilePictureUrl" alt="Profile Avatar" class="w-20 h-20 rounded-full">
+
+                <button type="button"
+                  class="absolute -bottom-1 -right-1 bg-neutral-500 text-white p-2 rounded-full hover:bg-neutral-600">
+                  <i class="fa-solid fa-camera text-sm"></i>
+                </button>
+              </div>
+
+              <div class="flex-1">
+                <h3 class="text-lg text-black">Profile Photo</h3>
+                <p class="text-neutral-500 text-sm">Click the camera icon to update your avatar</p>
+              </div>
+            </div>
+
+            <div class="space-y-4">
+
+              <!-- Full name -->
+              <div>
+                <label class="block text-sm text-neutral-700 mb-2">First Name</label>
+                <input type="text" formControlName="firstname"
+                  class="w-full px-3 py-2 border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-neutral-500">
+              </div>
+
+              <div>
+                <label class="block text-sm text-neutral-700 mb-2">Last Name</label>
+                <input type="text" formControlName="lastname"
+                  class="w-full px-3 py-2 border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-neutral-500">
+              </div>
+
+
+
+              <!-- Username -->
+              <div>
+                <label class="block text-sm text-neutral-700 mb-2">Username</label>
+                <div class="flex items-center space-x-2">
+                  <span class="text-neutral-500">&#64;</span>
+                  <input type="text" formControlName="username"
+                    class="flex-1 px-3 py-2 border border-neutral-200 rounded-lg bg-neutral-50" readonly>
+                </div>
+                <p class="text-xs text-neutral-500 mt-1">Username cannot be changed</p>
+              </div>
+
+              <!-- Email -->
+              <div>
+                <label class="block text-sm text-neutral-700 mb-2">Email Address</label>
+                <input type="email" formControlName="emailAddress"
+                  class="w-full px-3 py-2 border border-neutral-200 rounded-lg bg-neutral-50" readonly>
+                <p class="text-xs text-neutral-500 mt-1">Contact support to change email</p>
+              </div>
+
+            </div>
+
+            <div class="flex justify-end mt-6">
+              <button (click)="save()"
+                class="bg-neutral-500 text-white px-6 py-2 rounded-lg hover:bg-neutral-600 focus:outline-none focus:ring-2 focus:ring-neutral-500">
+                Save Changes
               </button>
             </div>
-            <div class="flex-1">
-              <h3 class="text-lg text-black">Profile Photo</h3>
-              <p class="text-neutral-500 text-sm">Click the camera icon to update your avatar</p>
-            </div>
           </div>
 
-          <div class="space-y-4">
-            <div>
-              <label class="block text-sm text-neutral-700 mb-2">Full Name</label>
-              <input type="text" value="Alex Thompson" class="w-full px-3 py-2 border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-neutral-500">
-            </div>
-
-            <div>
-              <label class="block text-sm text-neutral-700 mb-2">Username</label>
-              <div class="flex items-center space-x-2">
-                <span class="text-neutral-500">@</span>
-                <input type="text" value="alexthompson" class="flex-1 px-3 py-2 border border-neutral-200 rounded-lg bg-neutral-50" readonly>
-              </div>
-              <p class="text-xs text-neutral-500 mt-1">Username cannot be changed</p>
-            </div>
-
-            <div>
-              <label class="block text-sm text-neutral-700 mb-2">Email Address</label>
-              <input type="email" value="alex.thompson@email.com" class="w-full px-3 py-2 border border-neutral-200 rounded-lg bg-neutral-50" readonly>
-              <p class="text-xs text-neutral-500 mt-1">Contact support to change email</p>
-            </div>
-          </div>
-
-          <div class="flex justify-end mt-6">
-            <button class="bg-neutral-500 text-white px-6 py-2 rounded-lg hover:bg-neutral-600 focus:outline-none focus:ring-2 focus:ring-neutral-500">
-              Save Changes
-            </button>
-          </div>
-        </div>
-
-        <div class="bg-white border border-neutral-200 rounded-lg p-6 mb-6">
-          <h3 class="text-lg text-black mb-4">Activity Status</h3>
-          <div class="flex items-center justify-between">
-            <div>
-              <p class="text-sm text-neutral-700">Show when I'm active</p>
-              <p class="text-xs text-neutral-500">Let others see when you were last active</p>
-            </div>
-            <label class="relative inline-flex items-center cursor-pointer">
-              <input type="checkbox" class="sr-only peer" checked>
-              <div class="w-11 h-6 bg-neutral-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-neutral-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-neutral-500"></div>
-            </label>
-          </div>
-        </div>
-
-        <div class="bg-white border border-neutral-200 rounded-lg p-6">
-          <h3 class="text-lg text-black mb-4">Privacy Settings</h3>
-          <div class="space-y-4">
+          <!-- Activity Status -->
+          <div class="bg-white border border-neutral-200 rounded-lg p-6 mb-6">
+            <h3 class="text-lg text-black mb-4">Activity Status</h3>
             <div class="flex items-center justify-between">
               <div>
-                <p class="text-sm text-neutral-700">Last Seen</p>
-                <p class="text-xs text-neutral-500">Control who can see when you were last online</p>
+                <p class="text-sm text-neutral-700">Show when I'm active</p>
+                <p class="text-xs text-neutral-500">Let others see when you were last active</p>
               </div>
-              <select class="px-3 py-2 border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-neutral-500">
-                <option>Everyone</option>
-                <option>Contacts Only</option>
-                <option>Nobody</option>
-              </select>
-            </div>
 
-            <div class="flex items-center justify-between">
-              <div>
-                <p class="text-sm text-neutral-700">Friend Requests</p>
-                <p class="text-xs text-neutral-500">Who can send you friend requests</p>
-              </div>
-              <select class="px-3 py-2 border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-neutral-500">
-                <option>Everyone</option>
-                <option>Friends of Friends</option>
-                <option>Nobody</option>
-              </select>
-            </div>
-
-            <div class="flex items-center justify-between">
-              <div>
-                <p class="text-sm text-neutral-700">Profile Visibility</p>
-                <p class="text-xs text-neutral-500">Control who can view your profile information</p>
-              </div>
               <label class="relative inline-flex items-center cursor-pointer">
-                <input type="checkbox" class="sr-only peer" checked>
-                <div class="w-11 h-6 bg-neutral-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-neutral-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-neutral-500"></div>
+                <input type="checkbox" formControlName="activityStatus" class="sr-only peer">
+                <div
+                  class="w-11 h-6 bg-neutral-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-neutral-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-neutral-500">
+                </div>
               </label>
             </div>
           </div>
+
+          <!-- Privacy Settings -->
+          <div class="bg-white border border-neutral-200 rounded-lg p-6">
+            <h3 class="text-lg text-black mb-4">Privacy Settings</h3>
+
+            <div class="space-y-4">
+
+              <!-- Last Seen -->
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-sm text-neutral-700">Last Seen</p>
+                  <p class="text-xs text-neutral-500">Control who can see when you were last online</p>
+                </div>
+
+                <select formControlName="lastSeen"
+                  class="px-3 py-2 border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-neutral-500">
+                  <option>Everyone</option>
+                  <option>Contacts Only</option>
+                  <option>Nobody</option>
+                </select>
+              </div>
+
+              <!-- Friend requests -->
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-sm text-neutral-700">Friend Requests</p>
+                  <p class="text-xs text-neutral-500">Who can send you friend requests</p>
+                </div>
+
+                <select formControlName="friendRequests"
+                  class="px-3 py-2 border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-neutral-500">
+                  <option>Everyone</option>
+                  <option>Friends of Friends</option>
+                  <option>Nobody</option>
+                </select>
+              </div>
+
+              <!-- Profile Visibility -->
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-sm text-neutral-700">Profile Visibility</p>
+                  <p class="text-xs text-neutral-500">Control who can view your profile information</p>
+                </div>
+
+                <label class="relative inline-flex items-center cursor-pointer">
+                  <input type="checkbox" formControlName="profileVisibility" class="sr-only peer">
+                  <div
+                    class="w-11 h-6 bg-neutral-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-neutral-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-neutral-500">
+                  </div>
+                </label>
+              </div>
+
+            </div>
+          </div>
+
         </div>
       </div>
-    </div>
+    </form>
   </section>
 </main>

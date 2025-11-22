@@ -1,9 +1,9 @@
 package com.loci.loci_backend.test;
 
 import com.loci.loci_backend.common.authentication.application.AuthenticatedUser;
+import com.loci.loci_backend.common.authentication.domain.KeycloakPrincipal;
 import com.loci.loci_backend.common.user.domain.aggregate.User;
 import com.loci.loci_backend.common.user.domain.service.UserService;
-import com.loci.loci_backend.common.websocket.domain.aggregate.KeycloakPrincipal;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,6 +23,7 @@ public class WebController {
 
   private final UserService userService;
 
+
   @GetMapping(path = "/userInfo1")
   public ResponseEntity<StringResponse> getUserInfo1() {
     User user = userService.getAuthenticatedUser();
@@ -31,7 +32,7 @@ public class WebController {
   }
 
   @GetMapping("/userInfo2")
-  public ResponseEntity<StringResponse> getUserInfo2(@AuthenticatedUser KeycloakPrincipal keycloakPrincipal) {
+  public ResponseEntity<StringResponse> getUserInfo2( KeycloakPrincipal keycloakPrincipal) {
     System.out.println(keycloakPrincipal);
 
     JwtAuthenticationToken auth = (JwtAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();

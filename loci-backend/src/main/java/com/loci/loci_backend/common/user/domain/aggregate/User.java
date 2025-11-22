@@ -77,7 +77,15 @@ public class User {
       this.lastname = user.lastname;
       this.firstname = user.firstname;
       this.lastname = user.lastname;
+      this.userPublicId = user.userPublicId;
     }
+  }
+
+  public void provideMandatoryField() {
+    if (this.userPublicId == null) {
+      this.initFieldForSignup();
+    }
+
   }
 
   public void initFieldForSignup() {

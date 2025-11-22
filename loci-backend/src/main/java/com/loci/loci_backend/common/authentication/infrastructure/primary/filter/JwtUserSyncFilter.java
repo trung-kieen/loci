@@ -7,7 +7,6 @@ import java.util.stream.Collectors;
 
 import com.loci.loci_backend.common.user.domain.aggregate.User;
 import com.loci.loci_backend.common.user.domain.service.UserSynchronizeService;
-import com.loci.loci_backend.common.user.infrastructure.secondary.enitty.UserEntity;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;

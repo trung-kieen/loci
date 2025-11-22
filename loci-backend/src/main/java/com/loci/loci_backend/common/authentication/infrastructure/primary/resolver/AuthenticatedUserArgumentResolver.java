@@ -1,11 +1,8 @@
 package com.loci.loci_backend.common.authentication.infrastructure.primary.resolver;
 
-import java.util.Optional;
-
 import com.loci.loci_backend.common.authentication.application.AuthenticatedUser;
-import com.loci.loci_backend.common.authentication.application.NotAuthenticatedUserException;
-import com.loci.loci_backend.common.authentication.infrastructure.secondary.port.RestIdentityRepository;
-import com.loci.loci_backend.common.websocket.domain.aggregate.KeycloakPrincipal;
+import com.loci.loci_backend.common.authentication.domain.KeycloakPrincipal;
+import com.loci.loci_backend.common.authentication.infrastructure.secondary.repository.RestIdentityRepository;
 
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
@@ -24,8 +21,8 @@ public class AuthenticatedUserArgumentResolver implements HandlerMethodArgumentR
   @Override
   public boolean supportsParameter(MethodParameter parameter) {
     return
-    parameter.hasParameterAnnotation(AuthenticatedUser.class)
-        &&
+    // parameter.hasParameterAnnotation(AuthenticatedUser.class)
+    //     &&
     KeycloakPrincipal.class.isAssignableFrom(parameter.getParameterType());
   }
 

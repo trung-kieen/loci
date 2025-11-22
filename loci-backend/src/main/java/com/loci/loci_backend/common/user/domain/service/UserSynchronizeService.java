@@ -22,7 +22,6 @@ public class UserSynchronizeService {
 
   private final UserRepository userRepository;
   private final AuthorityRepository authorityRepository;
-  
 
   @Transactional(readOnly = false)
   public void syncUser(User user) {
@@ -40,9 +39,9 @@ public class UserSynchronizeService {
 
       // Confirm the authority is exist in database and save them consistently
       Set<Authority> authorities = authorityRepository.saveAll(user.getAuthorities());
-
-      user.setAuthorities(authorities);
+      finalUser.setAuthorities(authorities);
     }
+    finalUser.provideMandatoryField();
     userRepository.save(finalUser);
   }
 

@@ -16,6 +16,7 @@ import {
 import { RxStomp, RxStompConfig } from '@stomp/rx-stomp';
 import { rxStompConfig } from './socket/rx-stomp.config';
 import { KeycloakAuthenticationManager } from './auth/keycloak-auth-manager';
+import { WebApiService } from '../api/web-api.service';
 
 @NgModule({
   imports: [],
@@ -39,6 +40,7 @@ export class CoreModule {
           multi: true,
           deps: [KeycloakService],
         },
+        WebApiService,
         KeycloakService, // Mark as provider in this module or auth module if separete
         AuthGuard,
         {

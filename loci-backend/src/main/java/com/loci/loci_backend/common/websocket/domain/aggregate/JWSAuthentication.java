@@ -2,6 +2,7 @@ package com.loci.loci_backend.common.websocket.domain.aggregate;
 
 import java.util.Collection;
 
+import com.loci.loci_backend.common.authentication.domain.KeycloakPrincipal;
 import com.loci.loci_backend.common.websocket.domain.vo.BearerToken;
 
 import org.jilt.Builder;

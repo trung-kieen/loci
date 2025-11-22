@@ -6,8 +6,7 @@ import com.loci.loci_backend.common.authentication.domain.Username;
 import com.loci.loci_backend.common.user.domain.aggregate.User;
 import com.loci.loci_backend.common.user.domain.repository.UserRepository;
 import com.loci.loci_backend.common.user.domain.vo.UserEmail;
-import com.loci.loci_backend.common.user.infrastructure.secondary.enitty.AuthorityEntity;
-import com.loci.loci_backend.common.user.infrastructure.secondary.enitty.UserEntity;
+import com.loci.loci_backend.common.user.infrastructure.secondary.entity.UserEntity;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

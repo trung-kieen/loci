@@ -2,13 +2,11 @@ package com.loci.loci_backend.common.user.infrastructure.secondary.repository;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 import com.loci.loci_backend.common.user.domain.aggregate.Authority;
 import com.loci.loci_backend.common.user.domain.repository.AuthorityRepository;
-import com.loci.loci_backend.common.user.infrastructure.secondary.enitty.AuthorityEntity;
+import com.loci.loci_backend.common.user.infrastructure.secondary.entity.AuthorityEntity;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

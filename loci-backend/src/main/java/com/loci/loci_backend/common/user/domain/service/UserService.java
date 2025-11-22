@@ -2,8 +2,7 @@ package com.loci.loci_backend.common.user.domain.service;
 
 import java.util.Optional;
 
-import com.loci.loci_backend.common.authentication.application.AuthenticatedUser;
-import com.loci.loci_backend.common.authentication.infrastructure.secondary.port.RestIdentityRepository;
+import com.loci.loci_backend.common.authentication.infrastructure.secondary.repository.RestIdentityRepository;
 import com.loci.loci_backend.common.user.domain.aggregate.User;
 import com.loci.loci_backend.common.user.domain.repository.UserRepository;
 

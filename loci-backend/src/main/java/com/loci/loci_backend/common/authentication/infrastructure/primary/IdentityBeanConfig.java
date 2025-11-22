@@ -1,0 +1,29 @@
+package com.loci.loci_backend.common.authentication.infrastructure.primary;
+
+import com.loci.loci_backend.common.authentication.domain.KeycloakPrincipal;
+import com.loci.loci_backend.common.authentication.infrastructure.secondary.repository.RestIdentityRepository;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.ScopedProxyMode;
+
+import lombok.RequiredArgsConstructor;
+
+@Configuration
+@RequiredArgsConstructor
+public class IdentityBeanConfig {
+
+
+  private final RestIdentityRepository identityRepository;
+  @Bean
+  @Scope(value ="request", proxyMode =  ScopedProxyMode.TARGET_CLASS)
+  public KeycloakPrincipal keycloakPrincipal() {
+    try {
+      return identityRepository.currentPrincipal();
+    } catch (Exception ex) {
+      return null;
+    }
+  }
+
+}

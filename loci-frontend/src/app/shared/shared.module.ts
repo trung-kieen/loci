@@ -2,7 +2,7 @@ import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule, JsonPipe, NgOptimizedImage } from '@angular/common';
 import { LucideAngularModule, Check, X, Search, Send, Inbox, FileText, File } from 'lucide-angular';
 
-import { NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms';
 import { Avatar } from './components/avatar/avatar';
 import { MatInputModule } from '@angular/material/input';
 import { Demo } from './components/demo/demo';
@@ -18,14 +18,17 @@ import { FilePreviewCard } from './components/file-preview-card/file-preview-car
 import { Modal } from './components/modal/modal';
 import { HeaderBar } from './components/header-bar/header-bar';
 import { BottomNav } from './components/bottom-nav/bottom-nav';
+import { WebApiService } from '../api/web-api.service';
 
 @NgModule({
   imports: [
     CommonModule,
     ReactiveFormsModule,
+    FormsModule,
     JsonPipe,
     NgOptimizedImage,
     MatInputModule,
+    CommonModule,
     BrowserModule,
     LucideAngularModule.pick({ Check, Search, X, Send, Inbox, FileText, File }),
     ErrorCardComponent,
@@ -56,6 +59,8 @@ import { BottomNav } from './components/bottom-nav/bottom-nav';
   exports: [
     CommonModule,
     ReactiveFormsModule,
+    BrowserModule,
+    FormsModule,
     Demo,
     Avatar,
     Badge,
