@@ -13,19 +13,22 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * Websocket channel authorization TCP connection
+ */
 @Getter
 @Setter
 @Builder
 public class JWSAuthentication extends AbstractAuthenticationToken implements Authentication {
   private BearerToken bearerToken;
-  private KeycloakPrincipal keycloakUser;
+  private KeycloakPrincipal keycloakPrincipal;
   private static final long serialVersionUID = 1L;
 
   public JWSAuthentication(BearerToken credential, KeycloakPrincipal principal,
       Collection<GrantedAuthority> authorities) {
     super(authorities);
     this.bearerToken = credential;
-    this.keycloakUser = principal;
+    this.keycloakPrincipal = principal;
   }
 
   public JWSAuthentication(BearerToken bearerToken) {
@@ -46,7 +49,7 @@ public class JWSAuthentication extends AbstractAuthenticationToken implements Au
    */
   @Override
   public Object getPrincipal() {
-    return keycloakUser;
+    return keycloakPrincipal;
   }
 
   @Override

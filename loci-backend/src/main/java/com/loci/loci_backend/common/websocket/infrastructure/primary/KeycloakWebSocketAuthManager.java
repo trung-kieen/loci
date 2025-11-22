@@ -1,8 +1,10 @@
-package com.loci.loci_backend.common.authentication.infrastructure.primary;
+package com.loci.loci_backend.common.websocket.infrastructure.primary;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.loci.loci_backend.common.authentication.application.KeycloakTokenInvalidException;
+import com.loci.loci_backend.common.authentication.infrastructure.primary.keycloak.KeycloakTokenVerifier;
 import com.loci.loci_backend.common.websocket.domain.aggregate.JWSAuthentication;
 import com.loci.loci_backend.common.websocket.domain.aggregate.KeycloakPrincipal;
 import com.loci.loci_backend.common.websocket.domain.vo.BearerToken;
@@ -11,7 +13,6 @@ import org.keycloak.common.VerificationException;
 import org.keycloak.representations.AccessToken;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
@@ -43,7 +44,7 @@ public class KeycloakWebSocketAuthManager implements AuthenticationManager {
       token.setAuthenticated(true);
     } catch (VerificationException e) {
       log.debug("Exception authenticating the token {}:", tokenString, e);
-      throw new BadCredentialsException("Invalid token");
+      throw new KeycloakTokenInvalidException();
     }
     return token;
   }

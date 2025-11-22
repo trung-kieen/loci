@@ -3,6 +3,7 @@ package com.loci.loci_backend.common.user.domain.service;
 import java.util.Optional;
 
 import com.loci.loci_backend.common.authentication.application.AuthenticatedUser;
+import com.loci.loci_backend.common.authentication.infrastructure.secondary.port.RestIdentityRepository;
 import com.loci.loci_backend.common.user.domain.aggregate.User;
 import com.loci.loci_backend.common.user.domain.repository.UserRepository;
 
@@ -16,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 @Service
 public class UserService {
   private final UserRepository repository;
+  private final RestIdentityRepository restIdentityRepository;
 
   /**
    * Get current authenticated user
@@ -27,7 +29,7 @@ public class UserService {
 
   @Transactional(readOnly = true)
   public Optional<User> getOptionalUser() {
-    return AuthenticatedUser.optionalUsername().flatMap(repository::getByUsername);
+    return restIdentityRepository.optionalUsername().flatMap(repository::getByUsername);
   }
 
 }

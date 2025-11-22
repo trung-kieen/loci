@@ -21,9 +21,9 @@ public class ChatController {
   // Listen to the /topic/messages endpoint of server
   @MessageMapping("/chat.send")
   @SendTo("/topic/messages")
-  public ChatMessage sendMessage(@Payload ChatMessage message, Principal principal) {
-    JWSAuthentication auth = (JWSAuthentication) principal;
-    KeycloakPrincipal keycloakUser = auth.getKeycloakUser();
+  public ChatMessage sendMessage(@Payload ChatMessage message, JWSAuthentication auth) {
+    // JWSAuthentication auth = (JWSAuthentication) principal;
+    KeycloakPrincipal keycloakUser = auth.getKeycloakPrincipal();
     message.setContent(message.getContent() + keycloakUser.getUsername());
     return message;
   }

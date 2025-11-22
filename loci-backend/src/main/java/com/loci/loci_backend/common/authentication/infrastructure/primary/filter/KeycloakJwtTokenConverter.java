@@ -1,4 +1,4 @@
-package com.loci.loci_backend.common.authentication.infrastructure.primary;
+package com.loci.loci_backend.common.authentication.infrastructure.primary.filter;
 
 import java.util.Collection;
 import java.util.Map;

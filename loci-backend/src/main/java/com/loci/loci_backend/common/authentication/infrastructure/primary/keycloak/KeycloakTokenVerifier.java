@@ -1,4 +1,4 @@
-package com.loci.loci_backend.common.authentication.infrastructure.primary;
+package com.loci.loci_backend.common.authentication.infrastructure.primary.keycloak;
 
 import java.math.BigInteger;
 import java.net.URL;
@@ -28,6 +28,7 @@ public class KeycloakTokenVerifier {
 
   /**
    * Verifies a token against a keycloak instance
+   *
    * @param tokenString the string representation of the jws token
    * @return a validated keycloak AccessToken
    * @throws VerificationException when the token is not valid

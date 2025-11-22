@@ -23,6 +23,7 @@ public class WebSocketEventListener {
   @EventListener
   public void handleWebSocketDisconnectListener(SessionDisconnectEvent event) {
     log.info("Disconnect a web socket connection");
+    // TODO:  disconnenction event handler
     // StompHeaderAccessor headerAccessor =
     // StompHeaderAccessor.wrap(event.getMessage());
     //

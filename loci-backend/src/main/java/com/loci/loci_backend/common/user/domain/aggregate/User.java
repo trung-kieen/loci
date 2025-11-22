@@ -84,7 +84,6 @@ public class User {
     this.userPublicId = new UserPublicId(UUID.randomUUID());
   }
 
-
   public static User fromTokenAttributes(Map<String, Object> attributes, Collection<String> rolesFromAccessToken) {
 
     // TODO: Check the old sync method attribute and new attribute name
@@ -107,16 +106,16 @@ public class User {
 
     UserBuilder userBuilder = User.builder();
 
-    if (attributes.containsKey("preferred_email")) {
-      userBuilder.email(new UserEmail(attributes.get("preferred_email").toString()));
+    if (attributes.containsKey("email")) {
+      userBuilder.email(new UserEmail(attributes.get("email").toString()));
     }
 
-    if (attributes.containsKey("last_name")) {
-      userBuilder.lastname(new UserLastname(attributes.get("last_name").toString()));
+    if (attributes.containsKey("given_name")) {
+      userBuilder.lastname(new UserLastname(attributes.get("given_name").toString()));
     }
 
-    if (attributes.containsKey("first_name")) {
-      userBuilder.firstname(new UserFirstname(attributes.get("first_name").toString()));
+    if (attributes.containsKey("family_name")) {
+      userBuilder.firstname(new UserFirstname(attributes.get("family_name").toString()));
     }
 
     if (attributes.containsKey("picture")) {
@@ -124,7 +123,10 @@ public class User {
     }
 
     if (attributes.containsKey("last_signed_in")) {
-      userBuilder.lastSeen(Instant.parse(attributes.get("last_signed_in").toString()));
+      userBuilder.lastSeen(
+          Instant.parse(attributes.get("last_signed_in").toString()));
+    } else {
+      userBuilder.lastSeen(Instant.now());
     }
 
     Set<Authority> authorities = rolesFromAccessToken.stream()

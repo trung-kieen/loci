@@ -1,4 +1,4 @@
-package com.loci.loci_backend.common.authentication.infrastructure.primary;
+package com.loci.loci_backend.common.authentication.infrastructure.primary.filter;
 
 import java.io.IOException;
 import java.util.Map;
@@ -26,18 +26,23 @@ public class JwtUserSyncFilter extends OncePerRequestFilter {
 
   @Autowired
   private UserSynchronizeService userSynchronize;
+  private final String[] IGNORE_PATHS = { "/ws" };
 
   @Override
   protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
       throws ServletException, IOException {
 
     log.info("Request is authenticate by keycloak {}", request);
+
+    // Ignore websocket handshake
+    String path = request.getServletPath();
+    for (String ignorePath : IGNORE_PATHS) {
+      if (path.startsWith(ignorePath)) {
+        filterChain.doFilter(request, response);
+        return;
+      }
+    }
     try {
-      // log.info("Skip due to websocket request" );
-      // if ("websocket".equalsIgnoreCase(request.getHeader("Upgrade"))) {
-      //   filterChain.doFilter(request, response); // skip auth
-      //   return;
-      // }
       JwtAuthenticationToken token = (JwtAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
 
       Map<String, Object> attributes = token.getTokenAttributes();
@@ -45,10 +50,11 @@ public class JwtUserSyncFilter extends OncePerRequestFilter {
           .collect(Collectors.toSet());
       User user = User.fromTokenAttributes(attributes, authorities);
 
+
       userSynchronize.syncUser(user);
     } catch (Exception e) {
-      // throw new IllegalArgumentException("Unable to auth user");
-      log.error("Unable to auth and sync user");
+      log.error("Unable to auth and sync user", e);
+      throw new IllegalArgumentException("Unable to auth user", e);
     }
 
     filterChain.doFilter(request, response);

@@ -1,6 +1,5 @@
 package com.loci.loci_backend.common.websocket.infrastructure.primary;
 
-import com.loci.loci_backend.common.authentication.infrastructure.primary.KeycloakWebSocketAuthManager;
 import com.loci.loci_backend.common.validation.domain.Assert;
 import com.loci.loci_backend.common.websocket.domain.aggregate.JWSAuthentication;
 import com.loci.loci_backend.common.websocket.domain.vo.BearerToken;
