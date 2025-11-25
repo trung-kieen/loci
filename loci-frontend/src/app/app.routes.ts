@@ -5,7 +5,7 @@ import { AuthGuard } from './core/auth/auth.guard';
 import { Demo } from './shared/components/demo/demo';
 
 export const appRoutes: Routes = [
-  { path: '', redirectTo: '/chat', pathMatch: 'full' },
+  { path: '', redirectTo: '/user/me', pathMatch: 'full' },
   {
     path: 'access-denied',
     component: AccessDenied,

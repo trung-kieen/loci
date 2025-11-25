@@ -5,6 +5,7 @@ import java.time.Instant;
 import com.loci.loci_backend.common.authentication.domain.Username;
 import com.loci.loci_backend.common.user.domain.vo.UserEmail;
 import com.loci.loci_backend.common.user.domain.vo.UserImageUrl;
+import com.loci.loci_backend.common.user.domain.vo.UserPublicId;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,11 +17,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 public class PublicProfile {
+  private UserPublicId publicId;
   private Username username;
   private Fullname fullname;
   private UserEmail email;
   private UserImageUrl imageUrl;
   private Instant createdDate;
-
 
 }

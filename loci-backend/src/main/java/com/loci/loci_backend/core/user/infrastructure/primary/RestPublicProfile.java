@@ -2,7 +2,11 @@ package com.loci.loci_backend.core.user.infrastructure.primary;
 
 import java.time.Instant;
 
+import com.loci.loci_backend.common.time.infrastructure.TimeFormatter;
 import com.loci.loci_backend.core.user.domain.profile.aggregate.PublicProfile;
+
+import org.flywaydb.core.internal.util.TimeFormat;
+import org.springframework.data.domain.Page;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,6 +19,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class RestPublicProfile {
 
+  private String publicId;
   private String fullname;
   private String username;
   private String emailAddress;
@@ -26,18 +31,21 @@ public class RestPublicProfile {
   private String friendConnectionStatus; // not_connected, friend_request_sent, friend_request_received, friend,
                                          // unfriended, blocked, not_determined aka guest
 
-  public static RestPublicProfile from(PublicProfile profile) {
-    return RestPublicProfile.builder()
-    .fullname(profile.getFullname().value())
-    .username(profile.getUsername().get())
-    .emailAddress(profile.getEmail().value())
-    .createdAt(profile.getCreatedDate())
-    // TODO: update this string
-    .memberSince(profile.getCreatedDate().toString())
-    .profilePictureUrl(profile.getImageUrl().value())
-    .build();
+
+  public static Page<RestPublicProfile> from(Page<PublicProfile> profile) {
+    return profile.map(RestPublicProfile::from);
   }
 
-
+  public static RestPublicProfile from(PublicProfile profile) {
+    return RestPublicProfile.builder()
+        .publicId(profile.getPublicId().value().toString())
+        .fullname(profile.getFullname().value())
+        .username(profile.getUsername().get())
+        .emailAddress(profile.getEmail().value())
+        .createdAt(profile.getCreatedDate())
+        .memberSince(TimeFormatter.timeAgo(profile.getCreatedDate()))
+        .profilePictureUrl(profile.getImageUrl().value())
+        .build();
+  }
 
 }

@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.loci.loci_backend.common.authentication.application.SyncAuthenticatedUserException;
 import com.loci.loci_backend.common.user.domain.aggregate.User;
 import com.loci.loci_backend.common.user.domain.service.UserSynchronizeService;
 
@@ -52,8 +53,8 @@ public class JwtUserSyncFilter extends OncePerRequestFilter {
 
       userSynchronize.syncUser(user);
     } catch (Exception e) {
-      log.error("Unable to auth and sync user", e);
-      throw new IllegalArgumentException("Unable to auth user", e);
+      e.printStackTrace();
+      throw new SyncAuthenticatedUserException();
     }
 
     filterChain.doFilter(request, response);

@@ -4,21 +4,33 @@ import com.loci.loci_backend.common.authentication.domain.KeycloakPrincipal;
 import com.loci.loci_backend.common.authentication.domain.Username;
 import com.loci.loci_backend.common.user.domain.vo.UserPublicId;
 import com.loci.loci_backend.core.user.domain.profile.aggregate.PersonalProfile;
+import com.loci.loci_backend.core.user.domain.profile.aggregate.PersonalProfileChanges;
+import com.loci.loci_backend.core.user.domain.profile.aggregate.PrivacySetting;
 import com.loci.loci_backend.core.user.domain.profile.aggregate.PublicProfile;
 import com.loci.loci_backend.core.user.domain.profile.repository.ProfileRepository;
 import com.loci.loci_backend.core.user.domain.profile.vo.ProfilePublicId;
+import com.loci.loci_backend.core.user.domain.profile.vo.UserSearchCriteria;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class ProfileReader {
+public class ProfileCURD {
   private final ProfileRepository repository;
+  private final UserAggregateMapper profileMapper;
 
   public PersonalProfile readPersonalProfile(KeycloakPrincipal keycloakPrincipal) {
-    return repository.findPersonalProfile(keycloakPrincipal.getUserEmail());
+    PersonalProfile profile = repository.findPersonalProfile(keycloakPrincipal.getUserEmail());
+    if (profile.existManadatoryField()) {
+      return profile;
+    }
+    profile.initMandatoryField();
+    PersonalProfileChanges changes = profileMapper.extractChanges(profile);
+    return repository.applyProfileUpdate(profile.getUsername(), changes);
   }
 
   public PublicProfile readPublicProfileByPublicId(ProfilePublicId profilePublicId) {
@@ -30,6 +42,14 @@ public class ProfileReader {
 
     }
     return repository.findPublicProfileUserName(username);
+  }
+
+  public PersonalProfile applyUpdate(KeycloakPrincipal keycloakPrincipal, PersonalProfileChanges profileChanges) {
+    return repository.applyProfileUpdate(keycloakPrincipal.getUsername(), profileChanges);
+  }
+
+  public Page<PublicProfile> searchActiveUsers(UserSearchCriteria criteria, Pageable pageable) {
+    return repository.searchActiveUsers(criteria, pageable);
   }
 
 }

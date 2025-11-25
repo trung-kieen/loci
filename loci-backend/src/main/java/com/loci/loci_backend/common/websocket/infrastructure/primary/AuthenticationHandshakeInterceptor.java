@@ -2,12 +2,8 @@ package com.loci.loci_backend.common.websocket.infrastructure.primary;
 
 import java.util.Map;
 
-import com.loci.loci_backend.common.validation.domain.Assert;
-
-import org.springframework.http.HttpStatus;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
-import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.server.HandshakeInterceptor;
 

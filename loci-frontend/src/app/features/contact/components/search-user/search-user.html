@@ -17,7 +17,8 @@
   <aside id="sidebar" class="w-60 bg-white border-r border-neutral-200 flex flex-col">
     <div class="p-4">
       <div class="relative">
-        <input type="text" placeholder="Search..." class="w-full pl-10 pr-4 py-2 border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-neutral-500">
+        <input type="text" placeholder="Search..."
+          class="w-full pl-10 pr-4 py-2 border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-neutral-500">
         <i class="fa-solid fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-neutral-400"></i>
       </div>
     </div>
@@ -78,7 +79,8 @@
     <div class="flex-1 overflow-y-auto">
       <div class="p-4">
         <div class="flex items-center space-x-3 p-3 rounded-lg bg-neutral-50 cursor-pointer">
-          <img src="https://api.dicebear.com/7.x/notionists/svg?scale=200&seed=7891" alt="Contact" class="w-10 h-10 rounded-full">
+          <img src="https://api.dicebear.com/7.x/notionists/svg?scale=200&seed=7891" alt="Contact"
+            class="w-10 h-10 rounded-full">
           <div class="flex-1 min-w-0">
             <div class="flex items-center justify-between">
               <p class="text-sm text-neutral-900 truncate">Emily Davis</p>
@@ -89,7 +91,8 @@
         </div>
 
         <div class="flex items-center space-x-3 p-3 rounded-lg hover:bg-neutral-50 cursor-pointer">
-          <img src="https://api.dicebear.com/7.x/notionists/svg?scale=200&seed=1234" alt="Contact" class="w-10 h-10 rounded-full">
+          <img src="https://api.dicebear.com/7.x/notionists/svg?scale=200&seed=1234" alt="Contact"
+            class="w-10 h-10 rounded-full">
           <div class="flex-1 min-w-0">
             <div class="flex items-center justify-between">
               <p class="text-sm text-neutral-900 truncate">John Smith</p>
@@ -100,7 +103,8 @@
         </div>
 
         <div class="flex items-center space-x-3 p-3 rounded-lg hover:bg-neutral-50 cursor-pointer">
-          <img src="https://api.dicebear.com/7.x/notionists/svg?scale=200&seed=5678" alt="Contact" class="w-10 h-10 rounded-full">
+          <img src="https://api.dicebear.com/7.x/notionists/svg?scale=200&seed=5678" alt="Contact"
+            class="w-10 h-10 rounded-full">
           <div class="flex-1 min-w-0">
             <div class="flex items-center justify-between">
               <p class="text-sm text-neutral-900 truncate">Sarah Johnson</p>
@@ -114,124 +118,89 @@
   </section>
 
   <section id="search-users-panel" class="flex-1 bg-white flex flex-col">
+    <!-- Header -->
     <div class="p-6 border-b border-neutral-200">
       <div class="flex items-center justify-between">
         <div>
           <h2 class="text-2xl text-black">Search Users</h2>
           <p class="text-neutral-500 mt-1">Find and connect with new people</p>
         </div>
-        <button class="text-neutral-400 hover:text-neutral-600">
+        <button type="button" class="text-neutral-400 hover:text-neutral-600">
           <i class="fa-solid fa-arrow-left text-xl"></i>
         </button>
       </div>
 
       <div class="mt-6">
         <div class="relative max-w-lg">
-          <input type="text" placeholder="Search by username, email, or name..." class="w-full pl-10 pr-4 py-3 border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-neutral-500 text-base">
+          <input type="text" placeholder="Search by username, email, or name..."
+            class="w-full pl-10 pr-4 py-3 border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-neutral-500 text-base"
+            [formControl]="searchControl" />
           <i class="fa-solid fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-neutral-400"></i>
         </div>
       </div>
     </div>
 
+    <!-- Results area -->
     <div class="flex-1 overflow-y-auto p-6">
       <div class="max-w-2xl">
-        <div class="space-y-4">
-          <div class="bg-white border border-neutral-200 rounded-lg p-4 hover:bg-neutral-50">
-            <div class="flex items-center space-x-4">
-              <img src="https://api.dicebear.com/7.x/notionists/svg?scale=200&seed=3456" alt="Jessica Brown" class="w-12 h-12 rounded-full">
-              <div class="flex-1 min-w-0">
-                <h4 class="text-lg text-black">Jessica Brown</h4>
-                <p class="text-sm text-neutral-500">@jessicabrown</p>
-                <p class="text-xs text-neutral-400 mt-1">jessica.brown@email.com</p>
-              </div>
-              <button class="bg-neutral-500 text-white px-4 py-2 rounded-lg hover:bg-neutral-600 focus:outline-none focus:ring-2 focus:ring-neutral-500 text-sm flex items-center space-x-2">
-                <i class="fa-solid fa-user-plus"></i>
-                <span>Add Friend</span>
-              </button>
-            </div>
-          </div>
 
-          <div class="bg-white border border-neutral-200 rounded-lg p-4 hover:bg-neutral-50">
-            <div class="flex items-center space-x-4">
-              <img src="https://api.dicebear.com/7.x/notionists/svg?scale=200&seed=6789" alt="Ryan Miller" class="w-12 h-12 rounded-full">
-              <div class="flex-1 min-w-0">
-                <h4 class="text-lg text-black">Ryan Miller</h4>
-                <p class="text-sm text-neutral-500">@ryanmiller</p>
-                <p class="text-xs text-neutral-400 mt-1">ryan.miller@company.com</p>
-              </div>
-              <button class="bg-neutral-500 text-white px-4 py-2 rounded-lg hover:bg-neutral-600 focus:outline-none focus:ring-2 focus:ring-neutral-500 text-sm flex items-center space-x-2">
-                <i class="fa-solid fa-user-plus"></i>
-                <span>Add Friend</span>
-              </button>
-            </div>
-          </div>
-
-          <div class="bg-white border border-neutral-200 rounded-lg p-4 hover:bg-neutral-50">
-            <div class="flex items-center space-x-4">
-              <img src="https://api.dicebear.com/7.x/notionists/svg?scale=200&seed=9012" alt="Samantha Lee" class="w-12 h-12 rounded-full">
-              <div class="flex-1 min-w-0">
-                <h4 class="text-lg text-black">Samantha Lee</h4>
-                <p class="text-sm text-neutral-500">@samanthalee</p>
-                <p class="text-xs text-neutral-400 mt-1">samantha.lee@startup.io</p>
-              </div>
-              <button class="bg-neutral-500 text-white px-4 py-2 rounded-lg hover:bg-neutral-600 focus:outline-none focus:ring-2 focus:ring-neutral-500 text-sm flex items-center space-x-2">
-                <i class="fa-solid fa-user-plus"></i>
-                <span>Add Friend</span>
-              </button>
-            </div>
-          </div>
-
-          <div class="bg-white border border-neutral-200 rounded-lg p-4 hover:bg-neutral-50">
-            <div class="flex items-center space-x-4">
-              <img src="https://api.dicebear.com/7.x/notionists/svg?scale=200&seed=3457" alt="Kevin Wong" class="w-12 h-12 rounded-full">
-              <div class="flex-1 min-w-0">
-                <h4 class="text-lg text-black">Kevin Wong</h4>
-                <p class="text-sm text-neutral-500">@kevinwong</p>
-                <p class="text-xs text-neutral-400 mt-1">kevin.wong@techcorp.com</p>
-              </div>
-              <button class="bg-white border border-neutral-200 text-neutral-700 px-4 py-2 rounded-lg hover:bg-neutral-50 focus:outline-none focus:ring-2 focus:ring-neutral-500 text-sm flex items-center space-x-2">
-                <i class="fa-solid fa-clock"></i>
-                <span>Pending</span>
-              </button>
-            </div>
-          </div>
-
-          <div class="bg-white border border-neutral-200 rounded-lg p-4 hover:bg-neutral-50">
-            <div class="flex items-center space-x-4">
-              <img src="https://api.dicebear.com/7.x/notionists/svg?scale=200&seed=7890" alt="Nina Patel" class="w-12 h-12 rounded-full">
-              <div class="flex-1 min-w-0">
-                <h4 class="text-lg text-black">Nina Patel</h4>
-                <p class="text-sm text-neutral-500">@ninapatel</p>
-                <p class="text-xs text-neutral-400 mt-1">nina.patel@design.studio</p>
-              </div>
-              <button class="bg-neutral-500 text-white px-4 py-2 rounded-lg hover:bg-neutral-600 focus:outline-none focus:ring-2 focus:ring-neutral-500 text-sm flex items-center space-x-2">
-                <i class="fa-solid fa-user-plus"></i>
-                <span>Add Friend</span>
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <div id="loading-indicator" class="hidden flex items-center justify-center py-8">
+        @if (loading()) {
+        <!-- loading -->
+        <div class="flex items-center justify-center py-8">
           <div class="flex items-center space-x-3">
             <div class="w-6 h-6 border-2 border-neutral-300 border-t-neutral-600 rounded-full animate-spin"></div>
             <span class="text-neutral-500">Searching users...</span>
           </div>
         </div>
-
-        <div id="no-results" class="hidden bg-white border border-neutral-200 rounded-lg p-8 text-center">
+        } @else if (users() === null || users().length === 0 || searchControl.value.trim().length) {
+        <!-- empty -->
+        <div class="bg-white border border-neutral-200 rounded-lg p-8 text-center">
           <div class="w-16 h-16 bg-neutral-100 rounded-full flex items-center justify-center mx-auto mb-4">
             <i class="fa-solid fa-search text-neutral-400 text-xl"></i>
           </div>
           <h3 class="text-lg text-black mb-2">No users found</h3>
           <p class="text-neutral-500">Try adjusting your search terms or check the spelling</p>
         </div>
+        } @else {
+        <!-- list -->
+        <div class="space-y-4">
+          @for (u of users(); track u.id) {
+          <div class="bg-white border border-neutral-200 rounded-lg p-4 hover:bg-neutral-50">
+            <div class="flex items-center space-x-4">
+              <img [src]="'https://api.dicebear.com/7.x/notionists/svg?scale=200&seed=' + u.avatarSeed" [alt]="u.name"
+                class="w-12 h-12 rounded-full" />
+              <div class="flex-1 min-w-0">
+                <h4 class="text-lg text-black">{{ u.name }}</h4>
+                <p class="text-sm text-neutral-500">@{{ u.username }}</p>
+                <p class="text-xs text-neutral-400 mt-1">{{ u.email }}</p>
+              </div>
+
+              @if (u.friendshipStatus === 'none') {
+              <button (click)="onAddFriend(u)"
+                class="bg-neutral-500 text-white px-4 py-2 rounded-lg hover:bg-neutral-600 focus:outline-none focus:ring-2 focus:ring-neutral-500 text-sm flex items-center space-x-2">
+                <i class="fa-solid fa-user-plus"></i>
+                <span>Add Friend</span>
+              </button>
+              } @else {
+              <button disabled
+                class="bg-white border border-neutral-200 text-neutral-700 px-4 py-2 rounded-lg cursor-not-allowed text-sm flex items-center space-x-2">
+                <i class="fa-solid fa-clock"></i>
+                <span>Pending</span>
+              </button>
+              }
+            </div>
+          </div>
+          }
+        </div>
+        }
+
       </div>
     </div>
   </section>
 </main>
 
-<div id="toast-notification" class="fixed top-4 right-4 bg-white border border-neutral-200 rounded-lg shadow-lg p-4 hidden">
+<div id="toast-notification"
+  class="fixed top-4 right-4 bg-white border border-neutral-200 rounded-lg shadow-lg p-4 hidden">
   <div class="flex items-center space-x-3">
     <div class="w-8 h-8 bg-neutral-500 rounded-full flex items-center justify-center">
       <i class="fa-solid fa-check text-white text-sm"></i>

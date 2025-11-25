@@ -4,6 +4,9 @@ import { PersonalProfile, ProfileUpdateRequest } from '../models/user.model';
 
 @Injectable()
 export class ProfileService {
+  updatePrivacy(arg0: { lastSeen: "Everyone" | "Contacts Only" | "Nobody" | null; friendRequests: "Everyone" | "Nobody" | "Friends of Friends" | null; profileVisibility: boolean | null; }) {
+    throw new Error('Method not implemented.');
+  }
 
   private apiService = inject(WebApiService);
 
@@ -24,8 +27,8 @@ export class ProfileService {
     );
 
   }
-  public updateMyProfile(data: ProfileUpdateRequest) {
-    return this.apiService.post<PersonalProfile>("/users/me", data).subscribe({
+  public updateMyProfile(data: Partial<ProfileUpdateRequest>) {
+    return this.apiService.patch<PersonalProfile>("/users/me", data).subscribe({
       next: (updated) => this.profileSignal.set(updated),
     })
 

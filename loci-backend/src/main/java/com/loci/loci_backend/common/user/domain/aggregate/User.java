@@ -16,11 +16,14 @@ import com.loci.loci_backend.common.user.domain.vo.UserImageUrl;
 import com.loci.loci_backend.common.user.domain.vo.UserLastname;
 import com.loci.loci_backend.common.user.domain.vo.UserPublicId;
 import com.loci.loci_backend.common.validation.domain.Assert;
+import com.loci.loci_backend.core.user.domain.profile.aggregate.PrivacySetting;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
 @Builder
+@AllArgsConstructor
 @Data
 public class User {
 
@@ -46,21 +49,25 @@ public class User {
 
   private Instant lastSeen;
 
-  public User(UserLastname lastname, UserFirstname firstname, UserEmail email, UserPublicId userPublicId,
-      UserImageUrl imageUrl, Instant lastModifiedDate, Instant createdDate, Set<Authority> authorities, Long dbId,
-      UserAddress userAddress, Instant lastSeen) {
-    this.lastname = lastname;
-    this.firstname = firstname;
-    this.email = email;
-    this.userPublicId = userPublicId;
-    this.imageUrl = imageUrl;
-    this.lastModifiedDate = lastModifiedDate;
-    this.createdDate = createdDate;
-    this.authorities = authorities;
-    this.dbId = dbId;
-    this.userAddress = userAddress;
-    this.lastSeen = lastSeen;
-  }
+  private PrivacySetting privacySetting;
+
+
+
+  // public User(UserLastname lastname, UserFirstname firstname, UserEmail email, UserPublicId userPublicId,
+  //     UserImageUrl imageUrl, Instant lastModifiedDate, Instant createdDate, Set<Authority> authorities, Long dbId,
+  //     UserAddress userAddress, Instant lastSeen) {
+  //   this.lastname = lastname;
+  //   this.firstname = firstname;
+  //   this.email = email;
+  //   this.userPublicId = userPublicId;
+  //   this.imageUrl = imageUrl;
+  //   this.lastModifiedDate = lastModifiedDate;
+  //   this.createdDate = createdDate;
+  //   this.authorities = authorities;
+  //   this.dbId = dbId;
+  //   this.userAddress = userAddress;
+  //   this.lastSeen = lastSeen;
+  // }
 
   private void assertMandatoryFields() {
     Assert.notNull("lastname", lastname);

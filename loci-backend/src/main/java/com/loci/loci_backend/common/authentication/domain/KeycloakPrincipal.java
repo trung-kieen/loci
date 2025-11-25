@@ -37,7 +37,8 @@ public class KeycloakPrincipal {
     return KeycloakPrincipal.builder()
         .userId(new KeycloakUserId(email))
         .userEmail(new UserEmail(email))
-        .username(new Username(firstname + ' ' + lastname))
+        // .username(new Username(firstname + ' ' + lastname))
+        .username(new Username(email))
         .roles(roles)
         .build();
   }
@@ -50,7 +51,8 @@ public class KeycloakPrincipal {
     return KeycloakPrincipal.builder()
         .userId(new KeycloakUserId(token.getSubject()))
         .userEmail(new UserEmail(token.getEmail()))
-        .username(new Username(token.getPreferredUsername()))
+        .username(new Username(token.getEmail()))
+        // .username(new Username(token.getEmail()))
         .roles(roles)
         .build();
 

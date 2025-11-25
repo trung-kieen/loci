@@ -1,6 +1,5 @@
 package com.loci.loci_backend.common.user.domain.service;
 
-import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 

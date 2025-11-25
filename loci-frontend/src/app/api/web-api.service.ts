@@ -43,10 +43,17 @@ export class WebApiService {
   }
 
   // Generic PUT
-  put<T>(endpoint: string, body: never, headers?: Record<string, string>): Observable<T> {
+  put<T>(endpoint: string, body: unknown, headers?: Record<string, string>): Observable<T> {
     const url = this.getFullUrl(endpoint);
     const httpOptions = { headers: this.getHeaders(headers) };
     return this.http.put<T>(url, body, httpOptions).pipe(
+      // catchError(this.handleError)
+    );
+  }
+  patch<T>(endpoint: string, body: unknown, headers?: Record<string, string>): Observable<T> {
+    const url = this.getFullUrl(endpoint);
+    const httpOptions = { headers: this.getHeaders(headers) };
+    return this.http.patch<T>(url, body, httpOptions).pipe(
       // catchError(this.handleError)
     );
   }

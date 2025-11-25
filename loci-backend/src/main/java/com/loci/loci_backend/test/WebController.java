@@ -1,6 +1,5 @@
 package com.loci.loci_backend.test;
 
-import com.loci.loci_backend.common.authentication.application.AuthenticatedUser;
 import com.loci.loci_backend.common.authentication.domain.KeycloakPrincipal;
 import com.loci.loci_backend.common.user.domain.aggregate.User;
 import com.loci.loci_backend.common.user.domain.service.UserService;

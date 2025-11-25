@@ -1,5 +1,6 @@
 package com.loci.loci_backend.core.user.infrastructure.primary;
 
+import com.loci.loci_backend.common.validation.infrastructure.EntityMapper;
 import com.loci.loci_backend.core.user.domain.profile.aggregate.PersonalProfile;
 
 import lombok.AllArgsConstructor;
@@ -26,8 +27,7 @@ public class RestPersonalProfile {
       .username(personalProfile.getUsername().get())
       .emailAddress(personalProfile.getEmail().value())
       .profilePictureUrl(personalProfile.getImageUrl().value())
-    // TODO:
-      .privacy(new RestProfilePrivacy())
+      .privacy(EntityMapper.getIfPresent(personalProfile.getPrivacySetting(), (p) -> RestProfilePrivacy.from(p)))
       .build();
   }
 }

@@ -1,7 +1,5 @@
 package com.loci.loci_backend.test;
 
-import java.time.LocalDateTime;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 

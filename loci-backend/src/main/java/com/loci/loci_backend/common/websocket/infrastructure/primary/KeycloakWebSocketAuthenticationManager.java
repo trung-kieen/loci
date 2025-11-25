@@ -3,7 +3,6 @@ package com.loci.loci_backend.common.websocket.infrastructure.primary;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.loci.loci_backend.common.authentication.application.KeycloakTokenInvalidException;
 import com.loci.loci_backend.common.authentication.domain.KeycloakPrincipal;
 import com.loci.loci_backend.common.authentication.infrastructure.primary.keycloak.KeycloakTokenVerifier;
 import com.loci.loci_backend.common.websocket.application.WebSocketTokenValicationException;

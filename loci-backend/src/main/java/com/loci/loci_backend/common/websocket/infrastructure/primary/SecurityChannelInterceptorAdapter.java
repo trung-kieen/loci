@@ -1,6 +1,5 @@
 package com.loci.loci_backend.common.websocket.infrastructure.primary;
 
-import com.loci.loci_backend.common.validation.domain.Assert;
 import com.loci.loci_backend.common.websocket.domain.aggregate.JWSAuthentication;
 import com.loci.loci_backend.common.websocket.domain.vo.BearerToken;
 
@@ -10,9 +9,6 @@ import org.springframework.messaging.simp.stomp.StompCommand;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.ChannelInterceptor;
 import org.springframework.messaging.support.MessageHeaderAccessor;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.jwt.JwsHeader;
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
