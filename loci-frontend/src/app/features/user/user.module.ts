@@ -1,13 +1,12 @@
 import { NgModule } from "@angular/core";
 import { UserRoutingModule } from "./user.routes";
-import { ProfileService } from "./services/profile.service";
-import { SharedModule } from "../../shared/shared.module";
-import { MyProfile } from "./components/my-profile/my-profile";
+import { MyProfileService } from "./services/my-profile.service";
+import { OtherProfileService } from "./services/other-profile.service";
 
 @NgModule({
   // declarations: [MyProfile],
   imports: [UserRoutingModule],
-  providers: [ProfileService],
+  providers: [MyProfileService, OtherProfileService],
 })
 export class UserModule {
 

@@ -1,9 +1,9 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { WebApiService } from '../../../api/web-api.service';
-import { PersonalProfile, ProfileUpdateRequest } from '../models/user.model';
+import { PersonalProfile, ProfileUpdateRequest } from '../models/my-profile.model';
 
 @Injectable()
-export class ProfileService {
+export class MyProfileService {
   updatePrivacy(arg0: { lastSeen: "Everyone" | "Contacts Only" | "Nobody" | null; friendRequests: "Everyone" | "Nobody" | "Friends of Friends" | null; profileVisibility: boolean | null; }) {
     throw new Error('Method not implemented.');
   }

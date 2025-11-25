@@ -1,5 +1,5 @@
 import { Component, effect, inject, OnInit, OnDestroy } from '@angular/core';
-import { ProfileService } from '../../services/profile.service';
+import { MyProfileService } from '../../services/my-profile.service';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { debounceTime, merge, Subject, takeUntil } from 'rxjs';
 
@@ -11,7 +11,7 @@ import { debounceTime, merge, Subject, takeUntil } from 'rxjs';
   styleUrl: './my-profile.css',
 })
 export class MyProfile implements OnInit, OnDestroy {
-  private profileService = inject(ProfileService);
+  private profileService = inject(MyProfileService);
   private profile = this.profileService.profile;
   private destroy$ = new Subject<void>();
 

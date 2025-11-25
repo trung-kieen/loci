@@ -17,7 +17,8 @@
   <aside id="sidebar" class="w-60 bg-white border-r border-neutral-200 flex flex-col">
     <div class="p-4">
       <div class="relative">
-        <input type="text" placeholder="Search..." class="w-full pl-10 pr-4 py-2 border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-neutral-500">
+        <input type="text" placeholder="Search..."
+          class="w-full pl-10 pr-4 py-2 border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-neutral-500">
         <i class="fa-solid fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-neutral-400"></i>
       </div>
     </div>
@@ -78,7 +79,8 @@
     <div class="flex-1 overflow-y-auto">
       <div class="p-4">
         <div class="flex items-center space-x-3 p-3 rounded-lg bg-neutral-50 cursor-pointer">
-          <img src="https://api.dicebear.com/7.x/notionists/svg?scale=200&seed=7891" alt="Contact" class="w-10 h-10 rounded-full">
+          <img src="https://api.dicebear.com/7.x/notionists/svg?scale=200&seed=7891" alt="Contact"
+            class="w-10 h-10 rounded-full">
           <div class="flex-1 min-w-0">
             <div class="flex items-center justify-between">
               <p class="text-sm text-neutral-900 truncate">Emily Davis</p>
@@ -89,7 +91,8 @@
         </div>
 
         <div class="flex items-center space-x-3 p-3 rounded-lg hover:bg-neutral-50 cursor-pointer">
-          <img src="https://api.dicebear.com/7.x/notionists/svg?scale=200&seed=1234" alt="Contact" class="w-10 h-10 rounded-full">
+          <img src="https://api.dicebear.com/7.x/notionists/svg?scale=200&seed=1234" alt="Contact"
+            class="w-10 h-10 rounded-full">
           <div class="flex-1 min-w-0">
             <div class="flex items-center justify-between">
               <p class="text-sm text-neutral-900 truncate">John Smith</p>
@@ -100,7 +103,8 @@
         </div>
 
         <div class="flex items-center space-x-3 p-3 rounded-lg hover:bg-neutral-50 cursor-pointer">
-          <img src="https://api.dicebear.com/7.x/notionists/svg?scale=200&seed=5678" alt="Contact" class="w-10 h-10 rounded-full">
+          <img src="https://api.dicebear.com/7.x/notionists/svg?scale=200&seed=5678" alt="Contact"
+            class="w-10 h-10 rounded-full">
           <div class="flex-1 min-w-0">
             <div class="flex items-center justify-between">
               <p class="text-sm text-neutral-900 truncate">Sarah Johnson</p>
@@ -113,101 +117,176 @@
     </div>
   </section>
 
-  <section id="user-profile-panel" class="flex-1 bg-white flex flex-col">
+  <section class="flex-1 bg-white flex flex-col">
+    <!-- Header -->
     <div class="p-6 border-b border-neutral-200">
       <div class="flex items-center space-x-4">
-        <button class="p-2 hover:bg-neutral-100 rounded-lg">
+        <button (click)="onBack()"
+          class="p-2 hover:bg-neutral-100 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-neutral-500"
+          aria-label="Go back">
           <i class="fa-solid fa-arrow-left text-neutral-600"></i>
         </button>
         <div>
-          <h2 class="text-2xl text-black">User Profile</h2>
-          <p class="text-neutral-500 mt-1">View user information and manage connection</p>
+          <h2 class="text-2xl text-black font-bold">User Profile</h2>
+          <p class="text-neutral-500 mt-1 text-sm">View user information and manage connection</p>
         </div>
       </div>
     </div>
 
+    <!-- Content -->
     <div class="flex-1 overflow-y-auto p-6">
+      @if (isLoading()) {
+      <!-- Loading State -->
+      <div class="flex items-center justify-center h-64">
+        <div class="text-center">
+          <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-neutral-500 mx-auto mb-4"></div>
+          <p class="text-neutral-500">Loading profile...</p>
+        </div>
+      </div>
+      } @else if (error()) {
+      <!-- Error State -->
       <div class="max-w-2xl">
-        <div class="bg-white border border-neutral-200 rounded-lg p-6 mb-6">
+        <div class="bg-red-50 border border-red-200 rounded-lg p-6 text-center">
+          <i class="fa-solid fa-exclamation-triangle text-red-500 text-3xl mb-4"></i>
+          <h3 class="text-lg text-red-900 mb-2">Unable to Load Profile</h3>
+          <p class="text-red-700 mb-4">{{ error() }}</p>
+          <button (click)="loadProfile()"
+            class="bg-red-500 text-white px-6 py-2 rounded-lg hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500">
+            Retry
+          </button>
+        </div>
+      </div>
+      } @else if (profile()) {
+      <!-- Profile Content -->
+      <div class="max-w-2xl">
+        <!-- Profile Card -->
+        <div class="bg-white border border-neutral-200 rounded-lg p-6 mb-6 shadow-sm">
+          <!-- Avatar & Basic Info -->
           <div class="flex flex-col items-center text-center mb-6">
-            <img src="https://api.dicebear.com/7.x/notionists/svg?scale=200&seed=7891" alt="Emily Davis" class="w-24 h-24 rounded-full mb-4">
-            <h3 class="text-2xl text-black mb-1">Emily Davis</h3>
-            <p class="text-neutral-500 mb-2">@emilydavis</p>
+            <img [src]="profile()!.avatar" [alt]="profile()!.fullName"
+              class="w-24 h-24 rounded-full mb-4 object-cover border-4 border-neutral-100">
+            <h3 class="text-2xl text-black font-bold mb-1">{{ profile()!.fullName }}</h3>
+            <p class="text-neutral-500 mb-2">@{{ profile()!.username }}</p>
+
+            <!-- Last Active Status -->
+            @if (profile()!.showLastOnline) {
             <div class="flex items-center space-x-2 text-sm text-neutral-500">
-              <i class="fa-solid fa-circle text-neutral-500 text-xs"></i>
-              <span>Active 5 minutes ago</span>
+              <i [class]="isActiveRecently() ? 'fa-solid fa-circle text-green-500' : 'fa-solid fa-circle text-neutral-400'"
+                class="text-xs"></i>
+              <span>
+                @if (isActiveRecently()) {
+                Active now
+                } @else {
+                Active {{ profile()!.lastActive | date:'short' }}
+                }
+              </span>
             </div>
+            }
           </div>
 
+          <!-- Profile Details -->
           <div class="space-y-4 mb-6">
-            <div class="flex items-center justify-between py-2">
-              <span class="text-sm text-neutral-700">Email</span>
-              <span class="text-sm text-neutral-900">emily.davis@company.com</span>
+            @if (profile()!.email && profile()!.showEmail) {
+            <div class="flex items-center justify-between py-2 border-b border-neutral-100">
+              <span class="text-sm text-neutral-700 font-medium">Email</span>
+              <span class="text-sm text-neutral-900">{{ profile()!.email }}</span>
             </div>
-            <div class="flex items-center justify-between py-2">
-              <span class="text-sm text-neutral-700">Member since</span>
-              <span class="text-sm text-neutral-900">March 2025</span>
+            }
+
+            <div class="flex items-center justify-between py-2 border-b border-neutral-100">
+              <span class="text-sm text-neutral-700 font-medium">Member since</span>
+              <span class="text-sm text-neutral-900">{{ profile()!.createdAt | date:'MMMM yyyy' }}</span>
             </div>
+
             <div class="flex items-center justify-between py-2">
-              <span class="text-sm text-neutral-700">Mutual friends</span>
-              <span class="text-sm text-neutral-900">12 connections</span>
+              <span class="text-sm text-neutral-700 font-medium">Mutual friends</span>
+              <span class="text-sm text-neutral-900">{{ profile()!.mutualFriendCount }} connections</span>
             </div>
           </div>
 
+          <!-- Action Buttons -->
           <div class="flex flex-col space-y-3">
-            <button class="w-full bg-neutral-500 text-white px-6 py-3 rounded-lg hover:bg-neutral-600 focus:outline-none focus:ring-2 focus:ring-neutral-500 flex items-center justify-center space-x-2">
-              <i class="fa-solid fa-user-plus"></i>
-              <span>Add Friend</span>
+            <!-- Primary Action: Add Friend / Accept Request / Friends -->
+            @if (canAddFriend()) {
+            <button (click)="onAddFriend()"
+              class="w-full bg-primary text-white px-6 py-3 rounded-lg hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-primary-500 flex items-center justify-center space-x-2 transition-colors">
+              <i [class]="'fa-solid ' + connectionStatusIcon()"></i>
+              <span>{{ connectionStatusText() }}</span>
             </button>
+            } @else if (canAcceptRequest()) {
+            <button (click)="onAcceptRequest()"
+              class="w-full bg-green-500 text-white px-6 py-3 rounded-lg hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 flex items-center justify-center space-x-2 transition-colors">
+              <i class="fa-solid fa-user-check"></i>
+              <span>Accept Friend Request</span>
+            </button>
+            } @else if (profile()!.connectionStatus === 'friend') {
+            <div
+              class="w-full bg-neutral-100 text-neutral-700 px-6 py-3 rounded-lg flex items-center justify-center space-x-2">
+              <i class="fa-solid fa-user-check"></i>
+              <span>Friends</span>
+            </div>
+            } @else if (profile()!.connectionStatus === 'friend_request_sent') {
+            <div
+              class="w-full bg-neutral-100 text-neutral-700 px-6 py-3 rounded-lg flex items-center justify-center space-x-2">
+              <i class="fa-solid fa-clock"></i>
+              <span>Request Sent</span>
+            </div>
+            }
 
+            <!-- Secondary Actions Row -->
             <div class="flex space-x-3">
-              <button class="flex-1 bg-white border border-neutral-200 text-neutral-700 px-4 py-3 rounded-lg hover:bg-neutral-50 focus:outline-none focus:ring-2 focus:ring-neutral-500 flex items-center justify-center space-x-2">
+              @if (canMessage()) {
+              <button (click)="onMessage()"
+                class="flex-1 bg-white border border-neutral-200 text-neutral-700 px-4 py-3 rounded-lg hover:bg-neutral-50 focus:outline-none focus:ring-2 focus:ring-neutral-500 flex items-center justify-center space-x-2 transition-colors">
                 <i class="fa-solid fa-comment"></i>
                 <span>Message</span>
               </button>
+              }
 
-              <button class="flex-1 bg-white border border-neutral-200 text-neutral-700 px-4 py-3 rounded-lg hover:bg-neutral-50 focus:outline-none focus:ring-2 focus:ring-neutral-500 flex items-center justify-center space-x-2">
+              @if (canBlock()) {
+              <button (click)="onBlock()"
+                class="flex-1 bg-white border border-neutral-200 text-neutral-700 px-4 py-3 rounded-lg hover:bg-neutral-50 focus:outline-none focus:ring-2 focus:ring-neutral-500 flex items-center justify-center space-x-2 transition-colors">
                 <i class="fa-solid fa-user-slash"></i>
                 <span>Block</span>
               </button>
+              } @else if (isBlocked()) {
+              <button (click)="onUnblock()"
+                class="flex-1 bg-white border border-red-200 text-red-700 px-4 py-3 rounded-lg hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-red-500 flex items-center justify-center space-x-2 transition-colors">
+                <i class="fa-solid fa-user-check"></i>
+                <span>Unblock</span>
+              </button>
+              }
             </div>
 
-            <button class="w-full bg-white border border-neutral-200 text-neutral-600 px-6 py-3 rounded-lg hover:bg-neutral-50 focus:outline-none focus:ring-2 focus:ring-neutral-500 flex items-center justify-center space-x-2">
+            <!-- Report Button -->
+            <button (click)="onReport()"
+              class="w-full bg-white border border-neutral-200 text-neutral-600 px-6 py-3 rounded-lg hover:bg-neutral-50 focus:outline-none focus:ring-2 focus:ring-neutral-500 flex items-center justify-center space-x-2 transition-colors">
               <i class="fa-solid fa-flag"></i>
               <span>Report User</span>
             </button>
           </div>
         </div>
 
-        <div class="bg-white border border-neutral-200 rounded-lg p-6">
-          <h4 class="text-lg text-black mb-4">Recent Activity</h4>
+        <!-- Recent Activity Card -->
+        @if (profile()!.recentActivity && profile()!.recentActivity.length > 0) {
+        <div class="bg-white border border-neutral-200 rounded-lg p-6 shadow-sm">
+          <h4 class="text-lg text-black font-bold mb-4">Recent Activity</h4>
           <div class="space-y-3">
-            <div class="flex items-center space-x-3 p-3 bg-neutral-50 rounded-lg">
-              <i class="fa-solid fa-comment text-neutral-400"></i>
-              <div>
-                <p class="text-sm text-neutral-700">Sent a message in Marketing Team</p>
-                <p class="text-xs text-neutral-500">2 hours ago</p>
+            @for (activity of profile()!.recentActivity; track activity.id) {
+            <div
+              class="flex items-center space-x-3 p-3 bg-neutral-50 rounded-lg hover:bg-neutral-100 transition-colors">
+              <i [class]="'fa-solid ' + getActivityIcon(activity.type) + ' text-neutral-400'"></i>
+              <div class="flex-1">
+                <p class="text-sm text-neutral-700">{{ activity.message }}</p>
+                <p class="text-xs text-neutral-500">{{ activity.timestamp | date:'short' }}</p>
               </div>
             </div>
-
-            <div class="flex items-center space-x-3 p-3 bg-neutral-50 rounded-lg">
-              <i class="fa-solid fa-user-plus text-neutral-400"></i>
-              <div>
-                <p class="text-sm text-neutral-700">Connected with 3 new colleagues</p>
-                <p class="text-xs text-neutral-500">1 day ago</p>
-              </div>
-            </div>
-
-            <div class="flex items-center space-x-3 p-3 bg-neutral-50 rounded-lg">
-              <i class="fa-solid fa-file text-neutral-400"></i>
-              <div>
-                <p class="text-sm text-neutral-700">Shared project documents</p>
-                <p class="text-xs text-neutral-500">3 days ago</p>
-              </div>
-            </div>
+            }
           </div>
         </div>
+        }
       </div>
+      }
     </div>
   </section>
 </main>
