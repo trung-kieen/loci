@@ -1,5 +1,6 @@
 package com.loci.loci_backend.core.user.infrastructure.primary;
 
+import com.loci.loci_backend.common.user.domain.vo.UserImageUrl;
 import com.loci.loci_backend.common.validation.infrastructure.EntityMapper;
 import com.loci.loci_backend.core.user.domain.profile.aggregate.PersonalProfile;
 
@@ -20,14 +21,15 @@ public class RestPersonalProfile {
   private String profilePictureUrl;
   private RestProfilePrivacy privacy;
 
-  public static RestPersonalProfile from(PersonalProfile personalProfile){
+  public static RestPersonalProfile from(PersonalProfile personalProfile) {
     return RestPersonalProfile.builder()
-      .firstname(personalProfile.getFullname().getFirstname().value())
-      .lastname(personalProfile.getFullname().getLastname().value())
-      .username(personalProfile.getUsername().get())
-      .emailAddress(personalProfile.getEmail().value())
-      .profilePictureUrl(personalProfile.getImageUrl().value())
-      .privacy(EntityMapper.getIfPresent(personalProfile.getPrivacySetting(), (p) -> RestProfilePrivacy.from(p)))
-      .build();
+        .firstname(personalProfile.getFullname().getFirstname().value())
+        .lastname(personalProfile.getFullname().getLastname().value())
+        .username(personalProfile.getUsername().get())
+        .emailAddress(personalProfile.getEmail().value())
+        .profilePictureUrl(
+            personalProfile.getImageUrl().valueOrDefault())
+        .privacy(EntityMapper.getIfPresent(personalProfile.getPrivacySetting(), (p) -> RestProfilePrivacy.from(p)))
+        .build();
   }
 }

@@ -29,4 +29,10 @@ public final class EntityMapper {
     return value != null ? fn.apply(value) : null;
   }
 
+
+
+  public static <T> T getOrDefault(T value, T defaultValue) {
+    return value != null ? value : defaultValue;
+  }
+
 }

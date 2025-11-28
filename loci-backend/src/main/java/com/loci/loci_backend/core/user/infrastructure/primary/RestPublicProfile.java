@@ -3,9 +3,10 @@ package com.loci.loci_backend.core.user.infrastructure.primary;
 import java.time.Instant;
 
 import com.loci.loci_backend.common.time.infrastructure.TimeFormatter;
+import com.loci.loci_backend.common.user.domain.vo.UserImageUrl;
+import com.loci.loci_backend.common.validation.infrastructure.EntityMapper;
 import com.loci.loci_backend.core.user.domain.profile.aggregate.PublicProfile;
 
-import org.flywaydb.core.internal.util.TimeFormat;
 import org.springframework.data.domain.Page;
 
 import lombok.AllArgsConstructor;
@@ -27,16 +28,14 @@ public class RestPublicProfile {
   private Instant createdAt;
   private String profilePictureUrl;
 
-
   // TODO: Implement other profile details
-  //   lastActive: Date;
+  // lastActive: Date;
   // mutualFriendCount: number;
   // connectionStatus: ConnectionStatus;
   // showEmail: boolean;
   // showLastOnline: boolean;
   // recentActivity: RecentActivity[];
-                                         // unfriended, blocked, not_determined aka guest
-
+  // unfriended, blocked, not_determined aka guest
 
   public static Page<RestPublicProfile> from(Page<PublicProfile> profile) {
     return profile.map(RestPublicProfile::from);
@@ -50,7 +49,8 @@ public class RestPublicProfile {
         .emailAddress(profile.getEmail().value())
         .createdAt(profile.getCreatedDate())
         .memberSince(TimeFormatter.timeAgo(profile.getCreatedDate()))
-        .profilePictureUrl(profile.getImageUrl().value())
+        .profilePictureUrl(
+            profile.getImageUrl().valueOrDefault())
         .build();
   }
 

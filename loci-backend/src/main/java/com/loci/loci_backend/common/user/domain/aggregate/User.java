@@ -51,22 +51,22 @@ public class User {
 
   private PrivacySetting privacySetting;
 
-
-
-  // public User(UserLastname lastname, UserFirstname firstname, UserEmail email, UserPublicId userPublicId,
-  //     UserImageUrl imageUrl, Instant lastModifiedDate, Instant createdDate, Set<Authority> authorities, Long dbId,
-  //     UserAddress userAddress, Instant lastSeen) {
-  //   this.lastname = lastname;
-  //   this.firstname = firstname;
-  //   this.email = email;
-  //   this.userPublicId = userPublicId;
-  //   this.imageUrl = imageUrl;
-  //   this.lastModifiedDate = lastModifiedDate;
-  //   this.createdDate = createdDate;
-  //   this.authorities = authorities;
-  //   this.dbId = dbId;
-  //   this.userAddress = userAddress;
-  //   this.lastSeen = lastSeen;
+  // public User(UserLastname lastname, UserFirstname firstname, UserEmail email,
+  // UserPublicId userPublicId,
+  // UserImageUrl imageUrl, Instant lastModifiedDate, Instant createdDate,
+  // Set<Authority> authorities, Long dbId,
+  // UserAddress userAddress, Instant lastSeen) {
+  // this.lastname = lastname;
+  // this.firstname = firstname;
+  // this.email = email;
+  // this.userPublicId = userPublicId;
+  // this.imageUrl = imageUrl;
+  // this.lastModifiedDate = lastModifiedDate;
+  // this.createdDate = createdDate;
+  // this.authorities = authorities;
+  // this.dbId = dbId;
+  // this.userAddress = userAddress;
+  // this.lastSeen = lastSeen;
   // }
 
   private void assertMandatoryFields() {
@@ -96,7 +96,7 @@ public class User {
   }
 
   public void initFieldForSignup() {
-    this.userPublicId = new UserPublicId(UUID.randomUUID());
+    this.userPublicId = UserPublicId.random();
   }
 
   public static User fromTokenAttributes(Map<String, Object> attributes, Collection<String> rolesFromAccessToken) {

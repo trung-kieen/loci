@@ -1,6 +1,8 @@
 package com.loci.loci_backend.core.user.application;
 
 import com.loci.loci_backend.common.authentication.domain.KeycloakPrincipal;
+import com.loci.loci_backend.common.user.domain.aggregate.MigrationResult;
+import com.loci.loci_backend.common.user.domain.service.UserMigrationService;
 import com.loci.loci_backend.core.user.domain.profile.aggregate.PersonalProfile;
 import com.loci.loci_backend.core.user.domain.profile.aggregate.PersonalProfileChanges;
 import com.loci.loci_backend.core.user.domain.profile.aggregate.PublicProfile;
@@ -18,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class UserApplicationService {
   private final ProfileCURD profileCURD;
+  private final UserMigrationService migrationService;
 
   public PersonalProfile getPersonalProfile(KeycloakPrincipal keycloakPrincipal) {
     PersonalProfile profile = profileCURD.readPersonalProfile(keycloakPrincipal);
@@ -35,6 +38,14 @@ public class UserApplicationService {
 
   public Page<PublicProfile> searchActiveUsers(UserSearchCriteria criteria, Pageable pageable) {
     return profileCURD.searchActiveUsers(criteria, pageable);
+  }
+
+
+  public MigrationResult migrateUsers(int limit) {
+    return migrationService.migrateUsers(limit);
+  }
+  public void clearMigratedUsers() {
+    migrationService.clearMigratedUsers();
   }
 
 }

@@ -36,4 +36,7 @@ public record UserPublicId(UUID value) {
       return false;
     }
   }
+  public static UserPublicId random(){
+    return new UserPublicId(UUID.randomUUID());
+  }
 }

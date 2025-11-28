@@ -96,6 +96,15 @@ logging:
             CommonsRequestLoggingFilter: DEBUG
         security: DEBUG
 
+keycloak:
+  auth-server-url: http://localhost:8080
+  # realm: your-target-realm          # Realm where users will be migrated
+  resource: spring
+  public-client: false
+  migration-password: exampleloci123
+  credentials: # admin credentials
+    username: admin
+    password: admin
 # logging:
 #   structured:
 #     json:

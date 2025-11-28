@@ -5,8 +5,12 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 import jakarta.annotation.PostConstruct;
+import lombok.Getter;
+import lombok.Setter;
 
 @Component
+@Setter
+@Getter
 @ConfigurationProperties(prefix = "keycloak")
 public class KeycloakProperties {
   private String authServerUrl;
@@ -14,6 +18,13 @@ public class KeycloakProperties {
   private String resource;
   private boolean publicClient;
   private Credentials credentials = new Credentials();
+
+  // fields for admin access
+  // NOTE: Mandatory via system variable
+  private String adminRealm = "master";
+  private String adminUsername;
+  private String adminPassword;
+  private String migrationPassword;
 
   @Value("${spring.security.oauth2.resourceserver.jwt.issuer-uri:#{null}}")
   private String issuerUri;
@@ -73,8 +84,12 @@ public class KeycloakProperties {
     this.credentials = credentials;
   }
 
+  @Getter
+  @Setter
   public static class Credentials {
     private String secret;
+    private String username;
+    private String password;
 
     public String getSecret() {
       return secret;
