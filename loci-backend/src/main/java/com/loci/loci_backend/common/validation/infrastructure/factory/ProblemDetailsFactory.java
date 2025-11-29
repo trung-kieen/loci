@@ -3,8 +3,8 @@ package com.loci.loci_backend.common.validation.infrastructure.factory;
 import java.util.List;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.loci.loci_backend.common.validation.infrastructure.security.AccessDeniedProblemDetail;
-import com.loci.loci_backend.common.validation.infrastructure.security.AuthenticationProblemDetail;
+import com.loci.loci_backend.common.validation.infrastructure.primary.problem.problem.AccessDeniedProblemDetail;
+import com.loci.loci_backend.common.validation.infrastructure.primary.problem.problem.AuthenticationProblemDetail;
 
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AccountStatusException;

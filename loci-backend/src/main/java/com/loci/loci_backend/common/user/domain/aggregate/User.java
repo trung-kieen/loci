@@ -15,7 +15,7 @@ import com.loci.loci_backend.common.user.domain.vo.UserImageUrl;
 import com.loci.loci_backend.common.user.domain.vo.UserLastname;
 import com.loci.loci_backend.common.user.domain.vo.UserPublicId;
 import com.loci.loci_backend.common.validation.domain.Assert;
-import com.loci.loci_backend.core.user.domain.profile.aggregate.PrivacySetting;
+import com.loci.loci_backend.core.user.profile.domain.aggregate.PrivacySetting;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

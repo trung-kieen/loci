@@ -5,9 +5,10 @@ import java.util.UUID;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.loci.loci_backend.common.validation.infrastructure.factory.ProblemDetailsFactory;
-import com.loci.loci_backend.common.validation.infrastructure.security.AccessDeniedProblemDetail;
+import com.loci.loci_backend.common.validation.infrastructure.primary.problem.problem.AccessDeniedProblemDetail;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -51,7 +52,7 @@ public class AuthorizationEntryPointImpl implements AccessDeniedHandler {
         accessDeniedException.getCause());
 
     response.setStatus(HttpStatus.FORBIDDEN.value());
-    response.setContentType("application/json");
+    response.setContentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE);
 
     AccessDeniedProblemDetail problem = problemFactory.createAccessDeniedProblem(
         request, accessDeniedException, requestId);

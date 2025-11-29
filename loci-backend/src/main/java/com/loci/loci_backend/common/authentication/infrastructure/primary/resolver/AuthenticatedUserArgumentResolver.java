@@ -2,7 +2,7 @@ package com.loci.loci_backend.common.authentication.infrastructure.primary.resol
 
 import com.loci.loci_backend.common.authentication.application.AuthenticatedUser;
 import com.loci.loci_backend.common.authentication.domain.KeycloakPrincipal;
-import com.loci.loci_backend.common.authentication.infrastructure.secondary.repository.RestIdentityRepository;
+import com.loci.loci_backend.common.authentication.infrastructure.secondary.repository.RestIdentityProvider;
 
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
@@ -16,7 +16,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Component
 public class AuthenticatedUserArgumentResolver implements HandlerMethodArgumentResolver {
-  private final RestIdentityRepository identityRepository;
+  private final RestIdentityProvider identityRepository;
 
   @Override
   public boolean supportsParameter(MethodParameter parameter) {

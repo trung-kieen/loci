@@ -2,7 +2,7 @@ package com.loci.loci_backend.common.user.domain.service;
 
 import java.util.Optional;
 
-import com.loci.loci_backend.common.authentication.infrastructure.secondary.repository.RestIdentityRepository;
+import com.loci.loci_backend.common.authentication.infrastructure.secondary.repository.RestIdentityProvider;
 import com.loci.loci_backend.common.user.domain.aggregate.User;
 import com.loci.loci_backend.common.user.domain.repository.UserRepository;
 
@@ -16,7 +16,7 @@ import lombok.RequiredArgsConstructor;
 @Service
 public class UserService {
   private final UserRepository repository;
-  private final RestIdentityRepository restIdentityRepository;
+  private final RestIdentityProvider restIdentityRepository;
 
   /**
    * Get current authenticated user

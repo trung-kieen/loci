@@ -38,7 +38,7 @@ public class JwtUserSyncFilter extends OncePerRequestFilter {
   protected boolean shouldNotFilter(HttpServletRequest request) {
     AntPathMatcher pathMatcher = new AntPathMatcher();
     String path = request.getServletPath();
-    log.info("Ignore sync user filter for request {}", request.getRequestURI());
+    log.debug("Ignore sync user filter for request {}", request.getRequestURI());
     return Arrays.stream(SecurityWhitelist.PATTERNS)
         .anyMatch(pattern -> pathMatcher.match(pattern, path));
   }
@@ -47,7 +47,7 @@ public class JwtUserSyncFilter extends OncePerRequestFilter {
   protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
       throws ServletException, IOException {
 
-    log.info("Request extract keycloak user to sync in db {}", request.getRequestURI());
+    log.debug("Request extract keycloak user to sync in db {}", request.getRequestURI());
     try {
       JwtAuthenticationToken token = (JwtAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
 

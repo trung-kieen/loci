@@ -1,14 +1,12 @@
 package com.loci.loci_backend.common.migration.infrastructure.secondary;
 
 import java.util.Arrays;
-import java.util.Collections;
 
 import com.loci.loci_backend.common.authentication.domain.Username;
 import com.loci.loci_backend.common.authentication.infrastructure.primary.keycloak.KeycloakProperties;
 import com.loci.loci_backend.common.migration.application.KeycloakMigrateException;
 import com.loci.loci_backend.common.migration.domain.aggregate.KeycloakUser;
 import com.loci.loci_backend.common.migration.domain.repository.KeycloakAdminRepository;
-import com.loci.loci_backend.core.user.infrastructure.primary.resource.UserResource;
 
 import org.keycloak.OAuth2Constants;
 import org.keycloak.admin.client.Keycloak;

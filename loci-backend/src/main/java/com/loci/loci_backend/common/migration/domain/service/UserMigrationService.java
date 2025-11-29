@@ -12,7 +12,6 @@ import com.loci.loci_backend.common.migration.domain.vo.MigrationResultState;
 import com.loci.loci_backend.common.migration.domain.vo.TotalMigrationFail;
 import com.loci.loci_backend.common.migration.domain.vo.TotalMigrationUser;
 import com.loci.loci_backend.common.user.domain.aggregate.User;
-import com.loci.loci_backend.core.user.domain.profile.service.UserAggregateMapper;
 
 import org.springframework.stereotype.Service;
 
@@ -24,7 +23,7 @@ public class UserMigrationService {
 
   private final LegacyUserRepository legacyRepository;
   private final KeycloakAdminRepository keycloakPort;
-  private final UserAggregateMapper mapper;
+  private final MigrationMapper mapper;
 
   public MigrationResult migrateUsers(int limit) {
     List<User> legacyUsers = legacyRepository.fetchUsers(limit);

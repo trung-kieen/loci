@@ -5,9 +5,10 @@ import java.util.UUID;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.loci.loci_backend.common.validation.infrastructure.factory.ProblemDetailsFactory;
-import com.loci.loci_backend.common.validation.infrastructure.security.AuthenticationProblemDetail;
+import com.loci.loci_backend.common.validation.infrastructure.primary.problem.problem.AuthenticationProblemDetail;
 
 import org.apache.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
@@ -52,7 +53,7 @@ public class AuthenticationEntryPointImpl implements AuthenticationEntryPoint {
     );
 
     response.setStatus(HttpStatus.SC_UNAUTHORIZED);
-    response.setContentType("application/json");
+    response.setContentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE);
 
     AuthenticationProblemDetail problem = problemFactory.createAuthenticationProblem(
         request, authException, requestId);

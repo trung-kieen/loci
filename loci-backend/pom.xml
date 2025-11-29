@@ -55,6 +55,10 @@
       <artifactId>h2</artifactId>
       <scope>runtime</scope>
     </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-aop</artifactId>
+    </dependency>
 
     <dependency>
       <groupId>org.mapstruct</groupId>
@@ -147,7 +151,7 @@
     <dependency>
       <groupId>net.logstash.logback</groupId>
       <artifactId>logstash-logback-encoder</artifactId>
-      <version>7.4</version>  <!-- Phiên bản mới nhất tính đến 2025 -->
+      <version>7.4</version>
     </dependency>
     <dependency>
       <groupId>org.flywaydb</groupId>
@@ -209,6 +213,18 @@
 
   <build>
     <plugins>
+      <plugin>
+        <groupId>org.flywaydb</groupId>
+        <artifactId>flyway-maven-plugin</artifactId>
+        <version>6.5.7</version>
+        <configuration>
+          <configFiles>
+            <configFile>
+              src/main/resources/flyway.conf
+            </configFile>
+          </configFiles>
+        </configuration>
+      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
