@@ -5,10 +5,12 @@
 
   <!-- Rolling file appender use for trace log -->
   <appender name="ROLLING" class="ch.qos.logback.core.rolling.RollingFileAppender">
-    <file>logs/loci.log</file>
-    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-      <fileNamePattern>logs/logFile.%d{yyyy-MM-dd_HH:mm:ss}.log</fileNamePattern>
-      <maxHistory>5</maxHistory>
+    <file>logs/logFile-${HOSTNAME:-localhost}-${PID:-0}.log</file>
+
+    <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+      <fileNamePattern>logs/logFile-${HOSTNAME:-localhost}-${PID:-0}.%d{yyyy-MM-dd_HH}.%i.log.gz</fileNamePattern>
+      <maxFileSize>100MB</maxFileSize>
+      <maxHistory>360</maxHistory>
       <totalSizeCap>2GB</totalSizeCap>
     </rollingPolicy>
     <encoder>

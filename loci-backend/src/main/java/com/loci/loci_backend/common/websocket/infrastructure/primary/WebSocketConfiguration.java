@@ -16,9 +16,9 @@ import lombok.extern.log4j.Log4j2;
 @Configuration
 @RequiredArgsConstructor
 @Log4j2
-@Order(Ordered.HIGHEST_PRECEDENCE - 10 ) // after the cors filter
+@Order(Ordered.HIGHEST_PRECEDENCE - 10) // after the cors filter
 @EnableWebSocketMessageBroker
-public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
+public class WebSocketConfiguration implements WebSocketMessageBrokerConfigurer {
   private final CorsConfiguration corsConfiguration;
   private final SecurityChannelInterceptorAdapter authChannelInterceptorAdapter;
 
@@ -31,12 +31,12 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
   @Override
   public void registerStompEndpoints(StompEndpointRegistry registry) {
     for (String origin : corsConfiguration.getAllowedOrigins()) {
-      registry.addEndpoint("/ws")
+      registry.addEndpoint("/ws", "/ws/messages", "/ws/notifications", "/ws/presence")
           .setAllowedOrigins(origin)
       // .setAllowedOriginPatterns("*") // Or this for flexibility
       // .withSockJS()// to disable SockJS wrapping
       ;
-      registry.addEndpoint("/ws")
+      registry.addEndpoint("/ws", "/ws/messages", "/ws/notifications", "/ws/presence")
           .setAllowedOrigins(origin)
           .withSockJS();
     }

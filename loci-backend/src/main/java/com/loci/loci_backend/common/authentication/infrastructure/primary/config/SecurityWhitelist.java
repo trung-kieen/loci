@@ -5,7 +5,6 @@ public class SecurityWhitelist {
   }
 
   public static final String[] PATTERNS = {
-      "/actuator/**",
       "/ws/**",
       "/ws",
       "/api/v1/ws/**",

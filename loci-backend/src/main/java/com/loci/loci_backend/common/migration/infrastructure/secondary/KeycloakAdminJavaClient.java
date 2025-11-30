@@ -6,7 +6,7 @@ import com.loci.loci_backend.common.authentication.domain.Username;
 import com.loci.loci_backend.common.authentication.infrastructure.primary.keycloak.KeycloakProperties;
 import com.loci.loci_backend.common.migration.application.KeycloakMigrateException;
 import com.loci.loci_backend.common.migration.domain.aggregate.KeycloakUser;
-import com.loci.loci_backend.common.migration.domain.repository.KeycloakAdminRepository;
+import com.loci.loci_backend.common.migration.domain.repository.KeycloakAdminClient;
 
 import org.keycloak.OAuth2Constants;
 import org.keycloak.admin.client.Keycloak;
@@ -20,12 +20,12 @@ import org.springframework.stereotype.Service;
 import jakarta.ws.rs.core.Response;
 
 @Service
-public class KeycloakAdminJavaClientRepository implements KeycloakAdminRepository {
+public class KeycloakAdminJavaClient implements KeycloakAdminClient {
 
   private final Keycloak keycloak;
   private final KeycloakProperties properties;
 
-  public KeycloakAdminJavaClientRepository(KeycloakProperties properties) {
+  public KeycloakAdminJavaClient(KeycloakProperties properties) {
     this.properties = properties;
     this.keycloak = KeycloakBuilder.builder()
         .serverUrl(properties.getAuthServerUrl())

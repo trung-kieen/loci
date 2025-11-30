@@ -115,76 +115,9 @@ public class UserEntity extends AbstractAuditingEntity<Long> {
     MALE, FEMALE
   }
 
-  public static Page<PublicProfile> toDomain(Page<UserEntity> userPage) {
-    Page<PublicProfile> profilePage = userPage.map((u) -> UserEntity.toPublicProfile(u));
-    return profilePage;
-
-  }
-
-  public static User toDomain(UserEntity userEntity) {
-    return User.builder()
-        .email(new UserEmail(userEntity.getEmail()))
-        .firstname(new UserFirstname(userEntity.getFirstname()))
-        .lastname(new UserLastname(userEntity.getLastname()))
-        .authorities(AuthorityEntity.toDomain(userEntity.getAuthorities()))
-        .lastModifiedDate(userEntity.getLastModifiedDate())
-        .createdDate(userEntity.getCreatedDate())
-        .privacySetting(userEntity.getPrivacySetting())
-        .dbId(userEntity.getId())
-        .build();
-  }
-
-  public static PersonalProfile toPersonalProfile(UserEntity userEntity) {
-    return PersonalProfile.builder()
-        .fullname(
-            Fullname.from(new UserFirstname(userEntity.getFirstname()), new UserLastname(userEntity.getLastname())))
-        .email(new UserEmail(userEntity.getEmail()))
-        .username(new Username(userEntity.getUsername()))
-        .userPublicId(new UserPublicId(userEntity.getPublicId()))
-        .imageUrl(new UserImageUrl(userEntity.getImageURL()))
-        .lastModifiedDate(userEntity.getLastModifiedDate())
-        .createdDate(userEntity.getCreatedDate())
-        .authorities(AuthorityEntity.toDomain(userEntity.getAuthorities()))
-        .privacySetting(userEntity.getPrivacySetting())
-        .dbId(userEntity.getId())
-        .build();
-  }
-
-  public static PublicProfile toPublicProfile(UserEntity userEntity) {
-    return PublicProfile.builder()
-        .publicId(new UserPublicId(userEntity.getPublicId()))
-        .username(new Username(userEntity.getUsername()))
-        .fullname(
-            Fullname.from(new UserFirstname(userEntity.getFirstname()), new UserLastname(userEntity.getLastname())))
-        .email(new UserEmail(userEntity.getEmail()))
-        .imageUrl(new UserImageUrl(userEntity.getImageURL()))
-        .createdDate(userEntity.getCreatedDate())
-        .build();
-  }
-
   public String getUsername() {
     return email;
 
-  }
-
-  public static UserEntity from(PersonalProfile profile) {
-    UserEntityBuilder userEntityBuilder = UserEntity.builder();
-
-    NullSafe.applyIfPresent(profile::getImageUrl, i -> userEntityBuilder.imageURL(i.value()));
-
-    NullSafe.applyIfPresent(profile::getUserPublicId, i -> userEntityBuilder.publicId(i.value()));
-
-    return userEntityBuilder
-        .authorities(AuthorityEntity.from(profile.getAuthorities()))
-        .email(profile.getEmail().value())
-        .firstname(profile.getFullname().getFirstname().value())
-        .lastname(profile.getFullname().getLastname().value())
-        .lastSeen(profile.getLastSeen())
-        .lastSeenSetting(profile.getPrivacySetting().getLastSeenSetting().value())
-        .friendRequestSetting(profile.getPrivacySetting().getFriendRequestSetting().value())
-        .profileVisibility(profile.getPrivacySetting().getProfileVisibility().value())
-        .id(profile.getDbId())
-        .build();
   }
 
   public void applyChanges(PersonalProfileChanges changes) {
@@ -200,32 +133,6 @@ public class UserEntity extends AbstractAuditingEntity<Long> {
       NullSafe.applyIfPresent(ps::getFriendRequestSetting, frs -> this.friendRequestSetting = frs.value());
       NullSafe.applyIfPresent(ps::getProfileVisibility, pv -> this.profileVisibility = pv.value());
     });
-  }
-
-  public static UserEntity from(User user) {
-    UserEntity.UserEntityBuilder builder = UserEntity.builder()
-        .authorities(AuthorityEntity.from(user.getAuthorities()))
-        .email(user.getEmail().value())
-        .firstname(user.getFirstname().value())
-        .lastname(user.getLastname().value())
-        .lastSeen(user.getLastSeen())
-        .id(user.getDbId());
-    NullSafe.applyIfPresent(user::getPrivacySetting, ps -> {
-      NullSafe.applyIfPresent(ps::getLastSeenSetting, lss -> builder.lastSeenSetting(lss.value()));
-      NullSafe.applyIfPresent(ps::getFriendRequestSetting, frs -> builder.friendRequestSetting(frs.value()));
-      NullSafe.applyIfPresent(ps::getProfileVisibility, pv -> builder.profileVisibility(pv.value()));
-    });
-
-    NullSafe.applyIfPresent(user::getImageUrl, iu -> builder.imageURL(iu.value()));
-    NullSafe.applyIfPresent(user::getUserPublicId, upi -> builder.publicId(upi.value()));
-
-    // EntityMapper.applyIfPresent(user::getUserAddress, addr -> {
-    // builder.addressCity(addr.city());
-    // builder.addressCountry(addr.country());
-    // builder.addressZipCode(addr.zipCode());
-    // builder.addressStreet(addr.street());
-    // });
-    return builder.build();
   }
 
   public PrivacySetting getPrivacySetting() {

@@ -1,4 +1,4 @@
-package com.loci.loci_backend.core.identity.infrastructure.primary;
+package com.loci.loci_backend.core.identity.infrastructure.primary.payload;
 
 import java.time.Instant;
 
@@ -35,21 +35,21 @@ public class RestPublicProfile {
   // recentActivity: RecentActivity[];
   // unfriended, blocked, not_determined aka guest
 
-  public static Page<RestPublicProfile> from(Page<PublicProfile> profile) {
-    return profile.map(RestPublicProfile::from);
-  }
-
-  public static RestPublicProfile from(PublicProfile profile) {
-    return RestPublicProfile.builder()
-        .publicId(profile.getPublicId().value().toString())
-        .fullname(profile.getFullname().value())
-        .username(profile.getUsername().get())
-        .emailAddress(profile.getEmail().value())
-        .createdAt(profile.getCreatedDate())
-        .memberSince(TimeFormatter.timeAgo(profile.getCreatedDate()))
-        .profilePictureUrl(
-            profile.getImageUrl().valueOrDefault())
-        .build();
-  }
-
+  // public static Page<RestPublicProfile> from(Page<PublicProfile> profile) {
+  //   return profile.map(RestPublicProfile::from);
+  // }
+  //
+  // public static RestPublicProfile from(PublicProfile profile) {
+  //   return RestPublicProfile.builder()
+  //       .publicId(profile.getPublicId().value().toString())
+  //       .fullname(profile.getFullname().value())
+  //       .username(profile.getUsername().get())
+  //       .emailAddress(profile.getEmail().value())
+  //       .createdAt(profile.getCreatedDate())
+  //       .memberSince(TimeFormatter.timeAgo(profile.getCreatedDate()))
+  //       .profilePictureUrl(
+  //           profile.getImageUrl().valueOrDefault())
+  //       .build();
+  // }
+  //
 }

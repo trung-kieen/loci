@@ -1,12 +1,14 @@
 package com.loci.loci_backend.core.identity.application;
 
 import com.loci.loci_backend.common.authentication.domain.KeycloakPrincipal;
+import com.loci.loci_backend.core.discovery.application.DiscoveryApplicationService;
+import com.loci.loci_backend.core.discovery.domain.aggregate.Contact;
+import com.loci.loci_backend.core.discovery.domain.vo.ContactSearchCriteria;
 import com.loci.loci_backend.core.identity.domain.aggregate.PersonalProfile;
 import com.loci.loci_backend.core.identity.domain.aggregate.PersonalProfileChanges;
 import com.loci.loci_backend.core.identity.domain.aggregate.PublicProfile;
 import com.loci.loci_backend.core.identity.domain.service.ProfileManager;
 import com.loci.loci_backend.core.identity.domain.vo.ProfilePublicId;
-import com.loci.loci_backend.core.identity.domain.vo.UserSearchCriteria;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,13 +18,19 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class UserApplicationService {
+public class IdentityApplicationService {
   private final ProfileManager profileManager;
+  private final DiscoveryApplicationService discoveryApplicationService;
 
   public PersonalProfile getPersonalProfile(KeycloakPrincipal keycloakPrincipal) {
     PersonalProfile profile = profileManager.readPersonalProfile(keycloakPrincipal);
     return profile;
   }
+
+  public Page<Contact> discoveryContacts(ContactSearchCriteria criteria, Pageable pageable) {
+    return discoveryApplicationService.discoveryContacts(criteria, pageable);
+  }
+
 
   public PublicProfile getPublicProfile(ProfilePublicId profilePublicId) {
     return profileManager.readPublicProfileByPublicId(profilePublicId);
@@ -32,11 +40,5 @@ public class UserApplicationService {
     PersonalProfile savedProfile = profileManager.applyUpdate(keycloakPrincipal, profileChanges);
     return savedProfile;
   }
-
-  public Page<PublicProfile> searchActiveUsers(UserSearchCriteria criteria, Pageable pageable) {
-    return profileManager.searchActiveUsers(criteria, pageable);
-  }
-
-
 
 }

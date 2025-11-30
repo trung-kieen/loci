@@ -34,26 +34,4 @@ public class AuthorityEntity implements Serializable {
   public String name;
 
 
-  public static Set<AuthorityEntity> from(Collection<Authority> authorities) {
-    return authorities.stream().map(AuthorityEntity::from).collect(Collectors.toSet());
-  }
-
-
-
-
-  public static AuthorityEntity from(Authority authority) {
-    return AuthorityEntity.builder()
-        .name(authority.getName().name().toUpperCase())
-        .build();
-  }
-
-  public static Authority toDomain(AuthorityEntity entity) {
-    return Authority.builder()
-        .name(new AuthorityName(entity.getName()))
-        .build();
-  }
-
-  public static Set<Authority> toDomain(Collection<AuthorityEntity> entities) {
-    return entities.stream().map(AuthorityEntity::toDomain).collect(Collectors.toSet());
-  }
 }

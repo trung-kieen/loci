@@ -1,4 +1,4 @@
-package com.loci.loci_backend.core.identity.infrastructure.primary;
+package com.loci.loci_backend.core.identity.infrastructure.primary.payload;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.loci.loci_backend.common.util.NullSafe;

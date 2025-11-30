@@ -8,10 +8,7 @@ import com.loci.loci_backend.core.identity.domain.aggregate.PersonalProfileChang
 import com.loci.loci_backend.core.identity.domain.aggregate.PublicProfile;
 import com.loci.loci_backend.core.identity.domain.repository.ProfileRepository;
 import com.loci.loci_backend.core.identity.domain.vo.ProfilePublicId;
-import com.loci.loci_backend.core.identity.domain.vo.UserSearchCriteria;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
@@ -45,10 +42,6 @@ public class ProfileManager {
 
   public PersonalProfile applyUpdate(KeycloakPrincipal keycloakPrincipal, PersonalProfileChanges profileChanges) {
     return repository.applyProfileUpdate(keycloakPrincipal.getUsername(), profileChanges);
-  }
-
-  public Page<PublicProfile> searchActiveUsers(UserSearchCriteria criteria, Pageable pageable) {
-    return repository.searchActiveUsers(criteria, pageable);
   }
 
 }

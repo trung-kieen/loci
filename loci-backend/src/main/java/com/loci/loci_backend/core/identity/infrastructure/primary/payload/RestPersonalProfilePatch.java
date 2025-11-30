@@ -1,4 +1,4 @@
-package com.loci.loci_backend.core.identity.infrastructure.primary;
+package com.loci.loci_backend.core.identity.infrastructure.primary.payload;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.loci.loci_backend.common.user.domain.vo.UserFirstname;
@@ -29,17 +29,5 @@ public class RestPersonalProfilePatch {
   private String profilePictureUrl;
   private RestProfilePrivacy privacy;
 
-  public static PersonalProfileChanges toDomain(RestPersonalProfilePatch patch) {
-    var builder = PersonalProfileChanges.builder();
-    UserFirstname firstname = NullSafe.getIfPresent(patch.firstname, (f) -> new UserFirstname(f));
-    UserLastname lastname = NullSafe.getIfPresent(patch.lastname, (l) -> new UserLastname(l));
-
-    builder.fullname(Fullname.from(firstname, lastname));
-    // .username(new Username(patch.username))
-    // .email(new UserEmail(patch.emailAddress))
-    builder.imageUrl(NullSafe.getIfPresent(patch.profilePictureUrl, (p) -> new UserImageUrl(p)));
-    builder.privacySetting(NullSafe.getIfPresent(patch.privacy, p -> RestProfilePrivacy.toDomain(p)));
-    return builder.build();
-  }
 
 }

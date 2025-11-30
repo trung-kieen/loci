@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.loci.loci_backend.common.migration.domain.aggregate.KeycloakUser;
 import com.loci.loci_backend.common.migration.domain.aggregate.MigrationResult;
-import com.loci.loci_backend.common.migration.domain.repository.KeycloakAdminRepository;
+import com.loci.loci_backend.common.migration.domain.repository.KeycloakAdminClient;
 import com.loci.loci_backend.common.migration.domain.repository.LegacyUserRepository;
 import com.loci.loci_backend.common.migration.domain.vo.MigrationError;
 import com.loci.loci_backend.common.migration.domain.vo.MigrationResultState;
@@ -16,13 +16,15 @@ import com.loci.loci_backend.common.user.domain.aggregate.User;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 
 @Service
+@Log4j2
 @RequiredArgsConstructor
 public class UserMigrationService {
 
   private final LegacyUserRepository legacyRepository;
-  private final KeycloakAdminRepository keycloakPort;
+  private final KeycloakAdminClient keycloakPort;
   private final MigrationMapper mapper;
 
   public MigrationResult migrateUsers(int limit) {
@@ -33,6 +35,7 @@ public class UserMigrationService {
     for (User user : legacyUsers) {
       try {
         if (keycloakPort.userExists(user.getUsername())) {
+          log.info("Migrate user found duplicate {}", user.getUsername());
           errors.add("User already exists: " + user.getUsername());
           continue;
         }
@@ -42,6 +45,7 @@ public class UserMigrationService {
         totalUserMigrate++;
 
       } catch (Exception e) {
+        log.warn("Fail to migrate user {}", e.getMessage());
         errors.add("Failed to migrate " + user.getUsername() + ": " + e.getMessage());
       }
     }

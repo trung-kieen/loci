@@ -9,7 +9,7 @@ import org.springframework.shell.standard.ShellOption;
 
 import lombok.RequiredArgsConstructor;
 
-// TODO: disable danger shell in production
+// TODO: disable danger shell command in production
 @ShellComponent
 @RequiredArgsConstructor
 public class UserMigrationShellCommand {

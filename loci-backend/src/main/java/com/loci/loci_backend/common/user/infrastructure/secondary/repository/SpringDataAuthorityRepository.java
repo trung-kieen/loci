@@ -7,6 +7,7 @@ import java.util.Set;
 import com.loci.loci_backend.common.user.domain.aggregate.Authority;
 import com.loci.loci_backend.common.user.domain.repository.AuthorityRepository;
 import com.loci.loci_backend.common.user.infrastructure.secondary.entity.AuthorityEntity;
+import com.loci.loci_backend.common.user.infrastructure.secondary.mapper.AuthorityEntityMapper;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,11 +20,12 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class SpringDataAuthorityRepository implements AuthorityRepository {
   private final JpaAuthorityRepository repository;
+  private final AuthorityEntityMapper authorityEntityMapper;
 
   @Transactional(readOnly = false)
   @Override
   public Set<Authority> saveAll(Collection<Authority> authorities) {
-    Set<AuthorityEntity> entities = AuthorityEntity.from(authorities);
+    Set<AuthorityEntity> entities = authorityEntityMapper.from(authorities);
     Set<AuthorityEntity> savedEntities = new HashSet<>();
     for (AuthorityEntity authorityEntity : entities) {
       if (!repository.existsById(authorityEntity.getName())) {
@@ -34,7 +36,7 @@ public class SpringDataAuthorityRepository implements AuthorityRepository {
       }
     }
     repository.flush();
-    return AuthorityEntity.toDomain(savedEntities);
+    return authorityEntityMapper.toDomain(savedEntities);
   }
 
   // @Override
@@ -53,13 +55,13 @@ public class SpringDataAuthorityRepository implements AuthorityRepository {
   @Transactional(readOnly = false)
   @Override
   public Authority save(Authority authority) {
-    return AuthorityEntity.toDomain(repository.save(AuthorityEntity.from(authority)));
+    return authorityEntityMapper.toDomain(repository.save(authorityEntityMapper.from(authority)));
   }
 
   @Transactional(readOnly = false)
   @Override
   public boolean exists(Authority authority) {
-    return repository.existsById(AuthorityEntity.from(authority).getName());
+    return repository.existsById(authorityEntityMapper.from(authority).getName());
   }
 
 }

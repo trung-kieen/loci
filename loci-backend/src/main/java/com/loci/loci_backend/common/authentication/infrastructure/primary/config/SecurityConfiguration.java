@@ -1,5 +1,6 @@
 package com.loci.loci_backend.common.authentication.infrastructure.primary.config;
 
+import com.loci.loci_backend.common.authentication.domain.Role;
 import com.loci.loci_backend.common.authentication.infrastructure.primary.entrypoint.AuthenticationEntryPointImpl;
 import com.loci.loci_backend.common.authentication.infrastructure.primary.entrypoint.AuthorizationEntryPointImpl;
 import com.loci.loci_backend.common.authentication.infrastructure.primary.filter.JwtUserSyncFilter;
@@ -24,11 +25,9 @@ import lombok.extern.slf4j.Slf4j;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 @RequiredArgsConstructor
 @Slf4j
-public class SecurityConfig {
+public class SecurityConfiguration {
   private final AuthenticationEntryPointImpl authenticationEntryPoint;
-  private final AuthorizationEntryPointImpl  accessDeniedHandler;
-
-
+  private final AuthorizationEntryPointImpl accessDeniedHandler;
 
   /**
    * Map Keycloak roles (REALM and CLIENT level) to get them all
@@ -67,6 +66,7 @@ public class SecurityConfig {
     http.authorizeHttpRequests(
         request -> request
             .requestMatchers(SecurityWhitelist.PATTERNS).permitAll()
+            .requestMatchers("/actuator/**").hasRole(Role.ADMIN.name())
             .anyRequest().hasRole("user")
 
     );
@@ -82,6 +82,5 @@ public class SecurityConfig {
 
     return http.build();
   }
-
 
 }

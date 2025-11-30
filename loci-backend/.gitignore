@@ -35,4 +35,5 @@ postges-data/
 .idea/
 loci.log
 
-logs/**.log
+logs/
+!logs/.gitkeep
