@@ -14,16 +14,16 @@ import com.loci.loci_backend.common.user.domain.vo.UserImageUrl;
 import com.loci.loci_backend.common.user.domain.vo.UserLastname;
 import com.loci.loci_backend.common.user.domain.vo.UserPublicId;
 import com.loci.loci_backend.common.util.NullSafe;
-import com.loci.loci_backend.core.user.profile.domain.aggregate.Fullname;
-import com.loci.loci_backend.core.user.profile.domain.aggregate.PersonalProfile;
-import com.loci.loci_backend.core.user.profile.domain.aggregate.PersonalProfileChanges;
-import com.loci.loci_backend.core.user.profile.domain.aggregate.PrivacySetting;
-import com.loci.loci_backend.core.user.profile.domain.aggregate.PublicProfile;
-import com.loci.loci_backend.core.user.profile.domain.vo.FriendRequestSettingEnum;
-import com.loci.loci_backend.core.user.profile.domain.vo.LastSeenSettingEnum;
-import com.loci.loci_backend.core.user.profile.domain.vo.ProfileVisibility;
-import com.loci.loci_backend.core.user.profile.domain.vo.UserFriendRequestSetting;
-import com.loci.loci_backend.core.user.profile.domain.vo.UserLastSeenSetting;
+import com.loci.loci_backend.core.identity.domain.aggregate.Fullname;
+import com.loci.loci_backend.core.identity.domain.aggregate.PersonalProfile;
+import com.loci.loci_backend.core.identity.domain.aggregate.PersonalProfileChanges;
+import com.loci.loci_backend.core.identity.domain.aggregate.PrivacySetting;
+import com.loci.loci_backend.core.identity.domain.aggregate.PublicProfile;
+import com.loci.loci_backend.core.identity.domain.vo.FriendRequestSettingEnum;
+import com.loci.loci_backend.core.identity.domain.vo.LastSeenSettingEnum;
+import com.loci.loci_backend.core.identity.domain.vo.ProfileVisibility;
+import com.loci.loci_backend.core.identity.domain.vo.UserFriendRequestSetting;
+import com.loci.loci_backend.core.identity.domain.vo.UserLastSeenSetting;
 
 import org.springframework.data.domain.Page;
 

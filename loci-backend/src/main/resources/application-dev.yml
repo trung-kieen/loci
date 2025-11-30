@@ -94,7 +94,7 @@ flyway:
 
 shell:
   interactive:
-    enabled: true
+    enabled: false
 
 logging:
   com.loci.loci_backend: TRACE
