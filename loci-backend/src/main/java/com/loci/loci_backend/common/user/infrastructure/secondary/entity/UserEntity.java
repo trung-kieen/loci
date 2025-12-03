@@ -7,6 +7,7 @@ import java.util.UUID;
 
 import com.loci.loci_backend.common.jpa.AbstractAuditingEntity;
 import com.loci.loci_backend.common.util.NullSafe;
+import com.loci.loci_backend.core.conversation.infrastructure.secondary.entity.ConversationParticipantEntity;
 import com.loci.loci_backend.core.identity.domain.aggregate.PersonalProfileChanges;
 import com.loci.loci_backend.core.identity.domain.aggregate.PrivacySetting;
 import com.loci.loci_backend.core.identity.domain.aggregate.PrivacySettingBuilder;
@@ -15,6 +16,10 @@ import com.loci.loci_backend.core.identity.domain.vo.LastSeenSettingEnum;
 import com.loci.loci_backend.core.identity.domain.vo.ProfileVisibility;
 import com.loci.loci_backend.core.identity.domain.vo.UserFriendRequestSetting;
 import com.loci.loci_backend.core.identity.domain.vo.UserLastSeenSetting;
+import com.loci.loci_backend.core.messaging.infrastructure.secondary.entity.MessageEntity;
+import com.loci.loci_backend.core.notification.infrastructure.secondary.entity.NotificationEntity;
+import com.loci.loci_backend.core.social.infrastructure.secondary.entity.ContactEntity;
+import com.loci.loci_backend.core.social.infrastructure.secondary.entity.ContactRequestEntity;
 
 import org.jilt.Builder;
 import org.jilt.BuilderStyle;
@@ -30,6 +35,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
@@ -91,6 +97,24 @@ public class UserEntity extends AbstractAuditingEntity<Long> {
   })
   private Set<AuthorityEntity> authorities = new HashSet<>();
 
+  @OneToMany(mappedBy = "owningUser", cascade = CascadeType.ALL, orphanRemoval = true)
+  private Set<ContactEntity> contacts = new HashSet<>();
+
+  @OneToMany(mappedBy = "sender", cascade = CascadeType.ALL)
+  private Set<MessageEntity> sentMessages = new HashSet<>();
+
+  @OneToMany(mappedBy = "participant", cascade = CascadeType.ALL)
+  private Set<ConversationParticipantEntity> conversationMemberships = new HashSet<>();
+
+  @OneToMany(mappedBy = "receiver", cascade = CascadeType.ALL)
+  private Set<ContactRequestEntity> receivedContactRequests = new HashSet<>();
+
+  @OneToMany(mappedBy = "requester", cascade = CascadeType.ALL)
+  private Set<ContactRequestEntity> sentContactRequests = new HashSet<>();
+
+  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+  private Set<NotificationEntity> notifications = new HashSet<>();
+
   // @Column
   // @Enumerated(EnumType.STRING)
   // private Gender gender;
@@ -131,7 +155,6 @@ public class UserEntity extends AbstractAuditingEntity<Long> {
       NullSafe.applyIfPresent(fullname::getFirstname, fn -> this.firstname = fn.value());
       NullSafe.applyIfPresent(fullname::getLastname, ln -> this.lastname = ln.value());
     });
-
 
     NullSafe.applyIfPresent(changes::getBio, iu -> this.bio = iu.value());
     NullSafe.applyIfPresent(changes::getImageUrl, iu -> this.profilePicture = iu.value());

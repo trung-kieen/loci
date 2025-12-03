@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Data
 public class PersonalProfileChanges {
 
-  private Fullname fullname;
+  private UserFullname fullname;
 
   // Not apply change this
   // private Username username;
@@ -28,7 +28,7 @@ public class PersonalProfileChanges {
   private PrivacySetting privacySetting;
 
   @Builder(style = BuilderStyle.STAGED)
-  public PersonalProfileChanges(Fullname fullname, ProfileBio bio, UserImageUrl imageUrl,
+  public PersonalProfileChanges(UserFullname fullname, ProfileBio bio, UserImageUrl imageUrl,
       PrivacySetting privacySetting) {
     this.fullname = fullname;
     this.bio = bio;

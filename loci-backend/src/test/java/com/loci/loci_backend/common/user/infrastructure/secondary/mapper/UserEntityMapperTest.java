@@ -6,13 +6,11 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.time.Instant;
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
 import com.loci.loci_backend.common.authentication.domain.Username;
 import com.loci.loci_backend.common.user.domain.aggregate.Authority;
-import com.loci.loci_backend.common.user.domain.vo.AuthorityName;
 import com.loci.loci_backend.common.user.domain.vo.UserEmail;
 import com.loci.loci_backend.common.user.domain.vo.UserFirstname;
 import com.loci.loci_backend.common.user.domain.vo.UserImageUrl;
@@ -21,11 +19,11 @@ import com.loci.loci_backend.common.user.domain.vo.UserPublicId;
 import com.loci.loci_backend.common.user.infrastructure.secondary.entity.AuthorityEntity;
 import com.loci.loci_backend.common.user.infrastructure.secondary.entity.UserEntity;
 import com.loci.loci_backend.common.user.infrastructure.secondary.entity.UserEntityBuilder;
-import com.loci.loci_backend.core.identity.domain.aggregate.Fullname;
 import com.loci.loci_backend.core.identity.domain.aggregate.PersonalProfile;
 import com.loci.loci_backend.core.identity.domain.aggregate.PersonalProfileBuilder;
 import com.loci.loci_backend.core.identity.domain.aggregate.PrivacySetting;
 import com.loci.loci_backend.core.identity.domain.aggregate.PublicProfile;
+import com.loci.loci_backend.core.identity.domain.aggregate.UserFullname;
 import com.loci.loci_backend.core.identity.domain.vo.ProfileBio;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -34,9 +32,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("UserEntityMapper - Unit Tests (written in TDD style)")
@@ -99,7 +94,7 @@ class UserEntityMapperTest {
     PersonalProfile profile = PersonalProfileBuilder.personalProfile()
         .dbId(99L)
         .email(new UserEmail("new@email.com"))
-        .fullname(Fullname.from(new UserFirstname("New"), new UserLastname("User")))
+        .fullname(UserFullname.from(new UserFirstname("New"), new UserLastname("User")))
         .username(new Username("newuser"))
         .imageUrl(new UserImageUrl("https://new.com/pic.jpg"))
         .bio(new ProfileBio("New bio"))

@@ -15,13 +15,13 @@ import lombok.Data;
 public class PublicProfile {
   private UserPublicId publicId;
   private UserEmail email;
-  private Fullname fullname;
+  private UserFullname fullname;
   private Username username;
   private UserImageUrl imageUrl;
   private Instant createdDate;
 
   @Builder
-  public PublicProfile(UserPublicId publicId, UserEmail email, Fullname fullname, Username username,
+  public PublicProfile(UserPublicId publicId, UserEmail email, UserFullname fullname, Username username,
       UserImageUrl imageUrl, Instant createdDate) {
     this.publicId = publicId;
     this.email = email;

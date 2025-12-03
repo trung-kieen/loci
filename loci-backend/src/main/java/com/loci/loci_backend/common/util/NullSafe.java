@@ -46,6 +46,7 @@ public final class NullSafe {
 
   /**
    * If the value object is not null get field .value()
+   * Unwrap VO function
    */
   public static <R> R getIfPresent(ValueObject<R> value) {
     return getIfPresent(value, (v) -> v.value());

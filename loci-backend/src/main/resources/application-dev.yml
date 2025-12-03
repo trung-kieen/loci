@@ -11,7 +11,7 @@ spring:
     baseline-on-migrate: true
     url: jdbc:postgresql://localhost:5432/locidb
     user: admin
-    # schemas: public
+    schemas: public
     password: admin
   datasource:
     url: jdbc:postgresql://localhost:5432/locidb
@@ -24,7 +24,7 @@ spring:
     type: com.zaxxer.hikari.HikariDataSource
   jpa:
     hibernate:
-      ddl-auto: validate
+      ddl-auto: none
     show-sql: true
     properties:
       hibernate:
@@ -34,24 +34,24 @@ spring:
     # hibernate:
     #   ddl-auto: create
     # properties:
-    #   javax:
-    #     persistence:
-    #       schema-generation:
-    #         scripts:
-    #           action: create
-    #           create-target: src/main/resources/schema.sql
+      # javax:
+      #   persistence:
+      #     schema-generation:
+      #       scripts:
+      #         action: create
+      #         create-target: src/main/resources/schema.sql
 
 
 
     # NOTE: update schema helper
     # properties:
-    #   javax:
-    #     persistence:
-    #       schema-generation:
-    #         create-source: metadata
-    #         scripts:
-    #           action: update
-    #           create-target: src/main/resources/update.sql
+      # javax:
+      #   persistence:
+      #     schema-generation:
+      #       create-source: metadata
+      #       scripts:
+      #         action: update
+      #         create-target: src/main/resources/update.sql
 
 
   devtools:

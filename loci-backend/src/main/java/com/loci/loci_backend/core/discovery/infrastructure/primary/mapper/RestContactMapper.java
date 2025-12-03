@@ -11,10 +11,14 @@ import lombok.RequiredArgsConstructor;
 @Component
 @RequiredArgsConstructor
 public class RestContactMapper {
+  private final MapStructRestContactMapper contactMapper;
 
-  public Page<RestContact> from(Page<Contact> searchActiveUsers) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'from'");
+  public RestContact from(Contact contact) {
+    return contactMapper.from(contact);
+  }
+
+  public Page<RestContact> from(Page<Contact> contactPage) {
+    return contactPage.map(this::from);
   }
 
 }

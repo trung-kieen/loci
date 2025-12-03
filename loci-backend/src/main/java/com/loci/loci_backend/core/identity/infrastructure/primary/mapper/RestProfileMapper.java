@@ -5,11 +5,11 @@ import com.loci.loci_backend.common.user.domain.vo.UserImageUrl;
 import com.loci.loci_backend.common.user.domain.vo.UserLastname;
 import com.loci.loci_backend.common.util.NullSafe;
 import com.loci.loci_backend.common.util.TimeFormatter;
-import com.loci.loci_backend.core.identity.domain.aggregate.Fullname;
 import com.loci.loci_backend.core.identity.domain.aggregate.PersonalProfile;
 import com.loci.loci_backend.core.identity.domain.aggregate.PersonalProfileChanges;
 import com.loci.loci_backend.core.identity.domain.aggregate.PersonalProfileChangesBuilder;
 import com.loci.loci_backend.core.identity.domain.aggregate.PublicProfile;
+import com.loci.loci_backend.core.identity.domain.aggregate.UserFullname;
 import com.loci.loci_backend.core.identity.domain.vo.ProfileBio;
 import com.loci.loci_backend.core.identity.infrastructure.primary.payload.RestPersonalProfile;
 import com.loci.loci_backend.core.identity.infrastructure.primary.payload.RestPersonalProfileBuilder;
@@ -47,7 +47,7 @@ public class RestProfileMapper {
     UserFirstname firstname = NullSafe.constructOrNull(UserFirstname.class, patch.getFirstname());
     UserLastname lastname = NullSafe.constructOrNull(UserLastname.class, patch.getLastname());
     return PersonalProfileChangesBuilder.personalProfileChanges()
-        .fullname(Fullname.from(firstname, lastname))
+        .fullname(UserFullname.from(firstname, lastname))
         .bio(NullSafe.constructOrNull(ProfileBio.class, patch.getBio()))
         .imageUrl(NullSafe.constructOrNull(UserImageUrl.class, patch.getProfilePictureUrl()))
         .privacySetting(NullSafe.getIfPresent(patch.getPrivacy(), p -> RestProfilePrivacy.toDomain(p)))

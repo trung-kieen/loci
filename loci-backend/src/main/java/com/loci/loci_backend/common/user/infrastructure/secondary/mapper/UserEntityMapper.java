@@ -11,13 +11,13 @@ import com.loci.loci_backend.common.user.domain.vo.UserPublicId;
 import com.loci.loci_backend.common.user.infrastructure.secondary.entity.UserEntity;
 import com.loci.loci_backend.common.user.infrastructure.secondary.entity.UserEntityBuilder;
 import com.loci.loci_backend.common.util.NullSafe;
-import com.loci.loci_backend.core.identity.domain.aggregate.Fullname;
 import com.loci.loci_backend.core.identity.domain.aggregate.PersonalProfile;
 import com.loci.loci_backend.core.identity.domain.aggregate.PersonalProfileBuilder;
 import com.loci.loci_backend.core.identity.domain.aggregate.PrivacySetting;
 import com.loci.loci_backend.core.identity.domain.aggregate.PrivacySettingBuilder;
 import com.loci.loci_backend.core.identity.domain.aggregate.PublicProfile;
 import com.loci.loci_backend.core.identity.domain.aggregate.PublicProfileBuilder;
+import com.loci.loci_backend.core.identity.domain.aggregate.UserFullname;
 import com.loci.loci_backend.core.identity.domain.vo.ProfileBio;
 
 import org.springframework.data.domain.Page;
@@ -35,7 +35,7 @@ public class UserEntityMapper {
         .publicId(new UserPublicId(userEntity.getPublicId()))
         .email(new UserEmail(userEntity.getEmail()))
         .fullname(
-            Fullname.from(new UserFirstname(userEntity.getFirstname()), new UserLastname(userEntity.getLastname())))
+            UserFullname.from(new UserFirstname(userEntity.getFirstname()), new UserLastname(userEntity.getLastname())))
         .username(new Username(userEntity.getUsername()))
         .imageUrl(new UserImageUrl(userEntity.getProfilePicture()))
         .createdDate(userEntity.getCreatedDate())
@@ -74,7 +74,7 @@ public class UserEntityMapper {
         .dbId(userEntity.getId())
         .email(new UserEmail(userEntity.getEmail()))
         .fullname(
-            Fullname.from(new UserFirstname(userEntity.getFirstname()), new UserLastname(userEntity.getLastname())))
+            UserFullname.from(new UserFirstname(userEntity.getFirstname()), new UserLastname(userEntity.getLastname())))
         .username(new Username(userEntity.getUsername()))
         .imageUrl(new UserImageUrl(userEntity.getProfilePicture()))
         .bio(new ProfileBio(userEntity.getBio()))

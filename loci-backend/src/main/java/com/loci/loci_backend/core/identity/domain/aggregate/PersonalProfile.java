@@ -29,7 +29,7 @@ public class PersonalProfile {
 
   private UserEmail email;
 
-  private Fullname fullname;
+  private UserFullname fullname;
 
   private Username username;
 
@@ -61,7 +61,7 @@ public class PersonalProfile {
 
 
   @Builder(style =  BuilderStyle.STAGED)
-  public PersonalProfile(Long dbId, UserEmail email, Fullname fullname, Username username, UserImageUrl imageUrl,
+  public PersonalProfile(Long dbId, UserEmail email, UserFullname fullname, Username username, UserImageUrl imageUrl,
       ProfileBio bio, Instant createdDate, Instant lastModifiedDate, Instant lastActive, PrivacySetting privacySetting,
       Set<Authority> authorities, UserPublicId userPublicId) {
     this.dbId = dbId;

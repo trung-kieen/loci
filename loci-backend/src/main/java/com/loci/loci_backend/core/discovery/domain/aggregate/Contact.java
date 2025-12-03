@@ -5,12 +5,11 @@ import com.loci.loci_backend.common.user.domain.vo.UserEmail;
 import com.loci.loci_backend.common.user.domain.vo.UserImageUrl;
 import com.loci.loci_backend.common.user.domain.vo.UserPublicId;
 import com.loci.loci_backend.core.discovery.domain.vo.FriendshipStatus;
-import com.loci.loci_backend.core.identity.domain.aggregate.Fullname;
+import com.loci.loci_backend.core.identity.domain.aggregate.UserFullname;
 
 import org.jilt.Builder;
 import org.jilt.BuilderStyle;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -19,7 +18,7 @@ import lombok.NoArgsConstructor;
 public class Contact {
   private UserPublicId publicId;
 
-  private Fullname fullname;
+  private UserFullname fullname;
 
   private Username username;
 
@@ -29,8 +28,9 @@ public class Contact {
 
   private FriendshipStatus friendshipStatus;
 
+
   @Builder(style = BuilderStyle.STAGED)
-  public Contact(UserPublicId publicId, Fullname fullname, Username username, UserEmail userEmail,
+  public Contact(UserPublicId publicId, UserFullname fullname, Username username, UserEmail userEmail,
       UserImageUrl imageUrl, FriendshipStatus friendshipStatus) {
     this.publicId = publicId;
     this.fullname = fullname;

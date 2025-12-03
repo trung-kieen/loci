@@ -52,6 +52,10 @@ public class SecurityConfiguration {
     return new JwtUserSyncFilter();
   }
 
+
+
+
+
   /**
    * Configure security
    */

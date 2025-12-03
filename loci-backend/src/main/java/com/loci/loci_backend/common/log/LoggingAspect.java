@@ -1,4 +1,4 @@
-package com.loci.loci_backend.common.aspect;
+package com.loci.loci_backend.common.log;
 
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
