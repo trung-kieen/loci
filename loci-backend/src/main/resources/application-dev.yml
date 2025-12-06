@@ -1,6 +1,12 @@
 spring:
   application:
     name: loci
+  boot:
+    admin:
+      client:
+        url: http://localhost:7070
+        username: 'admin'
+        password: 'adminadmin'
 
   security:
     websocket:
@@ -24,7 +30,7 @@ spring:
     type: com.zaxxer.hikari.HikariDataSource
   jpa:
     hibernate:
-      ddl-auto: validate # none
+      ddl-auto: validate
     show-sql: true
     properties:
       hibernate:
@@ -82,10 +88,13 @@ management:
     web:
       exposure:
         # Access /actuator/metrics or /actuator/prometheus
-        # include: "*"
-        include: health,info,metrics,prometheus,httpexchanges
+        include: "*"
+        # include: health,info,metrics,prometheus,httpexchanges
 
         exclude: env,beans
+  endpoint:
+    health:
+      show-details: always
   metrics:
     export:
       prometheus:

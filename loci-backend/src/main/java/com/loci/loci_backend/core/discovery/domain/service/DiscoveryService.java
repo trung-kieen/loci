@@ -29,6 +29,7 @@ public class DiscoveryService {
   public Page<SearchContact> discoveryContacts(ContactSearchCriteria criteria, Pageable pageable,
       KeycloakPrincipal principal) {
 
+    // Use simple search user strategy
     Page<User> matchingUsers = userRepository.searchUser(criteria, pageable);
 
     User currentUser = userRepository.getByUsername(principal.getUsername())

@@ -1,6 +1,7 @@
 package com.loci.loci_backend.core.notification.infrastructure.secondary.entity;
 
 import java.time.Instant;
+import java.util.UUID;
 
 import com.loci.loci_backend.common.jpa.AbstractAuditingEntity;
 import com.loci.loci_backend.common.user.infrastructure.secondary.entity.UserEntity;
@@ -45,6 +46,9 @@ public class NotificationEntity extends AbstractAuditingEntity<Long> {
 
   @Column(name = "read_at")
   private Instant readAt;
+
+  @Column(name = "public_id", unique = true)
+  private UUID publicId;
 
   // public NotificationJpaEntity(UserJpaEntity user, String content) {
   // this.notificationId = UUID.randomUUID();

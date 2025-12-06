@@ -6,6 +6,7 @@ import { SearchUserService } from '../../services/search-user.service';
 import { NotificationService } from '../../../../shared/services/notification.service';
 import { ContactListItem } from '../contact-list-item/contact-list-item';
 import { LoggerService } from '../../../../core/services/logger.service';
+import { FriendManagerService } from '../../services/friend-manager.service';
 
 @Component({
   selector: 'app-search-user',
@@ -17,6 +18,7 @@ export class SearchUser {
 
   private loggerService = inject(LoggerService);
   private searchService = inject(SearchUserService);
+  private friendManager = inject(FriendManagerService);
   private notificationService = inject(NotificationService);
   private logger = this.loggerService.getLogger("SearchUser")
   searchControl = new FormControl('', { nonNullable: true });
@@ -50,12 +52,16 @@ export class SearchUser {
         },
         complete: () => this.loading.set(false)
       })
+
+
+    this.friendManager.getListRequestConnectContact();
+
   }
 
   trackById(_: number, u: ContactSearchItem): string { return u.userId; }
 
   onAddFriend(user: ContactSearchItem): void {
-    this.searchService.addFriend(user.userId).subscribe({
+    this.friendManager.addFriend(user.userId).subscribe({
       next: () => {
         user.friendshipStatus = 'friend_request_sent';
         /* re-trigger signal so button flips instantly */

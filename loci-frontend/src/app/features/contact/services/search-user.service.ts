@@ -20,10 +20,6 @@ export class SearchUserService {
   }
 
 
-  addFriend(userId: string): Observable<void> {
-    this.logger.debug("Perform send request to userId ", userId);
-    return this.apiService.post<void>(`/contacts/${userId}/request`, {});
-  }
 
 
 

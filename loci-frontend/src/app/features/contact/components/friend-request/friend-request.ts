@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
+import { FriendManagerService } from '../../services/friend-manager.service';
 
 @Component({
   selector: 'app-friend-request',
@@ -6,6 +7,11 @@ import { Component } from '@angular/core';
   templateUrl: './friend-request.html',
   styleUrl: './friend-request.css',
 })
-export class FriendRequest {
+export class FriendRequest implements OnInit {
+  private friendManager = inject(FriendManagerService);
+  ngOnInit(): void {
+    this.friendManager.getListRequestConnectContact();
+  }
+
 
 }

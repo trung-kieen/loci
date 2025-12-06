@@ -40,7 +40,7 @@ public class UserConnectionResolverImpl implements UserConnectionResolver {
     }
 
     // Check pending contact request
-    Optional<ContactRequestRelation> requestOpt = contactRequestRepository.findRequestBetween(currentUserId, targetId);
+    Optional<ContactRequestRelation> requestOpt = contactRequestRepository.findPendingRequestBetweenUsers(currentUserId, targetId);
     if (requestOpt.isPresent()) {
       return requestOpt.get().friendshipStatusWithUser(currentUserId);
     }
@@ -59,7 +59,7 @@ public class UserConnectionResolverImpl implements UserConnectionResolver {
 
     List<ContactRelation> contacts = contactRepository.findAllInvolving(currentUserId, targetUserIds);
 
-    List<ContactRequestRelation> requests = contactRequestRepository.findInvolving(currentUserId, targetUserIds);
+    List<ContactRequestRelation> requests = contactRequestRepository.findInvolvingPendingRequest(currentUserId, targetUserIds);
 
     for (ContactRequestRelation request : requests) {
       FriendshipStatus status = request.friendshipStatusWithUser(currentUserId);

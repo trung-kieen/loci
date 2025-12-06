@@ -7,12 +7,12 @@ import org.jilt.Builder;
 import lombok.Data;
 
 @Data
-public class RestFriendRequestResponse {
+public class RestContactRequestCreated {
   private Long contactRequestId;
   private UUID receiverPublicId;
 
   @Builder
-  public RestFriendRequestResponse(Long contactRequestId, UUID receiverPublicId) {
+  public RestContactRequestCreated(Long contactRequestId, UUID receiverPublicId) {
     this.contactRequestId = contactRequestId;
     this.receiverPublicId = receiverPublicId;
   }

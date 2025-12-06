@@ -71,6 +71,9 @@ public class MessageEntity extends AbstractAuditingEntity<Long> {
   @Column(name = "status", nullable = false, length = 20)
   private MessageStatus status;
 
+  @Column(name = "public_id", unique = true)
+  private UUID publicId;
+
   @Column(name = "deleted", nullable = false)
   private boolean deleted = false;
 

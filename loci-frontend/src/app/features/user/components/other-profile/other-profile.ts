@@ -8,6 +8,8 @@ import { ActivatedRoute } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ProblemDetail } from '../../../../core/error-handler/problem-detail';
 import { FriendshipStatus } from '../../../contact/models/contact.model';
+import { FriendManagerService } from '../../../contact/services/friend-manager.service';
+import { NotificationService } from '../../../../shared/services/notification.service';
 @Component({
   selector: 'app-other-profile',
   standalone: true,
@@ -18,6 +20,8 @@ import { FriendshipStatus } from '../../../contact/models/contact.model';
 })
 export class OtherProfile implements OnInit {
   private profileService = inject(OtherProfileService);
+  private friendManager = inject(FriendManagerService);
+  private notificationService = inject(NotificationService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private profileId: string | null = null;
@@ -58,7 +62,7 @@ export class OtherProfile implements OnInit {
 
   canAddFriend = computed(() => {
     const status = this.profile()?.connectionStatus;
-    return status === 'not_connected'  || status === 'not_determined';
+    return status === 'not_connected' || status === 'not_determined';
   });
 
   canAcceptRequest = computed(() => {
@@ -107,8 +111,8 @@ export class OtherProfile implements OnInit {
   }
 
   public loadProfile(): void {
-    if (this.profileId == null){
-      return ;
+    if (this.profileId == null) {
+      return;
     }
     this.isLoading.set(true);
     this.error.set(null);
@@ -118,7 +122,7 @@ export class OtherProfile implements OnInit {
         this.profile.set(p);
         this.isLoading.set(false)
       },
-      error: (err: HttpErrorResponse) =>  {
+      error: (err: HttpErrorResponse) => {
         const problem = err.error as ProblemDetail
         this.error.set(problem.detail)
         this.isLoading.set(false)
@@ -131,18 +135,46 @@ export class OtherProfile implements OnInit {
     this.router.navigate(['/chats']);
   }
 
+
+
   onAddFriend(): void {
     const currentProfile = this.profile();
     if (!currentProfile) return;
+    this.friendManager.addFriend(currentProfile.publicId).subscribe({
+      next: () => {
+        this.profile.update(profile =>
+          profile ? { ...profile, connectionStatus: 'friend_request_sent' } : null
+        );
 
-    // Update local state optimistically
-    this.profile.update(profile =>
-      profile ? { ...profile, connectionStatus: 'friend_request_sent' } : null
-    );
 
-    // TODO: Call API to send friend request
-    console.log('Sending friend request to:', currentProfile.publicId);
+
+        this.notificationService.success(
+          'Friend Request Sent!',
+          `Your request has been sent to ${this.profile()?.fullname}`
+        );
+
+      },
+      error: () => {
+        this.notificationService.error(
+          'Request Failed',
+          'Unable to send friend request. Please try again.'
+        );
+      }
+    });
+
   }
+  // onAddFriend(): void {
+  //   const currentProfile = this.profile();
+  //   if (!currentProfile) return;
+
+  //   // Update local state optimistically
+  //   this.profile.update(profile =>
+  //     profile ? { ...profile, connectionStatus: 'friend_request_sent' } : null
+  //   );
+
+  //   // TODO: Call API to send friend request
+  //   console.log('Sending friend request to:', currentProfile.publicId);
+  // }
 
   onAcceptRequest(): void {
     const currentProfile = this.profile();

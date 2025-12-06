@@ -2,8 +2,6 @@ package com.loci.loci_backend.core.identity.infrastructure.primary.payload;
 
 import java.time.Instant;
 
-import com.loci.loci_backend.core.discovery.domain.vo.FriendshipStatus;
-
 import org.jilt.Builder;
 import org.jilt.BuilderStyle;
 

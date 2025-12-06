@@ -1,4 +1,4 @@
-package com.loci.loci_backend.core.social.infrastructure.secondary.repository;
+package com.loci.loci_backend.core.social.infrastructure.secondary.specification;
 
 import com.loci.loci_backend.core.social.infrastructure.secondary.entity.ContactEntity;
 

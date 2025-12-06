@@ -9,10 +9,12 @@ import com.loci.loci_backend.core.social.domain.aggregate.Contact;
 import com.loci.loci_backend.core.social.domain.repository.ContactRepository;
 import com.loci.loci_backend.core.social.infrastructure.secondary.entity.ContactEntity;
 import com.loci.loci_backend.core.social.infrastructure.secondary.mapper.ContactEntityMapper;
+import com.loci.loci_backend.core.social.infrastructure.secondary.specification.JpaContactSpecification;
 
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -45,6 +47,19 @@ public class SpringDataContactRepository implements ContactRepository {
   public boolean existsContactConnection(User a, User b) {
     Optional<Contact> contactOpt = searchContact(a.getDbId(), b.getDbId());
     return contactOpt.isPresent();
+  }
+
+  @Override
+  public Contact save(Contact contact) {
+    ContactEntity entity = mapper.from(contact);
+    return mapper.toDomain(repository.save(entity));
+  }
+
+  @Override
+  public void removeContact(UserDBId a, UserDBId b) {
+    ContactEntity connection = repository.findConnection(a.value(), b.value())
+        .orElseThrow(() -> new EntityNotFoundException("Not found connection between users"));
+    repository.delete(connection);
   }
 
 }

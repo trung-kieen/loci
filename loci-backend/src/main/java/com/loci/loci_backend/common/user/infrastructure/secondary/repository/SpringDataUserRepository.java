@@ -57,4 +57,5 @@ public class SpringDataUserRepository implements UserRepository {
     return entityPage.map(userEntityMapper::toDomain);
   }
 
+
 }

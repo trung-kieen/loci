@@ -1,5 +1,6 @@
 package com.loci.loci_backend.common.user.infrastructure.secondary.repository;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -25,4 +26,5 @@ public interface JpaUserRepository extends JpaRepository<UserEntity, Long>, JpaS
 
   Page<UserEntity> findAll(Specification<UserEntity> spec, Pageable pageable);
 
+  List<UserEntity> findAllById(Iterable<Long> ids);
 }

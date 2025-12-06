@@ -1,6 +1,7 @@
 package com.loci.loci_backend.core.groups.infrastructure.secondary.entity;
 
 import java.time.Instant;
+import java.util.UUID;
 
 import com.loci.loci_backend.common.jpa.AbstractAuditingEntity;
 import com.loci.loci_backend.core.conversation.infrastructure.secondary.entity.ConversationEntity;
@@ -45,6 +46,12 @@ public class GroupEntity extends AbstractAuditingEntity<Long> {
 
   @Column(name = "last_active")
   private Instant lastActive;
+
+
+  @Column(name = "public_id", unique = true)
+  private UUID publicId;
+
+
 
   // public GroupJpaEntity(ConversationJpaEntity conversation, String groupName) {
   // this.groupId = UUID.randomUUID();

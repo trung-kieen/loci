@@ -1,5 +1,7 @@
 package com.loci.loci_backend.core.social.infrastructure.secondary.entity;
 
+import java.util.UUID;
+
 import com.loci.loci_backend.common.jpa.AbstractAuditingEntity;
 import com.loci.loci_backend.common.user.infrastructure.secondary.entity.UserEntity;
 
@@ -7,6 +9,8 @@ import org.jilt.Builder;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -15,7 +19,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -24,7 +27,7 @@ import lombok.Setter;
 @Table(name = "contact_request")
 @Getter
 @Setter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 public class ContactRequestEntity extends AbstractAuditingEntity<Long> {
 
   @Id
@@ -49,10 +52,18 @@ public class ContactRequestEntity extends AbstractAuditingEntity<Long> {
   @Column(name = "request_user_id", nullable = false, updatable = false)
   private Long requestUserId;
 
+  @Enumerated(EnumType.STRING)
+  private FriendRequestStatus status;
+
+  @Column(name = "public_id", unique = true)
+  private UUID publicId;
+
+
   @Builder
   public ContactRequestEntity(Long receiverUserId, Long requestUserId) {
     this.receiverUserId = receiverUserId;
     this.requestUserId = requestUserId;
+    this.status = FriendRequestStatus.ofDefault();
   }
 
   @Override

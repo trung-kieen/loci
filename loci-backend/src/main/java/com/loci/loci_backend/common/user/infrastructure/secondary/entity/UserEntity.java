@@ -6,11 +6,14 @@ import java.util.Set;
 import java.util.UUID;
 
 import com.loci.loci_backend.common.jpa.AbstractAuditingEntity;
+import com.loci.loci_backend.common.user.domain.vo.UserFirstname;
+import com.loci.loci_backend.common.user.domain.vo.UserLastname;
 import com.loci.loci_backend.common.util.NullSafe;
 import com.loci.loci_backend.core.conversation.infrastructure.secondary.entity.ConversationParticipantEntity;
 import com.loci.loci_backend.core.identity.domain.aggregate.PersonalProfileChanges;
 import com.loci.loci_backend.core.identity.domain.aggregate.PrivacySetting;
 import com.loci.loci_backend.core.identity.domain.aggregate.PrivacySettingBuilder;
+import com.loci.loci_backend.core.identity.domain.aggregate.UserFullname;
 import com.loci.loci_backend.core.identity.domain.vo.FriendRequestSettingEnum;
 import com.loci.loci_backend.core.identity.domain.vo.LastSeenSettingEnum;
 import com.loci.loci_backend.core.identity.domain.vo.ProfileVisibility;
@@ -23,6 +26,7 @@ import com.loci.loci_backend.core.social.infrastructure.secondary.entity.Contact
 
 import org.jilt.Builder;
 import org.jilt.BuilderStyle;
+import org.springframework.context.annotation.FullyQualifiedAnnotationBeanNameGenerator;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -67,7 +71,7 @@ public class UserEntity extends AbstractAuditingEntity<Long> {
   @Column(name = "profile_picture")
   private String profilePicture;
 
-  @Column(name = "public_id")
+  @Column(name = "public_id", unique = true)
   private UUID publicId;
 
   private String bio;
@@ -136,6 +140,9 @@ public class UserEntity extends AbstractAuditingEntity<Long> {
     this.friendRequestSetting = friendRequestSetting;
     this.profileVisibility = profileVisibility;
     this.authorities = authorities;
+  }
+  public UserFullname getFullname() {
+    return UserFullname.from(new UserFirstname(firstname), new UserLastname(this.lastname));
   }
 
   /**

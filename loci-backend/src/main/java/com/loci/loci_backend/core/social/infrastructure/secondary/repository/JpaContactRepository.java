@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import com.loci.loci_backend.core.discovery.infrastructure.secondary.dto.ContactRelation;
 import com.loci.loci_backend.core.social.infrastructure.secondary.entity.ContactEntity;
+import com.loci.loci_backend.core.social.infrastructure.secondary.mapper.ContactEntityMapper;
 
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -42,4 +43,13 @@ public interface JpaContactRepository
       @Param("currentUserId") Long currentUserId,
       @Param("targetId") Long targetId);
 
+  @Query("""
+      SELECT c
+      FROM ContactEntity c
+      WHERE (c.owningUserId = :currentUserId AND c.contactUserId = :targetId)
+         OR (c.contactUserId = :currentUserId AND c.owningUserId = :targetId)
+      """)
+  Optional<ContactEntity> findConnection(
+      @Param("currentUserId") Long currentUserId,
+      @Param("targetId") Long targetId);
 }

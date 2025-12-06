@@ -3,15 +3,15 @@ package com.loci.loci_backend.core.identity.infrastructure.secondary.repository;
 import java.util.Optional;
 
 import com.loci.loci_backend.common.authentication.domain.Username;
-import com.loci.loci_backend.common.user.domain.vo.UserEmail;
 import com.loci.loci_backend.common.user.domain.vo.PublicId;
+import com.loci.loci_backend.common.user.domain.vo.UserEmail;
 import com.loci.loci_backend.common.user.infrastructure.secondary.entity.UserEntity;
-import com.loci.loci_backend.common.user.infrastructure.secondary.mapper.UserEntityMapper;
 import com.loci.loci_backend.common.user.infrastructure.secondary.repository.JpaUserRepository;
 import com.loci.loci_backend.core.identity.domain.aggregate.PersonalProfile;
 import com.loci.loci_backend.core.identity.domain.aggregate.PersonalProfileChanges;
 import com.loci.loci_backend.core.identity.domain.aggregate.PublicProfile;
 import com.loci.loci_backend.core.identity.domain.repository.ProfileRepository;
+import com.loci.loci_backend.core.identity.infrastructure.secondary.mapper.IdentityEntityMapper;
 
 import org.springframework.stereotype.Service;
 
@@ -22,7 +22,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class SpringDataProfileRepository implements ProfileRepository {
   private final JpaUserRepository userRepository;
-  private final UserEntityMapper userEntityMapper;
+  private final IdentityEntityMapper profileMapper;
 
   private Optional<UserEntity> findByUsernameOpt(Username username) {
     return userRepository.findByUsername(username.username());
@@ -32,7 +32,7 @@ public class SpringDataProfileRepository implements ProfileRepository {
   public PersonalProfile findPersonalProfile(UserEmail userEmail) {
     UserEntity userEntity = userRepository.findByEmail(userEmail.value())
         .orElseThrow(() -> new EntityNotFoundException("Personal profile information not found"));
-    return userEntityMapper.toPersonalProfile(userEntity);
+    return profileMapper.toPersonalProfile(userEntity);
   }
 
   @Override
@@ -43,7 +43,7 @@ public class SpringDataProfileRepository implements ProfileRepository {
           .orElseThrow(() -> new EntityNotFoundException("Personal profile information not found"));
     });
 
-    return userEntityMapper.toPublicProfile(userEntity);
+    return profileMapper.toPublicProfile(userEntity);
   }
 
   @Override
@@ -51,7 +51,7 @@ public class SpringDataProfileRepository implements ProfileRepository {
     UserEntity userEntity = findByUsernameOpt(username)
         .orElseThrow(() -> new EntityNotFoundException("Personal profile information not found"));
 
-    return userEntityMapper.toPublicProfile(userEntity);
+    return profileMapper.toPublicProfile(userEntity);
   }
 
   @Override
@@ -60,7 +60,7 @@ public class SpringDataProfileRepository implements ProfileRepository {
         .orElseThrow(() -> new EntityNotFoundException("Personal profile information not found"));
     userEntity.applyChanges(profileChanges);
     UserEntity savedEntity = userRepository.save(userEntity);
-    return userEntityMapper.toPersonalProfile(savedEntity);
+    return profileMapper.toPersonalProfile(savedEntity);
   }
 
 }

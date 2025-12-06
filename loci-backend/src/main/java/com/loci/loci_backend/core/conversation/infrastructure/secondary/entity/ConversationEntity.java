@@ -23,7 +23,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "conversations")
+@Table(name = "conversation")
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -57,6 +57,11 @@ public class ConversationEntity extends AbstractAuditingEntity<Long> {
 
   @Column(name = "deleted", nullable = false)
   private boolean deleted = false;
+
+
+  @Column(name = "public_id", unique = true)
+  private UUID publicId;
+
 
   // Bi-directional relationships
   // @OneToMany(mappedBy = "conversation", cascade = CascadeType.ALL,

@@ -8,8 +8,8 @@ import com.loci.loci_backend.core.social.domain.aggregate.ContactRequest;
 import com.loci.loci_backend.core.social.domain.vo.ContactId;
 import com.loci.loci_backend.core.social.infrastructure.secondary.entity.ContactEntity;
 import com.loci.loci_backend.core.social.infrastructure.secondary.entity.ContactRequestEntity;
-import com.loci.loci_backend.core.social.infrastructure.secondary.entity.ContactRequestEntityBuilder;
 
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
@@ -17,22 +17,29 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class ContactEntityMapper {
-  private final MapStructContactEntityMapper contactMapper;
+  private final MapStructContactEntityMapper mapstruct;
 
   public Contact toDomain(ContactEntity entity) {
     return ContactBuilder.contact().contactId(new ContactId(entity.getId()))
-        .ownUserId(new UserDBId(entity.getOwningUser().getId()))
+        .owningUserId(new UserDBId(entity.getOwningUser().getId()))
         .contactUserId(new UserDBId(entity.getContactUser().getId()))
-        .blockByUserId(NullSafe.getIfPresent(entity.getBlockedBy(), (userEntity) -> new UserDBId(userEntity.getId())))
+        .blockedByUserId(NullSafe.getIfPresent(entity.getBlockedBy(), (userEntity) -> new UserDBId(userEntity.getId())))
         .build();
   }
 
   public ContactRequest toDomain(ContactRequestEntity entity) {
-    return contactMapper.toDomain(entity);
+    return mapstruct.toDomain(entity);
   }
 
   public ContactRequestEntity from(ContactRequest contactRequest) {
-    return contactMapper.from(contactRequest);
+    return mapstruct.from(contactRequest);
+  }
+  public Page<ContactRequest> toDomain(Page<ContactRequestEntity> entities){
+    return entities.map(this::toDomain);
+  }
+
+  public ContactEntity from(Contact contact) {
+    return mapstruct.from(contact);
   }
 
 }
