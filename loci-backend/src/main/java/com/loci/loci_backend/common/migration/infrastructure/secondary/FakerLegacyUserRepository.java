@@ -48,7 +48,6 @@ public class FakerLegacyUserRepository implements LegacyUserRepository {
         .lastModifiedDate(Instant.now())
         .bio(null)
         .lastActive(Instant.now())
-        .privacySetting(null)
         .authorities(userAuthorities)
         // .userAddress(new UserAddress(street, city, zipCode, country))
         // .passwordHash(faker.internet().password())

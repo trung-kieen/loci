@@ -15,13 +15,8 @@ import com.loci.loci_backend.common.user.domain.vo.UserFirstname;
 import com.loci.loci_backend.common.user.domain.vo.UserImageUrl;
 import com.loci.loci_backend.common.user.domain.vo.UserLastname;
 import com.loci.loci_backend.common.validation.domain.Assert;
-import com.loci.loci_backend.core.identity.domain.aggregate.PrivacySetting;
-import com.loci.loci_backend.core.identity.domain.aggregate.PrivacySettingBuilder;
 import com.loci.loci_backend.core.identity.domain.aggregate.UserFullname;
 import com.loci.loci_backend.core.identity.domain.vo.ProfileBio;
-import com.loci.loci_backend.core.identity.domain.vo.ProfileVisibility;
-import com.loci.loci_backend.core.identity.domain.vo.UserFriendRequestSetting;
-import com.loci.loci_backend.core.identity.domain.vo.UserLastSeenSetting;
 
 import org.jilt.Builder;
 import org.jilt.BuilderStyle;
@@ -56,7 +51,7 @@ public class User {
 
   private Instant lastActive;
 
-  private PrivacySetting privacySetting;
+  // private UserSettings privacySetting;
 
   private Set<Authority> authorities;
 
@@ -72,7 +67,7 @@ public class User {
       Instant lastModifiedDate,
       ProfileBio bio,
       Instant lastActive,
-      PrivacySetting privacySetting,
+      // UserSettings privacySetting,
       Set<Authority> authorities) {
     this.userPublicId = userPublicId;
     this.dbId = dbId;
@@ -85,7 +80,7 @@ public class User {
     this.lastModifiedDate = lastModifiedDate;
     this.bio = bio;
     this.lastActive = lastActive;
-    this.privacySetting = privacySetting;
+    // this.privacySetting = privacySetting;
     this.authorities = authorities;
   }
 
@@ -138,13 +133,14 @@ public class User {
     if (this.profilePicture == null) {
       this.profilePicture = UserImageUrl.random();
     }
-    if (this.privacySetting == null) {
-      this.privacySetting = PrivacySettingBuilder.privacySetting()
-          .lastSeenSetting(UserLastSeenSetting.ofDefault())
-          .friendRequestSetting(UserFriendRequestSetting.ofDefault())
-          .profileVisibility(ProfileVisibility.ofDefault())
-          .build();
-    }
+    // TODO: init with repository
+    // if (this.privacySetting == null) {
+    //   this.privacySetting =
+    //       .lastSeenSetting(UserLastSeenSetting.ofDefault())
+    //       .friendRequestSetting(UserFriendRequestSetting.ofDefault())
+    //       .profileVisibility(ProfileVisibility.ofDefault())
+    //       .build();
+    // }
   }
 
   public static User fromTokenAttributes(Map<String, Object> attributes, Collection<String> rolesFromAccessToken) {
@@ -191,7 +187,7 @@ public class User {
         .lastModifiedDate(Instant.now())
         .bio(null)
         .lastActive(Instant.now())
-        .privacySetting(null)
+        // .privacySetting(null)
         .authorities(authorities)
         .build();
 

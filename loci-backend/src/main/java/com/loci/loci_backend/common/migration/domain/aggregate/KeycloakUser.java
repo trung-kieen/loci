@@ -4,7 +4,6 @@ import com.loci.loci_backend.common.authentication.domain.Username;
 import com.loci.loci_backend.common.user.domain.vo.UserEmail;
 import com.loci.loci_backend.common.user.domain.vo.UserFirstname;
 import com.loci.loci_backend.common.user.domain.vo.UserLastname;
-import com.loci.loci_backend.common.user.domain.vo.UserPassword;
 
 import lombok.Builder;
 import lombok.Getter;

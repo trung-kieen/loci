@@ -21,7 +21,7 @@ import com.loci.loci_backend.common.user.infrastructure.secondary.entity.UserEnt
 import com.loci.loci_backend.common.user.infrastructure.secondary.entity.UserEntityBuilder;
 import com.loci.loci_backend.core.identity.domain.aggregate.PersonalProfile;
 import com.loci.loci_backend.core.identity.domain.aggregate.PersonalProfileBuilder;
-import com.loci.loci_backend.core.identity.domain.aggregate.PrivacySetting;
+import com.loci.loci_backend.core.identity.domain.aggregate.UserSettings;
 import com.loci.loci_backend.core.identity.domain.aggregate.PublicProfile;
 import com.loci.loci_backend.core.identity.domain.aggregate.UserFullname;
 import com.loci.loci_backend.core.identity.domain.vo.ProfileBio;

@@ -1,6 +1,6 @@
 package com.loci.loci_backend.core.discovery.infrastructure.primary.mapper;
 
-import com.loci.loci_backend.common.util.ValueObjectTypeConverter;
+import com.loci.loci_backend.common.mapper.ValueObjectTypeConverter;
 import com.loci.loci_backend.core.discovery.domain.aggregate.SearchContact;
 import com.loci.loci_backend.core.discovery.infrastructure.primary.payload.RestSearchContact;
 

@@ -51,13 +51,13 @@ spring:
 
     # NOTE: update schema helper
     # properties:
-      # javax: # use jakartar
-      #   persistence:
-      #     schema-generation:
-      #       create-source: metadata
-      #       scripts:
-      #         action: update
-      #         create-target: src/main/resources/update.sql
+      javax: # use jakartar
+        persistence:
+          schema-generation:
+            create-source: metadata
+            scripts:
+              action: update
+              create-target: src/main/resources/update.sql
 
 
   devtools:

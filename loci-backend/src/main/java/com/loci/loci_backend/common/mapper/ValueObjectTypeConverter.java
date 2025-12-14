@@ -1,7 +1,8 @@
-package com.loci.loci_backend.common.util;
+package com.loci.loci_backend.common.mapper;
 
+import com.loci.loci_backend.common.util.NullSafe;
+import com.loci.loci_backend.common.util.ValueObject;
 import com.loci.loci_backend.core.identity.domain.aggregate.UserFullname;
-import com.loci.loci_backend.core.social.infrastructure.secondary.entity.FriendRequestStatus;
 
 import org.mapstruct.TargetType;
 import org.springframework.stereotype.Component;

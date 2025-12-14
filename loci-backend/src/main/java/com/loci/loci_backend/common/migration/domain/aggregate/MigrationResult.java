@@ -9,7 +9,6 @@ import com.loci.loci_backend.common.migration.domain.vo.TotalMigrationUser;
 
 import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
 
 @Builder
 @Data

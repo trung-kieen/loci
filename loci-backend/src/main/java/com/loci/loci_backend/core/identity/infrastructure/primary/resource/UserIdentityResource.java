@@ -7,11 +7,15 @@ import com.loci.loci_backend.core.discovery.infrastructure.primary.payload.RestS
 import com.loci.loci_backend.core.identity.application.IdentityApplicationService;
 import com.loci.loci_backend.core.identity.domain.aggregate.PersonalProfile;
 import com.loci.loci_backend.core.identity.domain.aggregate.PersonalProfileChanges;
+import com.loci.loci_backend.core.identity.domain.aggregate.ProfileSettingChanges;
+import com.loci.loci_backend.core.identity.domain.aggregate.UserSettings;
 import com.loci.loci_backend.core.identity.domain.aggregate.PublicProfile;
 import com.loci.loci_backend.core.identity.domain.vo.ProfilePublicId;
 import com.loci.loci_backend.core.identity.infrastructure.primary.mapper.RestProfileMapper;
 import com.loci.loci_backend.core.identity.infrastructure.primary.payload.RestPersonalProfile;
 import com.loci.loci_backend.core.identity.infrastructure.primary.payload.RestPersonalProfilePatch;
+import com.loci.loci_backend.core.identity.infrastructure.primary.payload.RestProfileSettings;
+import com.loci.loci_backend.core.identity.infrastructure.primary.payload.RestProfileSettingsPatch;
 import com.loci.loci_backend.core.identity.infrastructure.primary.payload.RestPublicProfile;
 
 import org.apache.commons.lang3.NotImplementedException;
@@ -46,7 +50,8 @@ public class UserIdentityResource {
       Pageable pageable, KeycloakPrincipal principal) {
 
     ContactSearchCriteria criteria = new ContactSearchCriteria(query, principal.getUsername().value());
-    return ResponseEntity.ok(restContactMapper.from(identityApplicationService.discoveryContacts(criteria, pageable, principal)));
+    return ResponseEntity
+        .ok(restContactMapper.from(identityApplicationService.discoveryContacts(criteria, pageable, principal)));
   }
 
   @GetMapping("me")
@@ -56,13 +61,29 @@ public class UserIdentityResource {
     return ResponseEntity.ok(restProfileMapper.from(profile));
   }
 
+  @GetMapping("me/settings")
+  public ResponseEntity<RestProfileSettings> currentUserProfileSettings(KeycloakPrincipal keycloakPrincipal) {
+    UserSettings profile = identityApplicationService.getPersonalProfileSettings(keycloakPrincipal);
+    log.debug(profile);
+    RestProfileSettings restResponse = restProfileMapper.from(profile);
+    return ResponseEntity.ok(restResponse);
+  }
+
   @PatchMapping("me")
   public ResponseEntity<RestPersonalProfile> partialUpdateProfile(KeycloakPrincipal keycloakPrincipal,
       @RequestBody RestPersonalProfilePatch patchRequest) {
-    PersonalProfileChanges profileChages = restProfileMapper.toDomain(patchRequest);
-    PersonalProfile updatedProfile = identityApplicationService.updateProfile(keycloakPrincipal, profileChages);
+    PersonalProfileChanges profileChanges = restProfileMapper.toDomain(patchRequest);
+    PersonalProfile updatedProfile = identityApplicationService.updateProfile(keycloakPrincipal, profileChanges);
 
     return ResponseEntity.ok(restProfileMapper.from(updatedProfile));
+  }
+
+  @PatchMapping("me/settings")
+  public ResponseEntity<RestProfileSettings> partialUpdateProfile(KeycloakPrincipal keycloakPrincipal,
+      @RequestBody RestProfileSettingsPatch patchRequest) {
+    ProfileSettingChanges settingsChanges = restProfileMapper.toDomain(patchRequest);
+    UserSettings updatedSettings = identityApplicationService.updateProfileSettings(keycloakPrincipal, settingsChanges);
+    return ResponseEntity.ok(restProfileMapper.from(updatedSettings));
   }
 
   @PatchMapping("me/avatar")

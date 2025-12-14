@@ -21,10 +21,10 @@ public class RestPersonalProfilePatch {
   // private String emailAddress;
 
   private String profilePictureUrl;
-  private RestProfilePrivacy privacy;
+  private RestProfileSettings privacy;
   @Builder(style =  BuilderStyle.STAGED)
   public RestPersonalProfilePatch(String firstname, String lastname, String bio, String profilePictureUrl,
-      RestProfilePrivacy privacy) {
+      RestProfileSettings privacy) {
     this.firstname = firstname;
     this.lastname = lastname;
     this.bio = bio;

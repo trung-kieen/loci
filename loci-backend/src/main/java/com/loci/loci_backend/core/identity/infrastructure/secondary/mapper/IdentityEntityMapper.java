@@ -3,6 +3,7 @@ package com.loci.loci_backend.core.identity.infrastructure.secondary.mapper;
 import java.util.List;
 
 import com.loci.loci_backend.common.authentication.domain.Username;
+import com.loci.loci_backend.common.mapper.DomainEntityMapper;
 import com.loci.loci_backend.common.user.domain.vo.PublicId;
 import com.loci.loci_backend.common.user.domain.vo.UserDBId;
 import com.loci.loci_backend.common.user.domain.vo.UserEmail;
@@ -17,8 +18,10 @@ import com.loci.loci_backend.core.identity.domain.aggregate.PersonalProfileBuild
 import com.loci.loci_backend.core.identity.domain.aggregate.PublicProfile;
 import com.loci.loci_backend.core.identity.domain.aggregate.PublicProfileBuilder;
 import com.loci.loci_backend.core.identity.domain.aggregate.UserFullname;
+import com.loci.loci_backend.core.identity.domain.aggregate.UserSettings;
 import com.loci.loci_backend.core.identity.domain.aggregate.UserSummary;
 import com.loci.loci_backend.core.identity.domain.vo.ProfileBio;
+import com.loci.loci_backend.core.identity.infrastructure.secondary.entity.UserSettingsEntity;
 
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -27,7 +30,7 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class IdentityEntityMapper {
+public class IdentityEntityMapper implements  DomainEntityMapper<UserSettings, UserSettingsEntity> {
   private final AuthorityEntityMapper authorityEntityMapper;
   private final MapStructIdentityEntityMapper mapstruct;
 
@@ -41,46 +44,27 @@ public class IdentityEntityMapper {
         .username(new Username(userEntity.getUsername()))
         .imageUrl(new UserImageUrl(userEntity.getProfilePicture()))
         .createdDate(userEntity.getCreatedDate())
+        // TODO:
         .connectionStatus(null)
         .build();
   }
 
   public PersonalProfile toPersonalProfile(UserEntity userEntity) {
-    return PersonalProfileBuilder.personalProfile()
-        .dbId(userEntity.getId())
-        .email(new UserEmail(userEntity.getEmail()))
-        .fullname(
-            UserFullname.from(new UserFirstname(userEntity.getFirstname()), new UserLastname(userEntity.getLastname())))
-        .username(new Username(userEntity.getUsername()))
-        .imageUrl(new UserImageUrl(userEntity.getProfilePicture()))
-        .bio(new ProfileBio(userEntity.getBio()))
-        .createdDate(userEntity.getCreatedDate())
-        .lastModifiedDate(userEntity.getLastModifiedDate())
-        .lastActive(userEntity.getLastActive())
-        .privacySetting(userEntity.getPrivacySetting())
-        .authorities(authorityEntityMapper.toDomain(userEntity.getAuthorities()))
-        .userPublicId(new PublicId(userEntity.getPublicId()))
-        .build();
+    return mapstruct.toPersonalProfile(userEntity);
   }
 
   public UserEntity from(PersonalProfile profile) {
 
     return UserEntityBuilder.userEntity()
-        // .publicId(NullSafe.getIfPresent(profile.getPublicId()))
         .publicId(profile.getUserPublicId().value())
         .id(profile.getDbId())
         .email(profile.getEmail().value())
         .firstname(profile.getFullname().getFirstname().value())
         .lastname(profile.getFullname().getLastname().value())
         .username(profile.getUsername().value())
-        // .profilePicture(NullSafe.getIfPresent(profile.getImageUrl()))
         .profilePicture(profile.getImageUrl().value())
-        // .bio(NullSafe.getIfPresent(profile.getBio()))
         .bio(profile.getBio().value())
         .lastActive(profile.getLastActive())
-        .lastSeenSetting(profile.getPrivacySetting().getLastSeenSetting().value())
-        .friendRequestSetting(profile.getPrivacySetting().getFriendRequestSetting().value())
-        .profileVisibility(profile.getPrivacySetting().getProfileVisibility().value())
         .authorities(authorityEntityMapper.from(profile.getAuthorities()))
         .build();
   }
@@ -98,5 +82,15 @@ public class IdentityEntityMapper {
 
     return profilePage;
 
+  }
+
+  @Override
+  public UserSettings toDomain(UserSettingsEntity settings) {
+    return mapstruct.toDomain(settings);
+  }
+
+  @Override
+  public UserSettingsEntity from(UserSettings domainObjectt) {
+    return mapstruct.from(domainObjectt);
   }
 }

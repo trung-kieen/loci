@@ -7,7 +7,9 @@ import com.loci.loci_backend.common.user.domain.aggregate.Authority;
 import com.loci.loci_backend.common.user.domain.aggregate.User;
 import com.loci.loci_backend.common.user.domain.repository.AuthorityRepository;
 import com.loci.loci_backend.common.user.domain.repository.UserRepository;
+import com.loci.loci_backend.core.identity.domain.aggregate.UserSettings;
 // removed direct JPA repository usage - use domain repository instead
+import com.loci.loci_backend.core.identity.domain.repository.UserSettingsRepository;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +24,7 @@ import lombok.extern.log4j.Log4j2;
 public class UserSynchronizeService {
 
   private final UserRepository userRepository;
+  private final UserSettingsRepository userSettingsRepository;
   private final AuthorityRepository authorityRepository;
 
   @Transactional(readOnly = false)
@@ -34,19 +37,30 @@ public class UserSynchronizeService {
     User userToPersistence = user;
     Optional<User> oldDbUser = userRepository.getByUsername(user.getUsername());
 
+    // User is exist in system
     if (oldDbUser.isPresent()) {
       userToPersistence = oldDbUser.get();
       log.debug("Found user from database {}", oldDbUser.get());
       userToPersistence.syncOauth2User(user);
       log.debug("Database user had updated {}", userToPersistence);
     } else {
+      // User data from keycloak not exist in system
 
       // Confirm the authority is exist in database and save them consistently
       Set<Authority> authorities = authorityRepository.saveAll(user.getAuthorities());
       userToPersistence.setAuthorities(authorities);
+
     }
+    // Init required field to create new user before update or create one
     userToPersistence.provideMandatoryField();
-    userRepository.save(userToPersistence);
+    User savedUser = userRepository.save(userToPersistence);
+
+    // When created new user
+    if (!oldDbUser.isPresent()) {
+      UserSettings defaultUserSettings = new UserSettings(savedUser);
+      userSettingsRepository.save(defaultUserSettings);
+    }
+
   }
 
 }

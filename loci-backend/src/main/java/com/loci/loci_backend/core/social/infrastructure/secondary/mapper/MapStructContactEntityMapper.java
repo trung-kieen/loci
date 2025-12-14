@@ -1,6 +1,6 @@
 package com.loci.loci_backend.core.social.infrastructure.secondary.mapper;
 
-import com.loci.loci_backend.common.util.ValueObjectTypeConverter;
+import com.loci.loci_backend.common.mapper.ValueObjectTypeConverter;
 import com.loci.loci_backend.core.social.domain.aggregate.Contact;
 import com.loci.loci_backend.core.social.domain.aggregate.ContactRequest;
 import com.loci.loci_backend.core.social.infrastructure.secondary.entity.ContactEntity;

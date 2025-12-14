@@ -1,6 +1,6 @@
 package com.loci.loci_backend.core.social.infrastructure.primary.mapper;
 
-import com.loci.loci_backend.common.util.ValueObjectTypeConverter;
+import com.loci.loci_backend.common.mapper.ValueObjectTypeConverter;
 import com.loci.loci_backend.core.identity.domain.aggregate.UserSummary;
 import com.loci.loci_backend.core.social.infrastructure.primary.payload.RestContactRequest;
 

@@ -25,15 +25,13 @@ public class PersonalProfileChanges {
 
   private UserImageUrl imageUrl;
 
-  private PrivacySetting privacySetting;
+  // private PrivacySetting privacySetting;
 
   @Builder(style = BuilderStyle.STAGED)
-  public PersonalProfileChanges(UserFullname fullname, ProfileBio bio, UserImageUrl imageUrl,
-      PrivacySetting privacySetting) {
+  public PersonalProfileChanges(UserFullname fullname, ProfileBio bio, UserImageUrl imageUrl) {
     this.fullname = fullname;
     this.bio = bio;
     this.imageUrl = imageUrl;
-    this.privacySetting = privacySetting;
   }
 
 }

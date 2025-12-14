@@ -3,7 +3,8 @@ package com.loci.loci_backend.core.identity.infrastructure.mapper;
 import com.loci.loci_backend.core.identity.domain.aggregate.PersonalProfile;
 import com.loci.loci_backend.core.identity.domain.aggregate.PersonalProfileChanges;
 import com.loci.loci_backend.core.identity.domain.aggregate.PersonalProfileChangesBuilder;
-import com.loci.loci_backend.core.identity.domain.aggregate.PrivacySetting;
+import com.loci.loci_backend.core.identity.domain.aggregate.ProfileSettingChanges;
+import com.loci.loci_backend.core.identity.domain.aggregate.UserSettings;
 import com.loci.loci_backend.core.identity.domain.service.ProfileAggregateMapper;
 
 import org.springframework.stereotype.Component;
@@ -21,13 +22,18 @@ public class ProfileAggregateMapperImpl implements ProfileAggregateMapper {
         .fullname(currentProfile.getFullname())
         .bio(currentProfile.getBio())
         .imageUrl(currentProfile.getImageUrl())
-        .privacySetting(PrivacySetting.of(currentProfile.getPrivacySetting()))
         .build();
   }
 
+  // TODO: check the logic of partial update correct
   @Override
   public void applyChanges(PersonalProfile profile, PersonalProfileChanges changes) {
-    profileMapper.applyProfileUpdate(profile, changes);
+    profileMapper.applyProfileUpdatePartial(profile, changes);
+  }
+
+  @Override
+  public void applyChanges(UserSettings settings, ProfileSettingChanges changes) {
+    profileMapper.applySettingsUpdatePartial(settings, changes);
   }
 
 }

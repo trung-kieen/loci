@@ -8,15 +8,19 @@ import com.loci.loci_backend.common.util.TimeFormatter;
 import com.loci.loci_backend.core.identity.domain.aggregate.PersonalProfile;
 import com.loci.loci_backend.core.identity.domain.aggregate.PersonalProfileChanges;
 import com.loci.loci_backend.core.identity.domain.aggregate.PersonalProfileChangesBuilder;
+import com.loci.loci_backend.core.identity.domain.aggregate.ProfileSettingChanges;
 import com.loci.loci_backend.core.identity.domain.aggregate.PublicProfile;
 import com.loci.loci_backend.core.identity.domain.aggregate.UserFullname;
+import com.loci.loci_backend.core.identity.domain.aggregate.UserSettings;
 import com.loci.loci_backend.core.identity.domain.vo.ProfileBio;
 import com.loci.loci_backend.core.identity.infrastructure.primary.payload.RestPersonalProfile;
 import com.loci.loci_backend.core.identity.infrastructure.primary.payload.RestPersonalProfileBuilder;
 import com.loci.loci_backend.core.identity.infrastructure.primary.payload.RestPersonalProfilePatch;
-import com.loci.loci_backend.core.identity.infrastructure.primary.payload.RestProfilePrivacy;
+import com.loci.loci_backend.core.identity.infrastructure.primary.payload.RestProfileSettings;
 import com.loci.loci_backend.core.identity.infrastructure.primary.payload.RestPublicProfile;
 import com.loci.loci_backend.core.identity.infrastructure.primary.payload.RestPublicProfileBuilder;
+import com.loci.loci_backend.core.identity.infrastructure.primary.payload.RestProfileSettings.RestProfileSettingsBuilder;
+import com.loci.loci_backend.core.identity.infrastructure.primary.payload.RestProfileSettingsPatch;
 
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
@@ -26,6 +30,7 @@ import lombok.RequiredArgsConstructor;
 @Component
 @RequiredArgsConstructor
 public class RestProfileMapper {
+  private final MapStructRestProfileMapper mapstructRest;
 
   public RestPersonalProfile from(PersonalProfile personalProfile) {
     return RestPersonalProfileBuilder.restPersonalProfile()
@@ -35,7 +40,6 @@ public class RestProfileMapper {
         .username(personalProfile.getUsername().value())
         .profilePictureUrl(
             personalProfile.getImageUrl().valueOrDefault())
-        .privacy(NullSafe.getIfPresent(personalProfile.getPrivacySetting(), (p) -> RestProfilePrivacy.from(p)))
         .build();
   }
 
@@ -50,7 +54,6 @@ public class RestProfileMapper {
         .fullname(UserFullname.from(firstname, lastname))
         .bio(NullSafe.constructOrNull(ProfileBio.class, patch.getBio()))
         .imageUrl(NullSafe.constructOrNull(UserImageUrl.class, patch.getProfilePictureUrl()))
-        .privacySetting(NullSafe.getIfPresent(patch.getPrivacy(), p -> RestProfilePrivacy.toDomain(p)))
         .build();
   }
 
@@ -66,5 +69,13 @@ public class RestProfileMapper {
         .createdAt(profile.getCreatedDate())
         .connectionStatus(profile.getConnectionStatus().value())
         .build();
+  }
+
+  public RestProfileSettings from(UserSettings profile) {
+    return mapstructRest.from(profile);
+  }
+
+  public ProfileSettingChanges toDomain(RestProfileSettingsPatch patchRequest) {
+    return mapstructRest.toDomain(patchRequest);
   }
 }

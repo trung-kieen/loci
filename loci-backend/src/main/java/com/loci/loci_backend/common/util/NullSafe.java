@@ -112,5 +112,11 @@ public final class NullSafe {
 
     return null;
   }
+  public static boolean isPresent(ValueObject<?> object){
+    if (object == null || object.value() == null){
+      return false;
+    }
+    return true;
+  }
 
 }

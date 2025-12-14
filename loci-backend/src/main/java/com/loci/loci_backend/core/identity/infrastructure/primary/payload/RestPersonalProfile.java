@@ -12,17 +12,17 @@ public class RestPersonalProfile {
   private String lastname;
   private String username;
   private String profilePictureUrl;
-  private RestProfilePrivacy privacy;
+  // private RestProfilePrivacy privacy;
 
   @Builder(style = BuilderStyle.STAGED)
   public RestPersonalProfile(String emailAddress, String firstname, String lastname, String username,
-      String profilePictureUrl, RestProfilePrivacy privacy) {
+      String profilePictureUrl) {
     this.emailAddress = emailAddress;
     this.firstname = firstname;
     this.lastname = lastname;
     this.username = username;
     this.profilePictureUrl = profilePictureUrl;
-    this.privacy = privacy;
+    // this.privacy = privacy;
   }
 
 }

@@ -9,9 +9,6 @@ import com.loci.loci_backend.common.user.domain.vo.PublicId;
 import com.loci.loci_backend.common.user.domain.vo.UserEmail;
 import com.loci.loci_backend.common.user.domain.vo.UserImageUrl;
 import com.loci.loci_backend.core.identity.domain.vo.ProfileBio;
-import com.loci.loci_backend.core.identity.domain.vo.ProfileVisibility;
-import com.loci.loci_backend.core.identity.domain.vo.UserFriendRequestSetting;
-import com.loci.loci_backend.core.identity.domain.vo.UserLastSeenSetting;
 
 import org.jilt.Builder;
 import org.jilt.BuilderStyle;
@@ -43,7 +40,7 @@ public class PersonalProfile {
 
   private Instant lastActive;
 
-  private PrivacySetting privacySetting;
+  // private PrivacySetting privacySetting;
 
   private Set<Authority> authorities;
 
@@ -59,10 +56,9 @@ public class PersonalProfile {
   // }
   // }
 
-
-  @Builder(style =  BuilderStyle.STAGED)
+  @Builder(style = BuilderStyle.STAGED)
   public PersonalProfile(Long dbId, UserEmail email, UserFullname fullname, Username username, UserImageUrl imageUrl,
-      ProfileBio bio, Instant createdDate, Instant lastModifiedDate, Instant lastActive, PrivacySetting privacySetting,
+      ProfileBio bio, Instant createdDate, Instant lastModifiedDate, Instant lastActive,
       Set<Authority> authorities, PublicId userPublicId) {
     this.dbId = dbId;
     this.email = email;
@@ -73,50 +69,20 @@ public class PersonalProfile {
     this.createdDate = createdDate;
     this.lastModifiedDate = lastModifiedDate;
     this.lastActive = lastActive;
-    this.privacySetting = privacySetting;
     this.authorities = authorities;
     this.userPublicId = userPublicId;
   }
 
   public boolean existManadatoryField() {
-    return privacySetting != null && privacySetting.getLastSeenSetting() != null
-        && privacySetting.getFriendRequestSetting() != null && privacySetting.getProfileVisibility() != null;
+    if (userPublicId == null) {
+      return false;
+    }
 
+    return true;
   }
 
-  // public void setPrivacySetting(PrivacySetting settings){
-  //   if(settings == null){
-  //     this.privacySetting = null;
-  //     return;
-  //   }
-  //
-  //   if (privacySetting.getProfileVisibility() == null) {
-  //     this.privacySetting.setProfileVisibility(ProfileVisibility.of(false));
-  //   }
-  //   if (privacySetting.getFriendRequestSetting() == null) {
-  //     this.privacySetting.setFriendRequestSetting(UserFriendRequestSetting.ofDefault());
-  //   }
-  //   if (privacySetting.getLastSeenSetting() == null) {
-  //     this.privacySetting.setLastSeenSetting(UserLastSeenSetting.ofDefault());
-  //   }
-  //
-  //
-  // }
-  //
-
   public void initMandatoryField() {
-    if (privacySetting == null) {
-      this.privacySetting = new PrivacySetting();
-    }
-    if (privacySetting.getProfileVisibility() == null) {
-      this.privacySetting.setProfileVisibility(ProfileVisibility.of(false));
-    }
-    if (privacySetting.getFriendRequestSetting() == null) {
-      this.privacySetting.setFriendRequestSetting(UserFriendRequestSetting.ofDefault());
-    }
-    if (privacySetting.getLastSeenSetting() == null) {
-      this.privacySetting.setLastSeenSetting(UserLastSeenSetting.ofDefault());
-    }
+    this.userPublicId = PublicId.random();
   }
 
 }

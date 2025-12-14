@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.loci.loci_backend.common.mapper.DomainEntityMapper;
 import com.loci.loci_backend.common.user.domain.aggregate.Authority;
 import com.loci.loci_backend.common.user.domain.vo.AuthorityName;
 import com.loci.loci_backend.common.user.infrastructure.secondary.entity.AuthorityEntity;
@@ -14,7 +15,7 @@ import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
-public class AuthorityEntityMapper {
+public class AuthorityEntityMapper implements DomainEntityMapper<Authority, AuthorityEntity> {
 
   public Set<AuthorityEntity> from(Collection<Authority> authorities) {
     return authorities.stream().map(this::from).collect(Collectors.toSet());

@@ -6,7 +6,9 @@ import com.loci.loci_backend.core.discovery.domain.aggregate.SearchContact;
 import com.loci.loci_backend.core.discovery.domain.vo.ContactSearchCriteria;
 import com.loci.loci_backend.core.identity.domain.aggregate.PersonalProfile;
 import com.loci.loci_backend.core.identity.domain.aggregate.PersonalProfileChanges;
+import com.loci.loci_backend.core.identity.domain.aggregate.ProfileSettingChanges;
 import com.loci.loci_backend.core.identity.domain.aggregate.PublicProfile;
+import com.loci.loci_backend.core.identity.domain.aggregate.UserSettings;
 import com.loci.loci_backend.core.identity.domain.service.ProfileManager;
 import com.loci.loci_backend.core.identity.domain.vo.ProfilePublicId;
 
@@ -39,6 +41,16 @@ public class IdentityApplicationService {
   public PersonalProfile updateProfile(KeycloakPrincipal keycloakPrincipal, PersonalProfileChanges profileChanges) {
     PersonalProfile savedProfile = profileManager.applyUpdate(keycloakPrincipal, profileChanges);
     return savedProfile;
+  }
+
+  public UserSettings getPersonalProfileSettings(KeycloakPrincipal keycloakPrincipal) {
+    UserSettings settings = profileManager.readProfileSettings(keycloakPrincipal);
+    return settings;
+  }
+
+  public UserSettings updateProfileSettings(KeycloakPrincipal keycloakPrincipal,
+      ProfileSettingChanges settingsChanges) {
+    return profileManager.applyUpdate(keycloakPrincipal, settingsChanges);
   }
 
 }

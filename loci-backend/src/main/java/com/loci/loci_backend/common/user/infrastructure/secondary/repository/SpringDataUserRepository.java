@@ -38,9 +38,9 @@ public class SpringDataUserRepository implements UserRepository {
 
   @Override
   @Transactional(readOnly = false)
-  public void save(User user) {
-    var userEntity = userEntityMapper.from(user);
-    repository.save(userEntity);
+  public User  save(User user) {
+    UserEntity userEntity = userEntityMapper.from(user);
+    return userEntityMapper.toDomain(repository.save(userEntity));
   }
 
   @Override

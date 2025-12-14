@@ -3,7 +3,6 @@ package com.loci.loci_backend.common.user.domain.vo;
 import java.util.Optional;
 import java.util.Random;
 
-import com.github.javafaker.service.RandomService;
 import com.loci.loci_backend.common.util.ValueObject;
 import com.loci.loci_backend.common.validation.domain.Assert;
 
