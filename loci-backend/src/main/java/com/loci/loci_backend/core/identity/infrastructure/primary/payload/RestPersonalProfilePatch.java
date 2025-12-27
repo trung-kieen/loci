@@ -1,6 +1,10 @@
 package com.loci.loci_backend.core.identity.infrastructure.primary.payload;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.loci.loci_backend.common.user.domain.vo.UserFirstname;
+import com.loci.loci_backend.common.user.domain.vo.UserLastname;
+import com.loci.loci_backend.core.identity.domain.aggregate.UserFullname;
+import com.loci.loci_backend.core.identity.infrastructure.primary.payload.RestPublicProfileBuilders.Fullname;
 
 import org.jilt.Builder;
 import org.jilt.BuilderStyle;
@@ -22,7 +26,8 @@ public class RestPersonalProfilePatch {
 
   private String profilePictureUrl;
   private RestProfileSettings privacy;
-  @Builder(style =  BuilderStyle.STAGED)
+
+  @Builder(style = BuilderStyle.STAGED)
   public RestPersonalProfilePatch(String firstname, String lastname, String bio, String profilePictureUrl,
       RestProfileSettings privacy) {
     this.firstname = firstname;
@@ -32,5 +37,8 @@ public class RestPersonalProfilePatch {
     this.privacy = privacy;
   }
 
+  public UserFullname getFullname() {
+    return new UserFullname(new UserFirstname(firstname), new UserLastname(lastname));
+  }
 
 }

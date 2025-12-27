@@ -2,7 +2,7 @@ package com.loci.loci_backend.common.authentication.domain;
 
 import java.util.UUID;
 
-import com.loci.loci_backend.common.util.ValueObject;
+import com.loci.loci_backend.common.mapper.ValueObject;
 
 public record KeycloakUserId(UUID value) implements ValueObject<UUID> {
 

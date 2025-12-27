@@ -2,7 +2,7 @@ package com.loci.loci_backend.core.conversation.domain.vo;
 
 import java.util.UUID;
 
-import com.loci.loci_backend.common.util.ValueObject;
+import com.loci.loci_backend.common.mapper.ValueObject;
 import com.loci.loci_backend.common.validation.domain.Assert;
 import com.loci.loci_backend.common.validation.domain.Validatable;
 

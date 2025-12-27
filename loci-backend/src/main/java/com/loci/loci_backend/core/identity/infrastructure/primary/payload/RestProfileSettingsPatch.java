@@ -1,8 +1,8 @@
 package com.loci.loci_backend.core.identity.infrastructure.primary.payload;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.loci.loci_backend.core.identity.domain.vo.FriendRequestSettingEnum;
-import com.loci.loci_backend.core.identity.domain.vo.LastSeenSettingEnum;
+import com.loci.loci_backend.core.identity.infrastructure.secondary.enumeration.FriendRequestSettingEnum;
+import com.loci.loci_backend.core.identity.infrastructure.secondary.enumeration.LastSeenSettingEnum;
 
 import org.jilt.Builder;
 import org.jilt.BuilderStyle;

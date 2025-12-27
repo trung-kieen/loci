@@ -1,8 +1,8 @@
 package com.loci.loci_backend.core.identity.domain.aggregate;
 
+import com.loci.loci_backend.common.mapper.ValueObject;
 import com.loci.loci_backend.common.user.domain.vo.UserFirstname;
 import com.loci.loci_backend.common.user.domain.vo.UserLastname;
-import com.loci.loci_backend.common.util.ValueObject;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,7 +16,8 @@ import lombok.NoArgsConstructor;
 public class UserFullname implements ValueObject<String> {
   private UserFirstname firstname;
   private UserLastname lastname;
-  public UserFullname(UserFullname otherVO ){
+
+  public UserFullname(UserFullname otherVO) {
     this.firstname = otherVO.getFirstname();
     this.lastname = otherVO.getLastname();
 

@@ -6,12 +6,19 @@ import com.loci.loci_backend.common.user.domain.vo.PublicId;
 import com.loci.loci_backend.core.conversation.application.ConversationApplicationService;
 import com.loci.loci_backend.core.conversation.domain.aggregate.Conversation;
 import com.loci.loci_backend.core.conversation.domain.aggregate.CreateGroupRequest;
+import com.loci.loci_backend.core.conversation.domain.aggregate.UserChatList;
+import com.loci.loci_backend.core.conversation.domain.vo.ConversationFilter;
+import com.loci.loci_backend.core.conversation.domain.vo.ConversationQuery;
 import com.loci.loci_backend.core.conversation.infrastructure.primary.mapper.RestConversationMapper;
-import com.loci.loci_backend.core.conversation.infrastructure.primary.payload.RestConversation;
+import com.loci.loci_backend.core.conversation.infrastructure.primary.payload.RestUserChatList;
+import com.loci.loci_backend.core.conversation.infrastructure.primary.payload.RestChatInfo;
 import com.loci.loci_backend.core.conversation.infrastructure.primary.payload.RestCreateGroup;
+import com.loci.loci_backend.core.discovery.domain.vo.SearchQuery;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,30 +35,41 @@ public class ConversationResource {
   private final ConversationApplicationService conversationService;
   private final RestConversationMapper mapper;
 
-  @GetMapping
-  public ResponseEntity<RestConversation> getConversation(@RequestParam("userId") UUID userPublicId) {
+  @GetMapping("/user/{userId}")
+  public ResponseEntity<RestChatInfo> getConversationByUser(@PathVariable("userId") UUID userPublicId) {
     PublicId targetUserId = new PublicId(userPublicId);
     Conversation conversation = conversationService.getConversationByUser(targetUserId);
 
-    RestConversation restResponse = mapper.from(conversation);
+    RestChatInfo restResponse = mapper.from(conversation);
     return ResponseEntity.ok(restResponse);
   }
 
+  @GetMapping
+  public ResponseEntity<RestUserChatList> getUserChatList(Pageable pageable,
+      @RequestParam(value = "q", required = false) String query) { // filter
+    ConversationQuery userQuery = new ConversationQuery(ConversationFilter.INBOX, new SearchQuery(query));
+    UserChatList conversations = conversationService.getUserChats(pageable, userQuery);
+
+    RestUserChatList restResponse = mapper.from(conversations);
+    return ResponseEntity.ok(restResponse);
+  }
+
+  // TODO: change to RestCreateGroupResponse
   @PostMapping("/group")
-  public ResponseEntity<RestConversation> createGroupConveration(@RequestBody RestCreateGroup rest) {
+  public ResponseEntity<RestChatInfo> createGroupConveration(@RequestBody RestCreateGroup rest) {
     CreateGroupRequest request = mapper.toDomain(rest);
     Conversation conversation = conversationService.createGroupConversation(request);
 
-    RestConversation restResponse = mapper.from(conversation);
+    RestChatInfo restResponse = mapper.from(conversation);
     return ResponseEntity.ok(restResponse);
   }
 
   @PostMapping
-  public ResponseEntity<RestConversation> createDMConversation(@RequestParam("userId") UUID userPublicId) {
+  public ResponseEntity<RestChatInfo> createDMConversation(@RequestParam("userId") UUID userPublicId) {
     PublicId targetUserId = new PublicId(userPublicId);
     Conversation conversation = conversationService.createConversationWithUser(targetUserId);
 
-    RestConversation restResponse = mapper.from(conversation);
+    RestChatInfo restResponse = mapper.from(conversation);
     return ResponseEntity.ok(restResponse);
   }
 

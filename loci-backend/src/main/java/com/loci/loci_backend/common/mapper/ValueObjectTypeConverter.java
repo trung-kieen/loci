@@ -1,7 +1,6 @@
 package com.loci.loci_backend.common.mapper;
 
 import com.loci.loci_backend.common.util.NullSafe;
-import com.loci.loci_backend.common.util.ValueObject;
 import com.loci.loci_backend.core.identity.domain.aggregate.UserFullname;
 
 import org.mapstruct.TargetType;
@@ -15,12 +14,14 @@ public class ValueObjectTypeConverter {
   // return enumValue;
   // }
 
-  public UserFullname wrap(@TargetType Class<UserFullname> clazz, UserFullname value) {
-    return value;
+  public UserFullname wrap(@TargetType Class<UserFullname> clazz, UserFullname
+  value) {
+  return value;
   }
 
-  // public FriendRequestStatus wrap(@TargetType Class<FriendRequestStatus> clazz, FriendRequestStatus value) {
-  //   return value;
+  // public FriendRequestStatus wrap(@TargetType Class<FriendRequestStatus> clazz,
+  // FriendRequestStatus value) {
+  // return value;
   // }
 
 
@@ -31,7 +32,7 @@ public class ValueObjectTypeConverter {
 
   public <R, T extends ValueObject<R>> T wrap(@TargetType Class<T> clazz, R value) {
     // if (clazz.isEnum() && value instanceof String) {
-    //   return (T) Enum.valueOf((Class<Enum>) clazz, (String) value);
+    // return (T) Enum.valueOf((Class<Enum>) clazz, (String) value);
     // }
     return NullSafe.constructOrNull(clazz, value);
   }

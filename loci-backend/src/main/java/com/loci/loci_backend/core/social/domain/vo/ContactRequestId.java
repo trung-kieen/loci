@@ -1,6 +1,6 @@
 package com.loci.loci_backend.core.social.domain.vo;
 
-import com.loci.loci_backend.common.util.ValueObject;
+import com.loci.loci_backend.common.mapper.ValueObject;
 
 public record ContactRequestId(Long value) implements ValueObject<Long>{
 }

@@ -1,6 +1,6 @@
 package com.loci.loci_backend.common.store.domain.vo;
 
-import com.loci.loci_backend.common.util.ValueObject;
+import com.loci.loci_backend.common.mapper.ValueObject;
 
 public record FileContentType(String contentType) implements ValueObject<String> {
 

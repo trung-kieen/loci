@@ -4,8 +4,16 @@ import java.time.Instant;
 import java.util.UUID;
 
 import com.loci.loci_backend.common.jpa.AbstractAuditingEntity;
+import com.loci.loci_backend.common.mapper.ValueObjectTypeConverter;
 import com.loci.loci_backend.common.user.infrastructure.secondary.entity.UserEntity;
 import com.loci.loci_backend.core.conversation.infrastructure.secondary.entity.ConversationEntity;
+import com.loci.loci_backend.core.messaging.domain.vo.Media;
+import com.loci.loci_backend.core.messaging.domain.vo.MediaName;
+import com.loci.loci_backend.core.messaging.domain.vo.MediaUrl;
+import com.loci.loci_backend.core.messaging.domain.vo.MessageContent;
+import com.loci.loci_backend.core.messaging.domain.vo.MessageState;
+import com.loci.loci_backend.core.messaging.domain.vo.MessageStatus;
+import com.loci.loci_backend.core.messaging.domain.vo.MessageType;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -19,16 +27,15 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
-import lombok.AccessLevel;
-import lombok.Getter;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Entity
 @Table(name = "message")
-@Getter
-@Setter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class MessageEntity extends AbstractAuditingEntity<Long> {
 
   @Id
@@ -37,15 +44,25 @@ public class MessageEntity extends AbstractAuditingEntity<Long> {
   @Column(name = "id", nullable = false, updatable = false)
   private Long id;
 
+  @Column(name = "public_id", unique = true)
+  private UUID publicId;
+
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
-  @JoinColumn(name = "conversation_id", nullable = false)
+  @JoinColumn(name = "conversation_id", nullable = false, insertable = false, updatable = false)
   private ConversationEntity conversation;
 
+  @Column(name = "conversation_id", updatable = false, nullable = false)
+  private Long conversationId;
+
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
-  @JoinColumn(name = "sender_id", nullable = false)
+  @JoinColumn(name = "sender_id", nullable = false, insertable = false, updatable = false)
   private UserEntity sender;
 
-  @Column(name = "content", nullable = false, columnDefinition = "TEXT")
+  @Column(name = "sender_id", updatable = false, nullable = false)
+  private Long senderId;
+
+  // Allow null
+  @Column(name = "content", columnDefinition = "TEXT")
   private String content;
 
   @Enumerated(EnumType.STRING)
@@ -55,8 +72,18 @@ public class MessageEntity extends AbstractAuditingEntity<Long> {
   @Column(name = "media_url", length = 500)
   private String mediaUrl;
 
+  @Column(name = "media_name", length = 100)
+  private String mediaName;
+
+  // String thumbnail
+
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "reply_to_message_id", nullable = true, insertable = false, updatable = false)
+  private MessageEntity replyToMessage;
+
+  // reference key
   @Column(name = "reply_to_message_id")
-  private UUID replyToMessageId;
+  private Long replyToMessageId;
 
   @Column(name = "sent_at")
   private Instant sentAt;
@@ -69,21 +96,10 @@ public class MessageEntity extends AbstractAuditingEntity<Long> {
 
   @Enumerated(EnumType.STRING)
   @Column(name = "status", nullable = false, length = 20)
-  private MessageStatus status;
-
-  @Column(name = "public_id", unique = true)
-  private UUID publicId;
+  private MessageState status;
 
   @Column(name = "deleted", nullable = false)
   private boolean deleted = false;
-
-  public enum MessageType {
-    TEXT, FILE, IMAGE, VIDEO
-  }
-
-  public enum MessageStatus {
-    PREPARE, SENT, DELIVERED, SEEN
-  }
 
   // public MessageJpaEntity(ConversationJpaEntity conversation, UserJpaEntity
   // sender, String content, MessageType type) {
@@ -94,4 +110,26 @@ public class MessageEntity extends AbstractAuditingEntity<Long> {
   // this.type = type;
   // this.status = MessageStatus.PREPARE;
   // }
+
+  public MediaName getMediaName() {
+    return new MediaName(mediaName);
+  }
+
+  public MediaUrl getMediaUrl() {
+    return new MediaUrl(mediaUrl);
+  }
+
+  public Media getMedia() {
+    return new Media(this.getMediaUrl(), this.getMediaName());
+  }
+
+  public MessageContent getContent() {
+    return new MessageContent(type, content, this.getMedia());
+
+  }
+
+  public MessageStatus getStatus() {
+    return new MessageStatus(status, this.getLastModifiedDate());
+  }
+
 }

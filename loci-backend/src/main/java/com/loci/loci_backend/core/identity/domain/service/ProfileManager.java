@@ -76,7 +76,7 @@ public class ProfileManager {
     log.debug("Current request principal", principal);
     Username username = ProfilePublicId.toUserName(profilePublicId);
     PublicProfile profile = queryProfileFromUser(profilePublicId, username);
-    FriendshipStatus connectionStatus = connectionResolver.aggreateConnection(currentUserId, profile.getUserDbId());
+    FriendshipStatus connectionStatus = connectionResolver.aggreateConnection(currentUserId, profile.getUserDBId());
     profile.setConnectionStatus(connectionStatus);
     return profile;
   }

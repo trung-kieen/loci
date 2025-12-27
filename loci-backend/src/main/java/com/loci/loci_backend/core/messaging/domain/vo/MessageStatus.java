@@ -1,10 +1,11 @@
 package com.loci.loci_backend.core.messaging.domain.vo;
 
-import com.loci.loci_backend.common.validation.domain.Assert;
 import java.time.Instant;
 
+import com.loci.loci_backend.common.validation.domain.Assert;
+
 public record MessageStatus(
-    MessageState messageState, Instant timestamp) {
+    MessageState messageState, Instant timestamp) { // timestamp with the occur state
 
   public MessageStatus {
     Assert.notNull("message state", messageState);

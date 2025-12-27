@@ -9,7 +9,7 @@ import com.loci.loci_backend.common.user.infrastructure.secondary.mapper.UserEnt
 import com.loci.loci_backend.common.user.infrastructure.secondary.repository.JpaUserRepository;
 import com.loci.loci_backend.core.discovery.domain.repository.DiscoveryUserRepository;
 import com.loci.loci_backend.core.discovery.domain.vo.SuggestFriendCriteria;
-import com.loci.loci_backend.core.identity.infrastructure.secondary.persistence.UserSpecifications;
+import com.loci.loci_backend.core.identity.infrastructure.secondary.specification.UserSpecifications;
 
 import org.springframework.stereotype.Service;
 

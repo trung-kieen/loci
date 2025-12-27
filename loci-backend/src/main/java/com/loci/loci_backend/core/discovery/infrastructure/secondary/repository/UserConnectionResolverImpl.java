@@ -11,8 +11,8 @@ import com.loci.loci_backend.core.discovery.domain.aggregate.SearchContact;
 import com.loci.loci_backend.core.discovery.domain.aggregate.SearchContactBuilder;
 import com.loci.loci_backend.core.discovery.domain.repository.UserConnectionResolver;
 import com.loci.loci_backend.core.discovery.domain.vo.FriendshipStatus;
-import com.loci.loci_backend.core.discovery.infrastructure.secondary.dto.ContactRelation;
-import com.loci.loci_backend.core.discovery.infrastructure.secondary.dto.ContactRequestRelation;
+import com.loci.loci_backend.core.discovery.infrastructure.secondary.vo.ContactRelationJpaVO;
+import com.loci.loci_backend.core.discovery.infrastructure.secondary.vo.ContactRequestRelationJpaVO;
 import com.loci.loci_backend.core.social.infrastructure.secondary.repository.JpaContactRepository;
 import com.loci.loci_backend.core.social.infrastructure.secondary.repository.JpaContactRequestRepository;
 
@@ -34,13 +34,13 @@ public class UserConnectionResolverImpl implements UserConnectionResolver {
     Long targetId = targetUserId.value();
 
     // Check existing contact (HIGHEST priority)
-    Optional<ContactRelation> contactOpt = contactRepository.findRelationBetween(currentUserId, targetId);
+    Optional<ContactRelationJpaVO> contactOpt = contactRepository.findRelationBetween(currentUserId, targetId);
     if (contactOpt.isPresent()) {
       return contactOpt.get().friendshipStatusWithUser(currentUserId);
     }
 
     // Check pending contact request
-    Optional<ContactRequestRelation> requestOpt = contactRequestRepository.findPendingRequestBetweenUsers(currentUserId,
+    Optional<ContactRequestRelationJpaVO> requestOpt = contactRequestRepository.findPendingRequestBetweenUsers(currentUserId,
         targetId);
     if (requestOpt.isPresent()) {
       return requestOpt.get().friendshipStatusWithUser(currentUserId);
@@ -58,19 +58,19 @@ public class UserConnectionResolverImpl implements UserConnectionResolver {
       targetUserIdToFriendStatus.put(new UserDBId(targetId), FriendshipStatus.NOT_CONNECTED);
     }
 
-    List<ContactRelation> contacts = contactRepository.findAllInvolving(currentUserId, targetUserIds);
+    List<ContactRelationJpaVO> contacts = contactRepository.findAllInvolving(currentUserId, targetUserIds);
 
-    List<ContactRequestRelation> requests = contactRequestRepository.findInvolvingPendingRequest(currentUserId,
+    List<ContactRequestRelationJpaVO> requests = contactRequestRepository.findInvolvingPendingRequest(currentUserId,
         targetUserIds);
 
-    for (ContactRequestRelation request : requests) {
+    for (ContactRequestRelationJpaVO request : requests) {
       FriendshipStatus status = request.friendshipStatusWithUser(currentUserId);
       Long targetId = request.getOpponent(currentUserId);
       targetUserIdToFriendStatus.put(new UserDBId(targetId), status);
     }
 
     // Hihger priority to update => update last
-    for (ContactRelation contact : contacts) {
+    for (ContactRelationJpaVO contact : contacts) {
       FriendshipStatus status = contact.friendshipStatusWithUser(currentUserId);
       Long targetId = contact.getOpponent(currentUserId);
       targetUserIdToFriendStatus.put(new UserDBId(targetId), status);

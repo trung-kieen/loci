@@ -1,11 +1,9 @@
 package com.loci.loci_backend.common.websocket.infrastructure.primary.security;
 
-import com.loci.loci_backend.common.authentication.infrastructure.primary.keycloak.KeycloakTokenVerifier;
 import com.loci.loci_backend.common.websocket.application.WebSocketTokenValicationException;
 import com.loci.loci_backend.common.websocket.domain.aggregate.JWSAuthentication;
 import com.loci.loci_backend.common.websocket.domain.vo.BearerToken;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.simp.stomp.StompCommand;
@@ -13,21 +11,15 @@ import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.ChannelInterceptor;
 import org.springframework.messaging.support.MessageHeaderAccessor;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.stereotype.Component;
 
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
-@Component
+@AllArgsConstructor
 @Log4j2
 public class SecurityChannelInterceptorAdapter implements ChannelInterceptor {
   private final AuthenticationManager keycloakWebSocketAuthManager;
 
-  @Autowired
-  public SecurityChannelInterceptorAdapter(KeycloakTokenVerifier tokenVerifier) {
-    // Avoid conflict with bean with Rest AuthenticationManager
-    this.keycloakWebSocketAuthManager = new WebSocketAuthenticationManager(tokenVerifier);
-  }
 
   @Override
   public Message<?> preSend(Message<?> message, MessageChannel channel) {

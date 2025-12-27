@@ -2,7 +2,7 @@ package com.loci.loci_backend.common.authentication.domain;
 
 import java.util.Optional;
 
-import com.loci.loci_backend.common.util.ValueObject;
+import com.loci.loci_backend.common.mapper.ValueObject;
 import com.loci.loci_backend.common.validation.domain.Assert;
 
 import io.micrometer.common.util.StringUtils;

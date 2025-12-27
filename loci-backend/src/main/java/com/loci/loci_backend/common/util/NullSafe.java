@@ -7,6 +7,8 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import com.loci.loci_backend.common.mapper.ValueObject;
+
 import lombok.extern.log4j.Log4j2;
 
 /**

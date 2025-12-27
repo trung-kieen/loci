@@ -7,9 +7,7 @@ import com.loci.loci_backend.common.user.domain.aggregate.User;
 import com.loci.loci_backend.common.user.domain.vo.PublicId;
 import com.loci.loci_backend.common.user.domain.vo.UserDBId;
 import com.loci.loci_backend.core.social.domain.aggregate.ContactRequest;
-import com.loci.loci_backend.core.social.domain.aggregate.ContactRequestBuilder;
 import com.loci.loci_backend.core.social.domain.repository.ContactRequestRepository;
-import com.loci.loci_backend.core.social.domain.vo.ContactRequestId;
 import com.loci.loci_backend.core.social.infrastructure.secondary.entity.ContactRequestEntity;
 import com.loci.loci_backend.core.social.infrastructure.secondary.entity.FriendRequestStatus;
 import com.loci.loci_backend.core.social.infrastructure.secondary.mapper.ContactEntityMapper;
@@ -42,6 +40,7 @@ public class SpringDataContactRequestRepository implements ContactRequestReposit
   }
 
   @Override
+
   public ContactRequest save(ContactRequest contactRequest) {
     ContactRequestEntity request = mapper.from(contactRequest);
     return mapper.toDomain(repository.save(request));

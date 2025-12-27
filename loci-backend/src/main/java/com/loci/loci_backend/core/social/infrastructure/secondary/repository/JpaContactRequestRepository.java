@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import com.loci.loci_backend.core.discovery.infrastructure.secondary.dto.ContactRequestRelation;
+import com.loci.loci_backend.core.discovery.infrastructure.secondary.vo.ContactRequestRelationJpaVO;
 import com.loci.loci_backend.core.social.infrastructure.secondary.entity.ContactRequestEntity;
 
 import org.springframework.data.domain.Page;
@@ -26,7 +26,7 @@ public interface JpaContactRequestRepository
   Page<ContactRequestEntity> findAll(Specification<ContactRequestEntity> spec, Pageable pageable);
 
   @Query("""
-      SELECT new com.loci.loci_backend.core.discovery.infrastructure.secondary.dto.ContactRequestRelation(
+      SELECT new com.loci.loci_backend.core.discovery.infrastructure.secondary.vo.ContactRequestRelationJpaVO(
           r.id,
           r.requestUserId,
           r.receiverUserId
@@ -38,12 +38,12 @@ public interface JpaContactRequestRepository
         OR (r.receiverUserId = :currentUserId AND r.requestUserId IN (:targetUserIds))
           )
       """)
-  public List<ContactRequestRelation> findInvolvingPendingRequest(
+  public List<ContactRequestRelationJpaVO> findInvolvingPendingRequest(
       @Param("currentUserId") Long currentUserId,
       @Param("targetUserIds") List<Long> targetUserIds);
 
   @Query("""
-      SELECT new com.loci.loci_backend.core.discovery.infrastructure.secondary.dto.ContactRequestRelation(
+      SELECT new com.loci.loci_backend.core.discovery.infrastructure.secondary.vo.ContactRequestRelationJpaVO(
           r.id, r.requestUserId, r.receiverUserId
       )
       FROM ContactRequestEntity r
@@ -53,7 +53,7 @@ public interface JpaContactRequestRepository
          OR (r.receiverUserId = :currentUserId AND r.requestUserId = :targetId)
           )
       """)
-  Optional<ContactRequestRelation> findPendingRequestBetweenUsers(
+  Optional<ContactRequestRelationJpaVO> findPendingRequestBetweenUsers(
       @Param("currentUserId") Long currentUserId,
       @Param("targetId") Long targetId);
 

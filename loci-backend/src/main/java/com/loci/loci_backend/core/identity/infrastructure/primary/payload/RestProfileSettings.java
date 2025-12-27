@@ -4,11 +4,11 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.loci.loci_backend.common.util.NullSafe;
 import com.loci.loci_backend.core.identity.domain.aggregate.UserSettings;
 import com.loci.loci_backend.core.identity.domain.aggregate.UserSettingsBuilder;
-import com.loci.loci_backend.core.identity.domain.vo.FriendRequestSettingEnum;
-import com.loci.loci_backend.core.identity.domain.vo.LastSeenSettingEnum;
 import com.loci.loci_backend.core.identity.domain.vo.ProfileVisibility;
 import com.loci.loci_backend.core.identity.domain.vo.UserFriendRequestSetting;
 import com.loci.loci_backend.core.identity.domain.vo.UserLastSeenSetting;
+import com.loci.loci_backend.core.identity.infrastructure.secondary.enumeration.FriendRequestSettingEnum;
+import com.loci.loci_backend.core.identity.infrastructure.secondary.enumeration.LastSeenSettingEnum;
 
 import lombok.Builder;
 import lombok.Data;

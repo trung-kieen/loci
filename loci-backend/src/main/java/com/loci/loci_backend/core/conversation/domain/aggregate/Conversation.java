@@ -12,10 +12,10 @@ import com.loci.loci_backend.common.user.domain.vo.UserDBId;
 import com.loci.loci_backend.common.validation.domain.ResourceNotFoundException;
 import com.loci.loci_backend.core.conversation.domain.vo.ConversationId;
 import com.loci.loci_backend.core.conversation.domain.vo.ConversationPublicId;
-import com.loci.loci_backend.core.conversation.domain.vo.ConversationType;
 import com.loci.loci_backend.core.conversation.domain.vo.ParticipantRole;
+import com.loci.loci_backend.core.conversation.infrastructure.secondary.enumeration.ConversationTypeEnum;
 import com.loci.loci_backend.core.messaging.domain.aggregate.Message;
-import com.loci.loci_backend.core.messaging.domain.vo.MessageDBId;
+import com.loci.loci_backend.core.messaging.domain.vo.MessageId;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -30,11 +30,11 @@ public class Conversation {
   private Set<Participant> participants = new HashSet<>();
   private List<Message> messages = new ArrayList<>();
 
-  private ConversationType conversationType;
+  private ConversationTypeEnum conversationType;
 
   private Instant createdDate;
 
-  private MessageDBId lastMessageId;
+  private MessageId lastMessageId;
 
   private Instant lastMessageSent;
 
@@ -49,7 +49,7 @@ public class Conversation {
 
   public static Conversation createOneToOne(UserDBId creatorId, UserDBId otherUserId) {
     Conversation conversation = new Conversation(creatorId);
-    conversation.conversationType = ConversationType.ONE_TO_ONE;
+    conversation.conversationType = ConversationTypeEnum.ONE_TO_ONE;
 
     // init conversation metadata: participant
     conversation.addParticipant(creatorId, ParticipantRole.ADMIN);
@@ -60,7 +60,7 @@ public class Conversation {
 
   public static Conversation forGroup(UserDBId creatorId) {
     Conversation conversation = new Conversation(creatorId);
-    conversation.conversationType = ConversationType.GROUP;
+    conversation.conversationType = ConversationTypeEnum.GROUP;
 
     // init conversation metadata: participant
     conversation.addParticipant(creatorId, ParticipantRole.ADMIN);

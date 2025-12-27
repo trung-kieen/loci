@@ -2,8 +2,8 @@ package com.loci.loci_backend.core.identity.infrastructure.secondary.entity;
 
 import com.loci.loci_backend.common.jpa.AbstractAuditingEntity;
 import com.loci.loci_backend.common.user.infrastructure.secondary.entity.UserEntity;
-import com.loci.loci_backend.core.identity.domain.vo.FriendRequestSettingEnum;
-import com.loci.loci_backend.core.identity.domain.vo.LastSeenSettingEnum;
+import com.loci.loci_backend.core.identity.infrastructure.secondary.enumeration.FriendRequestSettingEnum;
+import com.loci.loci_backend.core.identity.infrastructure.secondary.enumeration.LastSeenSettingEnum;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

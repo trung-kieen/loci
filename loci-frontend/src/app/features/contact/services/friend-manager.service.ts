@@ -52,7 +52,7 @@ export class FriendManagerService {
 
 
   getConversationByUser(targetUserId: string): Observable<ConversationPreview> {
-    return this.apiService.get<ConversationPreview>(`/conversations?userId=${targetUserId}`, {});
+    return this.apiService.get<ConversationPreview>(`/conversations/user/${targetUserId}`, {});
   }
 
   createConversationWithUser(targetUserId: string): Observable<ConversationPreview> {

@@ -1,8 +1,8 @@
 package com.loci.loci_backend.core.identity.domain.vo;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.loci.loci_backend.common.mapper.ValueObject;
 import com.loci.loci_backend.common.util.NullSafe;
-import com.loci.loci_backend.common.util.ValueObject;
 
 public record ProfileVisibility(@JsonProperty Boolean value) implements ValueObject<Boolean> {
 

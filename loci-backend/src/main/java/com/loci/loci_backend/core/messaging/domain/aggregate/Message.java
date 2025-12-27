@@ -2,21 +2,50 @@ package com.loci.loci_backend.core.messaging.domain.aggregate;
 
 import java.time.Instant;
 
-import com.loci.loci_backend.core.identity.infrastructure.primary.payload.RestPublicProfileBuilders.PublicId;
+import com.loci.loci_backend.common.user.domain.vo.PublicId;
+import com.loci.loci_backend.common.user.domain.vo.UserDBId;
+import com.loci.loci_backend.core.conversation.domain.vo.ConversationId;
 import com.loci.loci_backend.core.messaging.domain.vo.MessageContent;
-import com.loci.loci_backend.core.messaging.domain.vo.MessageDBId;
+import com.loci.loci_backend.core.messaging.domain.vo.MessageId;
 import com.loci.loci_backend.core.messaging.domain.vo.MessageState;
 import com.loci.loci_backend.core.messaging.domain.vo.MessageStatus;
 
-public class Message {
-  private MessageDBId messageId;
-  private final PublicId senderId;
-  private final MessageContent content;
-  private final Instant sentAt;
-  private MessageStatus status;
-  private MessageDBId replyToMessageId;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-  Message(PublicId senderId, MessageContent content) {
+@Data
+@NoArgsConstructor
+public class Message {
+  private MessageId messageId;
+
+  private PublicId publicId;
+
+  private ConversationId conversationId;
+
+  private PublicId conversationPublicId;
+
+  private UserDBId senderId;
+
+  private PublicId senderPublicId;
+
+  private MessageContent content;
+
+  private Instant sentAt;
+
+  private MessageStatus status;
+
+  private MessageId replyToMessageId;
+  private PublicId replyToMessagePublicId;
+
+  private boolean deleted;
+
+  private Instant deliveredAt;
+
+  private Instant readAt;
+
+  private Instant lastModifiedDate;
+
+  Message(UserDBId senderId, MessageContent content) {
     // this.messageId = MessageDBId.generate();
     this.senderId = senderId;
     this.content = content;
@@ -46,12 +75,4 @@ public class Message {
     }
   }
 
-  // Getters
-  public MessageDBId getMessageId() {
-    return messageId;
-  }
-
-  public PublicId getSenderId() {
-    return senderId;
-  }
 }

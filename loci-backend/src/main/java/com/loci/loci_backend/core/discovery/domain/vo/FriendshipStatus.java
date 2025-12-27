@@ -1,7 +1,7 @@
 package com.loci.loci_backend.core.discovery.domain.vo;
 
 import com.fasterxml.jackson.annotation.JsonValue;
-import com.loci.loci_backend.common.util.ValueObject;
+import com.loci.loci_backend.common.mapper.ValueObject;
 
 public enum FriendshipStatus implements ValueObject<String> {
   NOT_CONNECTED("not_connected"),

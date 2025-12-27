@@ -1,4 +1,4 @@
 package com.loci.loci_backend.core.messaging.domain.vo;
 
-public record Media(String url, MessageType type, String thumbnail) {
+public record Media(MediaUrl url, MediaName name) {
 }

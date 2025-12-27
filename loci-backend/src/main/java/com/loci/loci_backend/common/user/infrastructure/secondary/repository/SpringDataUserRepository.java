@@ -3,8 +3,6 @@ package com.loci.loci_backend.common.user.infrastructure.secondary.repository;
 import java.util.List;
 import java.util.Optional;
 
-import javax.print.attribute.standard.PrinterInfo;
-
 import com.loci.loci_backend.common.authentication.domain.Principal;
 import com.loci.loci_backend.common.authentication.domain.Username;
 import com.loci.loci_backend.common.user.domain.aggregate.User;
@@ -16,11 +14,10 @@ import com.loci.loci_backend.common.user.infrastructure.secondary.entity.UserEnt
 import com.loci.loci_backend.common.user.infrastructure.secondary.mapper.UserEntityMapper;
 import com.loci.loci_backend.common.validation.domain.ResourceNotFoundException;
 import com.loci.loci_backend.core.discovery.domain.vo.UserSearchCriteria;
-import com.loci.loci_backend.core.identity.infrastructure.secondary.persistence.UserSpecifications;
+import com.loci.loci_backend.core.identity.infrastructure.secondary.specification.UserSpecifications;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

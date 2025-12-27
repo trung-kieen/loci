@@ -16,7 +16,7 @@ import lombok.Data;
 @Data
 public class PublicProfile {
   private PublicId publicId;
-  private UserDBId userDbId;
+  private UserDBId userDBId;
   private UserEmail email;
   private UserFullname fullname;
   private Username username;
@@ -25,10 +25,10 @@ public class PublicProfile {
   private FriendshipStatus connectionStatus;
 
   @Builder
-  public PublicProfile(PublicId publicId, UserDBId userDbId, UserEmail email, UserFullname fullname, Username username,
+  public PublicProfile(PublicId publicId, UserDBId userDBId, UserEmail email, UserFullname fullname, Username username,
       UserImageUrl imageUrl, Instant createdDate, FriendshipStatus connectionStatus) {
     this.publicId = publicId;
-    this.userDbId = userDbId;
+    this.userDBId = userDBId;
     this.email = email;
     this.fullname = fullname;
     this.username = username;

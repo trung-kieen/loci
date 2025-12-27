@@ -36,6 +36,25 @@ public final class Maps {
     return Collections.unmodifiableMap(map);
   }
 
+  public static <T, K, V> Map<K, V> toLookupMap(List<T> items, Function<? super T, ? extends K> keyExtractor, Function<? super T, ? extends V> valueExtractor) {
+    if (items == null || items.isEmpty()) {
+      return Collections.emptyMap();
+    }
+
+    Map<K, V> map = new HashMap<>(items.size() * 4 / 3 + 1); // initial capacity
+
+    for (T item : items) {
+      K key = keyExtractor.apply(item);
+      V  value = valueExtractor.apply(item);
+      V previous = map.putIfAbsent(key, value);
+      if (previous != null) {
+        throw new IllegalStateException("Duplicate key detected: " + key);
+      }
+    }
+
+    return Collections.unmodifiableMap(map);
+  }
+
   // Same as above but uses stream but slower
   public static <T, K> Map<K, T> toLookupMapStream(List<T> items, Function<? super T, ? extends K> keyExtractor) {
     if (items == null || items.isEmpty()) {

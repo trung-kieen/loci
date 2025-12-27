@@ -1,7 +1,7 @@
 package com.loci.loci_backend.core.identity.infrastructure.mapper;
 
+import com.loci.loci_backend.common.mapper.ValueObject;
 import com.loci.loci_backend.common.util.NullSafe;
-import com.loci.loci_backend.common.util.ValueObject;
 import com.loci.loci_backend.core.identity.domain.aggregate.PersonalProfile;
 import com.loci.loci_backend.core.identity.domain.aggregate.PersonalProfileChanges;
 import com.loci.loci_backend.core.identity.domain.aggregate.ProfileSettingChanges;
@@ -30,5 +30,6 @@ public interface MapStructProfileMapper {
   @Mapping(target = "userId", ignore = true)
   public void applySettingsUpdatePartial(@MappingTarget UserSettings settings,
       ProfileSettingChanges changes);
+
 
 }

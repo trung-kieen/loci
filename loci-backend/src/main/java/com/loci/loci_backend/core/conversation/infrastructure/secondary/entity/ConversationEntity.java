@@ -5,7 +5,7 @@ import java.util.UUID;
 
 import com.loci.loci_backend.common.jpa.AbstractAuditingEntity;
 import com.loci.loci_backend.common.user.infrastructure.secondary.entity.UserEntity;
-import com.loci.loci_backend.core.conversation.domain.vo.ConversationType;
+import com.loci.loci_backend.core.conversation.infrastructure.secondary.enumeration.ConversationTypeEnum;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -17,10 +17,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.PreUpdate;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -48,7 +46,7 @@ public class ConversationEntity extends AbstractAuditingEntity<Long> {
 
   @Enumerated(EnumType.STRING)
   @Column(name = "conversation_type", nullable = false, updatable = false)
-  private ConversationType conversationType;
+  private ConversationTypeEnum conversationType;
 
   @Column(name = "last_message_id", nullable = true)
   private Long lastMessageId;
@@ -62,6 +60,7 @@ public class ConversationEntity extends AbstractAuditingEntity<Long> {
 
 
   @Column(name = "public_id", unique = true)
+
   private UUID publicId;
 
 
