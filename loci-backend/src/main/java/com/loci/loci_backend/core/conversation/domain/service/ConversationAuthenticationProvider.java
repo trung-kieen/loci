@@ -3,7 +3,7 @@ package com.loci.loci_backend.core.conversation.domain.service;
 import com.loci.loci_backend.common.user.domain.aggregate.User;
 import com.loci.loci_backend.core.conversation.domain.exception.UserNotConnectedException;
 import com.loci.loci_backend.core.discovery.domain.repository.UserConnectionResolver;
-import com.loci.loci_backend.core.discovery.domain.vo.FriendshipStatus;
+import com.loci.loci_backend.core.social.domain.vo.FriendshipStatus;
 
 import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.stereotype.Service;
@@ -32,7 +32,7 @@ public class ConversationAuthenticationProvider {
   void validateUserCanMessage(User currentUser, User targetUser) {
     FriendshipStatus friendStatusBetweenUser = connectionResolver.aggreateConnection(currentUser, targetUser);
 
-    if (!friendStatusBetweenUser.equals(FriendshipStatus.CONNECTED)) {
+    if (!friendStatusBetweenUser.isConnected()) {
       throw new UserNotConnectedException();
     }
 

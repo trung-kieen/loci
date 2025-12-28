@@ -17,8 +17,8 @@
     </div>
 
     <!-- Action Buttons -->
-    @switch (user().friendshipStatus) {
-      @case ('not_connected') {
+    @if (user().friendshipStatus) {
+      @if(canAddFriend()) {
         <button (click)="onAddFriend(); $event.stopPropagation()"
           class="bg-neutral-500 text-white px-4 py-2 rounded-lg hover:bg-neutral-600
                  focus:outline-none focus:ring-2 focus:ring-neutral-500 text-sm cursor-pointer
@@ -28,7 +28,7 @@
         </button>
       }
 
-      @case ('friend_request_sent') {
+      @else if (canAcceptRequest()) {
         <button disabled
           class="bg-white border border-neutral-200 text-neutral-700 px-4 py-2 rounded-lg
                  cursor-not-allowed text-sm flex items-center space-x-2">
@@ -37,14 +37,14 @@
         </button>
       }
 
-      @case ('friends') {
+      @else if (isFriends()) {
         <div class="bg-neutral-500 text-white px-4 py-2 rounded-lg text-sm flex items-center space-x-2">
           <i class="fa-solid fa-user-check"></i>
           <span>Friends</span>
         </div>
       }
 
-      @case ('friend_request_received') {
+      @else if (canUnsendRequest()  ) {
         <button (click)="onAcceptRequest(); $event.stopPropagation()"
           class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary-600
                  focus:outline-none focus:ring-2 focus:ring-primary-500 text-sm
@@ -54,21 +54,21 @@
         </button>
       }
 
-      @case ('blocked') {
+      @else if(isBlocked()) {
         <div class="bg-white border border-red-200 text-red-700  px-4 py-2 rounded-lg text-sm flex items-center space-x-2">
           <i class="fa-solid fa-ban"></i>
           <span>Blocked</span>
         </div>
       }
 
-      @case ('blocked_by') {
+      @else if (isBlockedBy()) {
         <div class="bg-white border border-red-200 text-red-700 px-4 py-2 rounded-lg text-sm flex items-center space-x-2">
           <i class="fa-solid fa-user-lock"></i>
           <span>Blocked by User</span>
         </div>
       }
 
-      @default {
+      @else {
         <div class="bg-gray-50 text-gray-700 px-4 py-2 rounded-lg text-sm">
           <span>Unknown Status</span>
         </div>

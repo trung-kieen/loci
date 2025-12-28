@@ -6,11 +6,11 @@ import com.loci.loci_backend.common.authentication.domain.KeycloakPrincipal;
 import com.loci.loci_backend.common.user.domain.aggregate.User;
 import com.loci.loci_backend.common.user.domain.repository.UserRepository;
 import com.loci.loci_backend.common.user.domain.vo.PublicId;
-import com.loci.loci_backend.core.discovery.domain.vo.FriendshipStatus;
 import com.loci.loci_backend.core.identity.domain.repository.IdentityUserRepository;
 import com.loci.loci_backend.core.social.domain.aggregate.Contact;
 import com.loci.loci_backend.core.social.domain.repository.ContactRepository;
 import com.loci.loci_backend.core.social.domain.repository.ContactRequestRepository;
+import com.loci.loci_backend.core.social.domain.vo.FriendshipStatus;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -80,7 +80,7 @@ public class BlockManager {
     //   contactRepository.save(contact);
     // } else {
     //
-      newStatus = FriendshipStatus.NOT_CONNECTED;
+      newStatus = FriendshipStatus.connected();
       contactRepository.delete(contact);
     //
     // }

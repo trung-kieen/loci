@@ -2,6 +2,8 @@ package com.loci.loci_backend.core.social.infrastructure.primary.payload;
 
 import java.util.UUID;
 
+import com.loci.loci_backend.core.social.infrastructure.secondary.enumernation.FriendshipStatusEnum;
+
 import org.jilt.Builder;
 import org.jilt.BuilderStyle;
 
@@ -14,10 +16,9 @@ public class RestContactRequest {
   private String username;
   private String email;
   private String imageUrl;
-  private String friendshipStatus;
+  private String friendshipStatus = FriendshipStatusEnum.REQUEST_RECEIVED.value();
 
-
-  @Builder(style =  BuilderStyle.STAGED)
+  @Builder(style = BuilderStyle.STAGED)
   public RestContactRequest(UUID userId, String fullname, String username, String email, String imageUrl,
       String friendshipStatus) {
     this.userId = userId;

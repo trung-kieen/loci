@@ -1,8 +1,8 @@
 package com.loci.loci_backend.core.social.domain.aggregate;
 
 import com.loci.loci_backend.common.user.domain.vo.UserDBId;
-import com.loci.loci_backend.core.discovery.domain.vo.FriendshipStatus;
 import com.loci.loci_backend.core.social.domain.vo.ContactId;
+import com.loci.loci_backend.core.social.domain.vo.FriendshipStatus;
 
 import org.jilt.Builder;
 import org.jilt.BuilderStyle;
@@ -30,13 +30,13 @@ public class Contact {
 
   public FriendshipStatus friendshipStatusWithUser(UserDBId currentUserId) {
     if (blockedByUserId == null) {
-      return FriendshipStatus.CONNECTED;
+      return FriendshipStatus.connected();
     }
     // Block by current user
     if (currentUserId == blockedByUserId) {
-      return FriendshipStatus.BLOCKED;
+      return FriendshipStatus.blockedOther();
     }
     // Block by opponent user
-    return FriendshipStatus.BLOCKED_BY_THEM;
+    return FriendshipStatus.blockedByOther();
   }
 }

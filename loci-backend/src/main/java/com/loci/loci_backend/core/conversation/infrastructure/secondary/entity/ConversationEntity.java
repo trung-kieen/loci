@@ -1,12 +1,16 @@
 package com.loci.loci_backend.core.conversation.infrastructure.secondary.entity;
 
 import java.time.Instant;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 import com.loci.loci_backend.common.jpa.AbstractAuditingEntity;
 import com.loci.loci_backend.common.user.infrastructure.secondary.entity.UserEntity;
 import com.loci.loci_backend.core.conversation.infrastructure.secondary.enumeration.ConversationTypeEnum;
+import com.loci.loci_backend.core.messaging.infrastructure.secondary.entity.MessageEntity;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -17,8 +21,10 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -39,6 +45,8 @@ public class ConversationEntity extends AbstractAuditingEntity<Long> {
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "creator_id", insertable = false, updatable = false)
+  @Getter(AccessLevel.NONE)
+  @Setter(AccessLevel.NONE)
   private UserEntity creator;
 
   @Column(name = "creator_id", nullable = false, updatable = false)
@@ -48,26 +56,28 @@ public class ConversationEntity extends AbstractAuditingEntity<Long> {
   @Column(name = "conversation_type", nullable = false, updatable = false)
   private ConversationTypeEnum conversationType;
 
-  @Column(name = "last_message_id", nullable = true)
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "last_message_id", nullable = true, updatable = false, insertable = false)
+  @Getter(AccessLevel.NONE)
+  @Setter(AccessLevel.NONE)
+  private MessageEntity lastMessage;
+
+  @Column(name = "last_message_id", nullable = true, updatable = true, insertable = true)
   private Long lastMessageId;
 
   @Column(name = "last_message_sent", nullable = true)
   private Instant lastMessageSent; // for query order
 
-
   @Column(name = "deleted", nullable = false)
   private boolean deleted = false;
-
 
   @Column(name = "public_id", unique = true)
 
   private UUID publicId;
 
-
   // Bi-directional relationships
-  // @OneToMany(mappedBy = "conversation", cascade = CascadeType.ALL,
-  // orphanRemoval = true)
-  // private Set<MessageJpaEntity> messages = new HashSet<>();
+  // @OneToMany(mappedBy = "conversation", cascade = CascadeType.NONE, orphanRemoval = false)
+  // private Set<MessageEntity> messages = new HashSet<>();
   //
   // @OneToMany(mappedBy = "conversation", cascade = CascadeType.ALL,
   // orphanRemoval = true)
@@ -77,14 +87,13 @@ public class ConversationEntity extends AbstractAuditingEntity<Long> {
   // = true)
   // private GroupJpaEntity groupDetails;
 
-
   // public ConversationJpaEntity(UserJpaEntity creator) {
   // this.conversationId = UUID.randomUUID();
   // this.creator = creator;
   // }
 
   // public boolean isGroup() {
-  //   return groupName != null && !groupName.isEmpty();
+  // return groupName != null && !groupName.isEmpty();
   // }
 
   @Override

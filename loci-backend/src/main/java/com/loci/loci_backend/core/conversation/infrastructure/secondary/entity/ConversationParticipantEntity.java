@@ -1,7 +1,5 @@
 package com.loci.loci_backend.core.conversation.infrastructure.secondary.entity;
 
-import java.time.Instant;
-
 import com.loci.loci_backend.common.jpa.AbstractAuditingEntity;
 import com.loci.loci_backend.common.user.infrastructure.secondary.entity.UserEntity;
 import com.loci.loci_backend.core.conversation.domain.vo.ParticipantRole;
@@ -18,6 +16,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -37,6 +36,8 @@ public class ConversationParticipantEntity extends AbstractAuditingEntity<Long> 
 
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
   @JoinColumn(name = "conversation_id", nullable = false, insertable = false, updatable = false)
+  @Getter(AccessLevel.NONE)
+  @Setter(AccessLevel.NONE)
   private ConversationEntity conversation;
 
   @Column(name = "conversation_id", nullable = false, updatable = false)
@@ -44,6 +45,8 @@ public class ConversationParticipantEntity extends AbstractAuditingEntity<Long> 
 
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
   @JoinColumn(name = "user_id", nullable = true, insertable = false, updatable = false)
+  @Getter(AccessLevel.NONE)
+  @Setter(AccessLevel.NONE)
   private UserEntity participant;
 
   @Column(name = "user_id", nullable = false, updatable = false)

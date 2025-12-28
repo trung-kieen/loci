@@ -3,7 +3,6 @@ package com.loci.loci_backend.core.identity.domain.service;
 import java.util.Optional;
 import java.util.UUID;
 
-import com.loci.loci_backend.common.authentication.domain.KeycloakPrincipal;
 import com.loci.loci_backend.common.authentication.domain.Principal;
 import com.loci.loci_backend.common.authentication.domain.Username;
 import com.loci.loci_backend.common.store.domain.aggregate.File;
@@ -15,7 +14,6 @@ import com.loci.loci_backend.common.user.domain.vo.PublicId;
 import com.loci.loci_backend.common.user.domain.vo.UserDBId;
 import com.loci.loci_backend.common.user.domain.vo.UserImageUrl;
 import com.loci.loci_backend.core.discovery.domain.repository.UserConnectionResolver;
-import com.loci.loci_backend.core.discovery.domain.vo.FriendshipStatus;
 import com.loci.loci_backend.core.identity.domain.aggregate.PersonalProfile;
 import com.loci.loci_backend.core.identity.domain.aggregate.PersonalProfileChanges;
 import com.loci.loci_backend.core.identity.domain.aggregate.ProfileSettingChanges;
@@ -23,6 +21,7 @@ import com.loci.loci_backend.core.identity.domain.aggregate.PublicProfile;
 import com.loci.loci_backend.core.identity.domain.aggregate.UserSettings;
 import com.loci.loci_backend.core.identity.domain.repository.ProfileRepository;
 import com.loci.loci_backend.core.identity.domain.vo.ProfilePublicId;
+import com.loci.loci_backend.core.social.domain.vo.FriendshipStatus;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

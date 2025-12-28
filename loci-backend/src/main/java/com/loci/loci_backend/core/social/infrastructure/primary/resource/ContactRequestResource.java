@@ -4,11 +4,11 @@ import java.util.UUID;
 
 import com.loci.loci_backend.common.authentication.domain.KeycloakPrincipal;
 import com.loci.loci_backend.common.user.domain.vo.PublicId;
-import com.loci.loci_backend.core.discovery.domain.vo.FriendshipStatus;
 import com.loci.loci_backend.core.social.application.SocialApplicationService;
 import com.loci.loci_backend.core.social.domain.aggregate.ContactRequest;
 import com.loci.loci_backend.core.social.domain.aggregate.ContactRequestList;
 import com.loci.loci_backend.core.social.domain.aggregate.CreateContactRequest;
+import com.loci.loci_backend.core.social.domain.vo.FriendshipStatus;
 import com.loci.loci_backend.core.social.infrastructure.primary.mapper.RestContactMapper;
 import com.loci.loci_backend.core.social.infrastructure.primary.payload.RestContactRequestList;
 import com.loci.loci_backend.core.social.infrastructure.primary.payload.RestFriendshipUpdatedResponse;
@@ -41,8 +41,9 @@ class ContactRequestResource {
     CreateContactRequest contactRequest = contactMapper.toDomain(receiverPublicId, sender);
     ContactRequest savedRequest = socialApplicationService.addContactRequest(contactRequest);
 
-    return new RestFriendshipUpdatedResponse(FriendshipStatus.PENDING_REQUEST);
+    return new RestFriendshipUpdatedResponse(FriendshipStatus.pendingFriendRequest());
   }
+
   @DeleteMapping("/{userId}")
   @ResponseStatus(HttpStatus.OK)
   public RestFriendshipUpdatedResponse unsendRequest(@PathVariable("userId") UUID receiverPublicId,
@@ -51,7 +52,7 @@ class ContactRequestResource {
     PublicId requestUserPubicId = new PublicId(receiverPublicId);
     socialApplicationService.unsendRequestToUser(requestUserPubicId);
 
-    return new RestFriendshipUpdatedResponse(FriendshipStatus.NOT_CONNECTED);
+    return new RestFriendshipUpdatedResponse(FriendshipStatus.notConnected());
   }
 
   @GetMapping("")
@@ -67,7 +68,7 @@ class ContactRequestResource {
   public RestFriendshipUpdatedResponse acceptContactRequestFromUser(@PathVariable("requestUserId") UUID requestUserId) {
     PublicId requestUserPubicId = new PublicId(requestUserId);
     socialApplicationService.acceptContactRequestFromUser(requestUserPubicId);
-    return new RestFriendshipUpdatedResponse(FriendshipStatus.CONNECTED);
+    return new RestFriendshipUpdatedResponse(FriendshipStatus.connected());
   }
 
   @PostMapping("/{requestId}/accept")
@@ -75,7 +76,7 @@ class ContactRequestResource {
   public RestFriendshipUpdatedResponse acceptContactForRequest(@PathVariable("requestId") UUID requestId) {
     PublicId requestPublicId = new PublicId(requestId);
     socialApplicationService.acceptContactRequestForRequest(requestPublicId);
-    return new RestFriendshipUpdatedResponse(FriendshipStatus.CONNECTED);
+    return new RestFriendshipUpdatedResponse(FriendshipStatus.connected());
   }
 
   @PostMapping("/{requestId}/reject")
@@ -83,7 +84,7 @@ class ContactRequestResource {
   public RestFriendshipUpdatedResponse rejectContactRequestForRequest(@PathVariable("requestId") UUID requestId) {
     PublicId requestPubicId = new PublicId(requestId);
     socialApplicationService.rejectContactRequestForRequest(requestPubicId);
-    return new RestFriendshipUpdatedResponse(FriendshipStatus.NOT_CONNECTED);
+    return new RestFriendshipUpdatedResponse(FriendshipStatus.notConnected());
 
   }
 
@@ -92,7 +93,7 @@ class ContactRequestResource {
   public RestFriendshipUpdatedResponse rejectContactRequestFromUser(@PathVariable("requestUserId") UUID requestUserId) {
     PublicId requestUserPubicId = new PublicId(requestUserId);
     socialApplicationService.rejectContactRequestFromUser(requestUserPubicId);
-    return new RestFriendshipUpdatedResponse(FriendshipStatus.NOT_CONNECTED);
+    return new RestFriendshipUpdatedResponse(FriendshipStatus.notConnected());
 
   }
 

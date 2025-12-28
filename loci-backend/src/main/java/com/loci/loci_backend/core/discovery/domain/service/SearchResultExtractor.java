@@ -9,9 +9,8 @@ import com.loci.loci_backend.common.user.domain.repository.UserRepository;
 import com.loci.loci_backend.common.user.domain.vo.UserDBId;
 import com.loci.loci_backend.core.discovery.domain.aggregate.SearchContact;
 import com.loci.loci_backend.core.discovery.domain.aggregate.SearchContactList;
-import com.loci.loci_backend.core.discovery.domain.repository.DiscoveryUserRepository;
 import com.loci.loci_backend.core.discovery.domain.repository.UserConnectionResolver;
-import com.loci.loci_backend.core.discovery.domain.vo.FriendshipStatus;
+import com.loci.loci_backend.core.social.domain.vo.FriendshipStatus;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -53,7 +52,7 @@ public class SearchResultExtractor {
         .aggreateConnection(currentUser.getDbId(), matchingUserIds);
 
     Page<SearchContact> contacts = matchingUsers.map(user -> {
-      return connectionResolver.buildContact(userDbIdToFriendStatus, user);
+      return connectionResolver.buildSearchContact(userDbIdToFriendStatus, user);
     });
     return new SearchContactList(contacts);
   }

@@ -3,10 +3,9 @@ package com.loci.loci_backend.core.social.infrastructure.primary.resource;
 import java.util.UUID;
 
 import com.loci.loci_backend.common.user.domain.vo.PublicId;
-import com.loci.loci_backend.core.discovery.domain.vo.FriendshipStatus;
 import com.loci.loci_backend.core.social.application.SocialApplicationService;
+import com.loci.loci_backend.core.social.domain.vo.FriendshipStatus;
 import com.loci.loci_backend.core.social.infrastructure.primary.payload.RestFriendshipUpdatedResponse;
-import com.loci.loci_backend.core.social.infrastructure.secondary.entity.FriendRequestStatus;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -30,7 +29,7 @@ public class BlockUserResource {
   public RestFriendshipUpdatedResponse blockUser(@PathVariable("blockUserId") UUID userId) {
     PublicId publicId = new PublicId(userId);
     socialApplicationService.blockUser(publicId);
-    return new RestFriendshipUpdatedResponse(FriendshipStatus.BLOCKED);
+    return new RestFriendshipUpdatedResponse(FriendshipStatus.blockedOther());
 
   }
 

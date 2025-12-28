@@ -26,10 +26,6 @@ public interface MapStructMessageEntityMapper {
   @Mapping(target = "lastModifiedDate", ignore = true)
   @Mapping(target = "createdDate", ignore = true)
 
-  // Ignore fk relationship readonly
-  @Mapping(target = "conversation", ignore = true)
-  @Mapping(target = "sender", ignore = true)
-  @Mapping(target = "replyToMessage", ignore = true)
   @Mapping(source = "messageId", target = "id")
   public MessageEntity from(Message message);
 

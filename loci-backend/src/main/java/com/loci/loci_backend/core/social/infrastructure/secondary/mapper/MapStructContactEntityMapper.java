@@ -13,15 +13,14 @@ import org.mapstruct.Mapping;
 
 public interface MapStructContactEntityMapper {
 
-  @Mapping(target = "receiver", ignore = true)
-  @Mapping(target = "requester", ignore = true)
   @Mapping(target = "createdDate", ignore = true)
   @Mapping(target = "lastModifiedDate", ignore = true)
   public ContactRequestEntity from(ContactRequest request);
 
   public ContactRequest toDomain(ContactRequestEntity entity);
 
-
   @Mapping(source = "contactId", target = "id")
-  public ContactEntity from(Contact contact) ;
+  @Mapping(target = "createdDate", ignore = true)
+  @Mapping(target = "lastModifiedDate", ignore = true)
+  public ContactEntity from(Contact contact);
 }

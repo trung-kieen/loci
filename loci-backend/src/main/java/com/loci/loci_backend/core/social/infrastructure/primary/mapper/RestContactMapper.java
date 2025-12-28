@@ -8,12 +8,12 @@ import com.loci.loci_backend.common.authentication.domain.Username;
 import com.loci.loci_backend.common.user.domain.vo.PublicId;
 import com.loci.loci_backend.common.user.domain.vo.UserDBId;
 import com.loci.loci_backend.common.util.Maps;
-import com.loci.loci_backend.core.discovery.domain.vo.FriendshipStatus;
 import com.loci.loci_backend.core.identity.domain.aggregate.UserSummary;
 import com.loci.loci_backend.core.social.domain.aggregate.ContactRequest;
 import com.loci.loci_backend.core.social.domain.aggregate.ContactRequestList;
 import com.loci.loci_backend.core.social.domain.aggregate.CreateContactRequest;
 import com.loci.loci_backend.core.social.domain.aggregate.CreateContactRequestBuilder;
+import com.loci.loci_backend.core.social.domain.vo.FriendshipStatus;
 import com.loci.loci_backend.core.social.infrastructure.primary.payload.RestContactRequest;
 import com.loci.loci_backend.core.social.infrastructure.primary.payload.RestContactRequestCreated;
 import com.loci.loci_backend.core.social.infrastructure.primary.payload.RestContactRequestCreatedBuilder;
@@ -47,8 +47,7 @@ public class RestContactMapper {
   }
 
   public RestContactRequest from(ContactRequest request, UserSummary userSummary) {
-    var contact = mapstruct.toRestContactRequest(userSummary);
-    contact.setFriendshipStatus(FriendshipStatus.REQUEST_RECEIVED.value());
+    RestContactRequest contact = mapstruct.toRestContactRequest(userSummary);
     return contact;
   }
 

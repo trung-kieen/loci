@@ -36,8 +36,8 @@ public class SpringDataUserSettingsRepository implements UserSettingsRepository 
     UserEntity userEntity = userRepository.findById(user.getDbId().value())
         .orElseThrow(() -> new EntityNotFoundException());
     UserSettingsEntity settingsEntity = mapper.from(settings);
-    settingsEntity.setUser(userEntity);
-    settingsEntity.setId(null); // set null for omit insert operation avoid StaleObjectStateException
+    // settingsEntity.setUser(userEntity);
+    settingsEntity.setId(userEntity.getId()); // set null for omit insert operation avoid StaleObjectStateException
     UserSettingsEntity savedSettings = repository.saveAndFlush(settingsEntity);
     return mapper.toDomain(savedSettings);
   }

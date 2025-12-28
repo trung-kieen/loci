@@ -1,6 +1,7 @@
 package com.loci.loci_backend.core.discovery.infrastructure.secondary.vo;
 
-import com.loci.loci_backend.core.discovery.domain.vo.FriendshipStatus;
+import com.loci.loci_backend.core.social.domain.vo.FriendshipStatus;
+import com.loci.loci_backend.core.social.infrastructure.secondary.enumernation.FriendshipStatusEnum;
 
 public record ContactRelationJpaVO(Long id, Long owningUserId, Long contactUserId, Long blockedByUserId)
     implements UserRelationJpaVO {
@@ -12,16 +13,16 @@ public record ContactRelationJpaVO(Long id, Long owningUserId, Long contactUserI
     if (blockedByUserId != null) {
       // Block is current user
       if (this.blockedByUserId == currentUserId) {
-        return FriendshipStatus.BLOCKED;
+        return new FriendshipStatus(FriendshipStatusEnum.BLOCKED);
         // block is opponent
       }
-      return FriendshipStatus.BLOCKED_BY_THEM;
+      return FriendshipStatus.blockedByOther();
 
     }
     if (this.owningUserId == currentUserId || this.contactUserId == currentUserId) {
-      return FriendshipStatus.CONNECTED;
+      return new FriendshipStatus(FriendshipStatusEnum.CONNECTED);
     }
-    return FriendshipStatus.UNKNOWN;
+    return new FriendshipStatus(FriendshipStatusEnum.UNKNOWN);
 
   }
 

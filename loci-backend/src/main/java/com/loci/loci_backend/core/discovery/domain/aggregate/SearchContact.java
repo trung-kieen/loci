@@ -4,8 +4,8 @@ import com.loci.loci_backend.common.authentication.domain.Username;
 import com.loci.loci_backend.common.user.domain.vo.PublicId;
 import com.loci.loci_backend.common.user.domain.vo.UserEmail;
 import com.loci.loci_backend.common.user.domain.vo.UserImageUrl;
-import com.loci.loci_backend.core.discovery.domain.vo.FriendshipStatus;
 import com.loci.loci_backend.core.identity.domain.aggregate.UserFullname;
+import com.loci.loci_backend.core.social.domain.vo.FriendshipStatus;
 
 import org.jilt.Builder;
 import org.jilt.BuilderStyle;

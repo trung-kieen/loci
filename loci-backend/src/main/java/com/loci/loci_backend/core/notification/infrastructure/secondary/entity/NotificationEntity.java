@@ -36,6 +36,8 @@ public class NotificationEntity extends AbstractAuditingEntity<Long> {
 
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
   @JoinColumn(name = "user_id", nullable = false)
+  @Getter(AccessLevel.NONE)
+  @Setter(AccessLevel.NONE)
   private UserEntity user;
 
   @Column(name = "content", nullable = false, columnDefinition = "TEXT")

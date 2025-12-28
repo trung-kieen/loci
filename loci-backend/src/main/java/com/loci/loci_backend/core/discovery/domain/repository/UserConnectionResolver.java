@@ -6,7 +6,7 @@ import java.util.Map;
 import com.loci.loci_backend.common.user.domain.aggregate.User;
 import com.loci.loci_backend.common.user.domain.vo.UserDBId;
 import com.loci.loci_backend.core.discovery.domain.aggregate.SearchContact;
-import com.loci.loci_backend.core.discovery.domain.vo.FriendshipStatus;
+import com.loci.loci_backend.core.social.domain.vo.FriendshipStatus;
 
 public interface UserConnectionResolver {
 
@@ -15,7 +15,7 @@ public interface UserConnectionResolver {
   /**
    * Build contact information from hashmap information of friendship status
    */
-  public SearchContact buildContact(Map<UserDBId, FriendshipStatus> userDbIdToFriendStatus, User user);
+  public SearchContact buildSearchContact(Map<UserDBId, FriendshipStatus> userDbIdToFriendStatus, User user);
 
   public FriendshipStatus aggreateConnection(UserDBId userId, UserDBId targetUserId);
 

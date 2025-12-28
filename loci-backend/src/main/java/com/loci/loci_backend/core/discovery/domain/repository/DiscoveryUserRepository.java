@@ -7,7 +7,6 @@ import com.loci.loci_backend.core.discovery.domain.vo.SuggestFriendCriteria;
 
 public interface DiscoveryUserRepository {
 
-
     List<UserDBId> suggestFriends(SuggestFriendCriteria criteria);
 
 

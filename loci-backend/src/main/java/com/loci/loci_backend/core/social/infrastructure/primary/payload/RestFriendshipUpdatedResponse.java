@@ -1,7 +1,7 @@
 package com.loci.loci_backend.core.social.infrastructure.primary.payload;
 
 
-import com.loci.loci_backend.core.discovery.domain.vo.FriendshipStatus;
+import com.loci.loci_backend.core.social.domain.vo.FriendshipStatus;
 
 import lombok.Data;
 

@@ -15,12 +15,6 @@ public interface MapStructUserEntityMapper {
   public User toDomain(UserEntity userEntity) ;
 
 
-  @Mapping(target = "contacts", ignore = true)
-  @Mapping(target = "notifications", ignore = true)
-  @Mapping(target = "conversationMemberships", ignore = true)
-  @Mapping(target = "receivedContactRequests", ignore = true)
-  @Mapping(target = "sentContactRequests", ignore = true)
-  @Mapping(target = "sentMessages", ignore = true)
   @Mapping(source = "dbId", target = "id")
   @Mapping(source = "userPublicId", target = "publicId")
   public UserEntity from(User user);

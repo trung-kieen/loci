@@ -10,8 +10,8 @@ import com.loci.loci_backend.common.user.domain.vo.UserDBId;
 import com.loci.loci_backend.core.discovery.domain.aggregate.SearchContactList;
 import com.loci.loci_backend.core.discovery.domain.repository.DiscoveryUserRepository;
 import com.loci.loci_backend.core.discovery.domain.repository.UserConnectionResolver;
-import com.loci.loci_backend.core.discovery.domain.vo.FriendshipStatus;
 import com.loci.loci_backend.core.discovery.domain.vo.SuggestFriendCriteria;
+import com.loci.loci_backend.core.social.domain.vo.FriendshipStatus;
 
 import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.data.domain.Pageable;
@@ -47,7 +47,7 @@ public class PersonalizedRecommendationService {
         .filter(entry -> {
           // TODO: use policy service to determine the user allow in this case
           // only allow NOT_CONNECTED userId
-          return entry.getValue().equals(FriendshipStatus.NOT_CONNECTED);
+          return entry.getValue().isNotConnected();
         })
         .map(Map.Entry::getKey)
         .toList();

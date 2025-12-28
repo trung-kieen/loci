@@ -19,6 +19,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -39,6 +40,8 @@ public class ContactRequestEntity extends AbstractAuditingEntity<Long> {
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
   // readonly entity
   @JoinColumn(name = "receiver_user_id", referencedColumnName = "id", insertable = false, updatable = false)
+  @Getter(AccessLevel.NONE)
+  @Setter(AccessLevel.NONE)
   private UserEntity receiver;
 
   @Column(name = "receiver_user_id", nullable = false, updatable = false)
@@ -47,6 +50,8 @@ public class ContactRequestEntity extends AbstractAuditingEntity<Long> {
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
   // readonly entity
   @JoinColumn(name = "request_user_id", nullable = false, referencedColumnName = "id", insertable = false, updatable = false)
+  @Getter(AccessLevel.NONE)
+  @Setter(AccessLevel.NONE)
   private UserEntity requester;
 
   @Column(name = "request_user_id", nullable = false, updatable = false)
@@ -57,7 +62,6 @@ public class ContactRequestEntity extends AbstractAuditingEntity<Long> {
 
   @Column(name = "public_id", unique = true)
   private UUID publicId;
-
 
   @Builder
   public ContactRequestEntity(Long receiverUserId, Long requestUserId) {

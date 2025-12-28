@@ -16,9 +16,8 @@ public interface MapStructConversationEntityMapper {
 
   @Mapping(target = "messages", ignore = true)
   @Mapping(target = "participants", ignore = true)
-  public Conversation toDomain(ConversationEntity entity);
+  public Conversation toDomain(ConversationEntity conversation);
 
-  @Mapping(target = "creator", ignore = true)
   public ConversationEntity from(Conversation domainObject);
 
   public UserConversation toDomain(UserConversationJpaVO vo);

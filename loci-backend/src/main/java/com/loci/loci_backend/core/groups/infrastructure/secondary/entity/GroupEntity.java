@@ -36,6 +36,8 @@ public class GroupEntity extends AbstractAuditingEntity<Long> {
 
   @OneToOne(fetch = FetchType.LAZY, optional = false)
   @JoinColumn(name = "conversation_id", nullable = false, unique = true, insertable = false, updatable = false)
+  @Getter(AccessLevel.NONE)
+  @Setter(AccessLevel.NONE)
   private ConversationEntity conversation;
 
   @Column(name = "conversation_id", nullable = false, unique = true, updatable = false)

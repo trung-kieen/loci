@@ -15,6 +15,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.MapsId;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -35,6 +36,8 @@ public class UserSettingsEntity extends AbstractAuditingEntity<Long> {
   @OneToOne(fetch = FetchType.LAZY)
   @MapsId // make join column map value to id field
   @JoinColumn(name = "user_id") // mark primary field name as user_id
+  @Getter(AccessLevel.NONE)
+  @Setter(AccessLevel.NONE)
   private UserEntity user;
 
   @Column(name = "last_seen_setting")
@@ -47,7 +50,6 @@ public class UserSettingsEntity extends AbstractAuditingEntity<Long> {
 
   @Column(name = "profile_visibility")
   private Boolean profileVisibility = true;
-
 
   public UserSettingsEntity(UserEntity user) {
     this.user = user;

@@ -7,9 +7,19 @@ public interface ValueObject<T> {
   // boolean isEmpty();
   //
   // default String asString() {
-  //   return Objects.toString(value());
+  // return Objects.toString(value());
   // }
 
+  public static boolean isPresent(ValueObject<?> object) {
+    if (object == null || object.value() == null) {
+      return false;
+    }
+    return true;
+  }
 
+  public static boolean isAbsent(ValueObject<?> object) {
+    return !isPresent(object);
+
+  }
 
 }

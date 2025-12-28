@@ -8,6 +8,7 @@ import com.loci.loci_backend.core.identity.domain.aggregate.PublicProfile;
 import com.loci.loci_backend.core.identity.domain.aggregate.UserSettings;
 import com.loci.loci_backend.core.identity.domain.aggregate.UserSummary;
 import com.loci.loci_backend.core.identity.infrastructure.secondary.entity.UserSettingsEntity;
+import com.loci.loci_backend.core.social.domain.vo.FriendshipStatus;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -27,15 +28,8 @@ public interface MapStructIdentityEntityMapper {
 
   @Mapping(source = "userEntity.id", target = "userDBId")
   @Mapping(source = "userEntity.profilePicture", target = "imageUrl")
-  @Mapping(target = "connectionStatus", ignore = true)
-  public PublicProfile toPublicProfile(UserEntity userEntity);
+  public PublicProfile toPublicProfile(UserEntity userEntity, FriendshipStatus connectionStatus);
 
-  @Mapping(target = "contacts", ignore = true)
-  @Mapping(target = "notifications", ignore = true)
-  @Mapping(target = "conversationMemberships", ignore = true)
-  @Mapping(target = "receivedContactRequests", ignore = true)
-  @Mapping(target = "sentContactRequests", ignore = true)
-  @Mapping(target = "sentMessages", ignore = true)
   @Mapping(source = "fullname.firstname", target = "firstname")
   @Mapping(source = "fullname.lastname", target = "lastname")
   @Mapping(source = "imageUrl", target = "profilePicture")
@@ -47,7 +41,7 @@ public interface MapStructIdentityEntityMapper {
   public UserSettings toDomain(UserSettingsEntity settings);
 
   @Mapping(source = "userId", target = "id")
-  @Mapping(target = "user", ignore = true)
+  // @Mapping(target = "user", ignore = true)
   @Mapping(target = "createdDate", ignore = true)
   @Mapping(target = "lastModifiedDate", ignore = true)
   public UserSettingsEntity from(UserSettings domainObjectt);

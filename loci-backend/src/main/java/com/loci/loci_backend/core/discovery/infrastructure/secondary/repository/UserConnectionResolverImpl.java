@@ -5,14 +5,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import com.loci.loci_backend.common.mapper.ValueObject;
 import com.loci.loci_backend.common.user.domain.aggregate.User;
 import com.loci.loci_backend.common.user.domain.vo.UserDBId;
 import com.loci.loci_backend.core.discovery.domain.aggregate.SearchContact;
 import com.loci.loci_backend.core.discovery.domain.aggregate.SearchContactBuilder;
 import com.loci.loci_backend.core.discovery.domain.repository.UserConnectionResolver;
-import com.loci.loci_backend.core.discovery.domain.vo.FriendshipStatus;
 import com.loci.loci_backend.core.discovery.infrastructure.secondary.vo.ContactRelationJpaVO;
 import com.loci.loci_backend.core.discovery.infrastructure.secondary.vo.ContactRequestRelationJpaVO;
+import com.loci.loci_backend.core.social.domain.vo.FriendshipStatus;
+import com.loci.loci_backend.core.social.infrastructure.secondary.enumernation.FriendshipStatusEnum;
 import com.loci.loci_backend.core.social.infrastructure.secondary.repository.JpaContactRepository;
 import com.loci.loci_backend.core.social.infrastructure.secondary.repository.JpaContactRequestRepository;
 
@@ -27,8 +29,8 @@ public class UserConnectionResolverImpl implements UserConnectionResolver {
   private final JpaContactRepository contactRepository;
 
   public FriendshipStatus aggreateConnection(UserDBId userId, UserDBId targetUserId) {
-    if (userId == null || userId.value() == null) {
-      return FriendshipStatus.UNKNOWN;
+    if (ValueObject.isAbsent(userId)) {
+      return new FriendshipStatus(FriendshipStatusEnum.UNKNOWN);
     }
     Long currentUserId = userId.value();
     Long targetId = targetUserId.value();
@@ -40,13 +42,14 @@ public class UserConnectionResolverImpl implements UserConnectionResolver {
     }
 
     // Check pending contact request
-    Optional<ContactRequestRelationJpaVO> requestOpt = contactRequestRepository.findPendingRequestBetweenUsers(currentUserId,
+    Optional<ContactRequestRelationJpaVO> requestOpt = contactRequestRepository.findPendingRequestBetweenUsers(
+        currentUserId,
         targetId);
     if (requestOpt.isPresent()) {
       return requestOpt.get().friendshipStatusWithUser(currentUserId);
     }
 
-    return FriendshipStatus.NOT_CONNECTED;
+    return new FriendshipStatus(FriendshipStatusEnum.NOT_CONNECTED);
   }
 
   public Map<UserDBId, FriendshipStatus> aggreateConnection(UserDBId userId, List<UserDBId> ids) {
@@ -55,7 +58,7 @@ public class UserConnectionResolverImpl implements UserConnectionResolver {
     // Init to unknow for all
     Map<UserDBId, FriendshipStatus> targetUserIdToFriendStatus = new HashMap<>();
     for (Long targetId : targetUserIds) {
-      targetUserIdToFriendStatus.put(new UserDBId(targetId), FriendshipStatus.NOT_CONNECTED);
+      targetUserIdToFriendStatus.put(new UserDBId(targetId), new FriendshipStatus(FriendshipStatusEnum.NOT_CONNECTED));
     }
 
     List<ContactRelationJpaVO> contacts = contactRepository.findAllInvolving(currentUserId, targetUserIds);
@@ -79,14 +82,15 @@ public class UserConnectionResolverImpl implements UserConnectionResolver {
     return targetUserIdToFriendStatus;
   }
 
-  public SearchContact buildContact(Map<UserDBId, FriendshipStatus> userDbIdToFriendStatus, User user) {
+  public SearchContact buildSearchContact(Map<UserDBId, FriendshipStatus> userDbIdToFriendStatus, User user) {
     return SearchContactBuilder.searchContact()
         .publicId(user.getUserPublicId())
         .fullname(user.getFullname())
         .username(user.getUsername())
         .userEmail(user.getEmail())
         .imageUrl(user.getProfilePicture())
-        .friendshipStatus(userDbIdToFriendStatus.getOrDefault(user.getDbId(), FriendshipStatus.UNKNOWN))
+        .friendshipStatus(userDbIdToFriendStatus.getOrDefault(user.getDbId(),
+            new FriendshipStatus(FriendshipStatusEnum.NOT_CONNECTED)))
         .build();
   }
 

@@ -12,13 +12,11 @@ import org.mapstruct.Mapping;
 public interface MapStructGroupEntityMapper {
 
   @Mapping(target = "id", ignore = true) // create so make null for generate id
-  @Mapping(target = "conversation", ignore = true)
   @Mapping(target = "createdDate", ignore = true)
   @Mapping(target = "lastModifiedDate", ignore = true)
   public GroupEntity from(CreateGroupProfileRequest request);
 
   @Mapping(source = "groupId", target = "id")
-  @Mapping(target = "conversation", ignore = true)
   @Mapping(target = "createdDate", ignore = true)
   @Mapping(target = "lastModifiedDate", ignore = true)
   public GroupEntity from(GroupProfile domainObject);

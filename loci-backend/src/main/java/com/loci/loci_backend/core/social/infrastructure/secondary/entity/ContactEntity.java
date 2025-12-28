@@ -13,6 +13,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -33,6 +34,8 @@ public class ContactEntity extends AbstractAuditingEntity<Long> {
 
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
   @JoinColumn(name = "user_id", referencedColumnName = "id", insertable = false, updatable = false)
+  @Getter(AccessLevel.NONE)
+  @Setter(AccessLevel.NONE)
   private UserEntity owningUser; // The user who "owns" this contact
 
   @Column(name = "user_id", nullable = false, updatable = false)
@@ -40,6 +43,8 @@ public class ContactEntity extends AbstractAuditingEntity<Long> {
 
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
   @JoinColumn(name = "contact_user_id", referencedColumnName = "id", insertable = false, updatable = false)
+  @Getter(AccessLevel.NONE)
+  @Setter(AccessLevel.NONE)
   private UserEntity contactUser; // The actual contact person
 
   @Column(name = "contact_user_id", nullable = false, updatable = false)
@@ -48,6 +53,8 @@ public class ContactEntity extends AbstractAuditingEntity<Long> {
   @ManyToOne(fetch = FetchType.LAZY)
   // readonly field just for enforce reference key
   @JoinColumn(name = "blocked_by", referencedColumnName = "id", insertable = false, updatable = false)
+  @Getter(AccessLevel.NONE)
+  @Setter(AccessLevel.NONE)
   private UserEntity blockedBy; // Who blocked this contact (null if not blocked)
 
   @Column(name = "blocked_by", nullable = true, updatable = true)

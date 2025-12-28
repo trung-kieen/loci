@@ -4,7 +4,6 @@ import java.time.Instant;
 import java.util.UUID;
 
 import com.loci.loci_backend.common.jpa.AbstractAuditingEntity;
-import com.loci.loci_backend.common.mapper.ValueObjectTypeConverter;
 import com.loci.loci_backend.common.user.infrastructure.secondary.entity.UserEntity;
 import com.loci.loci_backend.core.conversation.infrastructure.secondary.entity.ConversationEntity;
 import com.loci.loci_backend.core.messaging.domain.vo.Media;
@@ -27,9 +26,12 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "message")
@@ -49,6 +51,8 @@ public class MessageEntity extends AbstractAuditingEntity<Long> {
 
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
   @JoinColumn(name = "conversation_id", nullable = false, insertable = false, updatable = false)
+  @Getter(AccessLevel.NONE)
+  @Setter(AccessLevel.NONE)
   private ConversationEntity conversation;
 
   @Column(name = "conversation_id", updatable = false, nullable = false)
@@ -56,6 +60,8 @@ public class MessageEntity extends AbstractAuditingEntity<Long> {
 
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
   @JoinColumn(name = "sender_id", nullable = false, insertable = false, updatable = false)
+  @Getter(AccessLevel.NONE)
+  @Setter(AccessLevel.NONE)
   private UserEntity sender;
 
   @Column(name = "sender_id", updatable = false, nullable = false)
@@ -79,6 +85,8 @@ public class MessageEntity extends AbstractAuditingEntity<Long> {
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "reply_to_message_id", nullable = true, insertable = false, updatable = false)
+  @Getter(AccessLevel.NONE)
+  @Setter(AccessLevel.NONE)
   private MessageEntity replyToMessage;
 
   // reference key

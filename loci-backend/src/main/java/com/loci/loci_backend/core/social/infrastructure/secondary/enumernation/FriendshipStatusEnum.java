@@ -1,9 +1,12 @@
-package com.loci.loci_backend.core.discovery.domain.vo;
+package com.loci.loci_backend.core.social.infrastructure.secondary.enumernation;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
-import com.loci.loci_backend.common.mapper.ValueObject;
 
-public enum FriendshipStatus implements ValueObject<String> {
+import lombok.Getter;
+
+@Getter
+public enum FriendshipStatusEnum {
   NOT_CONNECTED("not_connected"),
   PENDING_REQUEST("friend_request_sent"),
   CONNECTED("friends"),
@@ -15,11 +18,24 @@ public enum FriendshipStatus implements ValueObject<String> {
   @JsonValue
   private String value;
 
-  private FriendshipStatus(String value) {
+  @JsonCreator
+  public static FriendshipStatusEnum of(String v) {
+    for (FriendshipStatusEnum s : values()) {
+      if (s.value.equals(v)) {
+        return s;
+      }
+    }
+    return UNKNOWN;
+  }
+
+  private FriendshipStatusEnum(String value) {
     this.value = value;
   }
 
-  @Override
+  public static FriendshipStatusEnum ofDefault() {
+    return UNKNOWN;
+  }
+
   public String value() {
     return this.value;
   }

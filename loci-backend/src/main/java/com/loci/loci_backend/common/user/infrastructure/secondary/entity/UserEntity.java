@@ -33,6 +33,7 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -66,7 +67,8 @@ public class UserEntity extends AbstractAuditingEntity<Long> {
 
   private String bio;
 
-  // @OneToOne(mappedBy = "user", cascade = CascadeType.ALL,   fetch = FetchType.LAZY, optional = true, orphanRemoval = false)
+  // @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch =
+  // FetchType.LAZY, optional = true, orphanRemoval = false)
   // private UserSettingsEntity settings;
 
   @Column(name = "last_active")
@@ -94,29 +96,41 @@ public class UserEntity extends AbstractAuditingEntity<Long> {
   private Set<AuthorityEntity> authorities = new HashSet<>();
 
   @OneToMany(mappedBy = "owningUser", cascade = CascadeType.ALL)
+  @Getter(AccessLevel.NONE)
+  @Setter(AccessLevel.NONE)
   private Set<ContactEntity> contacts = new HashSet<>();
 
-
   @OneToMany(mappedBy = "sender", cascade = CascadeType.ALL)
+  @Getter(AccessLevel.NONE)
+  @Setter(AccessLevel.NONE)
   private Set<MessageEntity> sentMessages = new HashSet<>();
 
   @OneToMany(mappedBy = "participant", cascade = CascadeType.ALL)
+  @Getter(AccessLevel.NONE)
+  @Setter(AccessLevel.NONE)
   private Set<ConversationParticipantEntity> conversationMemberships = new HashSet<>();
 
   @OneToMany(mappedBy = "receiver", cascade = CascadeType.ALL)
+  @Getter(AccessLevel.NONE)
+  @Setter(AccessLevel.NONE)
   private Set<ContactRequestEntity> receivedContactRequests = new HashSet<>();
 
   @OneToMany(mappedBy = "requester", cascade = CascadeType.ALL)
+  @Getter(AccessLevel.NONE)
+  @Setter(AccessLevel.NONE)
   private Set<ContactRequestEntity> sentContactRequests = new HashSet<>();
 
   @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+  @Getter(AccessLevel.NONE)
+  @Setter(AccessLevel.NONE)
   private Set<NotificationEntity> notifications = new HashSet<>();
 
   public String getUsername() {
     return username;
 
   }
-  public Set<AuthorityEntity> getAuthorities(){
+
+  public Set<AuthorityEntity> getAuthorities() {
     return authorities;
   }
 

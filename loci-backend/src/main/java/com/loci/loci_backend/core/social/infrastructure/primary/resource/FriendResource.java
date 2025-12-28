@@ -3,8 +3,8 @@ package com.loci.loci_backend.core.social.infrastructure.primary.resource;
 import java.util.UUID;
 
 import com.loci.loci_backend.common.user.domain.vo.PublicId;
-import com.loci.loci_backend.core.discovery.domain.vo.FriendshipStatus;
 import com.loci.loci_backend.core.social.application.SocialApplicationService;
+import com.loci.loci_backend.core.social.domain.vo.FriendshipStatus;
 import com.loci.loci_backend.core.social.infrastructure.primary.payload.RestFriendshipUpdatedResponse;
 
 import org.springframework.http.HttpStatus;
@@ -28,7 +28,7 @@ public class FriendResource {
   public RestFriendshipUpdatedResponse removeFriendContact(@PathVariable("friendId") UUID userId) {
     PublicId userPublicId = new PublicId(userId);
     socialApplicationService.removeContactConnection(userPublicId);
-    return new RestFriendshipUpdatedResponse(FriendshipStatus.NOT_CONNECTED);
+    return new RestFriendshipUpdatedResponse(FriendshipStatus.notConnected());
   }
 
 }

@@ -1,13 +1,13 @@
 package com.loci.loci_backend.core.social.application;
 
 import com.loci.loci_backend.common.user.domain.vo.PublicId;
-import com.loci.loci_backend.core.discovery.domain.vo.FriendshipStatus;
 import com.loci.loci_backend.core.identity.domain.service.BlockManager;
 import com.loci.loci_backend.core.social.domain.aggregate.Contact;
 import com.loci.loci_backend.core.social.domain.aggregate.ContactRequest;
 import com.loci.loci_backend.core.social.domain.aggregate.ContactRequestList;
 import com.loci.loci_backend.core.social.domain.aggregate.CreateContactRequest;
 import com.loci.loci_backend.core.social.domain.service.FriendManager;
+import com.loci.loci_backend.core.social.domain.vo.FriendshipStatus;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;

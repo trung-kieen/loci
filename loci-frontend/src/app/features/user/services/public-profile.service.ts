@@ -65,43 +65,53 @@ export class PublicProfileService {
     return status ? iconMap[status] : 'fa-user-plus';
   });
 
-  readonly isFriends = computed(() => {
-    return this._profile()?.connectionStatus === 'friends';
-  });
-
-  readonly canDenyRequest = computed(() => {
-    return this._profile()?.connectionStatus === 'friend_request_received';
-  });
-
-  readonly canUnsendRequest = computed(() => {
-    return this._profile()?.connectionStatus === 'friend_request_sent';
-  });
-
   readonly canAddFriend = computed(() => {
     const status = this.profile()?.connectionStatus;
-    return status === 'not_connected' || status === 'not_determined';
+    if (!status) return
+    return FriendManagerService.canAddFriend(status);
   });
 
+
+  readonly isFriends = computed(() => {
+    const status = this.profile()?.connectionStatus;
+    if (!status) return
+    return FriendManagerService.isFriends(status);
+  });
+
+
   readonly canAcceptRequest = computed(() => {
-    return this._profile()?.connectionStatus === 'friend_request_received';
+    const status = this._profile()?.connectionStatus;
+    if (!status) return
+    return FriendManagerService.canAcceptRequest(status);
   });
 
   readonly canMessage = computed(() => {
     const status = this._profile()?.connectionStatus;
-    return status === 'friends' || status === 'friend_request_received';
+    if (!status) return
+    return FriendManagerService.canMessage(status);
+  });
+  readonly canUnsendRequest = computed(() => {
+    const status = this._profile()?.connectionStatus;
+    if (!status) return
+    return FriendManagerService.canUnsendRequest(status);
   });
 
   readonly canBlock = computed(() => {
     const status = this._profile()?.connectionStatus;
-    return status !== 'blocked' && status !== 'blocked_by';
+    if (!status) return
+    return FriendManagerService.canBlock(status);
   });
 
   readonly isBlocked = computed(() => {
-    return this._profile()?.connectionStatus === 'blocked';
+    const status = this._profile()?.connectionStatus;
+    if (!status) return
+    return FriendManagerService.isBlocked(status);
   });
 
+  // isActiveRecently remains unchanged
   readonly isActiveRecently = computed(() => {
     const lastActive = this._profile()?.lastActive;
+
     if (!lastActive) return false;
     const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000);
     return new Date(lastActive) > fiveMinutesAgo;
