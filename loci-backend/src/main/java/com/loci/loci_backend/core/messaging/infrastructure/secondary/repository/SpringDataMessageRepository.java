@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import com.loci.loci_backend.common.util.Lists;
+import com.loci.loci_backend.common.collection.Lists;
 import com.loci.loci_backend.core.conversation.domain.vo.ConversationId;
 import com.loci.loci_backend.core.conversation.domain.vo.ConversationUnreadMessageCount;
 import com.loci.loci_backend.core.conversation.domain.vo.ConversationUnreadMessageQuery;

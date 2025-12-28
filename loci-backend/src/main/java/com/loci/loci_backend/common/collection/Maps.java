@@ -1,4 +1,4 @@
-package com.loci.loci_backend.common.util;
+package com.loci.loci_backend.common.collection;
 
 import java.util.Collections;
 import java.util.HashMap;

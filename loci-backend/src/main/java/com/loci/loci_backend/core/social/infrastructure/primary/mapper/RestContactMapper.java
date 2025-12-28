@@ -7,7 +7,7 @@ import com.loci.loci_backend.common.authentication.domain.KeycloakPrincipal;
 import com.loci.loci_backend.common.authentication.domain.Username;
 import com.loci.loci_backend.common.user.domain.vo.PublicId;
 import com.loci.loci_backend.common.user.domain.vo.UserDBId;
-import com.loci.loci_backend.common.util.Maps;
+import com.loci.loci_backend.common.collection.Maps;
 import com.loci.loci_backend.core.identity.domain.aggregate.UserSummary;
 import com.loci.loci_backend.core.social.domain.aggregate.ContactRequest;
 import com.loci.loci_backend.core.social.domain.aggregate.ContactRequestList;

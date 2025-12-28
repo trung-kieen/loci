@@ -1,6 +1,9 @@
 package com.loci.loci_backend.core.discovery.infrastructure.primary.payload;
 
+
 import java.util.UUID;
+
+import com.loci.loci_backend.core.social.infrastructure.secondary.enumernation.FriendshipStatusEnum;
 
 import org.jilt.Builder;
 import org.jilt.BuilderStyle;
@@ -14,10 +17,10 @@ public class RestSearchContact {
   private String username;
   private String email;
   private String imageUrl;
-  private String friendshipStatus;
+  private FriendshipStatusEnum friendshipStatus;
   @Builder(style = BuilderStyle.STAGED)
   public RestSearchContact(UUID userId, String fullname, String username, String email, String imageUrl,
-      String friendshipStatus) {
+      FriendshipStatusEnum  friendshipStatus) {
     this.userId = userId;
     this.fullname = fullname;
     this.username = username;

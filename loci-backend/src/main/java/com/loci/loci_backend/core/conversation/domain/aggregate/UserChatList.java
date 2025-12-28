@@ -3,7 +3,7 @@ package com.loci.loci_backend.core.conversation.domain.aggregate;
 import java.util.List;
 import java.util.Map;
 
-import com.loci.loci_backend.common.util.Maps;
+import com.loci.loci_backend.common.collection.Maps;
 import com.loci.loci_backend.core.conversation.domain.vo.ConversationId;
 import com.loci.loci_backend.core.conversation.domain.vo.ConversationUnreadMessageCount;
 import com.loci.loci_backend.core.messaging.domain.aggregate.DirectChatInfo;

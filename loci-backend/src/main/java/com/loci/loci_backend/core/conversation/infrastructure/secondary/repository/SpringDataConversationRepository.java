@@ -10,7 +10,7 @@ import com.loci.loci_backend.common.user.domain.aggregate.User;
 import com.loci.loci_backend.common.user.domain.vo.PublicId;
 import com.loci.loci_backend.common.user.domain.vo.UserDBId;
 import com.loci.loci_backend.common.user.infrastructure.secondary.repository.JpaUserRepository;
-import com.loci.loci_backend.common.util.Maps;
+import com.loci.loci_backend.common.collection.Maps;
 import com.loci.loci_backend.common.validation.domain.Assert;
 import com.loci.loci_backend.core.conversation.domain.aggregate.Conversation;
 import com.loci.loci_backend.core.conversation.domain.aggregate.UserConversation;
