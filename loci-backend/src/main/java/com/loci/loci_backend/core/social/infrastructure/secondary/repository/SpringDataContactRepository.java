@@ -3,6 +3,7 @@ package com.loci.loci_backend.core.social.infrastructure.secondary.repository;
 import java.util.List;
 import java.util.Optional;
 
+import com.loci.loci_backend.common.ddd.infrastructure.stereotype.SecondaryPort;
 import com.loci.loci_backend.common.user.domain.aggregate.User;
 import com.loci.loci_backend.common.user.domain.vo.UserDBId;
 import com.loci.loci_backend.core.social.domain.aggregate.Contact;
@@ -12,12 +13,11 @@ import com.loci.loci_backend.core.social.infrastructure.secondary.mapper.Contact
 import com.loci.loci_backend.core.social.infrastructure.secondary.specification.JpaContactSpecification;
 
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.stereotype.Service;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 
-@Service
+@SecondaryPort
 @RequiredArgsConstructor
 public class SpringDataContactRepository implements ContactRepository {
   private final JpaContactRepository repository;

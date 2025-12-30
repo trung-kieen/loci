@@ -1,4 +1,4 @@
-package com.loci.loci_backend.common.mapper;
+package com.loci.loci_backend.common.ddd.domain.contract;
 
 public interface ValueObject<T> {
 

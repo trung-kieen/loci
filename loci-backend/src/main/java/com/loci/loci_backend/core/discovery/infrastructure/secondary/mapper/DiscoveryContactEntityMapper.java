@@ -1,5 +1,6 @@
 package com.loci.loci_backend.core.discovery.infrastructure.secondary.mapper;
 
+import com.loci.loci_backend.common.ddd.infrastructure.stereotype.SecondaryMapper;
 import com.loci.loci_backend.common.user.infrastructure.secondary.entity.UserEntity;
 import com.loci.loci_backend.core.discovery.domain.aggregate.SearchContact;
 import com.loci.loci_backend.core.social.domain.vo.FriendshipStatus;
@@ -9,7 +10,7 @@ import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 
-@Service
+@SecondaryMapper
 @RequiredArgsConstructor
 public class DiscoveryContactEntityMapper {
   private final MapStructDiscoveryContactEntityMapper mapstruct;

@@ -1,6 +1,7 @@
 package com.loci.loci_backend.core.groups.application;
 
 import com.loci.loci_backend.core.groups.domain.aggregate.GroupProfile;
+import com.loci.loci_backend.common.ddd.infrastructure.stereotype.ApplicationService;
 import com.loci.loci_backend.core.groups.domain.aggregate.CreateGroupProfileRequest;
 import com.loci.loci_backend.core.groups.domain.service.GroupManager;
 
@@ -8,7 +9,7 @@ import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 
-@Service
+@ApplicationService
 @RequiredArgsConstructor
 public class GroupApplicationService {
 

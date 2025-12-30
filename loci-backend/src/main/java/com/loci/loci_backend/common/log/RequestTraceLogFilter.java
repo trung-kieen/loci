@@ -11,6 +11,9 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 
+/**
+ * Provide context for each incoming request
+ */
 public class RequestTraceLogFilter implements Filter {
 
   @Override

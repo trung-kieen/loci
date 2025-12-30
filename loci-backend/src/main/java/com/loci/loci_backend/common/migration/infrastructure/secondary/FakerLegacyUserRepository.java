@@ -8,6 +8,7 @@ import java.util.stream.IntStream;
 
 import com.github.javafaker.Faker;
 import com.loci.loci_backend.common.authentication.domain.Username;
+import com.loci.loci_backend.common.ddd.infrastructure.stereotype.SecondaryPort;
 import com.loci.loci_backend.common.migration.domain.repository.LegacyUserRepository;
 import com.loci.loci_backend.common.user.domain.aggregate.Authority;
 import com.loci.loci_backend.common.user.domain.aggregate.User;
@@ -21,7 +22,7 @@ import com.loci.loci_backend.common.user.domain.vo.PublicId;
 
 import org.springframework.stereotype.Service;
 
-@Service
+@SecondaryPort
 public class FakerLegacyUserRepository implements LegacyUserRepository {
 
   private final Faker faker = new Faker();

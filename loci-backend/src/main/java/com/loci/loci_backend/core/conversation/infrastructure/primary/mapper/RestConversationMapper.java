@@ -1,5 +1,6 @@
 package com.loci.loci_backend.core.conversation.infrastructure.primary.mapper;
 
+import com.loci.loci_backend.common.ddd.infrastructure.stereotype.PrimaryPort;
 import com.loci.loci_backend.core.conversation.domain.aggregate.Chat;
 import com.loci.loci_backend.core.conversation.domain.aggregate.Conversation;
 import com.loci.loci_backend.core.conversation.domain.aggregate.CreateGroupRequest;
@@ -16,7 +17,7 @@ import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 
-@Service
+@PrimaryPort
 @RequiredArgsConstructor
 public class RestConversationMapper {
   private final MapStructConversationMapper mapstruct;

@@ -2,9 +2,9 @@ package com.loci.loci_backend.core.identity.infrastructure.secondary.mapper;
 
 import java.util.List;
 
-import com.loci.loci_backend.common.mapper.DomainEntityMapper;
+import com.loci.loci_backend.common.ddd.infrastructure.contract.DomainEntityMapper;
+import com.loci.loci_backend.common.ddd.infrastructure.stereotype.SecondaryMapper;
 import com.loci.loci_backend.common.user.infrastructure.secondary.entity.UserEntity;
-import com.loci.loci_backend.common.user.infrastructure.secondary.mapper.UserEntityMapper;
 import com.loci.loci_backend.core.identity.domain.aggregate.PersonalProfile;
 import com.loci.loci_backend.core.identity.domain.aggregate.PublicProfile;
 import com.loci.loci_backend.core.identity.domain.aggregate.UserSettings;
@@ -12,11 +12,9 @@ import com.loci.loci_backend.core.identity.domain.aggregate.UserSummary;
 import com.loci.loci_backend.core.identity.infrastructure.secondary.entity.UserSettingsEntity;
 import com.loci.loci_backend.core.social.domain.vo.FriendshipStatus;
 
-import org.springframework.stereotype.Service;
-
 import lombok.RequiredArgsConstructor;
 
-@Service
+@SecondaryMapper
 @RequiredArgsConstructor
 public class IdentityEntityMapper implements DomainEntityMapper<UserSettings, UserSettingsEntity> {
   private final MapStructIdentityEntityMapper mapstruct;

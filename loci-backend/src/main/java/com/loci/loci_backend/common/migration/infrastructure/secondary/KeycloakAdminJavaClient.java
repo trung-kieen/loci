@@ -4,6 +4,7 @@ import java.util.Arrays;
 
 import com.loci.loci_backend.common.authentication.domain.Username;
 import com.loci.loci_backend.common.authentication.infrastructure.primary.keycloak.KeycloakProperties;
+import com.loci.loci_backend.common.ddd.infrastructure.stereotype.SecondaryPort;
 import com.loci.loci_backend.common.migration.application.KeycloakMigrateException;
 import com.loci.loci_backend.common.migration.domain.aggregate.KeycloakUser;
 import com.loci.loci_backend.common.migration.domain.repository.KeycloakAdminClient;
@@ -15,11 +16,10 @@ import org.keycloak.admin.client.resource.RealmResource;
 import org.keycloak.admin.client.resource.UsersResource;
 import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
-import org.springframework.stereotype.Service;
 
 import jakarta.ws.rs.core.Response;
 
-@Service
+@SecondaryPort
 public class KeycloakAdminJavaClient implements KeycloakAdminClient {
 
   private final Keycloak keycloak;

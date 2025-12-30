@@ -3,6 +3,7 @@ package com.loci.loci_backend.core.identity.infrastructure.secondary.repository;
 import java.util.Optional;
 
 import com.loci.loci_backend.common.authentication.domain.Username;
+import com.loci.loci_backend.common.ddd.infrastructure.stereotype.SecondaryPort;
 import com.loci.loci_backend.common.user.domain.vo.PublicId;
 import com.loci.loci_backend.common.user.domain.vo.UserDBId;
 import com.loci.loci_backend.common.user.domain.vo.UserEmail;
@@ -21,7 +22,7 @@ import org.springframework.stereotype.Service;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 
-@Service
+@SecondaryPort
 @RequiredArgsConstructor
 public class SpringDataProfileRepository implements ProfileRepository {
   private final JpaUserRepository userRepository;

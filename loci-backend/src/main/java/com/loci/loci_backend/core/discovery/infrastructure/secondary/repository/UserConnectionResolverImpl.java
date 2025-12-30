@@ -5,7 +5,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import com.loci.loci_backend.common.mapper.ValueObject;
+import com.loci.loci_backend.common.ddd.domain.contract.ValueObject;
+import com.loci.loci_backend.common.ddd.infrastructure.stereotype.SecondaryPort;
 import com.loci.loci_backend.common.user.domain.aggregate.User;
 import com.loci.loci_backend.common.user.domain.vo.UserDBId;
 import com.loci.loci_backend.core.discovery.domain.aggregate.SearchContact;
@@ -18,12 +19,10 @@ import com.loci.loci_backend.core.social.infrastructure.secondary.enumernation.F
 import com.loci.loci_backend.core.social.infrastructure.secondary.repository.JpaContactRepository;
 import com.loci.loci_backend.core.social.infrastructure.secondary.repository.JpaContactRequestRepository;
 
-import org.springframework.stereotype.Service;
-
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-@Service
+@SecondaryPort
 public class UserConnectionResolverImpl implements UserConnectionResolver {
   private final JpaContactRequestRepository contactRequestRepository;
   private final JpaContactRepository contactRepository;

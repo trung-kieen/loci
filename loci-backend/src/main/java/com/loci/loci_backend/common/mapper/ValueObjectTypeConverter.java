@@ -3,12 +3,17 @@ package com.loci.loci_backend.common.mapper;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
+import com.loci.loci_backend.common.ddd.domain.contract.ValueObject;
 import com.loci.loci_backend.common.util.NullSafe;
 import com.loci.loci_backend.common.validation.infrastructure.exception.MappingException;
 
 import org.mapstruct.TargetType;
 import org.springframework.stereotype.Component;
 
+/**
+ * Provide mapstruct type translator from ValueObject to infrastructure type
+ * @see ValueObject
+ */
 @Component
 public class ValueObjectTypeConverter {
 
@@ -22,10 +27,10 @@ public class ValueObjectTypeConverter {
       return null;
     }
 
-  /*
-   * Handle ambiguous mapping raise when T = R
-   * For instance T extends ValueObject<T>
-   */
+    /*
+     * Handle ambiguous mapping raise when T = R
+     * For instance T extends ValueObject<T>
+     */
     if (clazz.isInstance(value)) {
       return (T) value;
     }

@@ -3,7 +3,7 @@ package com.loci.loci_backend.common.websocket.infrastructure.primary;
 import java.util.List;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.loci.loci_backend.common.websocket.infrastructure.WSPaths;
+import com.loci.loci_backend.common.websocket.infrastructure.WsPaths;
 import com.loci.loci_backend.common.websocket.infrastructure.primary.queue.StompRelayProperties;
 import com.loci.loci_backend.common.websocket.infrastructure.primary.security.SecurityChannelInterceptorAdapter;
 
@@ -45,7 +45,7 @@ public class SimpleWebSocketConfiguration implements WebSocketMessageBrokerConfi
     if (env.acceptsProfiles(Profiles.of("rabbitmq"))) {
       log.info("Use rabbitmq as broker for ws");
       log.info("Register stomp relay at port {}", relayProperties.getRelayPort());
-      config.enableStompBrokerRelay(WSPaths.TOPIC, WSPaths.QUEUE)
+      config.enableStompBrokerRelay(WsPaths.TOPIC, WsPaths.QUEUE)
           .setRelayHost(relayProperties.getRelayHost())
           .setRelayPort(relayProperties.getRelayPort())
           .setClientLogin(relayProperties.getClientLogin())
@@ -56,10 +56,10 @@ public class SimpleWebSocketConfiguration implements WebSocketMessageBrokerConfi
           .setAutoStartup(true)
           .setSystemHeartbeatReceiveInterval(relayProperties.getSystemHeartbeatReceiveInterval());
       // Config relay as proxy between websocket client and rabbitmq
-      config.setApplicationDestinationPrefixes(WSPaths.APP);
+      config.setApplicationDestinationPrefixes(WsPaths.APP);
     } else {
       log.info("Profile rabbitmq is not active, use simple in-memory as message broker for ws");
-      config.enableSimpleBroker(WSPaths.TOPIC, WSPaths.QUEUE);
+      config.enableSimpleBroker(WsPaths.TOPIC, WsPaths.QUEUE);
     }
   }
 
@@ -78,15 +78,15 @@ public class SimpleWebSocketConfiguration implements WebSocketMessageBrokerConfi
   public void registerStompEndpoints(StompEndpointRegistry registry) {
     for (String origin : corsConfiguration.getAllowedOrigins()) {
       registry
-          .addEndpoint(WSPaths.ENDPOINT, WSPaths.MESSAGE_ENDPOINT, WSPaths.NOTIFICATION_ENDPOINT,
-              WSPaths.PRESENCE_ENDPOINT)
+          .addEndpoint(WsPaths.ENDPOINT, WsPaths.MESSAGE_ENDPOINT, WsPaths.NOTIFICATION_ENDPOINT,
+              WsPaths.PRESENCE_ENDPOINT)
           .setAllowedOrigins(origin)
       // .setAllowedOriginPatterns("*") // Or this for flexibility
       // .withSockJS()// to disable SockJS wrapping
       ;
       registry
-          .addEndpoint(WSPaths.ENDPOINT, WSPaths.MESSAGE_ENDPOINT, WSPaths.NOTIFICATION_ENDPOINT,
-              WSPaths.PRESENCE_ENDPOINT)
+          .addEndpoint(WsPaths.ENDPOINT, WsPaths.MESSAGE_ENDPOINT, WsPaths.NOTIFICATION_ENDPOINT,
+              WsPaths.PRESENCE_ENDPOINT)
           .setAllowedOrigins(origin)
           .withSockJS();
     }

@@ -1,5 +1,6 @@
 package com.loci.loci_backend.core.social.infrastructure.secondary.mapper;
 
+import com.loci.loci_backend.common.ddd.infrastructure.stereotype.SecondaryMapper;
 import com.loci.loci_backend.common.user.domain.vo.UserDBId;
 import com.loci.loci_backend.common.util.NullSafe;
 import com.loci.loci_backend.core.social.domain.aggregate.Contact;
@@ -10,11 +11,10 @@ import com.loci.loci_backend.core.social.infrastructure.secondary.entity.Contact
 import com.loci.loci_backend.core.social.infrastructure.secondary.entity.ContactRequestEntity;
 
 import org.springframework.data.domain.Page;
-import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 
-@Service
+@SecondaryMapper
 @RequiredArgsConstructor
 public class ContactEntityMapper {
   private final MapStructContactEntityMapper mapstruct;

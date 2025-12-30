@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.loci.loci_backend.common.collection.Lists;
+import com.loci.loci_backend.common.ddd.infrastructure.stereotype.SecondaryPort;
 import com.loci.loci_backend.core.conversation.domain.vo.ConversationId;
 import com.loci.loci_backend.core.conversation.domain.vo.ConversationUnreadMessageCount;
 import com.loci.loci_backend.core.conversation.domain.vo.ConversationUnreadMessageQuery;
@@ -16,13 +17,11 @@ import com.loci.loci_backend.core.messaging.domain.vo.MessageId;
 import com.loci.loci_backend.core.messaging.infrastructure.secondary.entity.MessageEntity;
 import com.loci.loci_backend.core.messaging.infrastructure.secondary.mapper.MessageEntityMapper;
 
-import org.springframework.messaging.handler.annotation.reactive.MessageMappingMessageHandler;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 
-@Service
+@SecondaryPort
 @RequiredArgsConstructor
 public class SpringDataMessageRepository implements MessageRepository {
   private final JpaMessageRepository messageRepository;

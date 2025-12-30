@@ -7,6 +7,7 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import com.loci.loci_backend.common.ddd.infrastructure.stereotype.SecondaryPort;
 import com.loci.loci_backend.common.user.domain.vo.UserDBId;
 import com.loci.loci_backend.core.identity.domain.aggregate.UserPresence;
 import com.loci.loci_backend.core.identity.domain.repository.UserPresenceRepository;
@@ -16,7 +17,7 @@ import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 
-@Service
+@SecondaryPort
 @RequiredArgsConstructor
 public class SpringDataUserPresenceRepository implements UserPresenceRepository {
   private final CacheUserPresenceRepository cacheUserPresenceRepository;

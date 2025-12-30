@@ -1,7 +1,7 @@
 package com.loci.loci_backend.core.identity.domain.vo;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.loci.loci_backend.common.mapper.ValueObject;
+import com.loci.loci_backend.common.ddd.domain.contract.ValueObject;
 import com.loci.loci_backend.common.util.NullSafe;
 import com.loci.loci_backend.core.identity.infrastructure.secondary.enumeration.FriendRequestSettingEnum;
 

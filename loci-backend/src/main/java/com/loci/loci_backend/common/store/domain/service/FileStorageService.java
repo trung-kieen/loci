@@ -1,5 +1,6 @@
 package com.loci.loci_backend.common.store.domain.service;
 
+import com.loci.loci_backend.common.ddd.infrastructure.stereotype.DomainService;
 import com.loci.loci_backend.common.store.domain.aggregate.File;
 import com.loci.loci_backend.common.store.domain.repository.ObjectStorage;
 import com.loci.loci_backend.common.store.domain.vo.FileContentType;
@@ -10,7 +11,7 @@ import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 
-@Service
+@DomainService
 @RequiredArgsConstructor
 public class FileStorageService {
   private final ObjectStorage objectStorage;

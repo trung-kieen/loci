@@ -18,7 +18,6 @@ import lombok.RequiredArgsConstructor;
 public class StompIdentityProvider {
   /**
    * Get current authentication user from TCP connection context
-   * Must return a domain object!
    */
   public KeycloakPrincipal currentPrincipal(Object rawHeaders) {
     Message<?> msg = (Message<?>) rawHeaders; // safe cast – called by app service

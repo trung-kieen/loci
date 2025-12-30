@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import com.loci.loci_backend.common.authentication.domain.Principal;
 import com.loci.loci_backend.common.authentication.domain.Username;
+import com.loci.loci_backend.common.ddd.infrastructure.stereotype.DomainService;
 import com.loci.loci_backend.common.store.domain.aggregate.File;
 import com.loci.loci_backend.common.store.domain.service.FileStorageService;
 import com.loci.loci_backend.common.store.domain.vo.FilePath;
@@ -30,7 +31,7 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
-@Service
+@DomainService
 @Log4j2
 @RequiredArgsConstructor
 public class ProfileManager {

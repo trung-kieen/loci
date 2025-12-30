@@ -3,8 +3,8 @@ package com.loci.loci_backend.core.conversation.infrastructure.secondary.mapper;
 import java.util.Collection;
 import java.util.Set;
 
-import com.loci.loci_backend.common.mapper.DomainEntityMapper;
-import com.loci.loci_backend.core.conversation.domain.aggregate.Chat;
+import com.loci.loci_backend.common.ddd.infrastructure.contract.DomainEntityMapper;
+import com.loci.loci_backend.common.ddd.infrastructure.stereotype.SecondaryMapper;
 import com.loci.loci_backend.core.conversation.domain.aggregate.Conversation;
 import com.loci.loci_backend.core.conversation.domain.aggregate.Participant;
 import com.loci.loci_backend.core.conversation.domain.aggregate.UserConversation;
@@ -13,14 +13,11 @@ import com.loci.loci_backend.core.conversation.infrastructure.secondary.entity.C
 import com.loci.loci_backend.core.conversation.infrastructure.secondary.vo.GroupConversationMetadataJpaVO;
 import com.loci.loci_backend.core.conversation.infrastructure.secondary.vo.UserConversationJpaVO;
 import com.loci.loci_backend.core.messaging.domain.aggregate.GroupChatInfo;
-import com.loci.loci_backend.core.messaging.infrastructure.secondary.entity.MessageEntity;
-
-import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-@Service
+@SecondaryMapper
 public class ConversationEntityMapper implements DomainEntityMapper<Conversation, ConversationEntity> {
   private final MapStructConversationEntityMapper mapstruct;
   private final ParticipantEntityMapper participantMapper;

@@ -1,5 +1,6 @@
 package com.loci.loci_backend.core.identity.infrastructure.primary.mapper;
 
+import com.loci.loci_backend.common.ddd.infrastructure.stereotype.PrimaryMapper;
 import com.loci.loci_backend.common.util.TimeFormatter;
 import com.loci.loci_backend.core.identity.domain.aggregate.PersonalProfile;
 import com.loci.loci_backend.core.identity.domain.aggregate.PersonalProfileChanges;
@@ -13,11 +14,10 @@ import com.loci.loci_backend.core.identity.infrastructure.primary.payload.RestPr
 import com.loci.loci_backend.core.identity.infrastructure.primary.payload.RestPublicProfile;
 
 import org.springframework.data.domain.Page;
-import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
-@Component
+@PrimaryMapper
 @RequiredArgsConstructor
 public class RestProfileMapper {
   private final MapStructRestProfileMapper mapstructRest;

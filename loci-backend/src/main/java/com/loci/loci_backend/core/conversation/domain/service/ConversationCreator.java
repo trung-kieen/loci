@@ -5,18 +5,14 @@ import java.util.Optional;
 import com.loci.loci_backend.common.authentication.domain.Principal;
 import com.loci.loci_backend.common.user.domain.aggregate.User;
 import com.loci.loci_backend.common.user.domain.repository.UserRepository;
-import com.loci.loci_backend.common.user.domain.vo.PublicId;
 import com.loci.loci_backend.common.user.domain.vo.UserDBId;
-import com.loci.loci_backend.common.validation.domain.Assert;
 import com.loci.loci_backend.common.validation.domain.DuplicateResourceException;
 import com.loci.loci_backend.core.conversation.domain.aggregate.Conversation;
-import com.loci.loci_backend.core.conversation.domain.aggregate.Participant;
 import com.loci.loci_backend.core.conversation.domain.repository.ConversationRepository;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
@@ -24,9 +20,6 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 @RequiredArgsConstructor
 public class ConversationCreator {
-  private final Principal principal;
-  private final UserRepository userRepository;
-  private final ConversationAuthenticationProvider conversationAuthentication;
   private final ConversationRepository conversationRepository;
 
   @Transactional(readOnly = false)

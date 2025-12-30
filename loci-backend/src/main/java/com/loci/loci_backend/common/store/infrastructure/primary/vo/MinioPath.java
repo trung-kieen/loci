@@ -1,6 +1,5 @@
 package com.loci.loci_backend.common.store.infrastructure.primary.vo;
 
-import java.net.URI;
 import java.nio.file.Paths;
 
 import com.loci.loci_backend.common.store.domain.vo.FilePath;

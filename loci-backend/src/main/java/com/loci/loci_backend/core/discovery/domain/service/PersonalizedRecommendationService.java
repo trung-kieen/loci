@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.loci.loci_backend.common.authentication.domain.Principal;
+import com.loci.loci_backend.common.ddd.infrastructure.stereotype.DomainService;
 import com.loci.loci_backend.common.user.domain.aggregate.User;
 import com.loci.loci_backend.common.user.domain.repository.UserRepository;
 import com.loci.loci_backend.common.user.domain.vo.UserDBId;
@@ -20,7 +21,7 @@ import org.springframework.stereotype.Service;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 
-@Service
+@DomainService
 @RequiredArgsConstructor
 public class PersonalizedRecommendationService {
 

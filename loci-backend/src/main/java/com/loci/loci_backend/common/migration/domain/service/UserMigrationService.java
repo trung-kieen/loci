@@ -3,6 +3,7 @@ package com.loci.loci_backend.common.migration.domain.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.loci.loci_backend.common.ddd.infrastructure.stereotype.DomainService;
 import com.loci.loci_backend.common.migration.domain.aggregate.KeycloakUser;
 import com.loci.loci_backend.common.migration.domain.aggregate.MigrationResult;
 import com.loci.loci_backend.common.migration.domain.repository.KeycloakAdminClient;
@@ -13,12 +14,10 @@ import com.loci.loci_backend.common.migration.domain.vo.TotalMigrationFail;
 import com.loci.loci_backend.common.migration.domain.vo.TotalMigrationUser;
 import com.loci.loci_backend.common.user.domain.aggregate.User;
 
-import org.springframework.stereotype.Service;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
-@Service
+@DomainService
 @Log4j2
 @RequiredArgsConstructor
 public class UserMigrationService {

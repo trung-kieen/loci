@@ -1,5 +1,6 @@
 package com.loci.loci_backend.core.identity.infrastructure.mapper;
 
+import com.loci.loci_backend.common.ddd.infrastructure.stereotype.DomainMapper;
 import com.loci.loci_backend.core.identity.domain.aggregate.PersonalProfile;
 import com.loci.loci_backend.core.identity.domain.aggregate.PersonalProfileChanges;
 import com.loci.loci_backend.core.identity.domain.aggregate.PersonalProfileChangesBuilder;
@@ -7,11 +8,9 @@ import com.loci.loci_backend.core.identity.domain.aggregate.ProfileSettingChange
 import com.loci.loci_backend.core.identity.domain.aggregate.UserSettings;
 import com.loci.loci_backend.core.identity.domain.service.ProfileAggregateMapper;
 
-import org.springframework.stereotype.Component;
-
 import lombok.RequiredArgsConstructor;
 
-@Component
+@DomainMapper
 @RequiredArgsConstructor
 public class ProfileAggregateMapperImpl implements ProfileAggregateMapper {
   private final MapStructProfileMapper profileMapper;

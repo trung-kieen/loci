@@ -3,6 +3,7 @@ package com.loci.loci_backend.common.user.domain.service;
 import java.util.Optional;
 import java.util.Set;
 
+import com.loci.loci_backend.common.ddd.infrastructure.stereotype.DomainService;
 import com.loci.loci_backend.common.user.domain.aggregate.Authority;
 import com.loci.loci_backend.common.user.domain.aggregate.User;
 import com.loci.loci_backend.common.user.domain.repository.AuthorityRepository;
@@ -11,14 +12,13 @@ import com.loci.loci_backend.core.identity.domain.aggregate.UserSettings;
 // removed direct JPA repository usage - use domain repository instead
 import com.loci.loci_backend.core.identity.domain.repository.UserSettingsRepository;
 
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
-@Service
+@DomainService
 @Log4j2
 @RequiredArgsConstructor
 public class UserSynchronizeService {

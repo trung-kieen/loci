@@ -6,7 +6,6 @@ import com.loci.loci_backend.common.websocket.infrastructure.primary.security.We
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.messaging.support.ChannelInterceptor;
 import org.springframework.security.authentication.AuthenticationManager;
 
 @Configuration

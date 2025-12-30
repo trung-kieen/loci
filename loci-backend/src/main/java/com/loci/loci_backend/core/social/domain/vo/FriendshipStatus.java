@@ -1,7 +1,7 @@
 package com.loci.loci_backend.core.social.domain.vo;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.loci.loci_backend.common.mapper.ValueObject;
+import com.loci.loci_backend.common.ddd.domain.contract.ValueObject;
 import com.loci.loci_backend.core.social.infrastructure.secondary.enumernation.FriendshipStatusEnum;
 
 public record FriendshipStatus(@JsonProperty FriendshipStatusEnum value) implements ValueObject<FriendshipStatusEnum> {

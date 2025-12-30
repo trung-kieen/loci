@@ -2,6 +2,7 @@ package com.loci.loci_backend.core.groups.domain.service;
 
 import java.util.Optional;
 
+import com.loci.loci_backend.common.ddd.infrastructure.stereotype.DomainService;
 import com.loci.loci_backend.common.validation.domain.DuplicateResourceException;
 import com.loci.loci_backend.common.validation.domain.ResourceNotFoundException;
 import com.loci.loci_backend.core.conversation.domain.repository.ConversationRepository;
@@ -15,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 
-@Service
+@DomainService
 @RequiredArgsConstructor
 public class GroupManager {
   private final GroupRepository groupRepository;

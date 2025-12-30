@@ -1,6 +1,7 @@
 package com.loci.loci_backend.core.conversation.domain.service;
 
 import com.loci.loci_backend.common.authentication.domain.Principal;
+import com.loci.loci_backend.common.ddd.infrastructure.stereotype.DomainService;
 import com.loci.loci_backend.common.jpa.SortOrder;
 import com.loci.loci_backend.common.user.domain.aggregate.User;
 import com.loci.loci_backend.common.user.domain.repository.UserRepository;
@@ -26,7 +27,7 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
-@Service
+@DomainService
 @Log4j2
 @RequiredArgsConstructor
 public class ConverationManager {

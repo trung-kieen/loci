@@ -4,16 +4,15 @@ import java.util.Collection;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import com.loci.loci_backend.common.mapper.DomainEntityMapper;
+import com.loci.loci_backend.common.ddd.infrastructure.contract.DomainEntityMapper;
+import com.loci.loci_backend.common.ddd.infrastructure.stereotype.SecondaryMapper;
 import com.loci.loci_backend.common.user.domain.aggregate.Authority;
 import com.loci.loci_backend.common.user.domain.vo.AuthorityName;
 import com.loci.loci_backend.common.user.infrastructure.secondary.entity.AuthorityEntity;
 
-import org.springframework.stereotype.Component;
-
 import lombok.RequiredArgsConstructor;
 
-@Component
+@SecondaryMapper
 @RequiredArgsConstructor
 public class AuthorityEntityMapper implements DomainEntityMapper<Authority, AuthorityEntity> {
 

@@ -1,17 +1,14 @@
 package com.loci.loci_backend.core.groups.infrastructure.secondary.mapper;
 
-import java.time.Instant;
-
-import com.loci.loci_backend.common.mapper.DomainEntityMapper;
-import com.loci.loci_backend.core.groups.domain.aggregate.GroupProfile;
+import com.loci.loci_backend.common.ddd.infrastructure.contract.DomainEntityMapper;
+import com.loci.loci_backend.common.ddd.infrastructure.stereotype.SecondaryMapper;
 import com.loci.loci_backend.core.groups.domain.aggregate.CreateGroupProfileRequest;
+import com.loci.loci_backend.core.groups.domain.aggregate.GroupProfile;
 import com.loci.loci_backend.core.groups.infrastructure.secondary.entity.GroupEntity;
-
-import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 
-@Service
+@SecondaryMapper
 @RequiredArgsConstructor
 public class GroupEntityMapper implements DomainEntityMapper<GroupProfile, GroupEntity> {
   private final MapStructGroupEntityMapper mapper;

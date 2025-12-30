@@ -1,4 +1,4 @@
-package com.loci.loci_backend.common.mapper;
+package com.loci.loci_backend.common.ddd.infrastructure.contract;
 
 import java.util.Set;
 import java.util.stream.Collectors;

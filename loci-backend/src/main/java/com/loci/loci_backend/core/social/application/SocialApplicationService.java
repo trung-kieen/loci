@@ -1,5 +1,6 @@
 package com.loci.loci_backend.core.social.application;
 
+import com.loci.loci_backend.common.ddd.infrastructure.stereotype.ApplicationService;
 import com.loci.loci_backend.common.user.domain.vo.PublicId;
 import com.loci.loci_backend.core.identity.domain.service.BlockManager;
 import com.loci.loci_backend.core.social.domain.aggregate.Contact;
@@ -14,7 +15,7 @@ import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 
-@Service
+@ApplicationService
 @RequiredArgsConstructor
 public class SocialApplicationService {
   private final FriendManager friendManager;

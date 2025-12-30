@@ -1,5 +1,6 @@
 package com.loci.loci_backend.core.discovery.infrastructure.primary.mapper;
 
+import com.loci.loci_backend.common.ddd.infrastructure.stereotype.PrimaryMapper;
 import com.loci.loci_backend.core.discovery.domain.aggregate.SearchContact;
 import com.loci.loci_backend.core.discovery.domain.aggregate.SearchContactList;
 import com.loci.loci_backend.core.discovery.infrastructure.primary.payload.RestSearchContact;
@@ -10,7 +11,7 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
-@Component
+@PrimaryMapper
 @RequiredArgsConstructor
 public class RestDicoveryContactMapper {
   private final MapStructDiscoveryRestContactMapper contactMapper;

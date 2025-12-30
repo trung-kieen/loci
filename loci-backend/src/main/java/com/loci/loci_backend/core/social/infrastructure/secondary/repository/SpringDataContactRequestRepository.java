@@ -3,6 +3,7 @@ package com.loci.loci_backend.core.social.infrastructure.secondary.repository;
 import java.util.List;
 import java.util.Optional;
 
+import com.loci.loci_backend.common.ddd.infrastructure.stereotype.SecondaryPort;
 import com.loci.loci_backend.common.user.domain.aggregate.User;
 import com.loci.loci_backend.common.user.domain.vo.PublicId;
 import com.loci.loci_backend.common.user.domain.vo.UserDBId;
@@ -16,11 +17,10 @@ import com.loci.loci_backend.core.social.infrastructure.secondary.specification.
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 
-@Service
+@SecondaryPort
 @RequiredArgsConstructor
 public class SpringDataContactRequestRepository implements ContactRequestRepository {
   private final JpaContactRequestRepository repository;

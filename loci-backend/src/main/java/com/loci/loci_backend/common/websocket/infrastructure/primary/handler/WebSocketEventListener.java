@@ -1,5 +1,7 @@
 package com.loci.loci_backend.common.websocket.infrastructure.primary.handler;
 
+import com.loci.loci_backend.common.ddd.infrastructure.stereotype.PrimaryPort;
+
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
@@ -17,7 +19,7 @@ import lombok.extern.log4j.Log4j2;
  * Refer to docs
  * https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/web/socket/WebSocketHandler.html
  */
-@Component
+@PrimaryPort
 @RequiredArgsConstructor
 @Log4j2
 public class WebSocketEventListener extends AbstractWebSocketHandler {

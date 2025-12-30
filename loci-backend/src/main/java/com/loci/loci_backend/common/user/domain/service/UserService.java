@@ -3,17 +3,17 @@ package com.loci.loci_backend.common.user.domain.service;
 import java.util.Optional;
 
 import com.loci.loci_backend.common.authentication.infrastructure.secondary.repository.RestIdentityProvider;
+import com.loci.loci_backend.common.ddd.infrastructure.stereotype.DomainService;
 import com.loci.loci_backend.common.user.domain.aggregate.User;
 import com.loci.loci_backend.common.user.domain.repository.UserRepository;
 
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-@Service
+@DomainService
 public class UserService {
   private final UserRepository repository;
   private final RestIdentityProvider restIdentityRepository;

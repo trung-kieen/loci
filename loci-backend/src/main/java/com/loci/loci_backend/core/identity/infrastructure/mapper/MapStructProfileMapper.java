@@ -1,6 +1,6 @@
 package com.loci.loci_backend.core.identity.infrastructure.mapper;
 
-import com.loci.loci_backend.common.mapper.ValueObject;
+import com.loci.loci_backend.common.ddd.domain.contract.ValueObject;
 import com.loci.loci_backend.common.util.NullSafe;
 import com.loci.loci_backend.core.identity.domain.aggregate.PersonalProfile;
 import com.loci.loci_backend.core.identity.domain.aggregate.PersonalProfileChanges;

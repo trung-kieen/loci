@@ -3,23 +3,21 @@ package com.loci.loci_backend.core.identity.domain.service;
 import java.util.Optional;
 
 import com.loci.loci_backend.common.authentication.domain.KeycloakPrincipal;
+import com.loci.loci_backend.common.ddd.infrastructure.stereotype.DomainService;
 import com.loci.loci_backend.common.user.domain.aggregate.User;
 import com.loci.loci_backend.common.user.domain.repository.UserRepository;
 import com.loci.loci_backend.common.user.domain.vo.PublicId;
-import com.loci.loci_backend.core.identity.domain.repository.IdentityUserRepository;
 import com.loci.loci_backend.core.social.domain.aggregate.Contact;
 import com.loci.loci_backend.core.social.domain.repository.ContactRepository;
-import com.loci.loci_backend.core.social.domain.repository.ContactRequestRepository;
 import com.loci.loci_backend.core.social.domain.vo.FriendshipStatus;
 
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-@Service
+@DomainService
 public class BlockManager {
 
   private final UserRepository userRepository;

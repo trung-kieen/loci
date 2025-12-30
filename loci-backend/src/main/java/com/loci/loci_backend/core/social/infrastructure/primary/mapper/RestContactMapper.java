@@ -5,15 +5,15 @@ import java.util.UUID;
 
 import com.loci.loci_backend.common.authentication.domain.KeycloakPrincipal;
 import com.loci.loci_backend.common.authentication.domain.Username;
+import com.loci.loci_backend.common.collection.Maps;
+import com.loci.loci_backend.common.ddd.infrastructure.stereotype.PrimaryMapper;
 import com.loci.loci_backend.common.user.domain.vo.PublicId;
 import com.loci.loci_backend.common.user.domain.vo.UserDBId;
-import com.loci.loci_backend.common.collection.Maps;
 import com.loci.loci_backend.core.identity.domain.aggregate.UserSummary;
 import com.loci.loci_backend.core.social.domain.aggregate.ContactRequest;
 import com.loci.loci_backend.core.social.domain.aggregate.ContactRequestList;
 import com.loci.loci_backend.core.social.domain.aggregate.CreateContactRequest;
 import com.loci.loci_backend.core.social.domain.aggregate.CreateContactRequestBuilder;
-import com.loci.loci_backend.core.social.domain.vo.FriendshipStatus;
 import com.loci.loci_backend.core.social.infrastructure.primary.payload.RestContactRequest;
 import com.loci.loci_backend.core.social.infrastructure.primary.payload.RestContactRequestCreated;
 import com.loci.loci_backend.core.social.infrastructure.primary.payload.RestContactRequestCreatedBuilder;
@@ -23,7 +23,7 @@ import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 
-@Service
+@PrimaryMapper
 @RequiredArgsConstructor
 public class RestContactMapper {
   private final MapStructRestContactMapper mapstruct;

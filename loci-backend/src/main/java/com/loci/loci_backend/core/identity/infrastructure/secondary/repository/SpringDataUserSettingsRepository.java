@@ -1,5 +1,6 @@
 package com.loci.loci_backend.core.identity.infrastructure.secondary.repository;
 
+import com.loci.loci_backend.common.ddd.infrastructure.stereotype.SecondaryPort;
 import com.loci.loci_backend.common.user.domain.aggregate.User;
 import com.loci.loci_backend.common.user.infrastructure.secondary.entity.UserEntity;
 import com.loci.loci_backend.common.user.infrastructure.secondary.repository.JpaUserRepository;
@@ -14,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 
-@Service
+@SecondaryPort
 @RequiredArgsConstructor
 public class SpringDataUserSettingsRepository implements UserSettingsRepository {
   private final JpaUserSettingRepository repository;

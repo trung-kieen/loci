@@ -1,6 +1,6 @@
 package com.loci.loci_backend.core.conversation.domain.vo;
 
-import com.loci.loci_backend.common.mapper.ValueObject;
+import com.loci.loci_backend.common.ddd.domain.contract.ValueObject;
 import com.loci.loci_backend.core.conversation.infrastructure.secondary.enumeration.ConversationTypeEnum;
 
 public record ConversationType(ConversationTypeEnum value) implements ValueObject<ConversationTypeEnum> {

@@ -1,5 +1,6 @@
 package com.loci.loci_backend.core.identity.application;
 
+import com.loci.loci_backend.common.ddd.infrastructure.stereotype.ApplicationService;
 import com.loci.loci_backend.common.store.domain.aggregate.File;
 import com.loci.loci_backend.core.discovery.application.DiscoveryApplicationService;
 import com.loci.loci_backend.core.discovery.domain.aggregate.SearchContactList;
@@ -18,7 +19,7 @@ import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 
-@Service
+@ApplicationService
 @RequiredArgsConstructor
 public class IdentityApplicationService {
   private final ProfileManager profileManager;

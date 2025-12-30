@@ -1,8 +1,8 @@
 package com.loci.loci_backend.common.websocket.infrastructure;
 
-public class WSPaths {
+public class WsPaths {
 
-  private WSPaths() {
+  private WsPaths() {
   }
 
   public static final String TOPIC = "/topic";

@@ -1,8 +1,6 @@
 package com.loci.loci_backend.core.conversation.infrastructure.secondary.entity;
 
 import java.time.Instant;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.UUID;
 
 import com.loci.loci_backend.common.jpa.AbstractAuditingEntity;
@@ -10,7 +8,6 @@ import com.loci.loci_backend.common.user.infrastructure.secondary.entity.UserEnt
 import com.loci.loci_backend.core.conversation.infrastructure.secondary.enumeration.ConversationTypeEnum;
 import com.loci.loci_backend.core.messaging.infrastructure.secondary.entity.MessageEntity;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -21,7 +18,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;

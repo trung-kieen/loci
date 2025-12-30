@@ -3,7 +3,7 @@ package com.loci.loci_backend.common.user.domain.vo;
 import java.util.Optional;
 import java.util.Random;
 
-import com.loci.loci_backend.common.mapper.ValueObject;
+import com.loci.loci_backend.common.ddd.domain.contract.ValueObject;
 import com.loci.loci_backend.common.validation.domain.Assert;
 
 import io.micrometer.common.util.StringUtils;

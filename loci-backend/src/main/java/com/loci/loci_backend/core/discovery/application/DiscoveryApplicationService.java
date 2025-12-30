@@ -1,19 +1,17 @@
 package com.loci.loci_backend.core.discovery.application;
 
-import com.loci.loci_backend.common.authentication.domain.KeycloakPrincipal;
+import com.loci.loci_backend.common.ddd.infrastructure.stereotype.ApplicationService;
 import com.loci.loci_backend.core.discovery.domain.aggregate.SearchContactList;
 import com.loci.loci_backend.core.discovery.domain.service.DiscoveryService;
 import com.loci.loci_backend.core.discovery.domain.service.PersonalizedRecommendationService;
 import com.loci.loci_backend.core.discovery.domain.vo.SuggestFriendCriteria;
 import com.loci.loci_backend.core.discovery.domain.vo.UserSearchCriteria;
 
-import org.springframework.boot.actuate.web.exchanges.HttpExchange.Principal;
 import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 
-@Service
+@ApplicationService
 @RequiredArgsConstructor
 public class DiscoveryApplicationService {
   private final DiscoveryService discoveryService;

@@ -1,6 +1,6 @@
 package com.loci.loci_backend.core.identity.domain.aggregate;
 
-import com.loci.loci_backend.common.mapper.ValueObject;
+import com.loci.loci_backend.common.ddd.domain.contract.ValueObject;
 import com.loci.loci_backend.common.user.domain.vo.UserFirstname;
 import com.loci.loci_backend.common.user.domain.vo.UserLastname;
 

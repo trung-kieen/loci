@@ -1,5 +1,6 @@
 package com.loci.loci_backend.core.groups.infrastructure.secondary.repository;
 
+import com.loci.loci_backend.common.ddd.infrastructure.stereotype.SecondaryPort;
 import com.loci.loci_backend.common.user.domain.vo.PublicId;
 import com.loci.loci_backend.core.groups.domain.repository.GroupIdTranslator;
 import com.loci.loci_backend.core.groups.domain.vo.GroupId;
@@ -8,7 +9,7 @@ import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 
-@Service
+@SecondaryPort
 @RequiredArgsConstructor
 public class SpringDataGroupIdTranslator implements GroupIdTranslator {@Override
   public GroupId toInternal(PublicId publicId) {

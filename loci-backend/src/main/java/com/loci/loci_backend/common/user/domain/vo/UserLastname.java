@@ -2,7 +2,7 @@ package com.loci.loci_backend.common.user.domain.vo;
 
 import org.jilt.Builder;
 
-import com.loci.loci_backend.common.mapper.ValueObject;
+import com.loci.loci_backend.common.ddd.domain.contract.ValueObject;
 import com.loci.loci_backend.common.validation.domain.Assert;
 
 /**

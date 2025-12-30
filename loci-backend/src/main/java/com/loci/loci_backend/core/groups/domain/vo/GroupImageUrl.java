@@ -2,7 +2,7 @@ package com.loci.loci_backend.core.groups.domain.vo;
 
 import java.util.Random;
 
-import com.loci.loci_backend.common.mapper.ValueObject;
+import com.loci.loci_backend.common.ddd.domain.contract.ValueObject;
 import com.loci.loci_backend.common.validation.domain.Assert;
 import com.loci.loci_backend.common.validation.domain.Validatable;
 

@@ -2,6 +2,7 @@ package com.loci.loci_backend.core.identity.infrastructure.secondary.repository;
 
 import java.util.List;
 
+import com.loci.loci_backend.common.ddd.infrastructure.stereotype.SecondaryPort;
 import com.loci.loci_backend.common.user.domain.vo.UserDBId;
 import com.loci.loci_backend.common.user.infrastructure.secondary.entity.UserEntity;
 import com.loci.loci_backend.common.user.infrastructure.secondary.repository.JpaUserRepository;
@@ -17,7 +18,7 @@ import lombok.RequiredArgsConstructor;
  * TODO: refactor base user repository
  * Separate user repo tie to identity
  */
-@Service
+@SecondaryPort
 @RequiredArgsConstructor
 public class SpringDataIdentityUserRepository implements IdentityUserRepository {
   private final JpaUserRepository repository;

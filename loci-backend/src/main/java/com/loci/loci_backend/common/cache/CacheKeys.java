@@ -8,7 +8,7 @@ public class CacheKeys {
 
 
   public static final String USER_PRESENCE= "presence:user";
-  // presence => cache for 2 minutes
+  // presence => cache for 5 minutes
 
   private CacheKeys() {
   }

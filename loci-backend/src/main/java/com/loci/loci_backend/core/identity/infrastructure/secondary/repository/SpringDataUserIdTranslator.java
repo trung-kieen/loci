@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 
 import com.loci.loci_backend.common.cache.CacheKeys;
 import com.loci.loci_backend.common.collection.Sets;
+import com.loci.loci_backend.common.ddd.infrastructure.stereotype.SecondaryPort;
 import com.loci.loci_backend.common.user.domain.vo.PublicId;
 import com.loci.loci_backend.common.user.domain.vo.UserDBId;
 import com.loci.loci_backend.common.user.infrastructure.secondary.entity.UserEntity;
@@ -20,14 +21,13 @@ import com.loci.loci_backend.common.user.infrastructure.secondary.repository.Jpa
 import com.loci.loci_backend.core.identity.domain.repository.UserIdTranslator;
 
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 @RequiredArgsConstructor
-@Service
+@SecondaryPort
 public class SpringDataUserIdTranslator implements UserIdTranslator {
   private final JpaUserRepository userRepository;
 

@@ -1,14 +1,13 @@
 package com.loci.loci_backend.common.user.infrastructure.secondary.mapper;
 
-import com.loci.loci_backend.common.mapper.DomainEntityMapper;
+import com.loci.loci_backend.common.ddd.infrastructure.contract.DomainEntityMapper;
+import com.loci.loci_backend.common.ddd.infrastructure.stereotype.SecondaryMapper;
 import com.loci.loci_backend.common.user.domain.aggregate.User;
 import com.loci.loci_backend.common.user.infrastructure.secondary.entity.UserEntity;
 
-import org.springframework.stereotype.Component;
-
 import lombok.RequiredArgsConstructor;
 
-@Component
+@SecondaryMapper
 @RequiredArgsConstructor
 public class UserEntityMapper implements DomainEntityMapper<User, UserEntity> {
 

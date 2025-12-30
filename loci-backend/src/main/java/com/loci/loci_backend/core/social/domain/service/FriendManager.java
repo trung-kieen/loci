@@ -3,6 +3,7 @@ package com.loci.loci_backend.core.social.domain.service;
 import java.util.List;
 
 import com.loci.loci_backend.common.authentication.domain.KeycloakPrincipal;
+import com.loci.loci_backend.common.ddd.infrastructure.stereotype.DomainService;
 import com.loci.loci_backend.common.user.domain.aggregate.User;
 import com.loci.loci_backend.common.user.domain.repository.UserRepository;
 import com.loci.loci_backend.common.user.domain.vo.PublicId;
@@ -20,13 +21,12 @@ import com.loci.loci_backend.core.social.infrastructure.secondary.entity.FriendR
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 
-@Service
+@DomainService
 @RequiredArgsConstructor
 public class FriendManager {
   private final UserRepository userRepository;

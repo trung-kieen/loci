@@ -2,6 +2,7 @@ package com.loci.loci_backend.core.discovery.infrastructure.secondary.repository
 
 import java.util.List;
 
+import com.loci.loci_backend.common.ddd.infrastructure.stereotype.SecondaryPort;
 import com.loci.loci_backend.common.user.domain.aggregate.User;
 import com.loci.loci_backend.common.user.domain.vo.UserDBId;
 import com.loci.loci_backend.common.user.infrastructure.secondary.entity.UserEntity;
@@ -15,7 +16,7 @@ import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 
-@Service
+@SecondaryPort
 @RequiredArgsConstructor
 public class SpringDataDicoveryUserRepository implements DiscoveryUserRepository {
   private final JpaUserRepository userRepository;

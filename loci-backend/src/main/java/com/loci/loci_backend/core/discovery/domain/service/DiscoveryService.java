@@ -1,5 +1,6 @@
 package com.loci.loci_backend.core.discovery.domain.service;
 
+import com.loci.loci_backend.common.ddd.infrastructure.stereotype.DomainService;
 import com.loci.loci_backend.common.user.domain.aggregate.User;
 import com.loci.loci_backend.common.user.domain.repository.UserRepository;
 import com.loci.loci_backend.core.discovery.domain.aggregate.SearchContactList;
@@ -11,7 +12,7 @@ import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 
-@Service
+@DomainService
 @RequiredArgsConstructor
 public class DiscoveryService {
 
