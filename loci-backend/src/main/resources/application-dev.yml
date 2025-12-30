@@ -88,7 +88,7 @@ spring:
     max-text-message-size: 8192
     max-binary-message-size: 8192
 
-stomp.replay:
+stomp.relay:
   relay-host: localhost
   relay-port: 61613
   client-login: guest
@@ -150,6 +150,7 @@ logging:
   com.loci.loci_backend: DEBUG
 
   level:
+    # logging.level.org.springframework.cache=TRACE
     org.springframework.security.web.FilterChainProxy: DEBUG
   #   root: DEBUG
   #   com.loci.loci_backend.common.aspect.LoggingAspect: INFO

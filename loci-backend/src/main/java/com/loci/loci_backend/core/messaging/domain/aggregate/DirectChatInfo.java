@@ -1,10 +1,9 @@
 package com.loci.loci_backend.core.messaging.domain.aggregate;
 
 import com.loci.loci_backend.common.user.domain.vo.PublicId;
+import com.loci.loci_backend.core.conversation.domain.aggregate.Conversation;
 import com.loci.loci_backend.core.conversation.domain.vo.ConversationId;
-import com.loci.loci_backend.core.conversation.domain.vo.ConversationPublicId;
 import com.loci.loci_backend.core.identity.domain.aggregate.PublicProfile;
-import com.loci.loci_backend.core.identity.domain.aggregate.UserSummary;
 
 import org.jilt.Builder;
 import org.jilt.BuilderStyle;
@@ -21,6 +20,7 @@ public class DirectChatInfo {
   // dm conversation
   private PublicProfile messagingUser; // opponent with current user
   private boolean isOnline;
+
   @Builder(style = BuilderStyle.STAGED)
   public DirectChatInfo(ConversationId conversationId, PublicId conversationPublicId, PublicProfile messagingUser,
       boolean isOnline) {
@@ -28,6 +28,16 @@ public class DirectChatInfo {
     this.conversationPublicId = conversationPublicId;
     this.messagingUser = messagingUser;
     this.isOnline = isOnline;
+  }
+
+  @Builder(style = BuilderStyle.STAGED, className = "DirectChatInfoBuilderForConversation")
+  public static DirectChatInfo from(Conversation conversation, PublicProfile recipientProfile, boolean isOnline) {
+    return DirectChatInfoBuilder.directChatInfo()
+        .conversationId(conversation.getId())
+        .conversationPublicId(conversation.getPublicId())
+        .messagingUser(recipientProfile)
+        .isOnline(isOnline)
+        .build();
   }
 
 }

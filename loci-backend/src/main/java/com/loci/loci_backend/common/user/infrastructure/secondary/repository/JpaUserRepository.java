@@ -2,6 +2,7 @@ package com.loci.loci_backend.common.user.infrastructure.secondary.repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 import com.loci.loci_backend.common.user.infrastructure.secondary.entity.UserEntity;
@@ -28,9 +29,8 @@ public interface JpaUserRepository extends JpaRepository<UserEntity, Long>, JpaS
 
   List<UserEntity> findAllById(Iterable<Long> ids);
 
-
   Page<UserEntity> findByIdIn(List<Long> ids, Pageable pageable);
 
+  Set<UserEntity> findByPublicIdIn(Iterable<UUID> ids);
 
-  // Page<UserEntity> findAllById(Iterable<Long> ids, Pageable pageable);
 }

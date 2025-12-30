@@ -1,5 +1,7 @@
 package com.loci.loci_backend.core.identity.domain.repository;
 
+import java.util.Optional;
+
 import com.loci.loci_backend.common.authentication.domain.Username;
 import com.loci.loci_backend.common.user.domain.vo.PublicId;
 import com.loci.loci_backend.common.user.domain.vo.UserDBId;
@@ -14,13 +16,14 @@ public interface ProfileRepository {
 
   PublicProfile findPublicProfileByUserIdOrUserName(PublicId userId, Username username);
 
+  PublicProfile findPublicProfileById(UserDBId dbId);
+
   PublicProfile findPublicProfileUserName(Username username);
 
   PersonalProfile applyProfileUpdate(Username username, PersonalProfileChanges profileChanges);
 
-  UserSettings readProfileSettings(UserDBId dbId);
+  UserSettings findProfileSettings(UserDBId dbId);
 
   UserSettings save(UserSettings settings);
-
 
 }

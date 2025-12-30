@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class GroupProfile {
 
-  private GroupId groupId;
+  private GroupId id;
 
   public ConversationId conversationId;
 

@@ -55,7 +55,7 @@ public class SimpleWebSocketConfiguration implements WebSocketMessageBrokerConfi
           .setSystemHeartbeatSendInterval(relayProperties.getSystemHeartbeatSendInterval())
           .setAutoStartup(true)
           .setSystemHeartbeatReceiveInterval(relayProperties.getSystemHeartbeatReceiveInterval());
-      // COnfig replay as proxy between websocket client and rabbitmq
+      // Config relay as proxy between websocket client and rabbitmq
       config.setApplicationDestinationPrefixes(WSPaths.APP);
     } else {
       log.info("Profile rabbitmq is not active, use simple in-memory as message broker for ws");

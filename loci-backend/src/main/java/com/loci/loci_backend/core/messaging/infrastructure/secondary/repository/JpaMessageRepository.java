@@ -24,6 +24,9 @@ public interface JpaMessageRepository extends JpaRepository<MessageEntity, Long>
       @Param("conversationId") Long conversationId,
       @Param("lastReadId") Long lastReadId);
 
+
+
+
   // TODO: create index on sentAt
   // List<Long> countUnreadMessageByConversationId(List<Long> conversationIds);
 }

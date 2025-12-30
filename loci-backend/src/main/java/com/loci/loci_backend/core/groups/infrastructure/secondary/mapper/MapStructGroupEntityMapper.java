@@ -16,12 +16,12 @@ public interface MapStructGroupEntityMapper {
   @Mapping(target = "lastModifiedDate", ignore = true)
   public GroupEntity from(CreateGroupProfileRequest request);
 
-  @Mapping(source = "groupId", target = "id")
+  // @Mapping(source = "groupId", target = "id")
   @Mapping(target = "createdDate", ignore = true)
   @Mapping(target = "lastModifiedDate", ignore = true)
   public GroupEntity from(GroupProfile domainObject);
 
-  @Mapping(source = "id", target = "groupId")
+  // @Mapping(source = "id", target = "groupId")
   public GroupProfile toDomain(GroupEntity entity);
 
 }

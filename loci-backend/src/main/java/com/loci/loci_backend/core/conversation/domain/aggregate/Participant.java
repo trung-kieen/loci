@@ -2,10 +2,10 @@ package com.loci.loci_backend.core.conversation.domain.aggregate;
 
 import java.time.Instant;
 
+import com.loci.loci_backend.common.user.domain.vo.PublicId;
 import com.loci.loci_backend.common.user.domain.vo.UserDBId;
 import com.loci.loci_backend.common.validation.domain.Validatable;
 import com.loci.loci_backend.core.conversation.domain.vo.ConversationId;
-import com.loci.loci_backend.core.conversation.domain.vo.ConversationPublicId;
 import com.loci.loci_backend.core.conversation.domain.vo.ParticipantId;
 import com.loci.loci_backend.core.conversation.domain.vo.ParticipantRole;
 import com.loci.loci_backend.core.messaging.domain.vo.MessageId;
@@ -24,11 +24,11 @@ public class Participant implements Validatable {
   private Instant joinedAt;
   private MessageId lastReadMessageId;
   private ConversationId conversationId;
-  private ConversationPublicId conversationPublicId;
+  private PublicId conversationPublicId;
 
   @Builder(style = BuilderStyle.STAGED)
   public Participant(ParticipantId id, UserDBId userId, ParticipantRole role,
-      MessageId lastReadMessageId, ConversationId conversationId, ConversationPublicId conversationPublicId) {
+      MessageId lastReadMessageId, ConversationId conversationId, PublicId conversationPublicId) {
     this.id = id;
     this.userId = userId;
     this.role = role;
@@ -82,6 +82,6 @@ public class Participant implements Validatable {
   @Override
   public void validate() {
     conversationId.validate();
-    conversationPublicId.validate();
+    // conversationPublicId.validate();
   }
 }

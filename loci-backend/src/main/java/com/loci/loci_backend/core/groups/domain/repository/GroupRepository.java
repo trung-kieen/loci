@@ -12,6 +12,7 @@ public interface GroupRepository {
 
   GroupProfile createProfile(CreateGroupProfileRequest request);
 
+  GroupProfile findByConversationId(ConversationId conversationId);
 
 
 }

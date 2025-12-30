@@ -5,7 +5,7 @@ import com.loci.loci_backend.core.conversation.domain.aggregate.Conversation;
 import com.loci.loci_backend.core.conversation.domain.aggregate.CreateGroupRequest;
 import com.loci.loci_backend.core.conversation.domain.aggregate.UserChatList;
 import com.loci.loci_backend.core.conversation.infrastructure.primary.payload.RestChat;
-import com.loci.loci_backend.core.conversation.infrastructure.primary.payload.RestChatInfo;
+import com.loci.loci_backend.core.conversation.infrastructure.primary.payload.RestChatReference;
 import com.loci.loci_backend.core.conversation.infrastructure.primary.payload.RestCreateGroup;
 import com.loci.loci_backend.core.conversation.infrastructure.primary.payload.RestGroupChatInfo;
 import com.loci.loci_backend.core.conversation.infrastructure.primary.payload.RestUserChatList;
@@ -21,9 +21,8 @@ import lombok.RequiredArgsConstructor;
 public class RestConversationMapper {
   private final MapStructConversationMapper mapstruct;
 
-  public RestChatInfo from(Conversation domain) {
-    RestChatInfo conversation = mapstruct.from(domain);
-    conversation.setUnreadCount(0); // fix this
+  public RestChatReference from(Conversation domain) {
+    RestChatReference conversation = mapstruct.from(domain);
     return conversation;
   }
 

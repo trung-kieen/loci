@@ -9,7 +9,7 @@ import lombok.Data;
  * Relay (broker) port configuration for communication between rabbitmq and STOMP
  */
 @Component
-@ConfigurationProperties(prefix = "stomp.replay")
+@ConfigurationProperties(prefix = "stomp.relay")
 @Data
 public class StompRelayProperties {
   // RabbitMQ host

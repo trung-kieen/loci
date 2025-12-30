@@ -11,7 +11,7 @@ import com.loci.loci_backend.core.conversation.domain.vo.ConversationFilter;
 import com.loci.loci_backend.core.conversation.domain.vo.ConversationQuery;
 import com.loci.loci_backend.core.conversation.infrastructure.primary.mapper.RestConversationMapper;
 import com.loci.loci_backend.core.conversation.infrastructure.primary.payload.RestUserChatList;
-import com.loci.loci_backend.core.conversation.infrastructure.primary.payload.RestChatInfo;
+import com.loci.loci_backend.core.conversation.infrastructure.primary.payload.RestChatReference;
 import com.loci.loci_backend.core.conversation.infrastructure.primary.payload.RestCreateGroup;
 import com.loci.loci_backend.core.discovery.domain.vo.SearchQuery;
 
@@ -36,11 +36,11 @@ public class ConversationResource {
   private final RestConversationMapper mapper;
 
   @GetMapping("/user/{userId}")
-  public ResponseEntity<RestChatInfo> getConversationByUser(@PathVariable("userId") UUID userPublicId) {
+  public ResponseEntity<RestChatReference> getConversationByUser(@PathVariable("userId") UUID userPublicId) {
     PublicId targetUserId = new PublicId(userPublicId);
     Conversation conversation = conversationService.getConversationByUser(targetUserId);
 
-    RestChatInfo restResponse = mapper.from(conversation);
+    RestChatReference restResponse = mapper.from(conversation);
     return ResponseEntity.ok(restResponse);
   }
 
@@ -54,22 +54,21 @@ public class ConversationResource {
     return ResponseEntity.ok(restResponse);
   }
 
-  // TODO: change to RestCreateGroupResponse
   @PostMapping("/group")
-  public ResponseEntity<RestChatInfo> createGroupConveration(@RequestBody RestCreateGroup rest) {
+  public ResponseEntity<RestChatReference> createGroupConveration(@RequestBody RestCreateGroup rest) {
     CreateGroupRequest request = mapper.toDomain(rest);
     Conversation conversation = conversationService.createGroupConversation(request);
 
-    RestChatInfo restResponse = mapper.from(conversation);
+    RestChatReference restResponse = mapper.from(conversation);
     return ResponseEntity.ok(restResponse);
   }
 
   @PostMapping
-  public ResponseEntity<RestChatInfo> createDMConversation(@RequestParam("userId") UUID userPublicId) {
+  public ResponseEntity<RestChatReference> createDirectMessageConversation(@RequestParam("userId") UUID userPublicId) {
     PublicId targetUserId = new PublicId(userPublicId);
     Conversation conversation = conversationService.createConversationWithUser(targetUserId);
 
-    RestChatInfo restResponse = mapper.from(conversation);
+    RestChatReference restResponse = mapper.from(conversation);
     return ResponseEntity.ok(restResponse);
   }
 

@@ -1,5 +1,6 @@
 package com.loci.loci_backend.common.collection;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -18,7 +19,7 @@ public final class Maps {
    * An immutable-view lookup map from a list using the provided key
    * extractor.
    */
-  public static <T, K> Map<K, T> toLookupMap(List<T> items, Function<? super T, ? extends K> keyExtractor) {
+  public static <T, K> Map<K, T> toLookupMap(Collection<T> items, Function<? super T, ? extends K> keyExtractor) {
     if (items == null || items.isEmpty()) {
       return Collections.emptyMap();
     }
@@ -36,7 +37,7 @@ public final class Maps {
     return Collections.unmodifiableMap(map);
   }
 
-  public static <T, K, V> Map<K, V> toLookupMap(List<T> items, Function<? super T, ? extends K> keyExtractor, Function<? super T, ? extends V> valueExtractor) {
+  public static <T, K, V> Map<K, V> toLookupMap(Collection<T> items, Function<? super T, ? extends K> keyExtractor, Function<? super T, ? extends V> valueExtractor) {
     if (items == null || items.isEmpty()) {
       return Collections.emptyMap();
     }

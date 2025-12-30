@@ -1,7 +1,5 @@
 package com.loci.loci_backend.core.identity.application;
 
-import com.loci.loci_backend.common.authentication.domain.KeycloakPrincipal;
-import com.loci.loci_backend.common.authentication.domain.Principal;
 import com.loci.loci_backend.common.store.domain.aggregate.File;
 import com.loci.loci_backend.core.discovery.application.DiscoveryApplicationService;
 import com.loci.loci_backend.core.discovery.domain.aggregate.SearchContactList;

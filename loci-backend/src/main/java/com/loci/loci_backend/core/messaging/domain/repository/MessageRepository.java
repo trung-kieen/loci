@@ -1,7 +1,7 @@
 package com.loci.loci_backend.core.messaging.domain.repository;
 
 import java.util.List;
-import java.util.Map;
+import java.util.Optional;
 
 import com.loci.loci_backend.core.conversation.domain.vo.ConversationId;
 import com.loci.loci_backend.core.conversation.domain.vo.ConversationUnreadMessageCount;
@@ -17,5 +17,9 @@ public interface MessageRepository {
 
   List<ConversationUnreadMessageCount> aggreateUnreadMessageCount(
       List<ConversationUnreadMessageQuery> unreadCountQuery);
+
+  UnreadCount countUnreadForConversation(ConversationId conversationId, MessageId lastReadMessageId);
+
+  Optional<Message> getById(MessageId messageId);
 
 }

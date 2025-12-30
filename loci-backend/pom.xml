@@ -293,6 +293,23 @@
     <!--   <artifactId>querydsl-jpa</artifactId> -->
     <!-- </dependency> -->
 
+    <!-- Spring Cache Abstraction interface -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-cache</artifactId>
+    </dependency>
+
+    <!-- Caffeine Cache for inmemory -->
+    <dependency>
+      <groupId>com.github.ben-manes.caffeine</groupId>
+      <artifactId>caffeine</artifactId>
+    </dependency>
+
+    <!-- Redis Cache need to config for redis! -->
+    <!-- <dependency> -->
+    <!--   <groupId>org.springframework.boot</groupId> -->
+    <!--   <artifactId>spring-boot-starter-data-redis</artifactId> -->
+    <!-- </dependency> -->
 
   </dependencies>
 

@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.loci.loci_backend.common.mapper.DomainEntityMapper;
 import com.loci.loci_backend.common.user.infrastructure.secondary.entity.UserEntity;
+import com.loci.loci_backend.common.user.infrastructure.secondary.mapper.UserEntityMapper;
 import com.loci.loci_backend.core.identity.domain.aggregate.PersonalProfile;
 import com.loci.loci_backend.core.identity.domain.aggregate.PublicProfile;
 import com.loci.loci_backend.core.identity.domain.aggregate.UserSettings;
@@ -23,6 +24,7 @@ public class IdentityEntityMapper implements DomainEntityMapper<UserSettings, Us
   public PublicProfile toPublicProfile(UserEntity userEntity, FriendshipStatus connectionStatus) {
     return mapstruct.toPublicProfile(userEntity, connectionStatus);
   }
+
 
   public PublicProfile toPublicProfile(UserEntity userEntity) {
     return mapstruct.toPublicProfile(userEntity, FriendshipStatus.ofDefault());

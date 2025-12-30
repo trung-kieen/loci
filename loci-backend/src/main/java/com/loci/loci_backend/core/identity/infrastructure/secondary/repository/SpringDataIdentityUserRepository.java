@@ -13,10 +13,13 @@ import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 
-
+/**
+ * TODO: refactor base user repository
+ * Separate user repo tie to identity
+ */
 @Service
 @RequiredArgsConstructor
-public class SpringDataIdentityUserRepository implements IdentityUserRepository{
+public class SpringDataIdentityUserRepository implements IdentityUserRepository {
   private final JpaUserRepository repository;
   private final IdentityEntityMapper identityEntityMapper;
 

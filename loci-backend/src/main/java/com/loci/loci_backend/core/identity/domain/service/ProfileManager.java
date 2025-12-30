@@ -87,7 +87,7 @@ public class ProfileManager {
   public UserSettings readProfileSettings() {
     User currentUser = userRepository.getByUsername(principal.getUsername())
         .orElseThrow(() -> new EntityNotFoundException());
-    UserSettings settings = repository.readProfileSettings(currentUser.getDbId());
+    UserSettings settings = repository.findProfileSettings(currentUser.getDbId());
 
     return settings;
   }

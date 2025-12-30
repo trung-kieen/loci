@@ -12,12 +12,9 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class RestChatInfo {
+public class RestChatReference {
   private UUID id;
   private ConversationTypeEnum conversationType;
-  private Integer unreadCount;
-  // TODO: use chat info instead
-  private RestMessage lastMessage;
   private Instant createdDate;
 
 }

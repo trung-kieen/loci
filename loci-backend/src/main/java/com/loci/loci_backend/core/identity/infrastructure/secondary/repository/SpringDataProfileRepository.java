@@ -69,7 +69,7 @@ public class SpringDataProfileRepository implements ProfileRepository {
   }
 
   @Override
-  public UserSettings readProfileSettings(UserDBId dbId) {
+  public UserSettings findProfileSettings(UserDBId dbId) {
     Long userDbId = dbId.value();
     UserSettingsEntity settings = userSettingRepository.findById(userDbId)
         .orElseThrow(() -> new EntityNotFoundException("Settings is not exists for user"));
@@ -81,6 +81,15 @@ public class SpringDataProfileRepository implements ProfileRepository {
     UserSettingsEntity settingEntity = profileMapper.from(settings);
     UserSettingsEntity savedEntity = userSettingRepository.save(settingEntity);
     return profileMapper.toDomain(savedEntity);
+  }
+
+  @Override
+  public PublicProfile findPublicProfileById(UserDBId dbId) {
+    // Find by public id first else fall back to username
+    UserEntity userEntity = userRepository.findById(dbId.value())
+        .orElseThrow(() -> new EntityNotFoundException("Personal profile information not found"));
+
+    return profileMapper.toPublicProfile(userEntity);
   }
 
 }

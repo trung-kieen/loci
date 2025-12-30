@@ -8,10 +8,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.loci.loci_backend.common.user.domain.vo.PublicId;
 import com.loci.loci_backend.common.user.domain.vo.UserDBId;
 import com.loci.loci_backend.common.validation.domain.ResourceNotFoundException;
 import com.loci.loci_backend.core.conversation.domain.vo.ConversationId;
-import com.loci.loci_backend.core.conversation.domain.vo.ConversationPublicId;
+import com.loci.loci_backend.core.conversation.domain.vo.ConversationType;
 import com.loci.loci_backend.core.conversation.domain.vo.ParticipantRole;
 import com.loci.loci_backend.core.conversation.infrastructure.secondary.enumeration.ConversationTypeEnum;
 import com.loci.loci_backend.core.messaging.domain.aggregate.Message;
@@ -25,12 +26,12 @@ import lombok.NoArgsConstructor;
 public class Conversation {
 
   private ConversationId id;
-  private ConversationPublicId publicId;
+  private PublicId publicId;
   private UserDBId creatorId;
   private Set<Participant> participants = new HashSet<>();
   private List<Message> messages = new ArrayList<>();
 
-  private ConversationTypeEnum conversationType;
+  private ConversationType conversationType;
 
   private Instant createdDate;
 
@@ -43,13 +44,13 @@ public class Conversation {
   private boolean deleted = false;
 
   private Conversation(UserDBId creatorId) {
-    this.publicId = ConversationPublicId.generate();
+    this.publicId = PublicId.generate();
     this.creatorId = creatorId;
   }
 
   public static Conversation createOneToOne(UserDBId creatorId, UserDBId otherUserId) {
     Conversation conversation = new Conversation(creatorId);
-    conversation.conversationType = ConversationTypeEnum.ONE_TO_ONE;
+    conversation.conversationType = new ConversationType(ConversationTypeEnum.ONE_TO_ONE);
 
     // init conversation metadata: participant
     conversation.addParticipant(creatorId, ParticipantRole.ADMIN);
@@ -57,17 +58,22 @@ public class Conversation {
     return conversation;
   }
 
-
   public static Conversation forGroup(UserDBId creatorId) {
     Conversation conversation = new Conversation(creatorId);
-    conversation.conversationType = ConversationTypeEnum.GROUP;
+    conversation.conversationType = new ConversationType(ConversationTypeEnum.GROUP);
 
     // init conversation metadata: participant
     conversation.addParticipant(creatorId, ParticipantRole.ADMIN);
     return conversation;
   }
 
+  public boolean isGroup() {
+    return this.conversationType.isGroupConversation();
+  }
 
+  public boolean isDirectMessaging() {
+    return this.conversationType.isDirectConversation();
+  }
 
   // Factory method for group
   // public static Conversation createGroup(PublicId creatorId, String groupName,

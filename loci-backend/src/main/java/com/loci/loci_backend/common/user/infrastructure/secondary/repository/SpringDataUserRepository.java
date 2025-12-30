@@ -81,7 +81,7 @@ public class SpringDataUserRepository implements UserRepository {
   }
 
   @Override
-  public User getOrThrow(Principal principal) {
+  public User findByPrincipal(Principal principal) {
     return get(principal).orElseThrow(() -> new ResourceNotFoundException(principal.getUsername()));
   }
 

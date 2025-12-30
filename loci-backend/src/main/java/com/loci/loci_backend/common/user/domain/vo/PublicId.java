@@ -47,6 +47,10 @@ public record PublicId(UUID value) implements ValueObject<UUID> {
     }
   }
 
+  public static PublicId generate() {
+    return new PublicId(UUID.randomUUID());
+  }
+
   public static PublicId random() {
     return new PublicId(UUID.randomUUID());
   }

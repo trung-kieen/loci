@@ -5,7 +5,7 @@ import com.loci.loci_backend.core.conversation.domain.aggregate.Chat;
 import com.loci.loci_backend.core.conversation.domain.aggregate.Conversation;
 import com.loci.loci_backend.core.conversation.domain.aggregate.CreateGroupRequest;
 import com.loci.loci_backend.core.conversation.infrastructure.primary.payload.RestChat;
-import com.loci.loci_backend.core.conversation.infrastructure.primary.payload.RestChatInfo;
+import com.loci.loci_backend.core.conversation.infrastructure.primary.payload.RestChatReference;
 import com.loci.loci_backend.core.conversation.infrastructure.primary.payload.RestCreateGroup;
 import com.loci.loci_backend.core.conversation.infrastructure.primary.payload.RestDirectChatInfo;
 import com.loci.loci_backend.core.conversation.infrastructure.primary.payload.RestGroupChatInfo;
@@ -25,7 +25,7 @@ public interface MapStructConversationMapper {
 
   // TODO: Provide unread and last message
   @Mapping(source = "publicId", target = "id")
-  public RestChatInfo from(Conversation domain);
+  public RestChatReference from(Conversation domain);
 
   public CreateGroupRequest from(RestCreateGroup rest);
 

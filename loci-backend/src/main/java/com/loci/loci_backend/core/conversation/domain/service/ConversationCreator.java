@@ -29,12 +29,8 @@ public class ConversationCreator {
   private final ConversationAuthenticationProvider conversationAuthentication;
   private final ConversationRepository conversationRepository;
 
-
-
-
   @Transactional(readOnly = false)
-  public Conversation createGroupConversation() {
-    User creator = userRepository.getOrThrow(principal);
+  public Conversation asGroup(User creator) {
 
     // create conversation for user as admin
     Conversation conversation = Conversation.forGroup(creator.getDbId());
@@ -44,15 +40,7 @@ public class ConversationCreator {
   }
 
   @Transactional(readOnly = false)
-  public Conversation createConversation(PublicId targetUserId) {
-    // check conversation is not exists
-
-    User currentUser = userRepository.getOrThrow(principal);
-
-    User targetUser = userRepository.getByPublicId(targetUserId).orElseThrow(() -> new EntityNotFoundException());
-
-    conversationAuthentication.validateUserCanMessage(currentUser, targetUser);
-
+  public Conversation asDirectConversation(User currentUser, User targetUser) {
     UserDBId creatorId = currentUser.getDbId();
     UserDBId otherUserId = targetUser.getDbId();
 
@@ -66,34 +54,8 @@ public class ConversationCreator {
     // save conversation
     Conversation savedConversation = conversationRepository.save(conversationRequest);
 
-    log.debug("New conversation create {} with participants {}", savedConversation,
-        savedConversation.getParticipants());
-
-    Assert.field("participants", savedConversation.getParticipants()).notNull().notEmpty();
-    // Make sure participant is not unmanager
-    savedConversation.getParticipants().forEach(Participant::validate);
-
     return savedConversation;
 
   }
 
-  // get information
-  void getInfo() {
-  }
-
-  void getMessage() {
-  }
-
-  void getChats() {
-    // get chat preview information
-
-    // query for all converation and the type
-
-    // provide prefetch for lasted conversation message and number of unread message
-
-    // query for converstaion participant to know user type last message or not
-
-    // return name, lastest message, user summary
-
-  }
 }

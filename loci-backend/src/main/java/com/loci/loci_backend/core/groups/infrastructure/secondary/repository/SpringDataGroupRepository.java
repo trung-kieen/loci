@@ -11,6 +11,7 @@ import com.loci.loci_backend.core.groups.infrastructure.secondary.mapper.GroupEn
 
 import org.springframework.stereotype.Service;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -28,8 +29,14 @@ public class SpringDataGroupRepository implements GroupRepository {
   @Override
   public GroupProfile createProfile(CreateGroupProfileRequest request) {
     GroupEntity entity = mapper.from(request);
-    GroupEntity savedProfile =  repository.save(entity);
+    GroupEntity savedProfile = repository.save(entity);
     return mapper.toDomain(savedProfile);
   }
+
+  @Override
+  public GroupProfile findByConversationId(ConversationId conversationId) {
+    return this.getByConversationId(conversationId).orElseThrow(EntityNotFoundException::new);
+  }
+
 
 }

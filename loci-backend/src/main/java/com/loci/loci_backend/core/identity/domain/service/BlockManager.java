@@ -23,9 +23,7 @@ import lombok.RequiredArgsConstructor;
 public class BlockManager {
 
   private final UserRepository userRepository;
-  private final IdentityUserRepository identityUserRepository;
   private final ContactRepository contactRepository;
-  private final ContactRequestRepository contactRequestRepository;
   private final KeycloakPrincipal keycloakPrincipal;
 
   @Transactional(readOnly = false)
@@ -72,16 +70,17 @@ public class BlockManager {
 
     FriendshipStatus newStatus = null;
     // TODO: policy
-    // if (contactRequestRepository.existsAcceptedRequest(currentUser.getDbId(), toBlockUser.getDbId())) {
+    // if (contactRequestRepository.existsAcceptedRequest(currentUser.getDbId(),
+    // toBlockUser.getDbId())) {
     //
-    //   // Check if previous is exist connected
-    //   newStatus = FriendshipStatus.CONNECTED;
-    //   contact.setBlockedByUserId(null);
-    //   contactRepository.save(contact);
+    // // Check if previous is exist connected
+    // newStatus = FriendshipStatus.CONNECTED;
+    // contact.setBlockedByUserId(null);
+    // contactRepository.save(contact);
     // } else {
     //
-      newStatus = FriendshipStatus.connected();
-      contactRepository.delete(contact);
+    newStatus = FriendshipStatus.connected();
+    contactRepository.delete(contact);
     //
     // }
 

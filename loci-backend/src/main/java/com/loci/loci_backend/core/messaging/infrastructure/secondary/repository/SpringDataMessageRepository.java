@@ -2,6 +2,7 @@ package com.loci.loci_backend.core.messaging.infrastructure.secondary.repository
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.loci.loci_backend.common.collection.Lists;
@@ -15,6 +16,7 @@ import com.loci.loci_backend.core.messaging.domain.vo.MessageId;
 import com.loci.loci_backend.core.messaging.infrastructure.secondary.entity.MessageEntity;
 import com.loci.loci_backend.core.messaging.infrastructure.secondary.mapper.MessageEntityMapper;
 
+import org.springframework.messaging.handler.annotation.reactive.MessageMappingMessageHandler;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -60,6 +62,20 @@ public class SpringDataMessageRepository implements MessageRepository {
 
     return results.entrySet().stream()
         .map(entry -> new ConversationUnreadMessageCount(entry.getKey(), entry.getValue())).toList();
+  }
+
+  @Override
+  public UnreadCount countUnreadForConversation(ConversationId conversationId, MessageId lastReadMessageId) {
+    Long count = messageRepository.countUnreadForConversation(conversationId.value(),
+        lastReadMessageId.value());
+    return new UnreadCount(count);
+  }
+
+  @Override
+  public Optional<Message> getById(MessageId messageId) {
+    Optional<MessageEntity> message = messageRepository.findById(messageId.value());
+
+    return message.map(mapper::toDomain);
   }
 
 }

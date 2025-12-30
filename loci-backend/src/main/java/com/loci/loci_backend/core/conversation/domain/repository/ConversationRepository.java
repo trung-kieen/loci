@@ -1,11 +1,12 @@
 package com.loci.loci_backend.core.conversation.domain.repository;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import com.loci.loci_backend.common.user.domain.aggregate.User;
+import com.loci.loci_backend.common.user.domain.vo.PublicId;
 import com.loci.loci_backend.common.user.domain.vo.UserDBId;
+import com.loci.loci_backend.core.conversation.domain.aggregate.Chat;
 import com.loci.loci_backend.core.conversation.domain.aggregate.Conversation;
 import com.loci.loci_backend.core.conversation.domain.aggregate.UserConversation;
 import com.loci.loci_backend.core.conversation.domain.vo.ConversationId;
@@ -25,4 +26,7 @@ public interface ConversationRepository {
   public List<DirectChatInfo> getDirectConversationMetadataByIds(
       List<UserConversation> directConversations, UserDBId userDBId);
 
+  public Optional<Conversation> getByPublicId(PublicId conversationId);
+
+  public Optional<Chat> getChatInfo(Conversation conversation, User currentUser);
 }

@@ -3,6 +3,7 @@ package com.loci.loci_backend.core.conversation.infrastructure.secondary.reposit
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 
 import com.loci.loci_backend.core.conversation.infrastructure.secondary.entity.ConversationEntity;
 import com.loci.loci_backend.core.conversation.infrastructure.secondary.vo.GroupConversationMetadataJpaVO;
@@ -54,5 +55,9 @@ public interface JpaConversationRepository extends JpaRepository<ConversationEnt
 
       """)
   List<GroupConversationMetadataJpaVO> getGroupMetadataByIds(@Param("conversationIds") Set<Long> conversationIds);
+
+
+  Optional<ConversationEntity> findByPublicId(UUID publicId);
+
 
 }
