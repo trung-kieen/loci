@@ -3,6 +3,7 @@ package com.loci.loci_backend.core.messaging.domain.repository;
 import java.util.List;
 import java.util.Optional;
 
+import com.loci.loci_backend.core.conversation.domain.aggregate.UserConversation;
 import com.loci.loci_backend.core.conversation.domain.vo.ConversationId;
 import com.loci.loci_backend.core.conversation.domain.vo.ConversationUnreadMessageCount;
 import com.loci.loci_backend.core.conversation.domain.vo.ConversationUnreadMessageQuery;
@@ -11,7 +12,6 @@ import com.loci.loci_backend.core.messaging.domain.aggregate.Message;
 import com.loci.loci_backend.core.messaging.domain.vo.MessageId;
 
 public interface MessageRepository {
-  // TODO: make implement
 
   List<Message> getByIds(List<MessageId> messageIds);
 
@@ -22,4 +22,7 @@ public interface MessageRepository {
 
   Optional<Message> getById(MessageId messageId);
 
+  List<ConversationUnreadMessageCount> getUnreadCount(List<UserConversation> userConversations);
+
+  List<Message> getConversationLastMessage(List<UserConversation> userConversations);
 }

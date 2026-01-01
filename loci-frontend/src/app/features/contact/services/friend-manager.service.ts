@@ -66,7 +66,7 @@ export class FriendManagerService {
   }
 
   public static isFriends = (status: FriendshipStatus) => {
-    return status === FriendshipStatus.NOT_CONNECTED;
+    return status === FriendshipStatus.FRIENDS;
   };
 
   public static canDenyRequest = (status: FriendshipStatus) => {

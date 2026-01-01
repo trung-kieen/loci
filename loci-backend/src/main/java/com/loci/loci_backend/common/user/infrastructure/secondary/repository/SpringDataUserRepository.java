@@ -3,7 +3,7 @@ package com.loci.loci_backend.common.user.infrastructure.secondary.repository;
 import java.util.List;
 import java.util.Optional;
 
-import com.loci.loci_backend.common.authentication.domain.Principal;
+import com.loci.loci_backend.common.authentication.domain.CurrentUser;
 import com.loci.loci_backend.common.authentication.domain.Username;
 import com.loci.loci_backend.common.ddd.infrastructure.stereotype.SecondaryPort;
 import com.loci.loci_backend.common.user.domain.aggregate.User;
@@ -82,12 +82,12 @@ public class SpringDataUserRepository implements UserRepository {
   }
 
   @Override
-  public User findByPrincipal(Principal principal) {
+  public User findByPrincipal(CurrentUser principal) {
     return get(principal).orElseThrow(() -> new ResourceNotFoundException(principal.getUsername()));
   }
 
   @Override
-  public Optional<User> get(Principal principal) {
+  public Optional<User> get(CurrentUser principal) {
     return getByUsername(principal.getUsername());
   }
 

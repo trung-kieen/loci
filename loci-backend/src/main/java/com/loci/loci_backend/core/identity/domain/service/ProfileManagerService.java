@@ -3,7 +3,7 @@ package com.loci.loci_backend.core.identity.domain.service;
 import java.util.Optional;
 import java.util.UUID;
 
-import com.loci.loci_backend.common.authentication.domain.Principal;
+import com.loci.loci_backend.common.authentication.domain.CurrentUser;
 import com.loci.loci_backend.common.authentication.domain.Username;
 import com.loci.loci_backend.common.ddd.infrastructure.stereotype.DomainService;
 import com.loci.loci_backend.common.store.domain.aggregate.File;
@@ -24,7 +24,6 @@ import com.loci.loci_backend.core.identity.domain.repository.ProfileRepository;
 import com.loci.loci_backend.core.identity.domain.vo.ProfilePublicId;
 import com.loci.loci_backend.core.social.domain.vo.FriendshipStatus;
 
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -34,13 +33,13 @@ import lombok.extern.log4j.Log4j2;
 @DomainService
 @Log4j2
 @RequiredArgsConstructor
-public class ProfileManager {
+public class ProfileManagerService {
   private final ProfileRepository repository;
   private final UserRepository userRepository;
   private final ProfileAggregateMapper profileMapper;
   private final UserConnectionResolver connectionResolver;
   private final FileStorageService fileStorageService;
-  private final Principal principal;
+  private final CurrentUser principal;
 
   @Transactional(readOnly = true)
   public PersonalProfile readPersonalProfile() {

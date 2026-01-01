@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
 
 import lombok.Getter;
 
-@Getter
+// @Getter
 public enum FriendshipStatusEnum {
   NOT_CONNECTED("not_connected"),
   PENDING_REQUEST("friend_request_sent"),
@@ -15,8 +15,9 @@ public enum FriendshipStatusEnum {
   BLOCKED("blocked"),
   BLOCKED_BY_THEM("blocked_by");
 
-  @JsonValue
   private String value;
+
+
 
   @JsonCreator
   public static FriendshipStatusEnum of(String v) {
@@ -36,6 +37,7 @@ public enum FriendshipStatusEnum {
     return UNKNOWN;
   }
 
+  @JsonValue
   public String value() {
     return this.value;
   }

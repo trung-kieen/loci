@@ -3,7 +3,7 @@ package com.loci.loci_backend.common.user.domain.repository;
 import java.util.List;
 import java.util.Optional;
 
-import com.loci.loci_backend.common.authentication.domain.Principal;
+import com.loci.loci_backend.common.authentication.domain.CurrentUser;
 import com.loci.loci_backend.common.authentication.domain.Username;
 import com.loci.loci_backend.common.user.domain.aggregate.User;
 import com.loci.loci_backend.common.user.domain.vo.PublicId;
@@ -33,9 +33,9 @@ public interface UserRepository {
 
   public Page<User> getUsersFromIds(List<UserDBId> suggestUserIds, Pageable pageable);
 
-  public User findByPrincipal(Principal principal);
+  public User findByPrincipal(CurrentUser principal);
 
-  public Optional<User> get(Principal principal);
+  public Optional<User> get(CurrentUser principal);
 
 
 

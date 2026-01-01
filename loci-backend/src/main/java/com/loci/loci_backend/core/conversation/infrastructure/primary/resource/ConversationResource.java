@@ -35,15 +35,6 @@ public class ConversationResource {
   private final ConversationApplicationService conversationService;
   private final RestConversationMapper mapper;
 
-  @GetMapping("/user/{userId}")
-  public ResponseEntity<RestChatReference> getConversationByUser(@PathVariable("userId") UUID userPublicId) {
-    PublicId targetUserId = new PublicId(userPublicId);
-    Conversation conversation = conversationService.getConversationByUser(targetUserId);
-
-    RestChatReference restResponse = mapper.from(conversation);
-    return ResponseEntity.ok(restResponse);
-  }
-
   @GetMapping
   public ResponseEntity<RestUserChatList> getUserChatList(Pageable pageable,
       @RequestParam(value = "q", required = false) String query) { // filter
@@ -51,6 +42,15 @@ public class ConversationResource {
     UserChatList conversations = conversationService.getUserChats(pageable, userQuery);
 
     RestUserChatList restResponse = mapper.from(conversations);
+    return ResponseEntity.ok(restResponse);
+  }
+
+  @GetMapping("/user/{userId}")
+  public ResponseEntity<RestChatReference> getConversationByUser(@PathVariable("userId") UUID userPublicId) {
+    PublicId targetUserId = new PublicId(userPublicId);
+    Conversation conversation = conversationService.getConversationByUser(targetUserId);
+
+    RestChatReference restResponse = mapper.from(conversation);
     return ResponseEntity.ok(restResponse);
   }
 

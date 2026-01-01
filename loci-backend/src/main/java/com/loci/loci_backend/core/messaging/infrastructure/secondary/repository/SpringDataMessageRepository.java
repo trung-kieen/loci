@@ -7,6 +7,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import com.loci.loci_backend.common.collection.Lists;
 import com.loci.loci_backend.common.ddd.infrastructure.stereotype.SecondaryPort;
+import com.loci.loci_backend.core.conversation.domain.aggregate.UserConversation;
 import com.loci.loci_backend.core.conversation.domain.vo.ConversationId;
 import com.loci.loci_backend.core.conversation.domain.vo.ConversationUnreadMessageCount;
 import com.loci.loci_backend.core.conversation.domain.vo.ConversationUnreadMessageQuery;
@@ -75,6 +76,22 @@ public class SpringDataMessageRepository implements MessageRepository {
     Optional<MessageEntity> message = messageRepository.findById(messageId.value());
 
     return message.map(mapper::toDomain);
+  }
+
+  @Override
+  public List<ConversationUnreadMessageCount> getUnreadCount(List<UserConversation> userConversations) {
+
+    List<ConversationUnreadMessageQuery> unreadCountQuery = userConversations.stream()
+        .map(ConversationUnreadMessageQuery::from).toList();
+    return this.aggreateUnreadMessageCount(unreadCountQuery);
+
+  }
+
+  @Override
+  public List<Message> getConversationLastMessage(List<UserConversation> userConversations) {
+    List<MessageId> lastConversationMessageIds = Lists.byField(userConversations,
+        UserConversation::getConversationLastMessageId);
+    return this.getByIds(lastConversationMessageIds);
   }
 
 }

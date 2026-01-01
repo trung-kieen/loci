@@ -3,7 +3,7 @@ package com.loci.loci_backend.core.discovery.domain.service;
 import java.util.List;
 import java.util.Map;
 
-import com.loci.loci_backend.common.authentication.domain.Principal;
+import com.loci.loci_backend.common.authentication.domain.CurrentUser;
 import com.loci.loci_backend.common.ddd.infrastructure.stereotype.DomainService;
 import com.loci.loci_backend.common.user.domain.aggregate.User;
 import com.loci.loci_backend.common.user.domain.repository.UserRepository;
@@ -29,7 +29,7 @@ public class PersonalizedRecommendationService {
   private final UserRepository userRepository;
   private final UserConnectionResolver connectionResolver;
   private final DiscoveryUserRepository discoveryUserRepository;
-  private final Principal currentPrincipal;
+  private final CurrentUser currentPrincipal;
 
   public SearchContactList suggestFriends(SuggestFriendCriteria criteria, Pageable pageable) {
 

@@ -5,11 +5,14 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import com.loci.loci_backend.common.log.Loggable;
+
 import org.springframework.stereotype.Component;
 
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Component
+@Loggable
 public @interface ApplicationService {
 
 }

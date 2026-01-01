@@ -2,7 +2,7 @@ package com.loci.loci_backend.core.conversation.domain.service;
 
 import java.util.Optional;
 
-import com.loci.loci_backend.common.authentication.domain.Principal;
+import com.loci.loci_backend.common.authentication.domain.CurrentUser;
 import com.loci.loci_backend.common.user.domain.aggregate.User;
 import com.loci.loci_backend.common.user.domain.repository.UserRepository;
 import com.loci.loci_backend.common.user.domain.vo.UserDBId;

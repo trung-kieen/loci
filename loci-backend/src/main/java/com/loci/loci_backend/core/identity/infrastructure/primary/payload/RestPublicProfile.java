@@ -1,5 +1,6 @@
 package com.loci.loci_backend.core.identity.infrastructure.primary.payload;
 
+import com.loci.loci_backend.core.social.infrastructure.secondary.enumernation.FriendshipStatusEnum;
 import java.time.Instant;
 
 import org.jilt.Builder;
@@ -19,11 +20,11 @@ public class RestPublicProfile {
   private String profilePictureUrl;
   private String memberSince;
   private Instant createdAt;
-  private String connectionStatus;
+  private FriendshipStatusEnum  connectionStatus;
 
   @Builder(style = BuilderStyle.STAGED)
   public RestPublicProfile(String publicId, String emailAddress, String fullname, String username,
-      String profilePictureUrl, String memberSince, Instant createdAt, String connectionStatus) {
+      String profilePictureUrl, String memberSince, Instant createdAt, FriendshipStatusEnum connectionStatus) {
     this.publicId = publicId;
     this.emailAddress = emailAddress;
     this.fullname = fullname;

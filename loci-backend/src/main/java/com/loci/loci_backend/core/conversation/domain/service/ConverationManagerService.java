@@ -1,6 +1,6 @@
 package com.loci.loci_backend.core.conversation.domain.service;
 
-import com.loci.loci_backend.common.authentication.domain.Principal;
+import com.loci.loci_backend.common.authentication.domain.CurrentUser;
 import com.loci.loci_backend.common.ddd.infrastructure.stereotype.DomainService;
 import com.loci.loci_backend.common.jpa.SortOrder;
 import com.loci.loci_backend.common.user.domain.aggregate.User;
@@ -30,11 +30,11 @@ import lombok.extern.log4j.Log4j2;
 @DomainService
 @Log4j2
 @RequiredArgsConstructor
-public class ConverationManager {
+public class ConverationManagerService {
   private final UserRepository userRepository;
   private final ConversationRepository conversationRepository;
   private final ConversationReader conversationReader;
-  private final Principal principal;
+  private final CurrentUser principal;
   private final ParticipantRepository participantRepository;
   private final ConversationAuthenticationProvider conversationAuthentication;
   private final ConversationCreator conversationCreator;
@@ -80,7 +80,7 @@ public class ConverationManager {
         pageable);
 
     // Provide detail chat information from user conversation
-    return conversationReader.getUserChatList(userConversations, user);
+    return conversationReader.buildUserChatList(userConversations, user);
 
   }
 

@@ -19,12 +19,18 @@ public interface JpaConversationRepository extends JpaRepository<ConversationEnt
   @Query("""
       SELECT c
       FROM ConversationEntity c
-      WHERE c.deleted = false
-      AND (
-        c.creatorId = :a
-        OR c.creatorId = :b
-      )
+      JOIN ConversationParticipantEntity p1 ON p1.conversationId = c.id
+      JOIN ConversationParticipantEntity p2 ON p2.conversationId = c.id
+      WHERE
+      c.deleted = false
+      AND p1.userId = :a
+      AND p2.userId = :b
+      AND p1.userId <> p2.userId
+      AND (c.creatorId = :a OR c.creatorId = :b)
+      AND c.conversationType = 'ONE_TO_ONE'
+
       """)
+
   Optional<ConversationEntity> getConversationBetweenUser(@Param("a") Long a, @Param("b") Long b);
 
   @Query("""
@@ -56,8 +62,6 @@ public interface JpaConversationRepository extends JpaRepository<ConversationEnt
       """)
   List<GroupConversationMetadataJpaVO> getGroupMetadataByIds(@Param("conversationIds") Set<Long> conversationIds);
 
-
   Optional<ConversationEntity> findByPublicId(UUID publicId);
-
 
 }

@@ -16,7 +16,7 @@ import lombok.Data;
 @Hidden
 @Builder
 @Data
-public class KeycloakPrincipal implements Principal{
+public class KeycloakPrincipal implements CurrentUser {
 
   private final KeycloakUserId userId;
   private final UserEmail userEmail;

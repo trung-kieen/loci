@@ -16,13 +16,14 @@ import com.loci.loci_backend.core.conversation.domain.aggregate.UserConversation
 import com.loci.loci_backend.core.conversation.domain.repository.ConversationRepository;
 import com.loci.loci_backend.core.conversation.domain.repository.ParticipantRepository;
 import com.loci.loci_backend.core.conversation.domain.vo.ConversationUnreadMessageCount;
-import com.loci.loci_backend.core.conversation.domain.vo.ConversationUnreadMessageQuery;
 import com.loci.loci_backend.core.conversation.domain.vo.ParticipantCount;
 import com.loci.loci_backend.core.conversation.domain.vo.UnreadCount;
 import com.loci.loci_backend.core.groups.domain.aggregate.GroupProfile;
 import com.loci.loci_backend.core.groups.domain.repository.GroupRepository;
 import com.loci.loci_backend.core.identity.domain.aggregate.PublicProfile;
+import com.loci.loci_backend.core.identity.domain.aggregate.UserPresence;
 import com.loci.loci_backend.core.identity.domain.repository.ProfileRepository;
+import com.loci.loci_backend.core.identity.domain.repository.UserPresenceRepository;
 import com.loci.loci_backend.core.identity.domain.service.PresenceIndicator;
 import com.loci.loci_backend.core.messaging.domain.aggregate.DirectChatInfo;
 import com.loci.loci_backend.core.messaging.domain.aggregate.DirectChatInfoBuilderForConversation;
@@ -49,32 +50,33 @@ public class ConversationReader {
   private final MessageRepository messageRepository;
   private final GroupRepository groupRepository;
   private final PresenceIndicator userPresenceIndicator;
+  private final UserPresenceRepository userPresenceRepository;
 
   public Conversation getConversation(User currentUser, User targetUser) {
     return conversationRepository.getOneToOne(currentUser, targetUser)
         .orElseThrow(() -> new ResourceNotFoundException());
   }
 
-  public UserChatList getUserChatList(Page<UserConversation> userConversations, User currentUser) {
+  /**
+   * Most of this is relate more of technical the domain
+   */
+  public UserChatList buildUserChatList(Page<UserConversation> userConversations, User currentUser) {
+    List<UserConversation> conversationList = userConversations.getContent();
 
-    // Query and build lookup for LastMessage of conversation
-    List<MessageId> lastConversationMessageIds = Lists.byField(userConversations.getContent(),
-        UserConversation::getConversationLastMessageId);
     // Query for message and build lookup
-    List<Message> lastMessage = messageRepository.getByIds(lastConversationMessageIds);
+    List<Message> lastMessage = messageRepository.getConversationLastMessage(conversationList);
 
     // Query and build lookup for unreadCount message in conversation;
-    List<ConversationUnreadMessageQuery> unreadCountQuery = userConversations.getContent().stream()
-        .map(ConversationUnreadMessageQuery::from).toList();
 
     // Count number of unread message in conversation
     List<ConversationUnreadMessageCount> unreadCountByConversation = messageRepository
-        .aggreateUnreadMessageCount(unreadCountQuery);
+        .getUnreadCount(userConversations.getContent());
 
-    List<UserConversation> groupConversations = userConversations.getContent().stream()
+    List<UserConversation> groupConversations = conversationList.stream()
         .filter(UserConversation::isGroup)
         .toList();
-    List<UserConversation> directConversations = userConversations.getContent().stream()
+
+    List<UserConversation> directConversations = conversationList.stream()
         .filter(UserConversation::isOneToOne)
         .toList();
 
@@ -101,9 +103,7 @@ public class ConversationReader {
   }
 
   public DirectChatInfo getConversationInfo(Conversation conversation, User currentUser) {
-
-    // TODO:
-    final boolean isOnline = true;
+    UserPresence presence = userPresenceRepository.findByUserId(currentUser.getDbId());
 
     Participant recipient = participantRepository.findRecipientOfUserInConversation(currentUser, conversation);
 
@@ -112,7 +112,7 @@ public class ConversationReader {
     return DirectChatInfoBuilderForConversation.directChatInfo()
         .conversation(conversation)
         .recipientProfile(recipientProfile)
-        .isOnline(isOnline)
+        .status(presence.getStatus())
         .build();
 
   }

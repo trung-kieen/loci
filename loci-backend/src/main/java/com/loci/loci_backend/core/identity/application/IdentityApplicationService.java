@@ -11,18 +11,17 @@ import com.loci.loci_backend.core.identity.domain.aggregate.PersonalProfileChang
 import com.loci.loci_backend.core.identity.domain.aggregate.ProfileSettingChanges;
 import com.loci.loci_backend.core.identity.domain.aggregate.PublicProfile;
 import com.loci.loci_backend.core.identity.domain.aggregate.UserSettings;
-import com.loci.loci_backend.core.identity.domain.service.ProfileManager;
+import com.loci.loci_backend.core.identity.domain.service.ProfileManagerService;
 import com.loci.loci_backend.core.identity.domain.vo.ProfilePublicId;
 
 import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 
 @ApplicationService
 @RequiredArgsConstructor
 public class IdentityApplicationService {
-  private final ProfileManager profileManager;
+  private final ProfileManagerService profileManager;
   private final DiscoveryApplicationService discoveryApplicationService;
 
   public PersonalProfile getPersonalProfile() {

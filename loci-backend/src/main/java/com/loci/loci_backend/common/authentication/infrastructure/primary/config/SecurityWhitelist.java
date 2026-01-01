@@ -5,7 +5,7 @@ public class SecurityWhitelist {
   }
 
   public static final String[] PATTERNS = {
-      "/ws/**",
+      "/ws/**", // secure inbound channel
       "/ws",
       "/api/v1/ws/**",
       "/api/v1/ws",

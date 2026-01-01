@@ -16,6 +16,7 @@ import com.loci.loci_backend.common.user.infrastructure.secondary.repository.Jpa
 import com.loci.loci_backend.common.validation.domain.Assert;
 import com.loci.loci_backend.core.conversation.domain.aggregate.Chat;
 import com.loci.loci_backend.core.conversation.domain.aggregate.Conversation;
+import com.loci.loci_backend.core.conversation.domain.aggregate.UserChatList;
 import com.loci.loci_backend.core.conversation.domain.aggregate.UserConversation;
 import com.loci.loci_backend.core.conversation.domain.repository.ConversationRepository;
 import com.loci.loci_backend.core.conversation.domain.vo.ConversationId;
@@ -28,7 +29,12 @@ import com.loci.loci_backend.core.conversation.infrastructure.secondary.mapper.P
 import com.loci.loci_backend.core.conversation.infrastructure.secondary.vo.GroupConversationMetadataJpaVO;
 import com.loci.loci_backend.core.groups.domain.aggregate.GroupProfile;
 import com.loci.loci_backend.core.identity.domain.aggregate.PublicProfile;
+import com.loci.loci_backend.core.identity.domain.aggregate.UserPresence;
+import com.loci.loci_backend.core.identity.domain.repository.UserPresenceRepository;
+import com.loci.loci_backend.core.identity.domain.vo.PresenceStatus;
+import com.loci.loci_backend.core.identity.infrastructure.secondary.entity.UserPresenceEntity;
 import com.loci.loci_backend.core.identity.infrastructure.secondary.mapper.IdentityEntityMapper;
+import com.loci.loci_backend.core.identity.infrastructure.secondary.repository.CacheUserPresenceRepository;
 import com.loci.loci_backend.core.messaging.domain.aggregate.DirectChatInfo;
 import com.loci.loci_backend.core.messaging.domain.aggregate.DirectChatInfoBuilder;
 import com.loci.loci_backend.core.messaging.domain.aggregate.DirectChatInfoBuilderForConversation;
@@ -38,7 +44,7 @@ import com.loci.loci_backend.core.messaging.domain.aggregate.Message;
 import com.loci.loci_backend.core.messaging.domain.repository.MessageRepository;
 import com.loci.loci_backend.core.social.domain.vo.FriendshipStatus;
 
-import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Page;
 import org.springframework.transaction.annotation.Transactional;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -51,6 +57,7 @@ public class SpringDataConversationRepository implements ConversationRepository 
   private final JpaParticipantRepository jpaParticipantRepository;
   private final JpaUserRepository jpaUserRepository;
   private final MessageRepository messageRepository;
+  private final CacheUserPresenceRepository cacheUserPresenceRepository;
   private final ConversationEntityMapper mapper;
   private final IdentityEntityMapper identityMapper;
   private final ParticipantEntityMapper participantMapper;
@@ -136,13 +143,15 @@ public class SpringDataConversationRepository implements ConversationRepository 
 
     // convert to list of direct message data, order not matter
     return otherParticipants.stream().map(participant -> {
+      var presence = cacheUserPresenceRepository.getByUserId(participant.getUserId())
+          .orElse(UserPresenceEntity.offline(participant.getUserId()));
 
       DirectChatInfo info = DirectChatInfoBuilder.directChatInfo()
           .conversationId(new ConversationId(participant.getConversationId()))
           .conversationPublicId(
               conversationIdToPublicId.getOrDefault(new ConversationId(participant.getConversationId()), null))
           .messagingUser(userIdToPublicProfile.getOrDefault(participant.getUserId(), null))
-          .isOnline(true)
+          .status(new PresenceStatus(presence.getStatus()))
           .build();
       return info;
     }).toList();
@@ -174,9 +183,10 @@ public class SpringDataConversationRepository implements ConversationRepository 
   }
 
   private DirectChatInfo getDirectChatInfo(Conversation conversation, User currentUser) {
-
-    // TODO: redis
-    boolean isOnline = false;
+    // var presence =
+    // cacheUserPresenceRepository.findByUserId(currentUser.getDbId().value());
+    var presence = cacheUserPresenceRepository.getByUserId(currentUser.getDbId().value())
+        .orElse(UserPresenceEntity.offline(currentUser.getDbId().value()));
 
     ConversationParticipantEntity messagingParticipant = jpaParticipantRepository
         .getConnectedParticipant(conversation.getId().value(), currentUser.getDbId().value())
@@ -190,7 +200,7 @@ public class SpringDataConversationRepository implements ConversationRepository 
     return DirectChatInfoBuilderForConversation.directChatInfo()
         .conversation(conversation)
         .recipientProfile(messagingProfile)
-        .isOnline(isOnline)
+        .status(new PresenceStatus(presence.getStatus()))
         .build();
   }
 
@@ -253,6 +263,12 @@ public class SpringDataConversationRepository implements ConversationRepository 
 
     // TODO Auto-generated method stub
     throw new UnsupportedOperationException("Unimplemented method 'getChatInfo'");
+  }
+
+  @Override
+  public UserChatList buildUserChatList(Page<UserConversation> userConversations, UserDBId userId) {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'buildUserChatList'");
   }
 
 }

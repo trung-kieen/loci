@@ -5,7 +5,7 @@ import com.loci.loci_backend.common.user.domain.vo.PublicId;
 import com.loci.loci_backend.core.conversation.domain.aggregate.Conversation;
 import com.loci.loci_backend.core.conversation.domain.aggregate.CreateGroupRequest;
 import com.loci.loci_backend.core.conversation.domain.aggregate.UserChatList;
-import com.loci.loci_backend.core.conversation.domain.service.ConverationManager;
+import com.loci.loci_backend.core.conversation.domain.service.ConverationManagerService;
 import com.loci.loci_backend.core.conversation.domain.vo.ConversationQuery;
 import com.loci.loci_backend.core.groups.application.GroupApplicationService;
 import com.loci.loci_backend.core.groups.domain.aggregate.CreateGroupProfileRequest;
@@ -21,7 +21,7 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class ConversationApplicationService {
 
-  private final ConverationManager converationManager;
+  private final ConverationManagerService converationManager;
   private final GroupApplicationService groupApplicationService;
 
   public Conversation getConversationByUser(PublicId targetUserId) {
@@ -33,7 +33,7 @@ public class ConversationApplicationService {
   }
 
   public Conversation createConversationWithUser(PublicId targetUserId) {
-    return converationManager.getConversation(targetUserId);
+    return converationManager.createDirectConversation(targetUserId);
   }
 
   public Conversation createGroupConversation(CreateGroupRequest request) {

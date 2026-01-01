@@ -12,8 +12,7 @@ import com.loci.loci_backend.common.user.domain.vo.UserDBId;
 import com.loci.loci_backend.core.identity.domain.aggregate.UserPresence;
 import com.loci.loci_backend.core.identity.domain.repository.UserPresenceRepository;
 import com.loci.loci_backend.core.identity.infrastructure.secondary.entity.UserPresenceEntity;
-
-import org.springframework.stereotype.Service;
+import com.loci.loci_backend.core.identity.infrastructure.secondary.mapper.UserPresenceEntityMapper;
 
 import lombok.RequiredArgsConstructor;
 
@@ -21,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class SpringDataUserPresenceRepository implements UserPresenceRepository {
   private final CacheUserPresenceRepository cacheUserPresenceRepository;
+  private final UserPresenceEntityMapper mapper;
 
   @Override
   public UserPresence findByUserId(UserDBId userId) {
@@ -28,10 +28,10 @@ public class SpringDataUserPresenceRepository implements UserPresenceRepository 
     // get user cache if exist of not
     Optional<UserPresenceEntity> presenceOpt = cacheUserPresenceRepository.getByUserId(userId.value());
     if (presenceOpt.isPresent()) {
-      return UserPresenceEntity.toDomain(presenceOpt.get());
+      return mapper.toDomain(presenceOpt.get());
     }
 
-    return UserPresenceEntity.offlinePresence(userId.value());
+    return mapper.toDomain(UserPresenceEntity.offline(userId.value()));
   }
 
   @Override

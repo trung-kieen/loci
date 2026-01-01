@@ -21,16 +21,18 @@ public class UserPresence {
   // private Duration ttl;
 
   @Builder(style = BuilderStyle.STAGED)
-  public UserPresence(UserDBId userId, @Opt PublicId publicId, PresenceStatus status) {
+  public UserPresence(UserDBId userId, @Opt PublicId publicId, PresenceStatus status, Instant lastSeen) {
     this.publicId = publicId;
     this.userId = userId;
     this.status = status;
+    this.lastSeen = lastSeen;
   }
 
   public static UserPresence offline(UserDBId userId, PublicId publicId) {
     return UserPresenceBuilder.userPresence()
         .userId(userId)
         .status(PresenceStatus.offline())
+        .lastSeen(null)
         .publicId(publicId)
         .build();
   }
@@ -39,6 +41,7 @@ public class UserPresence {
     return UserPresenceBuilder.userPresence()
         .userId(userId)
         .status(PresenceStatus.offline())
+        .lastSeen(null)
         .build();
   }
 

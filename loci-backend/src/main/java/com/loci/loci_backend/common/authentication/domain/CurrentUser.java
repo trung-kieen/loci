@@ -7,7 +7,7 @@ import com.loci.loci_backend.common.user.domain.vo.UserEmail;
  * Authenticated user in current request
  * @see WebMvcConfiguration
  */
-public interface Principal {
+public interface CurrentUser {
   Username getUsername();
 
   UserEmail getUserEmail();
