@@ -104,7 +104,7 @@
         user_id bigint not null,
         public_id uuid unique,
         message_thumbnail varchar(500),
-        content TEXT not null,
+        content TEXT,
         primary key (id)
     );
 

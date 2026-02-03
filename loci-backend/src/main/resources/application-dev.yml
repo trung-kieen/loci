@@ -34,12 +34,12 @@ spring:
     enabled: true
     locations: classpath:db/migrations
     baseline-on-migrate: true
+    # validate-on-migrate: true # for production
     url: ${SPRING_FLYWAY_URL:jdbc:postgresql://localhost:5432/locidb}
     user: ${SPRING_FLYWAY_USER:admin}
     schemas: public
     password: ${SPRING_FLYWAY_PASSWORD:admin}
 
-    # Deadzone!
     # clean-disabled: false
     # clean-on-validation-error: true
 

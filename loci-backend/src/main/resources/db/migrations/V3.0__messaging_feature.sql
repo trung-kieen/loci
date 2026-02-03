@@ -1,4 +1,4 @@
-    create table user_ (
+    create table if not exists user_ (
         profile_visibility boolean,
         created_date timestamp(6) with time zone,
         id bigint not null,
@@ -12,7 +12,7 @@
         image_url varchar(255),
         lastname varchar(255), primary key (id)
     );
-    create table contact (
+    create table if not exists contact (
         id bigint not null,
         created_date timestamp(6) with time zone,
         last_modified_date timestamp(6) with time zone,
@@ -23,7 +23,7 @@
     );
 
 
-    create table contact_request (
+    create table if not exists contact_request (
         id bigint not null,
         created_date timestamp(6) with time zone,
         last_modified_date timestamp(6) with time zone,
@@ -32,7 +32,7 @@
         primary key (id)
     );
 
-    create table conversation_participant (
+    create table if not exists conversation_participant (
         id bigint not null,
         created_date timestamp(6) with time zone,
         last_modified_date timestamp(6) with time zone,
@@ -44,7 +44,7 @@
         primary key (id)
     );
 
-    create table conversations (
+    create table if not exists conversations (
         id bigint not null,
         created_date timestamp(6) with time zone,
         last_modified_date timestamp(6) with time zone,
@@ -57,7 +57,7 @@
         primary key (id)
     );
 
-    create table group_ (
+    create table if not exists group_ (
         id bigint not null,
         created_date timestamp(6) with time zone,
         last_modified_date timestamp(6) with time zone,
@@ -68,11 +68,11 @@
         primary key (id)
     );
 
-    create table message (
+    create table if not exists message (
         id bigint not null,
         created_date timestamp(6) with time zone,
         last_modified_date timestamp(6) with time zone,
-        content TEXT not null,
+        content TEXT,
         deleted boolean not null,
         delivered_at timestamp(6) with time zone,
         media_url varchar(500),
@@ -86,11 +86,11 @@
         primary key (id)
     );
 
-    create table notification (
+    create table if not exists notification (
         id bigint not null,
         created_date timestamp(6) with time zone,
         last_modified_date timestamp(6) with time zone,
-        content TEXT not null,
+        content TEXT,
         message_thumbnail varchar(500),
         read_at timestamp(6) with time zone,
         user_id bigint not null,
