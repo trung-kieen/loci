@@ -37,7 +37,7 @@ public class UserSynchronizeService {
     authorityRepository.createIfNotExists(requestUser.getAuthorities());
 
     User userToPersistence = requestUser;
-    Optional<User> queryDbUser = userRepository.getByUsername(requestUser.getUsername());
+    Optional<User> queryDbUser = userRepository.getByEmail(requestUser.getEmail());
     User savedUser = null;
 
     final boolean existsKeyCloakUser = queryDbUser.isPresent();

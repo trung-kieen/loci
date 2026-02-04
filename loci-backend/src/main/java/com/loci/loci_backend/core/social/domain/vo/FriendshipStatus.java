@@ -23,11 +23,11 @@ public record FriendshipStatus(@JsonProperty FriendshipStatusEnum value) impleme
   }
 
   public static FriendshipStatus pendingFriendRequest() {
-    return new FriendshipStatus(FriendshipStatusEnum.BLOCKED);
+    return new FriendshipStatus(FriendshipStatusEnum.PENDING_REQUEST);
   }
 
   public static FriendshipStatus connected() {
-    return new FriendshipStatus(FriendshipStatusEnum.BLOCKED);
+    return new FriendshipStatus(FriendshipStatusEnum.CONNECTED);
   }
 
   public static FriendshipStatus notConnected() {

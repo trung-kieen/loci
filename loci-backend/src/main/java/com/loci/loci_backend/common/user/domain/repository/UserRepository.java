@@ -20,6 +20,8 @@ public interface UserRepository {
 
   Optional<User> getByUsername(Username username);
 
+  Optional<User> getByEmail(UserEmail userEmail);
+
   boolean existByEmail(UserEmail email);
 
   User save(User user);
@@ -29,7 +31,8 @@ public interface UserRepository {
 
   public List<User> getAllByIds(List<UserDBId> ids);
 
-  // public Page<User> getPageByIds(List<UserDBId> suggestUserIds, Pageable pageable);
+  // public Page<User> getPageByIds(List<UserDBId> suggestUserIds, Pageable
+  // pageable);
 
   public User getByPrincipalThrow(CurrentUser principal);
 

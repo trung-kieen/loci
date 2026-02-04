@@ -71,7 +71,12 @@ export class SearchUser {
       next: (updated) => {
         user.friendshipStatus = updated.status;
         /* re-trigger signal so button flips instantly */
-        this.users.set([...this.users()]);
+        this.users.update(currentUsers => {
+          return currentUsers.map(u =>
+            u.userId === user.userId ? { ...u, friendshipStatus: updated.status } : u
+          )
+
+        })
 
         this.notificationService.success(
           'Friend Request Sent!',

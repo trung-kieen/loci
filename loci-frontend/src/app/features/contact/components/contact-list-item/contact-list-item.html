@@ -1,25 +1,29 @@
-<div class="bg-white border border-neutral-200 rounded-lg p-4 hover:bg-neutral-50 transition-colors "
-     >
-  <div class="flex items-center space-x-4"
-  >
-    <img [src]="user().imageUrl"
-         [alt]="user().username"
-        (click)="navigateToProfile()"
-         class="w-12 h-12 rounded-full object-cover"
-         (click)="$event.stopPropagation()" />
+<div class="bg-white border border-neutral-200 rounded-lg p-4 hover:bg-neutral-50 transition-colors">
+  <div class="flex items-center space-x-4">
+    <!-- Profile Image - clickable to view profile -->
+    <img
+      [src]="user().imageUrl"
+      [alt]="user().username"
+      (click)="navigateToProfile()"
+      class="w-12 h-12 rounded-full object-cover cursor-pointer hover:opacity-80 transition-opacity" />
 
+    <!-- User Info -->
     <div class="flex-1 min-w-0">
-      <h4 class="text-lg text-black font-medium cursor-pointer"
-        (click)="navigateToProfile()"
-      >{{ user().fullname }}</h4>
+      <h4
+        class="text-lg text-black font-medium cursor-pointer hover:text-neutral-700 transition-colors"
+        (click)="navigateToProfile()">
+        {{ user().fullname }}
+      </h4>
       <p class="text-sm text-neutral-500">&#64;{{ user().username }}</p>
       <p class="text-xs text-neutral-400 mt-1">{{ user().email }}</p>
     </div>
 
     <!-- Action Buttons -->
     @if (user().friendshipStatus) {
-      @if(canAddFriend()) {
-        <button (click)="onAddFriend(); $event.stopPropagation()"
+      <!-- Can Add Friend - PRIMARY ACTION -->
+      @if (canAddFriend()) {
+        <button
+          (click)="onAddFriend($event)"
           class="bg-neutral-500 text-white px-4 py-2 rounded-lg hover:bg-neutral-600
                  focus:outline-none focus:ring-2 focus:ring-neutral-500 text-sm cursor-pointer
                  flex items-center space-x-2 transition-colors">
@@ -27,47 +31,49 @@
           <span>Add Friend</span>
         </button>
       }
-
+      <!-- Can Accept Incoming Request - SECONDARY ACTION -->
       @else if (canAcceptRequest()) {
-        <button disabled
-          class="bg-white border border-neutral-200 text-neutral-700 px-4 py-2 rounded-lg
-                 cursor-not-allowed text-sm flex items-center space-x-2">
-          <i class="fa-solid fa-clock"></i>
-          <span>Pending</span>
+        <button
+          (click)="onAcceptRequest($event)"
+          class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary-600
+                 focus:outline-none focus:ring-2 focus:ring-primary-500 text-sm
+                 flex items-center space-x-2 transition-colors cursor-pointer">
+          <i class="fa-solid fa-user-check"></i>
+          <span>Accept Request</span>
         </button>
       }
-
+      <!-- Already Friends -->
       @else if (isFriends()) {
         <div class="bg-neutral-500 text-white px-4 py-2 rounded-lg text-sm flex items-center space-x-2">
           <i class="fa-solid fa-user-check"></i>
           <span>Friends</span>
         </div>
       }
-
-      @else if (canUnsendRequest()  ) {
-        <button (click)="onAcceptRequest(); $event.stopPropagation()"
-          class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary-600
-                 focus:outline-none focus:ring-2 focus:ring-primary-500 text-sm
-                 flex items-center space-x-2 transition-colors">
-          <i class="fa-solid fa-user-check"></i>
-          <span>Accept Request</span>
+      <!-- Pending Outgoing Request (Can Unsend) -->
+      @else if (canUnsendRequest()) {
+        <button
+          (click)="onPendingClick($event)"
+          class="bg-white border border-neutral-300 text-neutral-700 px-4 py-2 rounded-lg
+                 hover:bg-neutral-50 transition-colors text-sm flex items-center space-x-2 cursor-pointer">
+          <i class="fa-solid fa-clock"></i>
+          <span>Pending</span>
         </button>
       }
-
-      @else if(isBlocked()) {
-        <div class="bg-white border border-red-200 text-red-700  px-4 py-2 rounded-lg text-sm flex items-center space-x-2">
+      <!-- User Blocked by Me -->
+      @else if (isBlocked()) {
+        <div class="bg-white border border-red-200 text-red-700 px-4 py-2 rounded-lg text-sm flex items-center space-x-2">
           <i class="fa-solid fa-ban"></i>
           <span>Blocked</span>
         </div>
       }
-
+      <!-- Blocked by User -->
       @else if (isBlockedBy()) {
         <div class="bg-white border border-red-200 text-red-700 px-4 py-2 rounded-lg text-sm flex items-center space-x-2">
           <i class="fa-solid fa-user-lock"></i>
           <span>Blocked by User</span>
         </div>
       }
-
+      <!-- Unknown Status -->
       @else {
         <div class="bg-gray-50 text-gray-700 px-4 py-2 rounded-lg text-sm">
           <span>Unknown Status</span>
