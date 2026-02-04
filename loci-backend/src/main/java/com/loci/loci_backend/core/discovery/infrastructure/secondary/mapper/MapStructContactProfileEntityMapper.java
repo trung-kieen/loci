@@ -9,10 +9,11 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring", uses = ValueObjectTypeConverter.class)
-public interface MapStructContactProfileEntityMapper {
+public interface MapStructContactProfileEntityMapper{
 
   @Mapping(source = "user.profilePicture", target = "imageUrl")
   @Mapping(source = "friendshipStatus", target = "friendshipStatus")
+  @Mapping(source = "user.id", target = "userDBId")
   public ContactProfile  toDomain(UserEntity user, FriendshipStatus friendshipStatus) ;
 
 }

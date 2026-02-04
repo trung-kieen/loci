@@ -16,7 +16,9 @@ import com.loci.loci_backend.common.user.infrastructure.secondary.entity.UserEnt
 import com.loci.loci_backend.common.user.infrastructure.secondary.mapper.UserEntityMapper;
 import com.loci.loci_backend.common.validation.domain.ResourceNotFoundException;
 import com.loci.loci_backend.core.discovery.domain.vo.UserSearchCriteria;
+import com.loci.loci_backend.core.discovery.infrastructure.secondary.mapper.ContactProfileEntityMapper;
 import com.loci.loci_backend.core.identity.infrastructure.secondary.specification.UserSpecifications;
+import com.loci.loci_backend.core.social.infrastructure.secondary.mapper.ContactEntityMapper;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -30,6 +32,7 @@ import lombok.RequiredArgsConstructor;
 public class SpringDataUserRepository implements UserRepository {
   private final JpaUserRepository repository;
   private final UserEntityMapper userEntityMapper;
+  private final ContactProfileEntityMapper contactProfileMapper;
 
   @Override
   public boolean existByEmail(UserEmail email) {
@@ -57,7 +60,7 @@ public class SpringDataUserRepository implements UserRepository {
   @Override
   public Page<User> searchUser(UserSearchCriteria criteria, Pageable pageable) {
     Page<UserEntity> entityPage = repository.findAll(UserSpecifications.fromCriteria(criteria), pageable);
-    return entityPage.map(userEntityMapper::toDomain);
+    return userEntityMapper.toDomain(entityPage);
   }
 
   // @Override
@@ -75,12 +78,12 @@ public class SpringDataUserRepository implements UserRepository {
     return userEntityMapper.toDomain(entities);
   }
 
-  @Override
-  public Page<User> getPageByIds(List<UserDBId> ids, Pageable pageable) {
-    List<Long> userIds = ids.stream().map(UserDBId::value).toList();
-    Page<UserEntity> entities = repository.findByIdIn(userIds, pageable);
-    return userEntityMapper.toDomain(entities);
-  }
+  // @Override
+  // public Page<User> getPageByIds(List<UserDBId> ids, Pageable pageable) {
+  //   List<Long> userIds = ids.stream().map(UserDBId::value).toList();
+  //   Page<UserEntity> entities = repository.findByIdIn(userIds, pageable);
+  //   return userEntityMapper.toDomain(entities);
+  // }
 
   @Override
   public User getByPrincipalThrow(CurrentUser principal) {

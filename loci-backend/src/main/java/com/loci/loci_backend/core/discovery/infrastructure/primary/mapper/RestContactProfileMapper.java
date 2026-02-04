@@ -1,5 +1,6 @@
 package com.loci.loci_backend.core.discovery.infrastructure.primary.mapper;
 
+import com.loci.loci_backend.common.collection.Pages;
 import com.loci.loci_backend.common.ddd.infrastructure.stereotype.PrimaryMapper;
 import com.loci.loci_backend.core.discovery.domain.aggregate.ContactProfile;
 import com.loci.loci_backend.core.discovery.domain.aggregate.ContactProfileList;
@@ -16,7 +17,7 @@ public class RestContactProfileMapper {
   private final MapStructRestContactProfileMapper mapstruct;
 
   public RestContactProfileList from(ContactProfileList discoveryContacts) {
-    Page<RestContactProfile> contacts = discoveryContacts.getContacts().map(this::from);
+    Page<RestContactProfile> contacts = Pages.map(discoveryContacts.getContacts(), this::from);
     return new RestContactProfileList(contacts);
   }
 

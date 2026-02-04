@@ -94,6 +94,7 @@ public class UserConnectionResolverImpl implements UserConnectionResolver {
 
   public ContactProfile extractContactProfile(UserConnections userConnections, User contactUser) {
     return ContactProfileBuilder.contactProfile()
+        .userDBId(contactUser.getDbId())
         .publicId(contactUser.getUserPublicId())
         .fullname(contactUser.getFullname())
         .username(contactUser.getUsername())
@@ -107,6 +108,21 @@ public class UserConnectionResolverImpl implements UserConnectionResolver {
   @Override
   public FriendshipStatus aggreateConnection(User a, User b) {
     return aggreateConnection(a.getDbId(), b.getDbId());
+  }
+
+  @Override
+  public ContactProfile extractContactProfile(UserConnections userConnections, ContactProfile contactUser) {
+    return ContactProfileBuilder.contactProfile()
+        .userDBId(contactUser.getUserDBId())
+        .publicId(contactUser.getPublicId())
+        .fullname(contactUser.getFullname())
+        .username(contactUser.getUsername())
+        .userEmail(contactUser.getEmail())
+        .imageUrl(contactUser.getImageUrl())
+        .friendshipStatus(
+            userConnections.determineFriendStatusOrDefaults(contactUser.getUserDBId(), FriendshipStatus.notConnected()))
+        .build();
+
   }
 
 }

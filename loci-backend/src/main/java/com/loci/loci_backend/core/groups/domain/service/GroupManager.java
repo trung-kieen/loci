@@ -57,9 +57,9 @@ public class GroupManager {
   }
 
   public GroupProfile applyGroupUpdateImage(PublicId groupPublicId, File file) {
-    FilePath requestFilePath = new FilePath(UUID.randomUUID() + file.path().value());
+    FilePath requestFilePath = new FilePath(UUID.randomUUID() + file.getPath().value());
     File savedFile = fileStorageService.saveFile(file, requestFilePath);
-    GroupImageUrl newImageUrl = new GroupImageUrl(savedFile.path().value());
+    GroupImageUrl newImageUrl = new GroupImageUrl(savedFile.getPath().value());
     GroupProfileChanges changes = new GroupProfileChanges();
     changes.setGroupProfilePicture(newImageUrl);
     return this.updatGroupInfo(groupPublicId, changes);

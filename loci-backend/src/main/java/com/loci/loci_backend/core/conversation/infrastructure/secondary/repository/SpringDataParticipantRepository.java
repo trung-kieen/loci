@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.loci.loci_backend.common.collection.Pages;
 import com.loci.loci_backend.common.ddd.infrastructure.stereotype.SecondaryPort;
 import com.loci.loci_backend.common.user.domain.aggregate.User;
 import com.loci.loci_backend.common.user.domain.vo.UserDBId;
@@ -23,7 +24,6 @@ import com.loci.loci_backend.core.groups.domain.vo.GroupId;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -52,8 +52,8 @@ public class SpringDataParticipantRepository implements ParticipantRepository {
   public Page<UserConversation> getConversationsUserJoined(User user, ConversationSearchCriteria criteria,
       Pageable pageable) {
 
-    Page<UserConversationJpaVO> conversation = repository.getUserConversation(criteria.userId().value(), pageable);
-    return conversation.map(conversationMapper::toDomain);
+    Page<UserConversationJpaVO> conversation = repository.getUserConversation(criteria.getUserId().value(), pageable);
+    return Pages.map(conversation, conversationMapper::toDomain);
 
   }
 

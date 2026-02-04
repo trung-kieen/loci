@@ -6,6 +6,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 
 public interface Entity2DomainMapper<E, D> {
 
@@ -16,7 +17,12 @@ public interface Entity2DomainMapper<E, D> {
   }
 
   default Page<D> toDomain(Page<E> entities) {
-    return entities.map(this::toDomain);
+    if (entities == null){
+      return null;
+    }
+    List<D> mappedContent = entities.getContent()
+      .stream().map(this::toDomain).toList();
+    return new PageImpl<>(mappedContent, entities.getPageable(), entities.getTotalElements());
   }
 
   default List<D> toDomain(List<E> entities) {

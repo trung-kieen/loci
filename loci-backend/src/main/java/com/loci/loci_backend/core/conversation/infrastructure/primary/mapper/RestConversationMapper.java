@@ -1,5 +1,6 @@
 package com.loci.loci_backend.core.conversation.infrastructure.primary.mapper;
 
+import com.loci.loci_backend.common.collection.Pages;
 import com.loci.loci_backend.common.ddd.infrastructure.stereotype.PrimaryPort;
 import com.loci.loci_backend.core.conversation.domain.aggregate.Chat;
 import com.loci.loci_backend.core.conversation.domain.aggregate.Conversation;
@@ -55,7 +56,7 @@ public class RestConversationMapper {
   }
 
   public RestUserChatList from(UserChatList userList) {
-    Page<RestChat> conversationPage = userList.getConversations().map(this::from);
+    Page<RestChat> conversationPage = Pages.map(userList.getConversations(), this::from);
     return new RestUserChatList(conversationPage);
   }
 }

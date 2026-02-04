@@ -17,6 +17,8 @@ public interface UserConnectionResolver {
    */
   public ContactProfile extractContactProfile(UserConnections userConnections, User user);
 
+  public ContactProfile extractContactProfile(UserConnections userConnections, ContactProfile  user);
+
   public FriendshipStatus aggreateConnection(UserDBId userId, UserDBId targetUserId);
 
   public FriendshipStatus aggreateConnection(User a, User b);

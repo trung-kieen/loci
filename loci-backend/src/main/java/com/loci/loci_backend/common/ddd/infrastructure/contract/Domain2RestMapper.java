@@ -1,9 +1,11 @@
 package com.loci.loci_backend.common.ddd.infrastructure.contract;
 
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 
 public interface Domain2RestMapper<D, R> {
 
@@ -22,6 +24,14 @@ public interface Domain2RestMapper<D, R> {
     if (domainPage == null) {
       return null;
     }
-    return domainPage.map(this::from);
+
+    List<R> mappedContent = domainPage.getContent()
+        .stream()
+        .map(this::from)
+        .collect(Collectors.toList());
+
+    return new PageImpl<>(mappedContent,
+        domainPage.getPageable(),
+        domainPage.getTotalElements());
   }
 }

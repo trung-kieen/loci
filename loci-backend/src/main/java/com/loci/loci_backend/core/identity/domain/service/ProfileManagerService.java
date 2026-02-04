@@ -101,10 +101,10 @@ public class ProfileManagerService {
 
   public PersonalProfile applyUpdate(File uploadImageFile) {
     // TODO: validate image file using file assertion
-    FilePath requestFilePath = new FilePath(UUID.randomUUID() + uploadImageFile.path().value());
+    FilePath requestFilePath = new FilePath(UUID.randomUUID() + uploadImageFile.getPath().value());
     File savedFile = fileStorageService.saveFile(uploadImageFile, requestFilePath);
 
-    UserImageUrl newImageUrl = new UserImageUrl(savedFile.path().value());
+    UserImageUrl newImageUrl = new UserImageUrl(savedFile.getPath().value());
 
     PersonalProfileChanges changes = new PersonalProfileChanges();
     changes.setImageUrl(newImageUrl);

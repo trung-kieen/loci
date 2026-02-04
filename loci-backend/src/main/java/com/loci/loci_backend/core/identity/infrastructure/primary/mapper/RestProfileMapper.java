@@ -1,5 +1,6 @@
 package com.loci.loci_backend.core.identity.infrastructure.primary.mapper;
 
+import com.loci.loci_backend.common.collection.Pages;
 import com.loci.loci_backend.common.ddd.infrastructure.stereotype.PrimaryMapper;
 import com.loci.loci_backend.common.util.TimeFormatter;
 import com.loci.loci_backend.core.identity.domain.aggregate.PersonalProfile;
@@ -27,7 +28,7 @@ public class RestProfileMapper {
   }
 
   public Page<RestPublicProfile> from(Page<PublicProfile> profile) {
-    return profile.map(this::from);
+    return Pages.map(profile, this::from);
   }
 
   public PersonalProfileChanges toDomain(RestPersonalProfilePatch patch) {

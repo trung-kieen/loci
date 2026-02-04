@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.loci.loci_backend.common.collection.Maps;
+import com.loci.loci_backend.common.collection.Pages;
 import com.loci.loci_backend.core.conversation.domain.vo.ConversationId;
 import com.loci.loci_backend.core.conversation.domain.vo.ConversationUnreadMessageCount;
 import com.loci.loci_backend.core.messaging.domain.aggregate.DirectChatInfo;
@@ -93,7 +94,7 @@ public class UserChatList {
     }
 
     public UserChatList build() {
-      Page<Chat> previewList = this.userConversations.map((con) -> {
+      Page<Chat> previewList = Pages.map(this.userConversations, (con) -> {
         return ChatBuilder.chat()
             .conversationId(con.getConversationId())
             .publicId(con.getPublicId())

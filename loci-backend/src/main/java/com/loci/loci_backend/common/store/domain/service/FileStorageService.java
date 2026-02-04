@@ -21,11 +21,11 @@ public class FileStorageService {
   }
 
   public File saveFile(File file, FilePath assignFilePath) {
-    return objectStorage.saveObject(assignFilePath, file.stream(), file.contentType());
+    return objectStorage.saveObject(assignFilePath, file.getStream(), file.getContentType());
   }
 
   public File saveFile(File file) {
-    return objectStorage.saveObject(file.path(), file.stream(), file.contentType());
+    return objectStorage.saveObject(file.getPath(), file.getStream(), file.getContentType());
   }
 
   public void deleteFile(FilePath filePath) {
@@ -37,7 +37,7 @@ public class FileStorageService {
   }
 
   public FileInputStream getFileStream(FilePath filePath) {
-    return objectStorage.getObject(filePath).stream();
+    return objectStorage.getObject(filePath).getStream();
   }
 
 }

@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.loci.loci_backend.common.collection.Pages;
+
 import org.springframework.data.domain.Page;
 
 public interface Domain2EntityMapper<D, E> {
@@ -19,7 +21,7 @@ public interface Domain2EntityMapper<D, E> {
   }
 
   default Page<E> from(Page<D> domainPage) {
-    return domainPage.map(this::from);
+    return Pages.map(domainPage, this::from);
   }
 
 }

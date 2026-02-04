@@ -2,6 +2,7 @@ package com.loci.loci_backend.core.discovery.domain.aggregate;
 
 import com.loci.loci_backend.common.authentication.domain.Username;
 import com.loci.loci_backend.common.user.domain.vo.PublicId;
+import com.loci.loci_backend.common.user.domain.vo.UserDBId;
 import com.loci.loci_backend.common.user.domain.vo.UserEmail;
 import com.loci.loci_backend.common.user.domain.vo.UserImageUrl;
 import com.loci.loci_backend.core.identity.domain.aggregate.UserFullname;
@@ -16,6 +17,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 public class ContactProfile {
+
+  private UserDBId userDBId;
+
   private PublicId publicId;
 
   private UserFullname fullname;
@@ -30,8 +34,9 @@ public class ContactProfile {
 
 
   @Builder(style = BuilderStyle.STAGED)
-  public ContactProfile(PublicId publicId, UserFullname fullname, Username username, UserEmail userEmail,
+  public ContactProfile(UserDBId userDBId, PublicId publicId, UserFullname fullname, Username username, UserEmail userEmail,
       UserImageUrl imageUrl, FriendshipStatus friendshipStatus) {
+    this.userDBId = userDBId;
     this.publicId = publicId;
     this.fullname = fullname;
     this.username = username;
