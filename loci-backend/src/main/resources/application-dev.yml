@@ -31,14 +31,16 @@ spring:
       resourceserver:
         jwt.issuer-uri: http://localhost:9090/realms/loci-realm
   flyway:
-    enabled: true
+    enabled: false
     locations: classpath:db/migrations
-    baseline-on-migrate: true
-    # validate-on-migrate: true # for production
+    baseline-on-migrate: true # disable in production
+    baseline-version: 0
+    validate-on-migrate: true # for production
     url: ${SPRING_FLYWAY_URL:jdbc:postgresql://localhost:5432/locidb}
     user: ${SPRING_FLYWAY_USER:admin}
     schemas: public
     password: ${SPRING_FLYWAY_PASSWORD:admin}
+    clean-disabled: true
 
     # clean-disabled: false
     # clean-on-validation-error: true
@@ -54,7 +56,7 @@ spring:
     type: com.zaxxer.hikari.HikariDataSource
   jpa:
     hibernate:
-      ddl-auto: validate
+      ddl-auto: none
     show-sql: true
     open-in-view: false # Release connection directly instead of wait for HTTP response completes
     properties:
@@ -67,20 +69,20 @@ spring:
       # hibernate:
       #   ddl-auto: create
       # properties:
-      jakarta:
-        persistence:
-          schema-generation:
-            scripts:
-              action: create
-              create-target: src/main/resources/schema.sql
-
       # jakarta:
       #   persistence:
       #     schema-generation:
-      #       create-source: metadata
       #       scripts:
-      #         action: update
-      #         create-target: src/main/resources/update.sql
+      #         action: create
+      #         create-target: src/main/resources/schema.sql
+
+      jakarta:
+        persistence:
+          schema-generation:
+            create-source: metadata
+            scripts:
+              action: update
+              create-target: src/main/resources/update.sql
 
   devtools:
     restart:

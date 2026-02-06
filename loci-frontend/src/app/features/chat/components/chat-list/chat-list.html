@@ -94,7 +94,7 @@
         </button>
 
         <!-- Loop through conversations -->
-        @for (conv of filteredConversations(); track conv.id) {
+        @for (conv of filteredConversations(); track conv.conversationId) {
           <a
             [routerLink]="getConversationRoute(conv)"
             routerLinkActive="bg-neutral-50 border-l-4 border-neutral-500"
@@ -103,8 +103,8 @@
             <!-- Avatar -->
             <div class="relative flex-shrink-0">
               <img
-                [src]="conv.avatar"
-                [alt]="conv.name"
+                [src]="conv.avatarUrl"
+                [alt]="conv.conversationName"
                 class="w-10 h-10 md:w-11 md:h-11 rounded-full object-cover"
               />
               <!-- Online indicator -->
@@ -121,7 +121,7 @@
               <div class="flex items-center justify-between mb-0.5">
                 <div class="flex items-center space-x-1 min-w-0 flex-1">
                   <p class="text-sm font-medium text-neutral-900 truncate">
-                    {{ conv.name }}
+                    {{ conv.conversationName}}
                   </p>
                   @if (conv.isGroup) {
                     <i
@@ -161,7 +161,7 @@
                       {{ conv.unreadCount }}
                     </div>
                   }
-                  @if (conv.messageStatus === "read") {
+                  @if (conv.messageStatus === "seen") {
                     <i
                       class="fa-solid fa-check-double text-neutral-500 text-xs"
                     ></i>

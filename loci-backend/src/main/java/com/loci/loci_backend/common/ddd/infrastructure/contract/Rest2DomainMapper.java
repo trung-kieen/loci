@@ -3,6 +3,8 @@ package com.loci.loci_backend.common.ddd.infrastructure.contract;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.loci.loci_backend.common.collection.Pages;
+
 import org.springframework.data.domain.Page;
 
 public interface Rest2DomainMapper<R, D> {
@@ -22,6 +24,6 @@ public interface Rest2DomainMapper<R, D> {
     if (restPage == null) {
       return null;
     }
-    return restPage.map(this::toDomain);
+    return Pages.map(restPage, this::toDomain);
   }
 }

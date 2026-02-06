@@ -33,5 +33,5 @@ public interface ConversationRepository {
 
   public Optional<Chat> getChatInfo(Conversation conversation, User currentUser);
 
-  public UserChatList buildUserChatList(Page<UserConversation> userConversations, UserDBId userId);
+  public UserChatList getChatListByConversations(Page<UserConversation> userConversations, UserDBId userId);
 }

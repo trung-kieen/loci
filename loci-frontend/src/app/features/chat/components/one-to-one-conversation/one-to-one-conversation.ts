@@ -25,7 +25,7 @@ import {
   tap,
   throwError,
 } from 'rxjs';
-import { ChatStateService } from '../../service/one-to-one-chat-state.service';
+import { OneToOneChatStateService } from '../../service/one-to-one-chat-state.service';
 import { MockChatApiService } from '../../service/moc-chat-api-service';
 import {
   IAttachment,
@@ -38,12 +38,12 @@ import { MockStompService } from '../../service/mock-stomp.service';
   selector: 'app-one-on-one',
   standalone: true,
   imports: [CommonModule, FormsModule],
-  providers: [ChatStateService],
+  providers: [OneToOneChatStateService],
   templateUrl: './one-to-one-conversation.html',
   styleUrls: ['./one-to-one-conversation.css'],
 })
 export class OneToOneConversation implements OnInit {
-  chatState = inject(ChatStateService);
+  chatState = inject(OneToOneChatStateService);
   private apiService = inject(MockChatApiService);
   private stompService = inject(MockStompService);
   private router = inject(Router);

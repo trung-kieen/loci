@@ -110,7 +110,7 @@ public class SpringDataConversationRepository implements ConversationRepository 
     Set<Long> conversationIds = groupConversations.stream().map(UserConversation::getConversationId)
         .map(ConversationId::value).collect(Collectors.toSet());
     List<GroupConversationMetadataJpaVO> groupMetaList = jpaConversationRepository
-        .getGroupMetadataByIds(conversationIds);
+        .getGroupMetadataByConversationIds(conversationIds);
     return groupMetaList.stream().map(mapper::toDomain).toList();
   }
 
@@ -123,7 +123,7 @@ public class SpringDataConversationRepository implements ConversationRepository 
     Set<Long> conversationIds = directConversations.stream().map(UserConversation::getConversationId)
         .map(ConversationId::value).collect(Collectors.toSet());
     List<ConversationParticipantEntity> conversationParticipants = jpaParticipantRepository
-        .findAllById(conversationIds);
+        .findAllByConversationIdIn(conversationIds);
 
     Map<ConversationId, PublicId> conversationIdToPublicId = Maps.toLookupMap(directConversations,
         UserConversation::getConversationId, UserConversation::getPublicId);
@@ -150,7 +150,7 @@ public class SpringDataConversationRepository implements ConversationRepository 
           .conversationId(new ConversationId(participant.getConversationId()))
           .conversationPublicId(
               conversationIdToPublicId.getOrDefault(new ConversationId(participant.getConversationId()), null))
-          .messagingUser(userIdToPublicProfile.getOrDefault(participant.getUserId(), null))
+          .messagingUser(userIdToPublicProfile.getOrDefault(new UserDBId(participant.getUserId()), null))
           .status(new PresenceStatus(presence.getStatus()))
           .build();
       return info;
@@ -266,7 +266,7 @@ public class SpringDataConversationRepository implements ConversationRepository 
   }
 
   @Override
-  public UserChatList buildUserChatList(Page<UserConversation> userConversations, UserDBId userId) {
+  public UserChatList getChatListByConversations(Page<UserConversation> userConversations, UserDBId userId) {
     // TODO Auto-generated method stub
     throw new UnsupportedOperationException("Unimplemented method 'buildUserChatList'");
   }

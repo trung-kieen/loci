@@ -4,6 +4,30 @@ import { FriendshipStatus } from '../../contact/models/contact.model';
 import { IUser, PresenceStatus } from '../../user/models/user.model';
 import { IMessage } from './message.model';
 
+
+
+
+export interface IUserChatList {
+  conversations: Page<IChat>
+}
+
+export interface IChat {
+  conversationId: string;
+  conversationName: string;
+  avatarUrl: string;
+  lastMessage?: string;
+  lastMessageSender?: string; // Cho group chat
+  time: string;
+  unreadCount: number;
+  isOnline: boolean;
+  isGroup: boolean;
+  messageStatus?: MessageState;
+  isFollowUp?: boolean;
+  isArchived?: boolean;
+}
+
+type MessageState = 'prepare' | 'sent' | 'delivered' | 'seen' ;
+
 export interface ITypingEvent {
   conversationId: string;
   userId: string;

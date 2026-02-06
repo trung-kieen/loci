@@ -52,7 +52,8 @@ public class SpringDataParticipantRepository implements ParticipantRepository {
   public Page<UserConversation> getConversationsUserJoined(User user, ConversationSearchCriteria criteria,
       Pageable pageable) {
 
-    Page<UserConversationJpaVO> conversation = repository.getUserConversation(criteria.getUserId().value(), pageable);
+    Long requestUserId = criteria.getUserId().value();
+    Page<UserConversationJpaVO> conversation = repository.getUserConversation(requestUserId, pageable);
     return Pages.map(conversation, conversationMapper::toDomain);
 
   }

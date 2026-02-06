@@ -65,7 +65,8 @@ public class ProfileManagerService {
 
   @Transactional(readOnly = true)
   public PublicProfile readPublicProfileByPublicId(ProfilePublicId profilePublicId) {
-    Optional<User> currentUser = userRepository.getByUsername(principal.getUsername());
+    // Optional<User> currentUser = userRepository.getByUsername(principal.getUsername());
+    Optional<User> currentUser = userRepository.getByEmail(principal.getUserEmail());
 
     UserDBId currentUserId = null;
     if (currentUser.isPresent()) {

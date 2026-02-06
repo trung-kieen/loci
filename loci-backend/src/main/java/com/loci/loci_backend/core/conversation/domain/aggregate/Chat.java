@@ -1,6 +1,7 @@
 package com.loci.loci_backend.core.conversation.domain.aggregate;
 
 import com.loci.loci_backend.common.user.domain.vo.PublicId;
+import com.loci.loci_backend.core.conversation.domain.exception.InvalidConversationTypeException;
 import com.loci.loci_backend.core.conversation.domain.vo.ConversationId;
 import com.loci.loci_backend.core.conversation.domain.vo.ConversationType;
 import com.loci.loci_backend.core.conversation.domain.vo.UnreadCount;
@@ -40,6 +41,12 @@ public class Chat {
     this.lastMessage = lastMessage;
     this.groupMetadata = groupMetadata;
     this.dmMetadata = dmMetadata;
+
+
+    // Conversation must be dm or group not both of them
+    if (dmMetadata != null && groupMetadata != null) {
+      throw new InvalidConversationTypeException();
+    }
   }
 
   /**
@@ -75,9 +82,5 @@ public class Chat {
         .dmMetadata(directMetadata)
         .build();
   }
-
-
-
-
 
 }

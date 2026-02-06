@@ -60,7 +60,7 @@ public interface JpaConversationRepository extends JpaRepository<ConversationEnt
       GROUP BY c.id, c.publicId, g.id, g.publicId, g.groupName, g.groupProfilePicture
 
       """)
-  List<GroupConversationMetadataJpaVO> getGroupMetadataByIds(@Param("conversationIds") Set<Long> conversationIds);
+  List<GroupConversationMetadataJpaVO> getGroupMetadataByConversationIds(@Param("conversationIds") Set<Long> conversationIds);
 
   Optional<ConversationEntity> findByPublicId(UUID publicId);
 

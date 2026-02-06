@@ -7,6 +7,7 @@ import com.loci.loci_backend.common.ddd.infrastructure.stereotype.DomainService;
 import com.loci.loci_backend.common.user.domain.aggregate.User;
 import com.loci.loci_backend.common.user.domain.repository.UserRepository;
 import com.loci.loci_backend.common.user.domain.vo.PublicId;
+import com.loci.loci_backend.core.discovery.domain.repository.UserConnectionResolver;
 import com.loci.loci_backend.core.social.domain.aggregate.ContactConnection;
 import com.loci.loci_backend.core.social.domain.repository.ContactRepository;
 import com.loci.loci_backend.core.social.domain.vo.FriendshipStatus;
@@ -23,6 +24,7 @@ public class BlockManager {
   private final UserRepository userRepository;
   private final ContactRepository contactRepository;
   private final KeycloakPrincipal keycloakPrincipal;
+  private final UserConnectionResolver connectionResolver;
 
   @Transactional(readOnly = false)
   public FriendshipStatus blockUser(PublicId userId) {
@@ -34,7 +36,8 @@ public class BlockManager {
         .orElseThrow(() -> new EntityNotFoundException());
 
     ContactConnection contact = null;
-    Optional<ContactConnection> contactOpt = contactRepository.searchContact(toBlockUser.getDbId(), currentUser.getDbId());
+    Optional<ContactConnection> contactOpt = contactRepository.searchContact(toBlockUser.getDbId(),
+        currentUser.getDbId());
     if (contactOpt.isPresent()) {
       contact = contactOpt.get();
     } else {
@@ -66,7 +69,6 @@ public class BlockManager {
         .orElseThrow(() -> new EntityNotFoundException("Not found contact request"));
     contact.setBlockedByUserId(null);
 
-    FriendshipStatus newStatus = null;
     // TODO: policy
     // if (contactRequestRepository.existsAcceptedRequest(currentUser.getDbId(),
     // toBlockUser.getDbId())) {
@@ -77,11 +79,11 @@ public class BlockManager {
     // contactRepository.save(contact);
     // } else {
     //
-    newStatus = FriendshipStatus.connected();
     contactRepository.delete(contact);
     //
     // }
 
+    FriendshipStatus newStatus = connectionResolver.aggreateConnection(currentUser, toBlockUser);
     // TODO: websocket - send ack for block conversation/contact
 
     // TODO: notification - user block them, update converstaion state

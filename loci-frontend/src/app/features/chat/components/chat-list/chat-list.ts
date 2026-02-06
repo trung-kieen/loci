@@ -1,8 +1,8 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
-import { ChatApiService, Conversation } from '../../service/chat-api-service';
+import { ConversationChatService } from '../../service/conversation-chat-service';
 import { LoggerService } from '../../../../core/services/logger.service';
-import { ChatFilter } from '../../models/chat.model';
+import { ChatFilter, IChat } from '../../models/chat.model';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -16,8 +16,10 @@ export class ChatList implements OnInit {
   private loggerService = inject(LoggerService);
   private logger = this.loggerService.getLogger('ChatList');
 
-  conversations = signal<Conversation[]>([]);
-  filteredConversations = signal<Conversation[]>([]);
+  private converstaionChatService = inject(ConversationChatService);
+
+  conversations = signal<IChat[]>([]);
+  filteredConversations = signal<IChat[]>([]);
   searchQuery = signal('');
   activeFilter = signal<ChatFilter>('inbox');
   isLoading = signal(true);
@@ -26,20 +28,19 @@ export class ChatList implements OnInit {
     this.loadConversations();
   }
 
-  getConversationRoute(conv: Conversation): string {
-    return conv.isGroup ? `/chat/group/${conv.id}` : `/chat/one/${conv.id}`;
+  getConversationRoute(conv: IChat): string {
+    return conv.isGroup ? `/chat/group/${conv.conversationId}` : `/chat/one/${conv.conversationId}`;
   }
 
   public goToCreateGroup() {
     this.router.navigate(['/chat/create-group']);
   }
-  private chatService = inject(ChatApiService);
 
   loadConversations() {
     this.isLoading.set(true);
-    this.chatService.getConversations().subscribe({
+    this.converstaionChatService.getConversations().subscribe({
       next: (data) => {
-        this.conversations.set(data);
+        this.conversations.set(data.conversations.content);
         this.applyFilters();
         this.isLoading.set(false);
       },
@@ -68,8 +69,8 @@ export class ChatList implements OnInit {
     if (query) {
       filtered = filtered.filter((conv) => {
         return (
-          conv.name.toLowerCase().includes(query) ||
-          conv.lastMessage.toLowerCase().includes(query)
+          conv.conversationName.toLowerCase().includes(query) ||
+          conv.lastMessage?.toLowerCase().includes(query)
         );
       });
     }

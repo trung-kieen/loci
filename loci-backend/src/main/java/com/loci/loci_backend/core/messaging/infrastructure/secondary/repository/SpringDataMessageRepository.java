@@ -33,7 +33,7 @@ public class SpringDataMessageRepository implements MessageRepository {
     if (messageIds.isEmpty()) {
       return List.of();
     }
-    List<Long> ids = messageIds.stream().map(MessageId::value).toList();
+    List<Long> ids = messageIds.stream().filter(i -> i != null).map(MessageId::value).toList();
     List<MessageEntity> entities = messageRepository.findAllById(ids);
     return mapper.toDomain(entities);
   }
@@ -88,9 +88,10 @@ public class SpringDataMessageRepository implements MessageRepository {
   }
 
   @Override
-  public List<Message> getConversationLastMessage(List<UserConversation> userConversations) {
-    List<MessageId> lastConversationMessageIds = Lists.byField(userConversations,
-        UserConversation::getConversationLastMessageId);
+  public List<Message> getLastMessageByConversation(List<UserConversation> userConversations) {
+    // List<MessageId> lastConversationMessageIds = Lists.byField(userConversations,
+    //     UserConversation::getConversationLastMessageId);
+    List<MessageId> lastConversationMessageIds = userConversations.stream().map(UserConversation::getConversationLastMessageId).filter(message -> message != null).toList();
     return this.getByIds(lastConversationMessageIds);
   }
 

@@ -8,7 +8,6 @@ import java.util.Objects;
 import java.util.stream.Stream;
 
 import com.loci.loci_backend.common.store.domain.aggregate.File;
-import com.loci.loci_backend.common.validation.domain.NotEnoughElementsException.NotEnoughElementsExceptionBuilder;
 
 /**
  * This class provides utilities for input assertions.

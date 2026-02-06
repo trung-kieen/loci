@@ -65,7 +65,7 @@ public class ConversationReader {
     List<UserConversation> conversationList = userConversations.getContent();
 
     // Query for message and build lookup
-    List<Message> lastMessage = messageRepository.getConversationLastMessage(conversationList);
+    List<Message> lastMessage = messageRepository.getLastMessageByConversation(conversationList);
 
     // Query and build lookup for unreadCount message in conversation;
 

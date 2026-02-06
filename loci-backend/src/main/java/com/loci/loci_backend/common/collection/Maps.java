@@ -37,7 +37,23 @@ public final class Maps {
     return Collections.unmodifiableMap(map);
   }
 
-  public static <T, K, V> Map<K, V> toLookupMap(Collection<T> items, Function<? super T, ? extends K> keyExtractor, Function<? super T, ? extends V> valueExtractor) {
+  /**
+   * Keep first, ignore duplicates
+   * Map not allow duplicate key
+   */
+  public static <T, K> Map<K, T> toMapKeepFirst(
+      Collection<T> items,
+      Function<? super T, ? extends K> keyExtractor) {
+
+    return items.stream()
+        .collect(Collectors.toMap(
+            keyExtractor,
+            Function.identity(),
+            (first, duplicate) -> first));
+  }
+
+  public static <T, K, V> Map<K, V> toLookupMap(Collection<T> items, Function<? super T, ? extends K> keyExtractor,
+      Function<? super T, ? extends V> valueExtractor) {
     if (items == null || items.isEmpty()) {
       return Collections.emptyMap();
     }
@@ -46,7 +62,7 @@ public final class Maps {
 
     for (T item : items) {
       K key = keyExtractor.apply(item);
-      V  value = valueExtractor.apply(item);
+      V value = valueExtractor.apply(item);
       V previous = map.putIfAbsent(key, value);
       if (previous != null) {
         throw new IllegalStateException("Duplicate key detected: " + key);

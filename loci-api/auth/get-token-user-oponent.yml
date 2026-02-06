@@ -1,0 +1,42 @@
+info:
+  name: get-token-user-oponent
+  type: http
+  seq: 2
+
+http:
+  method: POST
+  url: "{{keycloak_url}}"
+  headers:
+    - name: Content-Type
+      value: application/x-www-form-urlencoded
+  body:
+    type: form-urlencoded
+    data:
+      - name: client_id
+        value: "{{client_id}}"
+      - name: username
+        value: "{{oponent_username}}"
+      - name: password
+        value: "{{oponent_password}}"
+      - name: grant_type
+        value: password
+
+runtime:
+  scripts:
+    - type: after-response
+      code: bru.setEnvVar('access_token',res.body.access_token)
+    - type: tests
+      code: |-
+        test("Status is 200", () => { 
+          expect(res.status).to.equal(200); 
+        })
+        test("Have correct token type", () => { 
+          expect(res.body.access_token).to.be.a('string');
+          expect(res.body.access_token.length).greaterThan(0);
+        })
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

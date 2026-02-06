@@ -9,6 +9,7 @@ import com.loci.loci_backend.common.user.domain.repository.UserRepository;
 import com.loci.loci_backend.common.user.domain.vo.PublicId;
 import com.loci.loci_backend.common.user.domain.vo.UserDBId;
 import com.loci.loci_backend.common.validation.domain.DuplicateResourceException;
+import com.loci.loci_backend.core.discovery.domain.repository.UserConnectionResolver;
 import com.loci.loci_backend.core.identity.domain.repository.IdentityUserRepository;
 import com.loci.loci_backend.core.social.domain.aggregate.ContactConnection;
 import com.loci.loci_backend.core.social.domain.aggregate.ContactRequest;
@@ -17,6 +18,7 @@ import com.loci.loci_backend.core.social.domain.aggregate.ContactRequestListBuil
 import com.loci.loci_backend.core.social.domain.aggregate.CreateContactRequest;
 import com.loci.loci_backend.core.social.domain.repository.ContactRepository;
 import com.loci.loci_backend.core.social.domain.repository.ContactRequestRepository;
+import com.loci.loci_backend.core.social.domain.vo.FriendshipStatus;
 import com.loci.loci_backend.core.social.infrastructure.secondary.entity.FriendRequestStatus;
 
 import org.springframework.data.domain.Page;
@@ -34,6 +36,7 @@ public class FriendManager {
   private final ContactRepository contactRepository;
   private final ContactRequestRepository contactRequestRepository;
   private final KeycloakPrincipal keycloakPrincipal;
+  private final UserConnectionResolver connectionResolver;
 
   @Transactional(readOnly = false)
   public ContactRequest sendRequest(CreateContactRequest request) {
@@ -148,7 +151,7 @@ public class FriendManager {
   }
 
   @Transactional(readOnly = false)
-  public void unsendRequest(PublicId targetId) {
+  public FriendshipStatus unsendRequest(PublicId targetId) {
     User friendUser = userRepository.getByPublicId(targetId)
         .orElseThrow(() -> new EntityNotFoundException("Not found friend information"));
     User currentUser = userRepository.getByUsername(keycloakPrincipal.getUsername())
@@ -157,6 +160,7 @@ public class FriendManager {
     ContactRequest request = contactRequestRepository.getPendingRequest(currentUser.getDbId(), friendUser.getDbId())
         .orElseThrow(() -> new EntityNotFoundException("Friend request not found"));
     contactRequestRepository.delete(request);
+    return connectionResolver.aggreateConnection(currentUser, friendUser);
   }
 
   public ContactRequestList viewListContactRequest(Pageable pageable) {

@@ -2,6 +2,8 @@ package com.loci.loci_backend.core.conversation.domain.aggregate;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import com.loci.loci_backend.common.collection.Maps;
 import com.loci.loci_backend.common.collection.Pages;
@@ -33,14 +35,18 @@ public class UserChatList {
       List<ConversationUnreadMessageCount> unreadCounts,
       List<GroupChatInfo> groupMetadatas,
       List<DirectChatInfo> directMetadatas) {
+    Map<ConversationId, GroupChatInfo> groupMetaByConversationId = Maps.toMapKeepFirst(groupMetadatas,
+        GroupChatInfo::getConversationId);
 
+    Map<ConversationId, DirectChatInfo> directMetaByConversationId = Maps.toMapKeepFirst(directMetadatas,
+        DirectChatInfo::getConversationId);
     return UserChatList.builder()
         .lastMessageLookup(Maps.toLookupMap(lastMessages, Message::getMessageId))
         .userConversationPage(userConversations)
         .unreadCountLookup(Maps.toLookupMap(unreadCounts,
             ConversationUnreadMessageCount::conversationId))
-        .groupMetadataLookup(Maps.toLookupMap(groupMetadatas, GroupChatInfo::getConversationId))
-        .directMetadataLookup(Maps.toLookupMap(directMetadatas, DirectChatInfo::getConversationId))
+        .groupMetadataLookup(groupMetaByConversationId)
+        .directMetadataLookup(directMetaByConversationId)
         .build();
   }
 

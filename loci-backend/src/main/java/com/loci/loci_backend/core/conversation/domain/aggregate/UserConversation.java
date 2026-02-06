@@ -6,6 +6,7 @@ import com.loci.loci_backend.core.conversation.domain.vo.ConversationType;
 import com.loci.loci_backend.core.conversation.infrastructure.secondary.enumeration.ConversationTypeEnum;
 import com.loci.loci_backend.core.messaging.domain.vo.MessageId;
 
+import jakarta.annotation.Nullable;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -21,8 +22,11 @@ public class UserConversation {
 
   private PublicId publicId;
   private ConversationType type;
+
+  @Nullable
   private MessageId conversationLastMessageId; // need to search for last message
 
+  @Nullable
   private MessageId userLastReadMessageId; // for count unread
 
   public boolean isGroup() {

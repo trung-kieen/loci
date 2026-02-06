@@ -7,16 +7,20 @@ variables:
   - name: client_id
     value: spring
   - name: username
-    value: testuser1@gmail.com
+    value: cruzbarbara@example.com
   - name: password
-    value: example1
+    value: exampleloci123
   - name: access_token
     value: ""
   - name: user_public_id_1
-    value: 0f2d5e36-cd9f-4304-9225-f59a0a9bb41b
+    value: a60d76e8-4c9f-4880-9d24-d190d831dbc0
   - name: conversation_id
     value: ""
   - name: conversation_id
     value: 9803ca71-7356-4393-9d3c-ce5cb57f05ff
   - name: group_id
     value: 0784ce65-4c88-4f72-81d7-dcb386e5e1bd
+  - name: oponent_username
+    value: logan.ramirez@gmail.com
+  - name: oponent_password
+    value: exampleloci123

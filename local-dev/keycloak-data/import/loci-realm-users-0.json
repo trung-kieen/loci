@@ -67,6 +67,28 @@
     "notBefore" : 0,
     "groups" : [ ]
   }, {
+    "id" : "2aa6f4d9-a114-4da6-9399-85faf256854e",
+    "username" : "chelsea33722",
+    "firstName" : "Janet",
+    "lastName" : "Vaughn",
+    "email" : "angela34@example.com",
+    "emailVerified" : false,
+    "createdTimestamp" : 1770263007441,
+    "enabled" : true,
+    "totp" : false,
+    "credentials" : [ {
+      "id" : "3854734b-0a37-490b-a131-3fc780277d32",
+      "type" : "password",
+      "createdDate" : 1770263007631,
+      "secretData" : "{\"value\":\"XRyl5gRXv0JurMkd64A8VNTGbki9ERAE2Kb6mJWDkP8=\",\"salt\":\"3xF2AXE641JN0j1y0GKfjA==\",\"additionalParameters\":{}}",
+      "credentialData" : "{\"hashIterations\":5,\"algorithm\":\"argon2\",\"additionalParameters\":{\"hashLength\":[\"32\"],\"memory\":[\"7168\"],\"type\":[\"id\"],\"version\":[\"1.3\"],\"parallelism\":[\"1\"]}}"
+    } ],
+    "disableableCredentialTypes" : [ ],
+    "requiredActions" : [ ],
+    "realmRoles" : [ "default-roles-loci-realm" ],
+    "notBefore" : 0,
+    "groups" : [ ]
+  }, {
     "id" : "a03e7f08-f0c7-4c40-97d6-e3bff7d00057",
     "username" : "corazon.quigley@gmail.com",
     "firstName" : "Dorene",
@@ -235,6 +257,28 @@
       "type" : "password",
       "createdDate" : 1764321074733,
       "secretData" : "{\"value\":\"WytbL6FbgPljOJ3Z88KJGsShNNc9U1Ds54f4GKXwOhY=\",\"salt\":\"lacJGokwOTTeu6gz/zA4Vg==\",\"additionalParameters\":{}}",
+      "credentialData" : "{\"hashIterations\":5,\"algorithm\":\"argon2\",\"additionalParameters\":{\"hashLength\":[\"32\"],\"memory\":[\"7168\"],\"type\":[\"id\"],\"version\":[\"1.3\"],\"parallelism\":[\"1\"]}}"
+    } ],
+    "disableableCredentialTypes" : [ ],
+    "requiredActions" : [ ],
+    "realmRoles" : [ "default-roles-loci-realm" ],
+    "notBefore" : 0,
+    "groups" : [ ]
+  }, {
+    "id" : "1639b859-d3af-4555-b69e-796c1b1c34e3",
+    "username" : "jessica56518",
+    "firstName" : "Bradley",
+    "lastName" : "Graham ",
+    "email" : "cruzbarbara@example.com",
+    "emailVerified" : false,
+    "createdTimestamp" : 1770273950585,
+    "enabled" : true,
+    "totp" : false,
+    "credentials" : [ {
+      "id" : "d40f1ed9-f784-4f8a-a7de-e0abc5686c74",
+      "type" : "password",
+      "createdDate" : 1770273951114,
+      "secretData" : "{\"value\":\"jmiA8LCxkK6zpqX8FuEsN0mpL23FLc/gYyewI2+KT18=\",\"salt\":\"WZDpZrkzgxR2UvKsjJ7V4g==\",\"additionalParameters\":{}}",
       "credentialData" : "{\"hashIterations\":5,\"algorithm\":\"argon2\",\"additionalParameters\":{\"hashLength\":[\"32\"],\"memory\":[\"7168\"],\"type\":[\"id\"],\"version\":[\"1.3\"],\"parallelism\":[\"1\"]}}"
     } ],
     "disableableCredentialTypes" : [ ],

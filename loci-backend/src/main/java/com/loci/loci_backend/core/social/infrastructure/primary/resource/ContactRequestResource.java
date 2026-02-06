@@ -1,9 +1,11 @@
 package com.loci.loci_backend.core.social.infrastructure.primary.resource;
 
+import java.util.Arrays;
 import java.util.UUID;
 
 import com.loci.loci_backend.common.authentication.domain.KeycloakPrincipal;
 import com.loci.loci_backend.common.user.domain.vo.PublicId;
+import com.loci.loci_backend.common.validation.domain.Assert;
 import com.loci.loci_backend.core.social.application.SocialApplicationService;
 import com.loci.loci_backend.core.social.domain.aggregate.ContactRequest;
 import com.loci.loci_backend.core.social.domain.aggregate.ContactRequestList;
@@ -50,9 +52,9 @@ class ContactRequestResource {
       KeycloakPrincipal sender) {
 
     PublicId requestUserPubicId = new PublicId(receiverPublicId);
-    socialApplicationService.unsendRequestToUser(requestUserPubicId);
+    FriendshipStatus updatedStatus = socialApplicationService.unsendRequestToUser(requestUserPubicId);
 
-    return new RestFriendshipUpdatedResponse(FriendshipStatus.notConnected());
+    return new RestFriendshipUpdatedResponse(updatedStatus);
   }
 
   @GetMapping("")

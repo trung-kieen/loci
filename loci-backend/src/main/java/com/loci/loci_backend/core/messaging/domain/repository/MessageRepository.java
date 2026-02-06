@@ -24,5 +24,5 @@ public interface MessageRepository {
 
   List<ConversationUnreadMessageCount> getUnreadCount(List<UserConversation> userConversations);
 
-  List<Message> getConversationLastMessage(List<UserConversation> userConversations);
+  List<Message> getLastMessageByConversation(List<UserConversation> userConversations);
 }

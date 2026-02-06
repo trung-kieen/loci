@@ -65,8 +65,8 @@ public class SocialApplicationService {
     return blockManager.unblockUser(blockUserId);
   }
 
-  public void unsendRequestToUser(PublicId targetUserId) {
-    friendManager.unsendRequest(targetUserId);
+  public FriendshipStatus unsendRequestToUser(PublicId targetUserId) {
+    return friendManager.unsendRequest(targetUserId);
   }
 
   public FriendList searchFriends(SearchQuery query, Pageable pageable) {

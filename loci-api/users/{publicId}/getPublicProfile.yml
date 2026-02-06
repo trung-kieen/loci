@@ -8,7 +8,7 @@ http:
   url: "{{baseUrl}}/users/:publicId"
   params:
     - name: publicId
-      value: ce705ccf-7992-4b59-894c-c545e974a6ff
+      value: "{{user_public_id_1}}"
       type: path
   auth: inherit
 

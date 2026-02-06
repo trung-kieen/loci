@@ -6,6 +6,7 @@ import java.util.UUID;
 import com.loci.loci_backend.common.authentication.domain.KeycloakPrincipal;
 import com.loci.loci_backend.common.authentication.domain.Username;
 import com.loci.loci_backend.common.collection.Maps;
+import com.loci.loci_backend.common.collection.Pages;
 import com.loci.loci_backend.common.ddd.infrastructure.stereotype.PrimaryMapper;
 import com.loci.loci_backend.common.user.domain.vo.PublicId;
 import com.loci.loci_backend.common.user.domain.vo.UserDBId;
@@ -18,8 +19,6 @@ import com.loci.loci_backend.core.social.infrastructure.primary.payload.RestCont
 import com.loci.loci_backend.core.social.infrastructure.primary.payload.RestContactRequestCreated;
 import com.loci.loci_backend.core.social.infrastructure.primary.payload.RestContactRequestCreatedBuilder;
 import com.loci.loci_backend.core.social.infrastructure.primary.payload.RestContactRequestList;
-
-import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 
@@ -56,7 +55,7 @@ public class RestContactMapper {
 
   public RestContactRequestList from(ContactRequestList requests) {
     Map<UserDBId, UserSummary> userLookup = Maps.toLookupMap(requests.getUserSummaries(), UserSummary::getDbId);
-    var restRequestPage = requests.getContacts().map((contactRequest) -> {
+    var restRequestPage = Pages.map( requests.getContacts(), (contactRequest) -> {
       UserSummary user = userLookup.getOrDefault(contactRequest.getRequestUserId(), null);
       return from(contactRequest, user);
     });

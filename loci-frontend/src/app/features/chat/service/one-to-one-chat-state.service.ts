@@ -3,7 +3,7 @@ import { Injectable, computed, signal } from '@angular/core';
 import { IUser } from '../../user/models/user.model';
 import { IChatError, IConversation } from '../models/chat.model';
 import { IMessage } from '../models/message.model';
-export interface ChatState {
+export interface OneToOneChatState {
   currentUser: IUser | null;
   selectedConversation: IConversation | null;
   messages: IMessage[];
@@ -13,7 +13,7 @@ export interface ChatState {
   uploadingFile: boolean;
 }
 
-const initialState: ChatState = {
+const initialState: OneToOneChatState = {
   currentUser: null,
   selectedConversation: null,
   messages: [],
@@ -24,9 +24,9 @@ const initialState: ChatState = {
 };
 
 @Injectable()
-export class ChatStateService {
+export class OneToOneChatStateService {
   // Private state signals
-  private state = signal<ChatState>(initialState);
+  private state = signal<OneToOneChatState>(initialState);
 
   // Computed selectors
   readonly currentUser = computed(() => this.state().currentUser);
@@ -142,7 +142,7 @@ export class ChatStateService {
   }
 
   // Debug helper
-  getState(): ChatState {
+  getState(): OneToOneChatState {
     return this.state();
   }
 }

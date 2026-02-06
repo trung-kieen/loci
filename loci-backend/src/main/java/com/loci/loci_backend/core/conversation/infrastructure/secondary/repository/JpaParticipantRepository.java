@@ -62,4 +62,13 @@ public interface JpaParticipantRepository extends JpaRepository<ConversationPart
       """)
   List<Long> getUserIdInConversation(@Param("conversationId") Long conversationId);
 
+
+  @Query("""
+    SELECT DISTINCT(p) FROM ConversationParticipantEntity p
+    WHERE p.conversationId in (:conversationIds)
+  """)
+  List<ConversationParticipantEntity> findAllByConversationIdIn(@Param("conversationIds") Set<Long> conversationIds);
+
+
+
 }
