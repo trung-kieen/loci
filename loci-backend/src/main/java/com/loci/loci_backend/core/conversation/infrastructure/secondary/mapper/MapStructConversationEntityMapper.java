@@ -14,7 +14,6 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring", uses = { ValueObjectTypeConverter.class })
 public interface MapStructConversationEntityMapper {
 
-  @Mapping(target = "messages", ignore = true)
   @Mapping(target = "participants", ignore = true)
   public Conversation toDomain(ConversationEntity conversation);
 

@@ -1,11 +1,9 @@
 package com.loci.loci_backend.core.conversation.domain.aggregate;
 
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import com.loci.loci_backend.common.user.domain.vo.PublicId;
@@ -16,7 +14,6 @@ import com.loci.loci_backend.core.conversation.domain.vo.ConversationType;
 import com.loci.loci_backend.core.conversation.domain.vo.ParticipantRole;
 import com.loci.loci_backend.core.conversation.infrastructure.secondary.enumeration.ConversationTypeEnum;
 import com.loci.loci_backend.core.groups.domain.factory.ConversationParticipantFactory;
-import com.loci.loci_backend.core.messaging.domain.aggregate.Message;
 import com.loci.loci_backend.core.messaging.domain.vo.MessageId;
 
 import lombok.Data;
@@ -30,7 +27,7 @@ public class Conversation {
   private PublicId publicId;
   private UserDBId creatorId;
   private Set<Participant> participants = new HashSet<>();
-  private List<Message> messages = new ArrayList<>();
+  // private List<Message> messages = new ArrayList<>();
 
   private ConversationType conversationType;
 

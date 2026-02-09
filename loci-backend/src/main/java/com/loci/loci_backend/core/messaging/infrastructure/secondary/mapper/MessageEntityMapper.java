@@ -1,7 +1,11 @@
 package com.loci.loci_backend.core.messaging.infrastructure.secondary.mapper;
 
+import java.util.List;
+
 import com.loci.loci_backend.common.ddd.infrastructure.contract.DomainEntityMapper;
 import com.loci.loci_backend.common.ddd.infrastructure.stereotype.SecondaryMapper;
+import com.loci.loci_backend.core.messaging.domain.aggregate.ConversationMessages;
+import com.loci.loci_backend.core.messaging.domain.aggregate.ConversationMessagesBuilder;
 import com.loci.loci_backend.core.messaging.domain.aggregate.Message;
 import com.loci.loci_backend.core.messaging.infrastructure.secondary.entity.MessageEntity;
 
@@ -22,4 +26,5 @@ public class MessageEntityMapper implements DomainEntityMapper<Message, MessageE
   public MessageEntity from(Message message) {
     return mapstruct.from(message);
   }
+
 }

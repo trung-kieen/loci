@@ -26,6 +26,9 @@ public interface ParticipantRepository {
 
   Participant findRecipientOfUserInConversation(User requestUser, Conversation conversation);
 
+  Participant findTargetMessagingUserInDirectConversation(User requestUser, Conversation conversation);
+
+
   ParticipantCount countConversationMember(Conversation conversation);
 
   Set<UserDBId> getGroupMemberIds(GroupId groupId);

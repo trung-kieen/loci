@@ -29,8 +29,6 @@ import com.loci.loci_backend.core.conversation.infrastructure.secondary.mapper.P
 import com.loci.loci_backend.core.conversation.infrastructure.secondary.vo.GroupConversationMetadataJpaVO;
 import com.loci.loci_backend.core.groups.domain.aggregate.GroupProfile;
 import com.loci.loci_backend.core.identity.domain.aggregate.PublicProfile;
-import com.loci.loci_backend.core.identity.domain.aggregate.UserPresence;
-import com.loci.loci_backend.core.identity.domain.repository.UserPresenceRepository;
 import com.loci.loci_backend.core.identity.domain.vo.PresenceStatus;
 import com.loci.loci_backend.core.identity.infrastructure.secondary.entity.UserPresenceEntity;
 import com.loci.loci_backend.core.identity.infrastructure.secondary.mapper.IdentityEntityMapper;

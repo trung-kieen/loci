@@ -7,17 +7,24 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import com.loci.loci_backend.common.collection.Lists;
 import com.loci.loci_backend.common.ddd.infrastructure.stereotype.SecondaryPort;
+import com.loci.loci_backend.common.user.domain.vo.PublicId;
 import com.loci.loci_backend.core.conversation.domain.aggregate.UserConversation;
 import com.loci.loci_backend.core.conversation.domain.vo.ConversationId;
 import com.loci.loci_backend.core.conversation.domain.vo.ConversationUnreadMessageCount;
 import com.loci.loci_backend.core.conversation.domain.vo.ConversationUnreadMessageQuery;
 import com.loci.loci_backend.core.conversation.domain.vo.UnreadCount;
+import com.loci.loci_backend.core.messaging.domain.aggregate.ConversationMessages;
 import com.loci.loci_backend.core.messaging.domain.aggregate.Message;
 import com.loci.loci_backend.core.messaging.domain.repository.MessageRepository;
 import com.loci.loci_backend.core.messaging.domain.vo.MessageId;
+import com.loci.loci_backend.core.messaging.domain.vo.MessageLimit;
 import com.loci.loci_backend.core.messaging.infrastructure.secondary.entity.MessageEntity;
+import com.loci.loci_backend.core.messaging.infrastructure.secondary.mapper.ConversationMessageEntityMapper;
 import com.loci.loci_backend.core.messaging.infrastructure.secondary.mapper.MessageEntityMapper;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
@@ -27,6 +34,7 @@ import lombok.RequiredArgsConstructor;
 public class SpringDataMessageRepository implements MessageRepository {
   private final JpaMessageRepository messageRepository;
   private final MessageEntityMapper mapper;
+  private final ConversationMessageEntityMapper conversationMessageMapper;
 
   @Override
   public List<Message> getByIds(List<MessageId> messageIds) {
@@ -90,9 +98,38 @@ public class SpringDataMessageRepository implements MessageRepository {
   @Override
   public List<Message> getLastMessageByConversation(List<UserConversation> userConversations) {
     // List<MessageId> lastConversationMessageIds = Lists.byField(userConversations,
-    //     UserConversation::getConversationLastMessageId);
-    List<MessageId> lastConversationMessageIds = userConversations.stream().map(UserConversation::getConversationLastMessageId).filter(message -> message != null).toList();
+    // UserConversation::getConversationLastMessageId);
+    List<MessageId> lastConversationMessageIds = userConversations.stream()
+        .map(UserConversation::getConversationLastMessageId).filter(message -> message != null).toList();
     return this.getByIds(lastConversationMessageIds);
+  }
+
+  @Override
+  public Optional<Message> getByPublicId(PublicId messageId) {
+    return messageRepository.findByPublicId(messageId.value()).map(mapper::toDomain);
+  }
+
+
+  @Override
+  public ConversationMessages getLastestMessages(ConversationId id, MessageLimit limit) {
+    Long conversationId = id.value();
+    Integer pageLimit = limit.value();
+    List<MessageEntity> messageEntities = messageRepository.findLatestByConversationId(conversationId, pageLimit);
+    // NOTE: check logic of has more
+    return conversationMessageMapper.toDomain(messageEntities, pageLimit);
+  }
+
+  @Override
+  public ConversationMessages getOlderMessages(ConversationId id, MessageId messageId, MessageLimit limit) {
+    Long conversationId = id.value();
+    Long cursorMessageId = messageId.value();
+    Integer pageLimit = limit.value();
+
+    Pageable pageable = PageRequest.of(0, pageLimit);
+    Page<MessageEntity> messageEntities = messageRepository.findOlderMessagesByConversationId(conversationId,
+        cursorMessageId, pageable);
+
+    return conversationMessageMapper.toDomain(messageEntities, pageLimit);
   }
 
 }
