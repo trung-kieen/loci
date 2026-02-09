@@ -2,16 +2,15 @@ import { Injectable, inject } from '@angular/core';
 import { WebApiService } from '../../../core/api/web-api.service';
 import { LoggerService } from '../../../core/services/logger.service';
 import { delay, EMPTY, Observable, of } from 'rxjs';
-import { IUser } from '../../user/models/user.model';
 import { IMessage } from '../models/message.model';
-import { IChat, IPaginationParams, IUserChatList } from '../models/chat.model';
+import { IChat, IChatParticipant, IPaginationParams, IUserChatList } from '../models/chat.model';
 
 // TODO: modification
 
 @Injectable({
   providedIn: 'root',
 })
-export class ConversationChatService {
+export class ConversationService {
   private apiService = inject(WebApiService);
   private loggerService = inject(LoggerService);
   private logger = this.loggerService.getLogger('ChatApiService');
@@ -163,12 +162,12 @@ export class ConversationChatService {
   }
 
   //
-  public getCurrentUser(): Observable<IUser> {
-    return this.apiService.get<IUser>('/users/me');
+  public getCurrentUser(): Observable<IChatParticipant> {
+    return this.apiService.get<IChatParticipant>('/users/me');
   }
 
   public getUser(userId: string) {
-    return this.apiService.get<IUser>(`/users/${userId}`);
+    return this.apiService.get<IChatParticipant>(`/users/${userId}`);
   }
 
   public getMessages(

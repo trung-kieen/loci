@@ -1,24 +1,23 @@
 import { Injectable } from '@angular/core';
 import { Observable, of, throwError } from 'rxjs';
 import { delay, map } from 'rxjs/operators';
-import { IUser } from '../../user/models/user.model';
 import { IAttachment, ICreateMessage, IMessage } from '../models/message.model';
-import { IPaginationParams } from '../models/chat.model';
+import { IChatParticipant, IPaginationParams } from '../models/chat.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class MockChatApiService {
-  private mockCurrentUser: IUser = {
+  private mockCurrentUser: IChatParticipant = {
     id: 'user-001',
-    name: 'Current User',
+    fullname: 'Current User',
     avatarUrl: 'https://api.dicebear.com/7.x/notionists/svg?scale=200&seed=001',
     status: 'online',
   };
 
-  private mockParticipant: IUser = {
+  private mockParticipant: IChatParticipant = {
     id: 'user-002',
-    name: 'Emily Davis',
+    fullname: 'Emily Davis',
     avatarUrl:
       'https://api.dicebear.com/7.x/notionists/svg?scale=200&seed=7891',
     status: 'online',
@@ -103,11 +102,11 @@ export class MockChatApiService {
   private messageCounter = 7;
   private isUserBlocked = false;
 
-  getCurrentUser(): Observable<IUser> {
+  getCurrentUser(): Observable<IChatParticipant> {
     return of(this.mockCurrentUser).pipe(delay(300));
   }
 
-  getUser(userId: string): Observable<IUser> {
+  getChatParticipantInfo(userId: string): Observable<IChatParticipant> {
     const user =
       userId === 'user-002' ? this.mockParticipant : this.mockCurrentUser;
     return of(user).pipe(delay(300));

@@ -1,0 +1,46 @@
+<div class="flex items-start gap-3" [class.justify-end]="isOwn()">
+
+  @if (!isOwn() && avatarUrl()) {
+  <img [src]="avatarUrl()" [alt]="senderName()" class="w-8 h-8 rounded-full object-cover flex-shrink-0 mt-1">
+  }
+
+  <div class="flex flex-col max-w-[70%]" [class.items-end]="isOwn()">
+
+    <!-- File Message -->
+    @if (message().type === 'file' && message().attachment; as att) {
+    <div class="rounded-lg p-3 cursor-pointer transition-colors" [class.bg-neutral-500]="isOwn()"
+      [class.text-white]="isOwn()" [class.bg-neutral-100]="!isOwn()" [class.hover:bg-neutral-600]="isOwn()"
+      [class.hover:bg-neutral-200]="!isOwn()" (click)="onDownload()" (contextmenu)="onContextMenu($event)">
+
+      <div class="flex items-center gap-2 mb-1">
+        <i [class]="'fa-solid ' + fileIcon() + (isOwn ()? ' text-white' : ' text-neutral-500')"></i>
+        <span class="text-sm font-medium truncate max-w-[200px]">{{ att.fileName }}</span>
+      </div>
+
+      <p class="text-xs opacity-75">{{ formattedFileSize() }}</p>
+    </div>
+    }
+
+    <!-- Text Message -->
+    @else {
+    <div class="rounded-lg p-3 text-sm" [class.bg-neutral-500]="isOwn()" [class.text-white]="isOwn()"
+      [class.bg-neutral-100]="!isOwn()" [class.text-black]="!isOwn()" [class.cursor-context-menu]="!isOwn()"
+      (contextmenu)="onContextMenu($event)">
+      {{ message().content }}
+    </div>
+    }
+
+    <!-- Metadata -->
+    <div class="flex items-center gap-2 mt-1" [class.flex-row-reverse]="!isOwn()">
+      <span class="text-xs text-neutral-500">{{ formattedTime() }}</span>
+
+      @if (isOwn()) {
+      <i class="fa-solid text-xs" [class.fa-clock]="message().status === 'sending'"
+        [class.fa-check]="message().status === 'sent'"
+        [class.fa-check-double]="message().status === 'delivered' || message().status === 'read'"
+        [class.text-neutral-400]="message().status !== 'read'" [class.text-blue-500]="message().status === 'read'">
+      </i>
+      }
+    </div>
+  </div>
+</div>

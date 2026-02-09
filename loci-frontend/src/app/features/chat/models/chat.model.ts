@@ -1,11 +1,16 @@
 export type ConversationType = 'one to one' | 'group';
 import { Page } from '../../../core/model/page';
 import { FriendshipStatus } from '../../contact/models/contact.model';
-import { IUser, PresenceStatus } from '../../user/models/user.model';
+import {  PresenceStatus } from '../../user/models/user.model';
 import { IMessage } from './message.model';
 
-
-
+export interface IChatParticipant {
+  id: string;
+  fullname: string;
+  avatarUrl: string;
+  status: PresenceStatus;
+  lastSeen?: Date;
+}
 
 export interface IUserChatList {
   conversations: Page<IChat>
@@ -43,7 +48,7 @@ export interface IUserStatusUpdate {
 
 export interface IConversation {
   id: string;
-  participant: IUser;
+  participant: IChatParticipant;
   messages: IMessage[];
   unreadCount: number;
   lastMessage?: IMessage;
@@ -66,7 +71,7 @@ export interface IChatReference {
   conversationId: string;
   conversationType: ConversationType;
   unreadCount: number;
-  lastMessage: IMessage;
+  lastMessageContent: IMessage;
   createDate: Date;
 }
 

@@ -1,6 +1,6 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
-import { ConversationChatService } from '../../service/conversation-chat-service';
+import { ConversationService } from '../../service/conversation-service';
 import { LoggerService } from '../../../../core/services/logger.service';
 import { ChatFilter, IChat } from '../../models/chat.model';
 import { CommonModule } from '@angular/common';
@@ -16,7 +16,7 @@ export class ChatList implements OnInit {
   private loggerService = inject(LoggerService);
   private logger = this.loggerService.getLogger('ChatList');
 
-  private converstaionChatService = inject(ConversationChatService);
+  private converstaionChatService = inject(ConversationService);
 
   conversations = signal<IChat[]>([]);
   filteredConversations = signal<IChat[]>([]);

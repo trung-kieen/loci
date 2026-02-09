@@ -2,9 +2,10 @@ import { FriendshipStatus } from '../../contact/models/contact.model';
 
 export type PresenceStatus = 'online' | 'offline' | 'away';
 
+
 export interface IUser {
   id: string;
-  name: string;
+  fullname: string;
   avatarUrl: string;
   status: PresenceStatus;
   lastSeen?: Date;

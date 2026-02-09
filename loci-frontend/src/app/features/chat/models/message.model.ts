@@ -15,11 +15,13 @@ export interface IMessage {
   content: string;
   timestamp: Date;
   type: MessageType;
-  status: MessageStatus;
+  status: MessageState;
   attachment?: IAttachment;
+  // isOwn: boolean;
 }
+export type ParticipantState = 'online' | 'offline' | 'away';
 
-export type MessageStatus = 'sending' | 'sent' | 'delivered' | 'read';
+export type MessageState = 'sending' | 'sent' | 'delivered' | 'read';
 
 export interface ISendMessageRequest {
   conversationId: string;
@@ -30,7 +32,7 @@ export interface ISendMessageRequest {
 
 export interface IMessageStatusUpdate {
   messageId: string;
-  status: MessageStatus;
+  status: MessageState;
 }
 
 export interface ICreateMessage {
@@ -42,3 +44,7 @@ export interface ICreateMessage {
 
 
 
+export interface IFileUploadRequest {
+  file: File;
+  type: 'file'
+}

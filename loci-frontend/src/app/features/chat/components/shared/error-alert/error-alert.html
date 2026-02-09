@@ -1,0 +1,25 @@
+@if (error(); as err) {
+<div class="p-4 m-4 border rounded-lg flex items-start gap-3 animate-in fade-in slide-in-from-top-2"
+  [class.bg-red-50]="isValidationError()" [class.border-red-200]="isValidationError()"
+  [class.bg-neutral-50]="!isValidationError()" [class.border-neutral-200]="!isValidationError()">
+
+  <div class="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0"
+    [class.bg-red-100]="isValidationError()" [class.bg-neutral-100]="!isValidationError()">
+    <i class="fa-solid fa-exclamation-triangle" [class.text-red-600]="isValidationError()"
+      [class.text-neutral-600]="!isValidationError()">
+    </i>
+  </div>
+
+  <div class="flex-1 min-w-0">
+    <h4 class="text-sm font-medium text-gray-900">{{ err.message }}</h4>
+    @if (err.description) {
+    <p class="text-xs text-neutral-600 mt-1">{{ err.description }}</p>
+    }
+  </div>
+
+  <button class="text-neutral-400 hover:text-neutral-600 p-1 rounded hover:bg-neutral-100 transition-colors"
+    (click)="dismiss.emit()" aria-label="Dismiss error">
+    <i class="fa-solid fa-times"></i>
+  </button>
+</div>
+}

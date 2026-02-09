@@ -51,7 +51,7 @@ public class RestChat {
       return groupMetadata.getProfileImage();
     }
     if (dmMetadata != null) {
-      return dmMetadata.getMessagingUser().getFullname();
+      return dmMetadata.getMessagingUser().getProfilePictureUrl();
     }
 
     throw new InvalidConversationTypeException();
@@ -72,13 +72,19 @@ public class RestChat {
     return new Random().nextBoolean();
   }
 
+  public String getLastMessageContent(){
+    if (lastMessage == null) {
+      return null;
+    }
+    return lastMessage.getContent();
+  }
+
   public boolean isGroup() {
     return type.equals(ConversationTypeEnum.GROUP);
   }
 
   public MessageState getMessageState() {
-    if (lastMessage == null) {
-      return null;
+    if (lastMessage == null) { return null;
     }
     return lastMessage.getMessageState();
   }

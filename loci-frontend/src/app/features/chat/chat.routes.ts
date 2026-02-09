@@ -19,8 +19,8 @@ const routes: Routes = [
         path: 'one/:conversationId', // /chat/one/123
         loadComponent: () =>
           import(
-            './components/one-to-one-conversation/one-to-one-conversation'
-          ).then((m) => m.OneToOneConversation),
+            './components/direct-conversation/direct-conversation'
+          ).then((m) => m.DirectConversation),
       },
       {
         // group conversation can u the

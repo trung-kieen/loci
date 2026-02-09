@@ -3,7 +3,6 @@ package com.loci.loci_backend.core.conversation.domain.service;
 import java.util.List;
 import java.util.Optional;
 
-import com.loci.loci_backend.common.collection.Lists;
 import com.loci.loci_backend.common.user.domain.aggregate.User;
 import com.loci.loci_backend.common.validation.domain.ResourceNotFoundException;
 import com.loci.loci_backend.core.conversation.domain.aggregate.Chat;
@@ -31,7 +30,6 @@ import com.loci.loci_backend.core.messaging.domain.aggregate.GroupChatInfo;
 import com.loci.loci_backend.core.messaging.domain.aggregate.GroupChatInfoBuilderForConversation;
 import com.loci.loci_backend.core.messaging.domain.aggregate.Message;
 import com.loci.loci_backend.core.messaging.domain.repository.MessageRepository;
-import com.loci.loci_backend.core.messaging.domain.vo.MessageId;
 
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;

@@ -1,10 +1,9 @@
 // src/app/features/chat/services/chat-state.service.ts
 import { Injectable, computed, signal } from '@angular/core';
-import { IUser } from '../../user/models/user.model';
-import { IChatError, IConversation } from '../models/chat.model';
-import { IMessage } from '../models/message.model';
-export interface OneToOneChatState {
-  currentUser: IUser | null;
+import { IChatError, IChatParticipant, IConversation } from '../models/chat.model';
+import { IMessage, ParticipantState } from '../models/message.model';
+export interface DirectConversationState {
+  currentUser: IChatParticipant | null;
   selectedConversation: IConversation | null;
   messages: IMessage[];
   loading: boolean;
@@ -13,7 +12,7 @@ export interface OneToOneChatState {
   uploadingFile: boolean;
 }
 
-const initialState: OneToOneChatState = {
+const initialState: DirectConversationState = {
   currentUser: null,
   selectedConversation: null,
   messages: [],
@@ -23,10 +22,12 @@ const initialState: OneToOneChatState = {
   uploadingFile: false,
 };
 
-@Injectable()
-export class OneToOneChatStateService {
+@Injectable({
+  providedIn: 'root'
+})
+export class DirectConversationStateService {
   // Private state signals
-  private state = signal<OneToOneChatState>(initialState);
+  private state = signal<DirectConversationState>(initialState);
 
   // Computed selectors
   readonly currentUser = computed(() => this.state().currentUser);
@@ -58,7 +59,7 @@ export class OneToOneChatStateService {
   );
 
   // State updaters
-  setCurrentUser(user: IUser): void {
+  setCurrentUser(user: IChatParticipant): void {
     this.state.update((state) => ({ ...state, currentUser: user }));
   }
 
@@ -89,6 +90,7 @@ export class OneToOneChatStateService {
     }));
   }
 
+  // append mesage that the init of array
   prependMessages(messages: IMessage[]): void {
     this.state.update((state) => ({
       ...state,
@@ -113,7 +115,7 @@ export class OneToOneChatStateService {
   }
 
   updateParticipantStatus(
-    status: 'online' | 'offline' | 'away',
+    status: ParticipantState,
     lastSeen?: Date,
   ): void {
     this.state.update((state) => {
@@ -142,7 +144,7 @@ export class OneToOneChatStateService {
   }
 
   // Debug helper
-  getState(): OneToOneChatState {
+  getState(): DirectConversationState {
     return this.state();
   }
 }
