@@ -26,60 +26,68 @@ export class MockChatApiService {
 
   private mockMessages: IMessage[] = [
     {
-      id: 'msg-001',
+      messageId: 'msg-001',
       conversationId: 'conv-001',
       senderId: 'user-002',
       content: 'Hey! How are you doing today?',
       timestamp: new Date(Date.now() - 7200000),
       type: 'text',
-      status: 'read',
+      messageState: 'read',
+      isDeleted: false
     },
     {
-      id: 'msg-002',
+      messageId: 'msg-002',
       conversationId: 'conv-001',
       senderId: 'user-001',
       content: "I'm doing great, thanks! Just working on some projects.",
       timestamp: new Date(Date.now() - 7080000),
       type: 'text',
-      status: 'read',
+      messageState: 'read',
+      isDeleted: false
+
     },
     {
-      id: 'msg-003',
+      messageId: 'msg-003',
       conversationId: 'conv-001',
       senderId: 'user-002',
       content:
         'That sounds interesting! What kind of projects are you working on?',
       timestamp: new Date(Date.now() - 7020000),
       type: 'text',
-      status: 'read',
+      messageState: 'read',
+      isDeleted: false
+
     },
     {
-      id: 'msg-004',
+      messageId: 'msg-004',
       conversationId: 'conv-001',
       senderId: 'user-001',
       content:
         'Mostly web development stuff. Working on a new chat application actually!',
       timestamp: new Date(Date.now() - 6900000),
       type: 'text',
-      status: 'read',
+      messageState: 'read',
+      isDeleted: false
     },
     {
-      id: 'msg-005',
+      messageId: 'msg-005',
       conversationId: 'conv-001',
       senderId: 'user-002',
       content: 'Can we schedule a meeting to discuss this further?',
       timestamp: new Date(Date.now() - 2700000),
       type: 'text',
-      status: 'read',
+      messageState: 'read',
+      isDeleted: false
     },
     {
-      id: 'msg-006',
+      messageId: 'msg-006',
       conversationId: 'conv-001',
       senderId: 'user-002',
       content: "Here's the document we discussed",
       timestamp: new Date(Date.now() - 2580000),
       type: 'file',
-      status: 'read',
+      messageState: 'read',
+      isDeleted: false,
       attachment: {
         id: 'att-001',
         fileName: 'project-proposal.pdf',
@@ -134,13 +142,14 @@ export class MockChatApiService {
     }
 
     const newMessage: IMessage = {
-      id: `msg-${String(this.messageCounter++).padStart(3, '0')}`,
+      messageId: `msg-${String(this.messageCounter++).padStart(3, '0')}`,
       conversationId: dto.conversationId,
       senderId: this.mockCurrentUser.id,
       content: dto.content,
       timestamp: new Date(),
       type: dto.type,
-      status: 'sending',
+      messageState: 'sending',
+      isDeleted: false
     };
 
     // Add message to mock store
@@ -154,9 +163,9 @@ export class MockChatApiService {
   }
 
   markAsRead(messageId: string): Observable<void> {
-    const message = this.mockMessages.find((m) => m.id === messageId);
+    const message = this.mockMessages.find((m) => m.messageId === messageId);
     if (message) {
-      message.status = 'read';
+      message.messageState = 'read';
     }
     return of(void 0).pipe(delay(200));
   }
@@ -201,17 +210,18 @@ export class MockChatApiService {
   generateAutoResponse(conversationId: string): Observable<IMessage> {
     const randomResponse =
       this.autoResponseTemplates[
-        Math.floor(Math.random() * this.autoResponseTemplates.length)
+      Math.floor(Math.random() * this.autoResponseTemplates.length)
       ];
 
     const autoMessage: IMessage = {
-      id: `msg-${String(this.messageCounter++).padStart(3, '0')}`,
+      messageId: `msg-${String(this.messageCounter++).padStart(3, '0')}`,
       conversationId,
       senderId: this.mockParticipant.id,
       content: randomResponse,
       timestamp: new Date(),
       type: 'text',
-      status: 'delivered',
+      messageState: 'delivered',
+      isDeleted: false
     };
 
     this.mockMessages.push(autoMessage);

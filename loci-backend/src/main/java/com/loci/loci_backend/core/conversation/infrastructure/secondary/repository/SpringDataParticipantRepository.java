@@ -104,4 +104,11 @@ public class SpringDataParticipantRepository implements ParticipantRepository {
     return mapper.toDomain(participantEntity);
   }
 
+  @Override
+  public List<Participant> getParticipantsByConversationId(ConversationId conversationId) {
+    List<ConversationParticipantEntity> participantEntities = repository
+        .findAllByConversationId(conversationId.value());
+    return mapper.toDomain(participantEntities);
+  }
+
 }

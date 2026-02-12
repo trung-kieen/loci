@@ -6,8 +6,10 @@ import java.util.UUID;
 import com.loci.loci_backend.core.messaging.domain.vo.MessageState;
 import com.loci.loci_backend.core.messaging.domain.vo.MessageType;
 
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Data
@@ -29,8 +31,12 @@ public class RestMessage {
 
   private UUID replyToMessageId;
 
+  @Getter(AccessLevel.PRIVATE)
   private boolean deleted;
 
   // Message status
 
+  public boolean getIsDeleted() {
+    return deleted;
+  }
 }

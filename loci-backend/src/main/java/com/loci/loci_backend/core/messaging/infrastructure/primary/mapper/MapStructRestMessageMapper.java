@@ -26,4 +26,7 @@ public interface MapStructRestMessageMapper {
   @Mapping(source = "replyToMessagePublicId", target = "replyToMessageId")
   public RestMessage from(Message domain);
 
+
+
+
 }

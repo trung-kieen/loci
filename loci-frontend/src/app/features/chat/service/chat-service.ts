@@ -1,20 +1,26 @@
 // src/app/core/services/mock-chat-api.service.ts
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { Observable, of, throwError } from 'rxjs';
 import { delay, map } from 'rxjs/operators';
 import {
   IAttachment,
+  IConversationMessageList,
   IMessage,
   ISendMessageRequest,
   MessageState,
 } from '../models/message.model';
 import { IChatParticipant, IPaginationParams } from '../models/chat.model';
-import { IUser } from '../../user/models/user.model';
+import { IPersonalProfile, IUser } from '../../user/models/user.model';
+import { WebApiService } from '../../../core/api/web-api.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ChatService {
+
+
+  private apiService = inject(WebApiService);
+
   private mockCurrentUser: IChatParticipant = {
     id: 'user-001',
     fullname: 'Current User',
@@ -33,60 +39,66 @@ export class ChatService {
 
   private mockMessages: IMessage[] = [
     {
-      id: 'msg-001',
+      messageId: 'msg-001',
       conversationId: 'conv-001',
       senderId: 'user-002',
       content: 'Hey! How are you doing today?',
       timestamp: new Date(Date.now() - 7200000),
       type: 'text',
-      status: 'read',
+      messageState: 'read',
+      isDeleted: false
     },
     {
-      id: 'msg-002',
+      messageId: 'msg-002',
       conversationId: 'conv-001',
       senderId: 'user-001',
       content: "I'm doing great, thanks! Just working on some projects.",
       timestamp: new Date(Date.now() - 7080000),
       type: 'text',
-      status: 'read',
+      messageState: 'read',
+      isDeleted: false
     },
     {
-      id: 'msg-003',
+      messageId: 'msg-003',
       conversationId: 'conv-001',
       senderId: 'user-002',
       content:
         'That sounds interesting! What kind of projects are you working on?',
       timestamp: new Date(Date.now() - 7020000),
       type: 'text',
-      status: 'read',
+      messageState: 'read',
+      isDeleted: false
     },
     {
-      id: 'msg-004',
+      messageId: 'msg-004',
       conversationId: 'conv-001',
       senderId: 'user-001',
       content:
         'Mostly web development stuff. Working on a new chat application actually!',
       timestamp: new Date(Date.now() - 6900000),
       type: 'text',
-      status: 'read',
+      messageState: 'read',
+      isDeleted: true
     },
     {
-      id: 'msg-005',
+      messageId: 'msg-005',
       conversationId: 'conv-001',
       senderId: 'user-002',
       content: 'Can we schedule a meeting to discuss this further?',
       timestamp: new Date(Date.now() - 2700000),
       type: 'text',
-      status: 'read',
+      messageState: 'read',
+      isDeleted: false
     },
     {
-      id: 'msg-006',
+      messageId: 'msg-006',
       conversationId: 'conv-001',
       senderId: 'user-002',
       content: "Here's the document we discussed",
       timestamp: new Date(Date.now() - 2580000),
       type: 'file',
-      status: 'read',
+      messageState: 'read',
+      isDeleted: false,
       attachment: {
         id: 'att-001',
         fileName: 'project-proposal.pdf',
@@ -109,8 +121,8 @@ export class ChatService {
   private messageCounter = 7;
   private isUserBlocked = false;
 
-  getCurrentUser(): Observable<IUser> {
-    return of(this.mockCurrentUser).pipe(delay(300));
+  getCurrentUser(): Observable<IPersonalProfile> {
+    return this.apiService.get<IPersonalProfile>("users/me");
   }
 
   getChatParticipantInfo(userId: string): Observable<IChatParticipant> {
@@ -122,11 +134,19 @@ export class ChatService {
   getMessages(
     conversationId: string,
     pagination: IPaginationParams,
-  ): Observable<IMessage[]> {
+  ): Observable<IConversationMessageList> {
     // Simulate pagination - return last 20 messages
-    const messages = [...this.mockMessages].slice(-pagination.limit);
-    return of(messages).pipe(delay(500));
+    return this.apiService.get<IConversationMessageList>(`/conversations/${conversationId}/messages`)
   }
+
+  // getMessages(
+  //   conversationId: string,
+  //   pagination: IPaginationParams,
+  // ): Observable<IMessage[]> {
+  //   // Simulate pagination - return last 20 messages
+  //   const messages = [...this.mockMessages].slice(-pagination.limit);
+  //   return of(messages).pipe(delay(500));
+  // }
 
   sendMessage(dto: ISendMessageRequest): Observable<IMessage> {
     // Simulate blocked user error
@@ -141,13 +161,14 @@ export class ChatService {
     }
 
     const newMessage: IMessage = {
-      id: `msg-${String(this.messageCounter++).padStart(3, '0')}`,
+      messageId: `msg-${String(this.messageCounter++).padStart(3, '0')}`,
       conversationId: dto.conversationId,
       senderId: this.mockCurrentUser.id,
       content: dto.content,
       timestamp: new Date(),
       type: dto.type,
-      status: 'sending',
+      messageState: 'sending',
+      isDeleted: false
     };
 
     // Add message to mock store
@@ -161,9 +182,9 @@ export class ChatService {
   }
 
   markAsRead(messageId: string): Observable<void> {
-    const message = this.mockMessages.find((m) => m.id === messageId);
+    const message = this.mockMessages.find((m) => m.messageId === messageId);
     if (message) {
-      message.status = 'read';
+      message.messageState = 'read';
     }
     return of(void 0).pipe(delay(200));
   }
@@ -208,17 +229,18 @@ export class ChatService {
   generateAutoResponse(conversationId: string): Observable<IMessage> {
     const randomResponse =
       this.autoResponseTemplates[
-        Math.floor(Math.random() * this.autoResponseTemplates.length)
+      Math.floor(Math.random() * this.autoResponseTemplates.length)
       ];
 
     const autoMessage: IMessage = {
-      id: `msg-${String(this.messageCounter++).padStart(3, '0')}`,
+      messageId: `msg-${String(this.messageCounter++).padStart(3, '0')}`,
       conversationId,
       senderId: this.mockParticipant.id,
       content: randomResponse,
       timestamp: new Date(),
       type: 'text',
-      status: 'delivered',
+      messageState: 'delivered',
+      isDeleted: false
     };
 
     this.mockMessages.push(autoMessage);

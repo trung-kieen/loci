@@ -5,12 +5,12 @@ import java.util.UUID;
 
 import com.loci.loci_backend.common.user.domain.vo.PublicId;
 import com.loci.loci_backend.core.messaging.application.MessagingApplicationService;
-import com.loci.loci_backend.core.messaging.domain.aggregate.ConversationMessages;
+import com.loci.loci_backend.core.messaging.domain.aggregate.ConversationMessageList;
 import com.loci.loci_backend.core.messaging.domain.aggregate.MessageCursorQuery;
 import com.loci.loci_backend.core.messaging.domain.aggregate.MessageCursorQueryBuilder;
 import com.loci.loci_backend.core.messaging.domain.vo.MessageLimit;
-import com.loci.loci_backend.core.messaging.infrastructure.primary.mapper.RestMessageMapper;
-import com.loci.loci_backend.core.messaging.infrastructure.primary.payload.RestConversationMessages;
+import com.loci.loci_backend.core.messaging.infrastructure.primary.mapper.RestConversationMessageMapper;
+import com.loci.loci_backend.core.messaging.infrastructure.primary.payload.RestConversationMessageList;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,10 +30,10 @@ import lombok.RequiredArgsConstructor;
 public class ConversationMessageResource {
 
   private final MessagingApplicationService messagingService;
-  private final RestMessageMapper mapper;
+  private final RestConversationMessageMapper conversationMessageMapper;
 
   @GetMapping("/{conversationId}/messages")
-  public ResponseEntity<RestConversationMessages> getConversationMessages(
+  public ResponseEntity<RestConversationMessageList> getConversationMessages(
       @PathVariable("conversationId") UUID conversationId,
       @RequestParam(required = false, defaultValue = "20", value = "limit") Integer limit,
       @RequestParam(required = false, value = "before") UUID before) {
@@ -50,8 +50,8 @@ public class ConversationMessageResource {
         .conversationId(conversationPublicId)
         .build();
 
-    ConversationMessages messages = messagingService.getConversationMessages(query);
-    RestConversationMessages restMessages = mapper.from(messages);
+    ConversationMessageList messages = messagingService.getConversationMessages(query);
+    RestConversationMessageList restMessages = conversationMessageMapper.from(messages);
 
     return ResponseEntity.ok(restMessages);
   }

@@ -3,13 +3,15 @@ package com.loci.loci_backend.core.messaging.domain.repository;
 import java.util.List;
 import java.util.Optional;
 
+import com.loci.loci_backend.common.user.domain.aggregate.User;
 import com.loci.loci_backend.common.user.domain.vo.PublicId;
+import com.loci.loci_backend.core.conversation.domain.aggregate.Conversation;
 import com.loci.loci_backend.core.conversation.domain.aggregate.UserConversation;
 import com.loci.loci_backend.core.conversation.domain.vo.ConversationId;
 import com.loci.loci_backend.core.conversation.domain.vo.ConversationUnreadMessageCount;
 import com.loci.loci_backend.core.conversation.domain.vo.ConversationUnreadMessageQuery;
 import com.loci.loci_backend.core.conversation.domain.vo.UnreadCount;
-import com.loci.loci_backend.core.messaging.domain.aggregate.ConversationMessages;
+import com.loci.loci_backend.core.messaging.domain.aggregate.ConversationMessageList;
 import com.loci.loci_backend.core.messaging.domain.aggregate.Message;
 import com.loci.loci_backend.core.messaging.domain.vo.MessageId;
 import com.loci.loci_backend.core.messaging.domain.vo.MessageLimit;
@@ -25,16 +27,13 @@ public interface MessageRepository {
 
   Optional<Message> getById(MessageId messageId);
 
-
   Optional<Message> getByPublicId(PublicId messageId);
 
   List<ConversationUnreadMessageCount> getUnreadCount(List<UserConversation> userConversations);
 
   List<Message> getLastMessageByConversation(List<UserConversation> userConversations);
 
+  ConversationMessageList getLastestMessages(Conversation conversation, MessageLimit limit, User viewerUser);
 
-  ConversationMessages getLastestMessages(ConversationId id, MessageLimit limit);
-
-
-  ConversationMessages getOlderMessages(ConversationId id, MessageId messageId, MessageLimit limit);
+  ConversationMessageList getOlderMessages(MessageId messageId, MessageLimit limit, User viewerUser, Conversation conversation);
 }

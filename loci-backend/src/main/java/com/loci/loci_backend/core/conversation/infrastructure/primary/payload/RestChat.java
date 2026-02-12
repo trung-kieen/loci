@@ -3,6 +3,7 @@ package com.loci.loci_backend.core.conversation.infrastructure.primary.payload;
 import java.util.Random;
 import java.util.UUID;
 
+import com.loci.loci_backend.common.validation.domain.Assert;
 import com.loci.loci_backend.core.conversation.domain.exception.InvalidConversationTypeException;
 import com.loci.loci_backend.core.conversation.infrastructure.secondary.enumeration.ConversationTypeEnum;
 import com.loci.loci_backend.core.messaging.domain.vo.MessageState;
@@ -62,29 +63,31 @@ public class RestChat {
     if (lastMessage == null) {
       return null;
     }
-    return lastMessage.getSenderId();
+    // check is is own this message
+    return dmMetadata.getMessagingUser().getUserId();
 
   }
 
-  public boolean isOnline() {
+
+  public boolean getIsOnline() {
 
     // TODO:
     return new Random().nextBoolean();
   }
 
-  public String getLastMessageContent(){
+  public String getLastMessageContent() {
     if (lastMessage == null) {
       return null;
     }
     return lastMessage.getContent();
   }
 
-  public boolean isGroup() {
+  public boolean getIsGroup() {
     return type.equals(ConversationTypeEnum.GROUP);
   }
-
   public MessageState getMessageState() {
-    if (lastMessage == null) { return null;
+    if (lastMessage == null) {
+      return null;
     }
     return lastMessage.getMessageState();
   }
@@ -95,7 +98,7 @@ public class RestChat {
     return new Random().nextBoolean();
   }
 
-  public boolean isArchived() {
+  public boolean getIsArchived() {
 
     return new Random().nextBoolean();
     // TODO:

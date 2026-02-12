@@ -6,19 +6,32 @@ export interface IAttachment {
   downloadUrl: string;
 }
 
-export type MessageType = 'text' | 'file';
+
+export interface IConversationMessageList {
+  messages: IConversationMessage[];
+  hasMore: boolean;
+}
+
+export type MessageType = 'text' | 'file' | 'image' | 'video';
 export interface IMessage {
   // TODO: clarify field name
-  id: string;
+  messageId: string;
   conversationId: string;
   senderId: string;
   content: string;
   timestamp: Date;
   type: MessageType;
-  status: MessageState;
+  messageState: MessageState;
   attachment?: IAttachment;
+  isDeleted: boolean;
   // isOwn: boolean;
 }
+
+
+export interface IConversationMessage extends IMessage {
+  owner: boolean;
+}
+
 export type ParticipantState = 'online' | 'offline' | 'away';
 
 export type MessageState = 'sending' | 'sent' | 'delivered' | 'read';

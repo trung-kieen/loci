@@ -45,12 +45,20 @@ export class MockStompService {
   }
 
   // Subscribe to incoming messages
-  subscribeToMessages(userId: string): Observable<IMessage> {
-    console.log(
-      `[MockStompService] Subscribed to /user/${userId}/queue/messages`,
-    );
+  // subscribeToMessages(userId: string): Observable<IMessage> {
+  //   console.log(
+  //     `[MockStompService] Subscribed to /user/${userId}/queue/messages`,
+  //   );
+  //   return this.messageSubject.asObservable();
+  // }
+
+  subscribeToMessages(): Observable<IMessage> {
+    // console.log(
+    //   `[MockStompService] Subscribed to /user/${userId}/queue/messages`,
+    // );
     return this.messageSubject.asObservable();
   }
+
 
   // Subscribe to typing indicators
   subscribeToTyping(conversationId: string): Observable<ITypingEvent> {
@@ -61,10 +69,18 @@ export class MockStompService {
   }
 
   // Subscribe to user status updates
-  subscribeToStatus(userId: string): Observable<IUserStatusUpdate> {
-    console.log(
-      `[MockStompService] Subscribed to /user/${userId}/queue/status`,
-    );
+  // subscribeToStatus(userId: string): Observable<IUserStatusUpdate> {
+  //   console.log(
+  //     `[MockStompService] Subscribed to /user/${userId}/queue/status`,
+  //   );
+  //   return this.statusSubject.asObservable();
+  // }
+
+
+  subscribeToStatus(): Observable<IUserStatusUpdate> {
+    // console.log(
+    //   `[MockStompService] Subscribed to /user/${userId}/queue/status`,
+    // );
     return this.statusSubject.asObservable();
   }
 

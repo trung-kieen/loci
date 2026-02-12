@@ -7,13 +7,17 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import com.loci.loci_backend.common.collection.Lists;
 import com.loci.loci_backend.common.ddd.infrastructure.stereotype.SecondaryPort;
+import com.loci.loci_backend.common.user.domain.aggregate.User;
 import com.loci.loci_backend.common.user.domain.vo.PublicId;
+import com.loci.loci_backend.core.conversation.domain.aggregate.Conversation;
 import com.loci.loci_backend.core.conversation.domain.aggregate.UserConversation;
+import com.loci.loci_backend.core.conversation.domain.repository.ConversationRepository;
 import com.loci.loci_backend.core.conversation.domain.vo.ConversationId;
 import com.loci.loci_backend.core.conversation.domain.vo.ConversationUnreadMessageCount;
 import com.loci.loci_backend.core.conversation.domain.vo.ConversationUnreadMessageQuery;
 import com.loci.loci_backend.core.conversation.domain.vo.UnreadCount;
-import com.loci.loci_backend.core.messaging.domain.aggregate.ConversationMessages;
+import com.loci.loci_backend.core.conversation.infrastructure.secondary.entity.ConversationEntity;
+import com.loci.loci_backend.core.messaging.domain.aggregate.ConversationMessageList;
 import com.loci.loci_backend.core.messaging.domain.aggregate.Message;
 import com.loci.loci_backend.core.messaging.domain.repository.MessageRepository;
 import com.loci.loci_backend.core.messaging.domain.vo.MessageId;
@@ -43,6 +47,7 @@ public class SpringDataMessageRepository implements MessageRepository {
     }
     List<Long> ids = messageIds.stream().filter(i -> i != null).map(MessageId::value).toList();
     List<MessageEntity> entities = messageRepository.findAllById(ids);
+
     return mapper.toDomain(entities);
   }
 
@@ -109,19 +114,19 @@ public class SpringDataMessageRepository implements MessageRepository {
     return messageRepository.findByPublicId(messageId.value()).map(mapper::toDomain);
   }
 
-
   @Override
-  public ConversationMessages getLastestMessages(ConversationId id, MessageLimit limit) {
-    Long conversationId = id.value();
+  public ConversationMessageList getLastestMessages(Conversation conversation, MessageLimit limit, User viewerUser) {
+    Long conversationId = conversation.getId().value();
     Integer pageLimit = limit.value();
     List<MessageEntity> messageEntities = messageRepository.findLatestByConversationId(conversationId, pageLimit);
     // NOTE: check logic of has more
-    return conversationMessageMapper.toDomain(messageEntities, pageLimit);
+    return conversationMessageMapper.toDomain(messageEntities, pageLimit, viewerUser, conversation);
   }
 
   @Override
-  public ConversationMessages getOlderMessages(ConversationId id, MessageId messageId, MessageLimit limit) {
-    Long conversationId = id.value();
+  public ConversationMessageList getOlderMessages(MessageId messageId, MessageLimit limit,
+      User viewerUser, Conversation conversation) {
+    Long conversationId = conversation.getId().value();
     Long cursorMessageId = messageId.value();
     Integer pageLimit = limit.value();
 
@@ -129,7 +134,7 @@ public class SpringDataMessageRepository implements MessageRepository {
     Page<MessageEntity> messageEntities = messageRepository.findOlderMessagesByConversationId(conversationId,
         cursorMessageId, pageable);
 
-    return conversationMessageMapper.toDomain(messageEntities, pageLimit);
+    return conversationMessageMapper.toDomain(messageEntities, pageLimit, viewerUser, conversation);
   }
 
 }

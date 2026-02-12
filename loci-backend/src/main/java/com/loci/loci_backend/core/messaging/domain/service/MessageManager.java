@@ -1,14 +1,18 @@
 package com.loci.loci_backend.core.messaging.domain.service;
 
+import java.util.List;
+
 import com.loci.loci_backend.common.authentication.domain.CurrentUser;
 import com.loci.loci_backend.common.ddd.infrastructure.stereotype.DomainService;
 import com.loci.loci_backend.common.user.domain.aggregate.User;
 import com.loci.loci_backend.common.user.domain.repository.UserRepository;
 import com.loci.loci_backend.common.user.domain.vo.PublicId;
 import com.loci.loci_backend.core.conversation.domain.aggregate.Conversation;
+import com.loci.loci_backend.core.conversation.domain.aggregate.Participant;
 import com.loci.loci_backend.core.conversation.domain.repository.ConversationRepository;
+import com.loci.loci_backend.core.conversation.domain.repository.ParticipantRepository;
 import com.loci.loci_backend.core.conversation.domain.service.ConversationAuthenticationProvider;
-import com.loci.loci_backend.core.messaging.domain.aggregate.ConversationMessages;
+import com.loci.loci_backend.core.messaging.domain.aggregate.ConversationMessageList;
 import com.loci.loci_backend.core.messaging.domain.aggregate.Message;
 import com.loci.loci_backend.core.messaging.domain.aggregate.MessageCursorQuery;
 import com.loci.loci_backend.core.messaging.domain.repository.MessageRepository;
@@ -27,6 +31,7 @@ public class MessageManager {
   private final UserRepository UserRepository;
   private final ConversationRepository conversationRepository;
   private final MessageRepository messageRepository;
+  private final ParticipantRepository participantRepository;
 
   void deleteMessage() {
     throw new NotImplementedError();
@@ -37,7 +42,7 @@ public class MessageManager {
   }
 
   @Transactional(readOnly = true)
-  public ConversationMessages getConversationMessages(MessageCursorQuery query) {
+  public ConversationMessageList getConversationMessages(MessageCursorQuery query) {
 
     // get conversation => determine the type of conversation
     Conversation conversation = conversationRepository.getByPublicId(query.getConversationId())
@@ -45,10 +50,14 @@ public class MessageManager {
     // get current user
     User user = UserRepository.getByPrincipal(principal).orElseThrow(EntityNotFoundException::new);
 
+    List<Participant> participants = participantRepository.getParticipantsByConversationId(conversation.getId());
+    Participant targetParticipant = participants.stream().filter(p -> p.getUserId().equals(user.getDbId())).findFirst()
+        .orElseThrow(EntityNotFoundException::new);
     // check user is participant to conversation
     // check other user is not block current user in this conversation
     // authenticationProvider.validateUserCanMessage();
-    authenticationProvider.validateUserCanMessage(user, conversation);
+    // authenticationProvider.validateUserCanMessage(user, conversation);
+    authenticationProvider.validateUserCanMessage(user.getDbId(), targetParticipant.getUserId());
 
     // if not throw new UnauthorizationConversationRole
 
@@ -58,12 +67,13 @@ public class MessageManager {
     // order of history
 
     if (query.forLastestMessage()) {
-      return messageRepository.getLastestMessages(conversation.getId(), query.getLimit());
+      return messageRepository.getLastestMessages(conversation, query.getLimit(), user);
     } else {
       PublicId lastMessageId = query.getLastMessageId().get();
       Message lastMessage = messageRepository.getByPublicId(lastMessageId)
           .orElseThrow(EntityNotFoundException::new);
-      return messageRepository.getOlderMessages(conversation.getId(), lastMessage.getMessageId(), query.getLimit());
+      return messageRepository.getOlderMessages(lastMessage.getMessageId(), query.getLimit(),
+          user, conversation);
 
     }
 

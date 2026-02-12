@@ -23,7 +23,11 @@ public class MessageCursorQuery {
     this.conversationId = conversationId;
   }
 
+  /**
+   * Query for lastest message when not specific the last message to search for
+   */
   public boolean forLastestMessage() {
+
     return this.lastMessageId.isEmpty();
   }
 

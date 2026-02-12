@@ -149,7 +149,7 @@
                       >{{ conv.lastMessageSender }}:</span
                     >
                   }
-                  {{ conv.lastMessage }}
+                  {{ conv.lastMessageContent }}
                 </p>
 
                 <!-- Status icons -->
@@ -161,11 +161,11 @@
                       {{ conv.unreadCount }}
                     </div>
                   }
-                  @if (conv.messageStatus === "seen") {
+                  @if (conv.messageState === "seen") {
                     <i
                       class="fa-solid fa-check-double text-neutral-500 text-xs"
                     ></i>
-                  } @else if (conv.messageStatus === "delivered") {
+                  } @else if (conv.messageState === "delivered") {
                     <i class="fa-solid fa-check text-neutral-400 text-xs"></i>
                   }
                 </div>

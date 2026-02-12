@@ -78,6 +78,6 @@ public interface JpaParticipantRepository extends JpaRepository<ConversationPart
   Optional<ConversationParticipantEntity> getTargetParticipantInDirectConversation(@Param("conversationId") Long conversationId,
       @Param("requestUserId") Long requestUserId);
 
-
+  List<ConversationParticipantEntity> findAllByConversationId(Long conversationId);
 
 }

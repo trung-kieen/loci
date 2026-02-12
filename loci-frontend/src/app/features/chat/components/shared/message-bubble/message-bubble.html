@@ -35,10 +35,10 @@
       <span class="text-xs text-neutral-500">{{ formattedTime() }}</span>
 
       @if (isOwn()) {
-      <i class="fa-solid text-xs" [class.fa-clock]="message().status === 'sending'"
-        [class.fa-check]="message().status === 'sent'"
-        [class.fa-check-double]="message().status === 'delivered' || message().status === 'read'"
-        [class.text-neutral-400]="message().status !== 'read'" [class.text-blue-500]="message().status === 'read'">
+      <i class="fa-solid text-xs" [class.fa-clock]="message().messageState === 'sending'"
+        [class.fa-check]="message().messageState === 'sent'"
+        [class.fa-check-double]="message().messageState === 'delivered' || message().messageState === 'read'"
+        [class.text-neutral-400]="message().messageState !== 'read'" [class.text-blue-500]="message().messageState === 'read'">
       </i>
       }
     </div>

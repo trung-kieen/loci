@@ -40,8 +40,9 @@ public class UserChatList {
 
     Map<ConversationId, DirectChatInfo> directMetaByConversationId = Maps.toMapKeepFirst(directMetadatas,
         DirectChatInfo::getConversationId);
+    Map<ConversationId, Message> messageByConversationId = Maps.toLookupMap(lastMessages, Message::getConversationId);
     return UserChatList.builder()
-        .lastMessageLookup(Maps.toLookupMap(lastMessages, Message::getMessageId))
+        .lastMessageLookup(messageByConversationId)
         .userConversationPage(userConversations)
         .unreadCountLookup(Maps.toLookupMap(unreadCounts,
             ConversationUnreadMessageCount::conversationId))
@@ -53,7 +54,7 @@ public class UserChatList {
   // Builder class for lookup scratter data
   public static class UserConversationListBuilder {
 
-    private Map<MessageId, Message> lastMessageLookup;
+    private Map<ConversationId, Message> lastMessageByConversationId;
 
     private Page<UserConversation> userConversations;
 
@@ -71,8 +72,8 @@ public class UserChatList {
     }
 
     public UserConversationListBuilder lastMessageLookup(
-        final Map<MessageId, Message> lastMessageLookup) {
-      this.lastMessageLookup = lastMessageLookup;
+        final Map<ConversationId, Message> lastMessageByConversationId) {
+      this.lastMessageByConversationId = lastMessageByConversationId;
       return this;
     }
 
@@ -106,7 +107,7 @@ public class UserChatList {
             .publicId(con.getPublicId())
             .type(con.getType())
             .unreadCount(unreadCountLookup.getOrDefault(con.getConversationId(), null).unreadCount())
-            .lastMessage(lastMessageLookup.getOrDefault(con.getConversationId(), null))
+            .lastMessage(lastMessageByConversationId.getOrDefault(con.getConversationId(), null))
             .groupMetadata(groupMetadataLookup.getOrDefault(con.getConversationId(), null))
             .dmMetadata(directMetadataLookup.getOrDefault(con.getConversationId(), null))
             .build();

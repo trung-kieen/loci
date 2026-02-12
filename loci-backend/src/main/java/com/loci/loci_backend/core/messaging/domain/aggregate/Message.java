@@ -2,6 +2,7 @@ package com.loci.loci_backend.core.messaging.domain.aggregate;
 
 import java.time.Instant;
 
+import com.loci.loci_backend.common.user.domain.aggregate.User;
 import com.loci.loci_backend.common.user.domain.vo.PublicId;
 import com.loci.loci_backend.common.user.domain.vo.UserDBId;
 import com.loci.loci_backend.core.conversation.domain.vo.ConversationId;
@@ -74,5 +75,10 @@ public class Message {
           String.format("Cannot transition from %s to %s", status.messageState(), newStatus));
     }
   }
+
+  public boolean isSenderUser(User user) {
+    return user.getUserPublicId().equals(senderPublicId);
+  }
+
 
 }

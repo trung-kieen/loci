@@ -1,11 +1,11 @@
-// src/app/features/chat/services/chat-state.service.ts
 import { Injectable, computed, signal } from '@angular/core';
-import { IChatError, IChatParticipant, IConversation } from '../models/chat.model';
-import { IMessage, ParticipantState } from '../models/message.model';
+import { IChatError, IConversation } from '../models/chat.model';
+import { IConversationMessage as IConversationMessage, IMessage, ParticipantState } from '../models/message.model';
+import { IPersonalProfile } from '../../user/models/user.model';
 export interface DirectConversationState {
-  currentUser: IChatParticipant | null;
+  currentUser: IPersonalProfile | null;
   selectedConversation: IConversation | null;
-  messages: IMessage[];
+  messages: IConversationMessage[];
   loading: boolean;
   error: IChatError | null;
   sendingMessage: boolean;
@@ -26,7 +26,7 @@ const initialState: DirectConversationState = {
   providedIn: 'root'
 })
 export class DirectConversationStateService {
-  // Private state signals
+  // general state signals
   private state = signal<DirectConversationState>(initialState);
 
   // Computed selectors
@@ -59,7 +59,7 @@ export class DirectConversationStateService {
   );
 
   // State updaters
-  setCurrentUser(user: IChatParticipant): void {
+  setCurrentUser(user: IPersonalProfile): void {
     this.state.update((state) => ({ ...state, currentUser: user }));
   }
 
@@ -70,14 +70,14 @@ export class DirectConversationStateService {
     }));
   }
 
-  setMessages(messages: IMessage[]): void {
+  setMessages(messages: IConversationMessage[]): void {
     this.state.update((state) => ({ ...state, messages }));
   }
 
   addMessage(message: IMessage): void {
     this.state.update((state) => ({
       ...state,
-      messages: [...state.messages, message],
+      messages: [...state.messages, { owner: true, ...message }],
     }));
   }
 
@@ -85,13 +85,13 @@ export class DirectConversationStateService {
     this.state.update((state) => ({
       ...state,
       messages: state.messages.map((msg) =>
-        msg.id === messageId ? { ...msg, ...updates } : msg,
+        msg.messageId === messageId ? { ...msg, ...updates } : msg,
       ),
     }));
   }
 
   // append mesage that the init of array
-  prependMessages(messages: IMessage[]): void {
+  prependMessages(messages: IConversationMessage[]): void {
     this.state.update((state) => ({
       ...state,
       messages: [...messages, ...state.messages],

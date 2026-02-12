@@ -22,9 +22,9 @@
           }
 
           <!-- [isOwn]="isOwnerMessage(msg)" -->
-          @for (msg of uiMessages(); track msg.id) {
+          @for (msg of messages(); track msg.messageId) {
             <app-message-bubble
-              [isOwn]="msg.isOwn"
+              [isOwn]="msg.owner"
               [message]="msg"
               [avatarUrl]="getMessageSenderAvatarUrl(msg)"
               [senderName]="getMessageSenderName(msg)"

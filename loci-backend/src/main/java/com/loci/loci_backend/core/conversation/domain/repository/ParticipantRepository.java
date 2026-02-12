@@ -10,6 +10,7 @@ import com.loci.loci_backend.core.conversation.domain.aggregate.Conversation;
 import com.loci.loci_backend.core.conversation.domain.aggregate.ConversationSearchCriteria;
 import com.loci.loci_backend.core.conversation.domain.aggregate.Participant;
 import com.loci.loci_backend.core.conversation.domain.aggregate.UserConversation;
+import com.loci.loci_backend.core.conversation.domain.vo.ConversationId;
 import com.loci.loci_backend.core.conversation.domain.vo.ParticipantCount;
 import com.loci.loci_backend.core.groups.domain.vo.GroupId;
 
@@ -32,5 +33,7 @@ public interface ParticipantRepository {
   ParticipantCount countConversationMember(Conversation conversation);
 
   Set<UserDBId> getGroupMemberIds(GroupId groupId);
+
+  List<Participant> getParticipantsByConversationId(ConversationId conversationId);
 
 }

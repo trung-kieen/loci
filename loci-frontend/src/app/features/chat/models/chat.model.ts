@@ -20,14 +20,14 @@ export interface IChat {
   conversationId: string;
   conversationName: string;
   avatarUrl: string;
-  lastMessage?: string;
-  lastMessageSender?: string; // Cho group chat
+  lastMessageContent?: string;
+  lastMessageSender?: string; // group chat
   time: string;
   unreadCount: number;
   isOnline: boolean;
   isGroup: boolean;
-  messageStatus?: MessageState;
-  isFollowUp?: boolean;
+  messageState?: MessageState;
+  isFollowingUp?: boolean;
   isArchived?: boolean;
 }
 

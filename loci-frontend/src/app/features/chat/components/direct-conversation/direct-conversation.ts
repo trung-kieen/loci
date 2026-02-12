@@ -8,14 +8,12 @@ import {
   ElementRef,
   computed
 } from '@angular/core';
-import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { ActivatedRoute, Router } from '@angular/router';
 import {
   forkJoin,
   from,
   of,
-  EMPTY,
-  throwError,
   concatMap,
   switchMap,
   catchError,
@@ -33,15 +31,8 @@ import { ISendMessageData, MessageInput } from '../shared/message-input/message-
 import { ErrorAlert } from '../shared/error-alert/error-alert';
 import { DirectConversationStateService } from '../../service/direct-conversation-state.service';
 import { IChatError, IChatParticipant } from '../../models/chat.model';
-import { IAttachment, ICreateMessage, IMessage } from '../../models/message.model';
+import { IAttachment, IConversationMessage, ICreateMessage, IMessage } from '../../models/message.model';
 
-// Components
-
-// Models
-
-export interface IConversationMessage extends IMessage {
-  isOwn: boolean;
-}
 @Component({
   selector: 'app-direct-conversation',
   standalone: true,
@@ -55,13 +46,16 @@ export interface IConversationMessage extends IMessage {
   templateUrl: "./direct-conversation.html"
 })
 export class DirectConversation implements OnInit {
-  [x: string]: any;
+
+
   // Dependencies
   state = inject(DirectConversationStateService);
+  private route = inject(ActivatedRoute);
   private apiService = inject(ChatService);
   private stompService = inject(MockStompService);
   private router = inject(Router);
   private destroyRef = inject(DestroyRef);
+  private conversationId: string;
 
   // ViewChildren
   messageArea = viewChild.required<ElementRef<HTMLDivElement>>('messageArea');
@@ -79,13 +73,33 @@ export class DirectConversation implements OnInit {
     };
   });
 
-  uiMessages = computed<IConversationMessage[]>(() => {
-    const currentUserId = this.state.currentUser()?.id;
-    return this.state.messages().map(m => ({
-      ...m,
-      isOwn: m.senderId === currentUserId
-    }));
-  });
+
+  constructor() {
+
+    const conversationId = this.route.snapshot.paramMap.get('conversationId');
+    if (!conversationId) {
+      this.router.navigate(["404"])
+    }
+    this.conversationId = conversationId ?? '';
+    console.log("conversationId ", this.conversationId);
+
+
+  }
+
+
+  ngOnInit(): void {
+    this.initializeChat();
+  }
+
+  // bind signal
+  readonly messages = this.state.messages;
+  // uiMessages = computed<IConversationmessage[]>(() => {
+  //   const currentUserId = this.state.currentUser()?.userId;
+  //   return this.state.messages().map(m => ({
+  //     ...m,
+  //     isOwn: m.senderId === currentUserId
+  //   }));
+  // });
 
   uiError = computed<IChatError | null>(() => {
     const err = this.state.error();
@@ -93,20 +107,17 @@ export class DirectConversation implements OnInit {
   });
 
 
-  isOwnerMessage(message: IMessage) {
-    return message.senderId === this.state.currentUser()?.id;
-  }
-  getMessageSenderAvatarUrl(message: IMessage): string {
-    if (this.isOwnerMessage(message)) {
+  getMessageSenderAvatarUrl(message: IConversationMessage): string {
+    // only show avatar when not own this message
+    if (!message.owner) {
       return this.state.participant()?.avatarUrl ?? '';
     }
-    // ignore arvatar display for currentUser;
     return '';
 
   }
 
-  getMessageSenderName(message: IMessage): string {
-    if (this.isOwnerMessage(message)) {
+  getMessageSenderName(message: IConversationMessage): string {
+    if (!message.owner) {
       return this.state.participant()?.fullname ?? '';
     }
     // ignore arvatar display for currentUser;
@@ -116,30 +127,30 @@ export class DirectConversation implements OnInit {
 
 
 
-  ngOnInit(): void {
-    this.initializeChat();
-  }
 
   private initializeChat(): void {
     this.state.setLoading(true);
 
     forkJoin({
-      currentUser: this.apiService.getCurrentUser(),
+      // fetch current user, participant and messages
+      // currentUser: this.apiService.getCurrentUser(),
       participant: this.apiService.getChatParticipantInfo('user-002'),
-      messages: this.apiService.getMessages('conv-001', { limit: 20 }),
+      messages: this.apiService.getMessages('7b5635e2-9ca3-426c-aa9f-6ac5db8eb3b0', { limit: 20 }),
     })
       .pipe(
-        tap(({ currentUser, participant, messages }) => {
-          if (currentUser) this.state.setCurrentUser(currentUser);
+        tap(({  participant, messages }) => {
+          // if (currentUser) this.state.setCurrentUser(currentUser);
 
+          console.log("Receive messages");
+          console.log(messages.messages);
           if (participant && messages) {
             this.state.setSelectedConversation({
               id: 'conv-001',
               participant,
-              messages,
+              messages: messages.messages,
               unreadCount: 0,
             });
-            this.state.setMessages(messages);
+            this.state.setMessages(messages.messages);
           }
         }),
         concatMap(() =>
@@ -166,11 +177,11 @@ export class DirectConversation implements OnInit {
   }
 
   private subscribeToWebSocket(): void {
-    const userId = this.state.currentUser()?.id;
-    if (!userId) return;
+    // const userId = this.state.currentUser()?.userId;
+    // if (!userId) return;
 
     // Messages
-    this.stompService.subscribeToMessages(userId)
+    this.stompService.subscribeToMessages()
       .pipe(
         tap(msg => this.state.addMessage(msg)),
         catchError(err => {
@@ -182,7 +193,7 @@ export class DirectConversation implements OnInit {
       .subscribe();
 
     // Status updates
-    this.stompService.subscribeToStatus(userId)
+    this.stompService.subscribeToStatus()
       .pipe(
         tap(update => this.state.updateParticipantStatus(update.status, update.lastSeen)),
         catchError(err => {
@@ -227,12 +238,12 @@ export class DirectConversation implements OnInit {
     this.apiService
       .getMessages(conversationId, {
         limit: 20,
-        before: messages[0].id
+        before: messages[0].messageId
       })
       .pipe(
         tap(older => {
-          if (older?.length) {
-            this.state.prependMessages(older);
+          if (older?.messages.length) {
+            this.state.prependMessages(older.messages); // todo
             requestAnimationFrame(() => {
               area.scrollTop = area.scrollHeight - oldHeight;
             });

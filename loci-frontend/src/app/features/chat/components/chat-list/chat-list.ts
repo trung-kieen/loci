@@ -70,7 +70,7 @@ export class ChatList implements OnInit {
       filtered = filtered.filter((conv) => {
         return (
           conv.conversationName.toLowerCase().includes(query) ||
-          conv.lastMessage?.toLowerCase().includes(query)
+          conv.lastMessageContent?.toLowerCase().includes(query)
         );
       });
     }
@@ -79,7 +79,7 @@ export class ChatList implements OnInit {
         filtered = filtered.filter((conv) => conv.unreadCount > 0);
         break;
       case 'followups':
-        filtered = filtered.filter((conv) => conv.isFollowUp);
+        filtered = filtered.filter((conv) => conv.isFollowingUp);
         break;
       case 'archived':
         filtered = filtered.filter((conv) => conv.isArchived);
