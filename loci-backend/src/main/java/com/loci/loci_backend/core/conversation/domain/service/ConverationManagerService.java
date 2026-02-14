@@ -149,11 +149,11 @@ public class ConverationManagerService {
 
   @Transactional(readOnly = true)
   public DirectChatInfo getDirectChatInfo(PublicId conversationPublicId) {
-    Chat chat = this.getSingleChat(conversationPublicId);
-    if (chat.getType().isGroupConversation()) {
-      throw new InvalidConversationTypeException();
-    }
-    return chat.getDmMetadata();
+    User currentUser = userRepository.getByUsername(principal.getUsername()).orElseThrow(EntityNotFoundException::new);
+    Conversation conversation = conversationRepository.getByPublicId(conversationPublicId)
+        .orElseThrow(ResourceNotFoundException::new);
+
+    return conversationReader.getConversationInfo(conversation, currentUser);
   }
 
 }

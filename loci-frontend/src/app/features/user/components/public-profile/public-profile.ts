@@ -5,7 +5,7 @@ import {
   OnInit,
   ChangeDetectionStrategy,
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
 import { Router } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
@@ -30,6 +30,7 @@ export class PublicProfile implements OnInit {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private destroyRef = inject(DestroyRef);
+  private location = inject(Location);
 
   // Template binds directly to state service signals
   readonly profile = this.stateService.profile;
@@ -72,7 +73,9 @@ export class PublicProfile implements OnInit {
   }
 
   onBack(): void {
-    this.router.navigate(['/chats']);
+    this.location.back();
+    // console.log("Back")
+    // this.router.navigate(['/chats']);
   }
 
   onAddFriend(): void {

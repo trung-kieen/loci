@@ -16,7 +16,7 @@ export class ChatList implements OnInit {
   private loggerService = inject(LoggerService);
   private logger = this.loggerService.getLogger('ChatList');
 
-  private converstaionChatService = inject(ConversationService);
+  private conversationService = inject(ConversationService);
 
   conversations = signal<IChat[]>([]);
   filteredConversations = signal<IChat[]>([]);
@@ -38,7 +38,7 @@ export class ChatList implements OnInit {
 
   loadConversations() {
     this.isLoading.set(true);
-    this.converstaionChatService.getConversations().subscribe({
+    this.conversationService.getConversations().subscribe({
       next: (data) => {
         this.conversations.set(data.conversations.content);
         this.applyFilters();
@@ -54,6 +54,12 @@ export class ChatList implements OnInit {
     const query = (event.target as HTMLInputElement).value.toLowerCase();
     this.searchQuery.set(query);
     this.applyFilters();
+  }
+
+
+  changeConversation(conversation: IChat) {
+    this.logger.debug("Change conversation ", conversation)
+    this.router.navigate([this.getConversationRoute(conversation)])
   }
 
   setFilter(filter: ChatFilter) {

@@ -3,6 +3,9 @@
 
 
 backup_file=./backups/backup.sql
+backup_file_old="$backup_file.old"
+mv $backup_file $backup_file_old
+
 docker exec -i loci-db pg_dump -U admin locidb > $backup_file
 
 echo "Export postgresql database migration script to $backup_file"

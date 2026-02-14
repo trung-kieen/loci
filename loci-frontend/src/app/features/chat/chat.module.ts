@@ -1,14 +1,19 @@
 import { NgModule } from "@angular/core";
-import { ChatList } from "./components/chat-list/chat-list";
-import { CreateGroup } from "./components/create-group/create-group";
-import { GroupConversation } from "./components/group-conversation/group-conversation";
-import { RouterModule } from "@angular/router";
 import { ChatRoutingModule } from "./chat.routes";
-import { ChatLayout } from "./components/chat-layout/chat-layout";
+import { RouteReuseStrategy } from "@angular/router";
+import { ConversationReuseStrategy } from "./components/chat-list/conversation-reuse-strategy";
 
 @NgModule({
   imports: [ChatRoutingModule],
+  providers: [
+    {
+      provide: RouteReuseStrategy,
+      useClass: ConversationReuseStrategy
+    }
+
+  ]
 })
-export class ChatModule  {
+export class ChatModule {
+
 
 }

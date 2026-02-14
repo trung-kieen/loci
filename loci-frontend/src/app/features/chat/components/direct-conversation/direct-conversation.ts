@@ -62,16 +62,32 @@ export class DirectConversation implements OnInit {
 
 
   ngOnInit(): void {
+    this.route.paramMap
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(params => {
+        const conversationId = params.get('conversationId');
+        if (!conversationId) {
+          this.router.navigate(["/not-found"]);
+          return;
+        }
 
-    const conversationId = this.route.snapshot.paramMap.get('conversationId');
-    if (!conversationId) {
-      this.router.navigate(["404"])
-      return;
-    }
-    this.conversationId = conversationId;
-    console.log("conversationId ", this.conversationId);
+        // Clean up previous conversation state
+        this.cleanupConversation();
 
-    this.initializeChat();
+        this.conversationId = conversationId;
+        console.log("conversationId changed to:", this.conversationId);
+
+        this.initializeChat();
+      });
+  }
+
+  private cleanupConversation(): void {
+    // Reset state when switching conversations
+    this.state.setMessages([]);
+    this.state.setLoading(true);
+
+    // Unsubscribe from previous WebSocket if needed
+    // this.stompService.disconnect(); // if you need to disconnect
   }
 
 
@@ -251,7 +267,7 @@ export class DirectConversation implements OnInit {
     const messagingUser = this.state.participant();
     if (!messagingUser) return;
     // TODO: navigate to participant user id
-    this.router.navigate([`user/${messagingUser.conversationId}`])
+    this.router.navigate([`user/${messagingUser.messagingUser.userId}`])
     console.log('Open profile:', messagingUser.chatName);
   }
 

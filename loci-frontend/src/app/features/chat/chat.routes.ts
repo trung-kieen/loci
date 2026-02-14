@@ -21,6 +21,7 @@ const routes: Routes = [
           import(
             './components/direct-conversation/direct-conversation'
           ).then((m) => m.DirectConversation),
+            runGuardsAndResolvers: 'paramsChange'
       },
       {
         // group conversation can u the
@@ -29,6 +30,7 @@ const routes: Routes = [
           import('./components/group-conversation/group-conversation').then(
             (m) => m.GroupConversation,
           ),
+            runGuardsAndResolvers: 'paramsChange'
       },
       {
         path: 'group/:conversationId/profile', // /chat/group/456/profile
