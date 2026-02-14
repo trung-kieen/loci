@@ -1,31 +1,105 @@
 <div class="flex items-center justify-between p-4 border-b border-neutral-200 bg-white">
-  <div class="flex items-center space-x-4">
+
+  <!-- Left: Back + Avatar + Info -->
+  <div class="flex items-center space-x-4 min-w-0">
+
+    <!-- Back Button -->
     @if (showBackButton()) {
-    <button class="text-neutral-400 hover:text-neutral-600 lg:hidden" (click)="onBack()"
-      [attr.aria-label]="'Back to ' + backTargetText()">
-      <i class="fa-solid fa-arrow-left text-xl"></i>
-    </button>
+      <button
+        class="text-neutral-400 hover:text-neutral-600 lg:hidden flex-shrink-0"
+        (click)="onBack()"
+        [attr.aria-label]="'Back to ' + backTargetText()">
+        <i class="fa-solid fa-arrow-left text-xl"></i>
+      </button>
     }
 
+    @if (chat(); as currentChat) {
+      <!-- Avatar with online indicator for single chat -->
+      <div class="relative flex-shrink-0">
+        <img
+          [src]="displayAvatar()"
+          [alt]="displayName()"
+          class="w-10 h-10 rounded-full object-cover"
+          [class.ring-2]="isGroupChat()"
+          [class.ring-neutral-200]="isGroupChat()">
 
-
-    @if (participant(); as user) {
-    <img [src]="user.avatarUrl" [alt]="user.fullname" class="w-10 h-10 rounded-full object-cover">
-
-    <div>
-      <div class="flex items-center space-x-2">
-        <h3 class="text-lg font-medium text-gray-900">{{ user.fullname }}</h3>
-        <span class="w-2 h-2 rounded-full" [class]="statusColorClass()">
-        </span>
+        <!-- Online dot for single chat -->
+        @if (isSingleChat()) {
+          <span
+            class="absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-white"
+            [class]="statusColorClass()">
+          </span>
+        }
       </div>
-      <p class="text-sm text-neutral-500">{{ statusText() }}</p>
-    </div>
+
+      <!-- Chat Info -->
+      <div class="min-w-0">
+        <h3 class="text-lg font-medium text-gray-900 truncate">
+          {{ displayName() }}
+        </h3>
+
+        <!-- Single: Status text -->
+        @if (isSingleChat()) {
+          <p class="text-sm text-neutral-500">{{ statusText() }}</p>
+        }
+
+        <!-- Group: Member count -->
+        @if (isGroupChat()) {
+          <p class="text-sm text-neutral-500">{{ groupSubtitle() }}</p>
+        }
+      </div>
     }
   </div>
 
+  <!-- Right: Action Buttons -->
+  <div class="flex items-center space-x-1">
 
-  <button class="p-2 text-neutral-400 hover:text-neutral-600 rounded-full hover:bg-neutral-100 transition-colors"
-          (click)="onProfileClick()" [attr.aria-label]="profileClick">
-    <i class="fa-solid fa-user text-xl"></i>
-  </button>
+    <!-- Search (conditional) -->
+    @if (features().showSearch) {
+      <button
+        class="p-2 text-neutral-400 hover:text-neutral-600 rounded-full hover:bg-neutral-100 transition-colors"
+        (click)="onSearchClick()"
+        aria-label="Search in conversation">
+        <i class="fa-solid fa-magnifying-glass text-lg"></i>
+      </button>
+    }
+
+    <!-- Voice Call (single only, conditional) -->
+    @if (features().showCall && isSingleChat()) {
+      <button
+        class="p-2 text-neutral-400 hover:text-neutral-600 rounded-full hover:bg-neutral-100 transition-colors"
+        (click)="onCallClick()"
+        aria-label="Voice call">
+        <i class="fa-solid fa-phone text-lg"></i>
+      </button>
+    }
+
+    <!-- Video Call (single only, conditional) -->
+    @if (features().showVideo && isSingleChat()) {
+      <button
+        class="p-2 text-neutral-400 hover:text-neutral-600 rounded-full hover:bg-neutral-100 transition-colors"
+        (click)="onVideoClick()"
+        aria-label="Video call">
+        <i class="fa-solid fa-video text-lg"></i>
+      </button>
+    }
+
+    <!-- Group Members (group only, conditional) -->
+    @if (features().showMemberList && isGroupChat()) {
+      <button
+        class="p-2 text-neutral-400 hover:text-neutral-600 rounded-full hover:bg-neutral-100 transition-colors"
+        (click)="onMembersClick()"
+        [attr.aria-label]="'View ' + displayName() + ' members'">
+        <i class="fa-solid fa-users text-lg"></i>
+      </button>
+    }
+
+    <!-- Profile/Info (always present) -->
+    <button
+      class="p-2 text-neutral-400 hover:text-neutral-600 rounded-full hover:bg-neutral-100 transition-colors"
+      (click)="onProfileClick()"
+      [attr.aria-label]="profileClickLabel()">
+      <i class="fa-solid" [class.fa-user]="isSingleChat()" [class.fa-circle-info]="isGroupChat()"></i>
+    </button>
+  </div>
 </div>

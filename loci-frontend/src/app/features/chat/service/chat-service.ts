@@ -7,10 +7,9 @@ import {
   IConversationMessageList,
   IMessage,
   ISendMessageRequest,
-  MessageState,
 } from '../models/message.model';
-import { IChatParticipant, IPaginationParams } from '../models/chat.model';
-import { IPersonalProfile, IUser } from '../../user/models/user.model';
+import { IChatBaseInfo, IPaginationParams, ISingleChatInfo } from '../models/chat.model';
+import { IPersonalProfile } from '../../user/models/user.model';
 import { WebApiService } from '../../../core/api/web-api.service';
 
 @Injectable({
@@ -21,20 +20,21 @@ export class ChatService {
 
   private apiService = inject(WebApiService);
 
-  private mockCurrentUser: IChatParticipant = {
-    id: 'user-001',
-    fullname: 'Current User',
+  private mockCurrentUser: IChatBaseInfo = {
+    conversationId: 'user-001',
+    type: 'one_to_one',
+    chatName: 'Current User',
     avatarUrl: 'https://api.dicebear.com/7.x/notionists/svg?scale=200&seed=001',
-    status: 'online',
+    createdAt: new Date(),
   };
 
-  private mockParticipant: IChatParticipant = {
-    id: 'user-002',
-    fullname: 'Emily Davis',
+  private mockParticipant: IChatBaseInfo = {
+    conversationId: 'user-002',
+    chatName: 'Emily Davis',
     avatarUrl:
       'https://api.dicebear.com/7.x/notionists/svg?scale=200&seed=7891',
-    status: 'online',
-    lastSeen: new Date(),
+    type: 'one_to_one',
+    createdAt: new Date(),
   };
 
   private mockMessages: IMessage[] = [
@@ -100,11 +100,11 @@ export class ChatService {
       messageState: 'read',
       isDeleted: false,
       attachment: {
-        id: 'att-001',
+        // id: 'att-001',
         fileName: 'project-proposal.pdf',
         fileSize: 245000,
         fileType: 'application/pdf',
-        downloadUrl: '/api/attachments/att-001/download',
+        url: '/api/attachments/att-001/download',
       },
     },
   ];
@@ -125,10 +125,8 @@ export class ChatService {
     return this.apiService.get<IPersonalProfile>("users/me");
   }
 
-  getChatParticipantInfo(userId: string): Observable<IChatParticipant> {
-    const user =
-      userId === 'user-002' ? this.mockParticipant : this.mockCurrentUser;
-    return of(user).pipe(delay(300));
+  getDirectChatInfo(conversationId: string): Observable<ISingleChatInfo> {
+    return this.apiService.get<ISingleChatInfo>(`/conversations/one/${conversationId}`)
   }
 
   getMessages(
@@ -136,7 +134,7 @@ export class ChatService {
     pagination: IPaginationParams,
   ): Observable<IConversationMessageList> {
     // Simulate pagination - return last 20 messages
-    return this.apiService.get<IConversationMessageList>(`/conversations/${conversationId}/messages`)
+    return this.apiService.get<IConversationMessageList>(`/conversations/${conversationId}/messages?before=${pagination.before || ''}&limit=${pagination.limit}`)
   }
 
   // getMessages(
@@ -163,7 +161,7 @@ export class ChatService {
     const newMessage: IMessage = {
       messageId: `msg-${String(this.messageCounter++).padStart(3, '0')}`,
       conversationId: dto.conversationId,
-      senderId: this.mockCurrentUser.id,
+      senderId: this.mockCurrentUser.conversationId,
       content: dto.content,
       timestamp: new Date(),
       type: dto.type,
@@ -195,11 +193,11 @@ export class ChatService {
   ): Observable<IAttachment> {
     // Simulate file upload with success
     const attachment: IAttachment = {
-      id: `att-${Date.now()}`,
+      // id: `att-${Date.now()}`,
       fileName: file.name,
       fileSize: file.size,
       fileType: file.type,
-      downloadUrl: `/api/attachments/att-${Date.now()}/download`,
+      url: `/api/attachments/att-${Date.now()}/download`,
     };
 
     return of(attachment).pipe(delay(1500));
@@ -215,8 +213,8 @@ export class ChatService {
     userId: string,
   ): Observable<{ status: string; lastSeen?: Date }> {
     return of({
-      status: this.mockParticipant.status,
-      lastSeen: this.mockParticipant.lastSeen,
+      status: 'away',
+      lastSeen: new Date(),
     }).pipe(delay(300));
   }
 
@@ -235,7 +233,7 @@ export class ChatService {
     const autoMessage: IMessage = {
       messageId: `msg-${String(this.messageCounter++).padStart(3, '0')}`,
       conversationId,
-      senderId: this.mockParticipant.id,
+      senderId: this.mockParticipant.conversationId,
       content: randomResponse,
       timestamp: new Date(),
       type: 'text',

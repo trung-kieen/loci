@@ -1,14 +1,57 @@
-export type ConversationType = 'one to one' | 'group';
 import { Page } from '../../../core/model/page';
 import { FriendshipStatus } from '../../contact/models/contact.model';
-import {  PresenceStatus } from '../../user/models/user.model';
+import { PresenceStatus } from '../../user/models/user.model';
 import { IMessage } from './message.model';
 
-export interface IChatParticipant {
-  id: string;
-  fullname: string;
-  avatarUrl: string;
+
+export type ConversationType = 'one_to_one' | 'group';
+
+export interface IChatBaseInfo {
+  conversationId: string;
+  type: ConversationType;
+  chatName: string;
+  avatarUrl?: string;
+  createdAt: Date;
+  // isGroup: boolean;
+}
+
+export interface ISingleChatInfo extends IChatBaseInfo {
+  type: 'one_to_one';
   status: PresenceStatus;
+  messagingUser: IDirectConversationProfile; // The other person
+  lastSeen?: Date;
+}
+
+
+export interface IDirectConversationProfile {
+  userId: string;
+  emailAddress: string;
+  fullname: string;
+  username: string;
+  profilePictureUrl: string;
+  memberSince: string;
+  createdAt: Date;
+  connectionStatus: FriendshipStatus;
+}
+
+
+export interface IGroupChatInfo extends IChatBaseInfo {
+  type: 'group';
+  participants: IParticipant[];
+  adminUserIds: string[];
+  memberCount: number;
+  onlineCount: number;
+  description: string;
+}
+export type ChatInfo = ISingleChatInfo | IGroupChatInfo
+
+
+export interface IParticipant {
+  userId: string;
+  username: string;
+  fullname: string;
+  avatarUrl?: string;
+  status?: PresenceStatus;
   lastSeen?: Date;
 }
 
@@ -16,6 +59,7 @@ export interface IUserChatList {
   conversations: Page<IChat>
 }
 
+// for preview in chat list
 export interface IChat {
   conversationId: string;
   conversationName: string;
@@ -31,7 +75,7 @@ export interface IChat {
   isArchived?: boolean;
 }
 
-type MessageState = 'prepare' | 'sent' | 'delivered' | 'seen' ;
+type MessageState = 'prepare' | 'sent' | 'delivered' | 'seen';
 
 export interface ITypingEvent {
   conversationId: string;
@@ -46,9 +90,9 @@ export interface IUserStatusUpdate {
   lastSeen?: Date;
 }
 
-export interface IConversation {
-  id: string;
-  participant: IChatParticipant;
+export interface IDirectConversation {
+  conversationId: string;
+  participant: ISingleChatInfo;
   messages: IMessage[];
   unreadCount: number;
   lastMessage?: IMessage;

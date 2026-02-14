@@ -1,4 +1,3 @@
-// direct-conversation.component.ts
 import {
   Component,
   OnInit,
@@ -6,7 +5,8 @@ import {
   DestroyRef,
   viewChild,
   ElementRef,
-  computed
+  computed,
+  Signal
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -25,12 +25,12 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 // Services
 import { MockStompService } from '../../service/mock-stomp.service';
 import { ChatService } from '../../service/chat-service';
-import { ChatHeader } from '../shared/chat-header/chat-header';
+import { ChatFeatures, ChatHeader } from '../shared/chat-header/chat-header';
 import { MessageBubble } from '../shared/message-bubble/message-bubble';
 import { ISendMessageData, MessageInput } from '../shared/message-input/message-input';
 import { ErrorAlert } from '../shared/error-alert/error-alert';
 import { DirectConversationStateService } from '../../service/direct-conversation-state.service';
-import { IChatError, IChatParticipant } from '../../models/chat.model';
+import { ChatInfo, IChatError } from '../../models/chat.model';
 import { IAttachment, IConversationMessage, ICreateMessage, IMessage } from '../../models/message.model';
 
 @Component({
@@ -47,7 +47,6 @@ import { IAttachment, IConversationMessage, ICreateMessage, IMessage } from '../
 })
 export class DirectConversation implements OnInit {
 
-
   // Dependencies
   state = inject(DirectConversationStateService);
   private route = inject(ActivatedRoute);
@@ -55,73 +54,106 @@ export class DirectConversation implements OnInit {
   private stompService = inject(MockStompService);
   private router = inject(Router);
   private destroyRef = inject(DestroyRef);
-  private conversationId: string;
+  private conversationId: string | null = null;
 
   // ViewChildren
   messageArea = viewChild.required<ElementRef<HTMLDivElement>>('messageArea');
 
-  // Computed signals for UI
-  chatParticipant = computed<IChatParticipant | null>(() => {
-    const p = this.state.participant();
-    if (!p) return null;
-    return {
-      id: p.id,
-      fullname: p.fullname,
-      avatarUrl: p.avatarUrl,
-      status: p.status,
-      lastSeen: p.lastSeen
-    };
-  });
 
 
-  constructor() {
+  ngOnInit(): void {
 
     const conversationId = this.route.snapshot.paramMap.get('conversationId');
     if (!conversationId) {
       this.router.navigate(["404"])
+      return;
     }
-    this.conversationId = conversationId ?? '';
+    this.conversationId = conversationId;
     console.log("conversationId ", this.conversationId);
 
-
-  }
-
-
-  ngOnInit(): void {
     this.initializeChat();
   }
 
+
+
+  singleChatFeatures: ChatFeatures = {
+    showMemberList: false,  // Not applicable for single chat
+    showSearch: true,
+    showCall: true,
+    showVideo: true
+  };
+
+
+
   // bind signal
   readonly messages = this.state.messages;
-  // uiMessages = computed<IConversationmessage[]>(() => {
-  //   const currentUserId = this.state.currentUser()?.userId;
-  //   return this.state.messages().map(m => ({
-  //     ...m,
-  //     isOwn: m.senderId === currentUserId
-  //   }));
-  // });
 
   uiError = computed<IChatError | null>(() => {
     const err = this.state.error();
     return err ? { ...err } : null;
   });
 
+  readonly chatInfo: Signal<ChatInfo | null> = this.state.participant;
+
+
+  // chatInfo = computed<ISingleChatInfo | null>(() => {
+  //   const p = this.state.participant();
+
+  //   if (!p) return null;
+
+  //   return {
+  //     type: 'one_to_one',
+  //     status: 'away',
+  //     conversationId: p.conversationId,
+  //     chatName: p.chatName,
+  //     avatarUrl: p.avatarUrl,
+  //     participant: {
+  //       userId: p.conversationId, // TODO: refactor to userid
+  //       username: '',
+  //       fullname: p.chatName,
+  //       avatarUrl: p.avatarUrl,
+  //       status: 'away',
+  //       lastSeen: new Date(),
+  //     },
+  //     lastSeen: new Date(),
+  //     createdAt: new Date(),
+  //   }
+
+  // })
+
+
+
+  // Chat header
+  onVoiceCall(): void {
+    const participant = this.state.participant();
+    if (!participant) return;
+    console.log('Initiating voice call with:', participant.chatName);
+    // Implement voice call logic
+  }
+
+  onVideoCall(): void {
+    const participant = this.state.participant();
+    if (!participant) return;
+    console.log('Initiating video call with:', participant.chatName);
+    // Implement video call logic
+  }
+
 
   getMessageSenderAvatarUrl(message: IConversationMessage): string {
     // only show avatar when not own this message
-    if (!message.owner) {
-      return this.state.participant()?.avatarUrl ?? '';
+    if (message.owner) {
+      return '';
     }
-    return '';
 
+    return this.state.participant()?.avatarUrl ?? '';
   }
 
   getMessageSenderName(message: IConversationMessage): string {
-    if (!message.owner) {
-      return this.state.participant()?.fullname ?? '';
+    if (message.owner) {
+      // ignore arvatar display for currentUser;
+      return '';
     }
-    // ignore arvatar display for currentUser;
-    return '';
+    return this.state.participant()?.chatName ?? '';
 
   }
 
@@ -129,23 +161,28 @@ export class DirectConversation implements OnInit {
 
 
   private initializeChat(): void {
+    const conversationId = this.conversationId;
+    if (!conversationId) {
+      console.log("Not found conversationId");
+      return;
+    }
     this.state.setLoading(true);
 
     forkJoin({
       // fetch current user, participant and messages
       // currentUser: this.apiService.getCurrentUser(),
-      participant: this.apiService.getChatParticipantInfo('user-002'),
-      messages: this.apiService.getMessages('7b5635e2-9ca3-426c-aa9f-6ac5db8eb3b0', { limit: 20 }),
+      participant: this.apiService.getDirectChatInfo(conversationId),
+      messages: this.apiService.getMessages(conversationId, { limit: 20 }),
     })
       .pipe(
-        tap(({  participant, messages }) => {
+        tap(({ participant, messages }) => {
           // if (currentUser) this.state.setCurrentUser(currentUser);
 
           console.log("Receive messages");
           console.log(messages.messages);
           if (participant && messages) {
             this.state.setSelectedConversation({
-              id: 'conv-001',
+              conversationId: conversationId,
               participant,
               messages: messages.messages,
               unreadCount: 0,
@@ -213,8 +250,9 @@ export class DirectConversation implements OnInit {
   onViewProfile(): void {
     const messagingUser = this.state.participant();
     if (!messagingUser) return;
-    this.router.navigate([`user/${messagingUser.id}`])
-    console.log('Open profile:', messagingUser.fullname);
+    // TODO: navigate to participant user id
+    this.router.navigate([`user/${messagingUser.conversationId}`])
+    console.log('Open profile:', messagingUser.chatName);
   }
 
   onScroll(event: Event): void {
@@ -228,7 +266,7 @@ export class DirectConversation implements OnInit {
     const messages = this.state.messages();
     if (messages.length === 0) return;
 
-    const conversationId = this.state.conversationId();
+    const conversationId = this.conversationId;
     if (!conversationId) return;
 
     this.state.setLoading(true);
@@ -325,7 +363,7 @@ export class DirectConversation implements OnInit {
             conversationId,
             content: attachment.fileName,
             type: 'file',
-            attachmentId: attachment.id,
+            attachmentId: attachment.url,
           };
 
           return this.apiService.sendMessage(dto).pipe(
@@ -354,7 +392,7 @@ export class DirectConversation implements OnInit {
 
   onDownloadAttachment(event: IAttachment): void {
     const attachment = event;
-    this.apiService.downloadAttachment(attachment.id)
+    this.apiService.downloadAttachment(attachment.url)
       .pipe(
         tap(blob => {
           const url = window.URL.createObjectURL(blob);

@@ -77,7 +77,7 @@ public class Message {
   }
 
   public boolean isSenderUser(User user) {
-    return user.getUserPublicId().equals(senderPublicId);
+    return user.getDbId().equals(this.getSenderId());
   }
 
 

@@ -18,12 +18,14 @@ import com.loci.loci_backend.core.conversation.domain.aggregate.CreateGroupReque
 import com.loci.loci_backend.core.conversation.domain.aggregate.Participant;
 import com.loci.loci_backend.core.conversation.domain.aggregate.UserChatList;
 import com.loci.loci_backend.core.conversation.domain.aggregate.UserConversation;
+import com.loci.loci_backend.core.conversation.domain.exception.InvalidConversationTypeException;
 import com.loci.loci_backend.core.conversation.domain.exception.UserNotConnectedException;
 import com.loci.loci_backend.core.conversation.domain.repository.ConversationRepository;
 import com.loci.loci_backend.core.conversation.domain.repository.ParticipantRepository;
 import com.loci.loci_backend.core.conversation.domain.vo.ConversationQuery;
 import com.loci.loci_backend.core.discovery.domain.repository.UserConnectionResolver;
 import com.loci.loci_backend.core.identity.domain.repository.UserIdTranslator;
+import com.loci.loci_backend.core.messaging.domain.aggregate.DirectChatInfo;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -143,6 +145,15 @@ public class ConverationManagerService {
         .orElseThrow(ResourceNotFoundException::new);
     return chat;
 
+  }
+
+  @Transactional(readOnly = true)
+  public DirectChatInfo getDirectChatInfo(PublicId conversationPublicId) {
+    Chat chat = this.getSingleChat(conversationPublicId);
+    if (chat.getType().isGroupConversation()) {
+      throw new InvalidConversationTypeException();
+    }
+    return chat.getDmMetadata();
   }
 
 }

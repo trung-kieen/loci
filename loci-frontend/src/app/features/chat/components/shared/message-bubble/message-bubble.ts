@@ -1,10 +1,6 @@
-import { ChangeDetectionStrategy, Component, input, output, computed } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, output, computed, signal } from '@angular/core';
 import { IAttachment, IMessage } from '../../../models/message.model';
 
-/**
- * Display message bubble with correct the side (left or right)
- * when display base on the ownership of message
- */
 @Component({
   selector: 'app-message-bubble',
   imports: [],
@@ -21,16 +17,13 @@ export class MessageBubble {
   senderName = input<string>('');
   isOwn = input.required<boolean>();
 
-
-
-
   // output signal
-  donwload = output<IAttachment>();
+  download = output<IAttachment>();
   contextMenu = output<{ message: IMessage, event: MouseEvent }>();
+  imagePreview = output<IAttachment>(); // New: for lightbox/preview
 
-
-
-
+  // state signals
+  imageError = signal(false);
 
   // compute
   formattedTime = () => {
@@ -57,15 +50,14 @@ export class MessageBubble {
     return 'fa-file';
   };
 
-
-  // event
+  // event handlers
   onDownload() {
     const attachment = this.message().attachment;
     if (!attachment) return;
-    this.donwload.emit(attachment);
+    this.download.emit(attachment);
   }
+
   onContextMenu(e: MouseEvent) {
-    // Only emit for right-click on others' messages, or if explicitly needed
     e.preventDefault();
     this.contextMenu.emit({
       message: this.message(),
@@ -73,4 +65,15 @@ export class MessageBubble {
     });
   }
 
+  onImageError() {
+    this.imageError.set(true);
+  }
+
+  onImageClick() {
+    if (this.imageError()) return;
+    const attachment = this.message().attachment;
+    if (attachment) {
+      this.imagePreview.emit(attachment);
+    }
+  }
 }

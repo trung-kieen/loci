@@ -1,9 +1,8 @@
 export interface IAttachment {
-  id: string;
-  fileName: string;
-  fileSize: number;
-  fileType: string;
-  downloadUrl: string;
+  url: string;           // Download/preview URL
+  fileName: string;      // Original filename
+  fileType: string;      // MIME type (e.g., 'image/jpeg', 'application/pdf')
+  fileSize: number;      // Size in bytes
 }
 
 

@@ -14,8 +14,10 @@ import com.loci.loci_backend.core.conversation.infrastructure.primary.mapper.Res
 import com.loci.loci_backend.core.conversation.infrastructure.primary.payload.RestChatReference;
 import com.loci.loci_backend.core.conversation.infrastructure.primary.payload.RestCreateGroup;
 import com.loci.loci_backend.core.conversation.infrastructure.primary.payload.RestCreatedGroupConversationResponse;
+import com.loci.loci_backend.core.conversation.infrastructure.primary.payload.RestDirectChatInfo;
 import com.loci.loci_backend.core.conversation.infrastructure.primary.payload.RestUserChatList;
 import com.loci.loci_backend.core.discovery.domain.vo.SearchQuery;
+import com.loci.loci_backend.core.messaging.domain.aggregate.DirectChatInfo;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -56,6 +58,15 @@ public class ConversationResource {
 
     RestChatReference restResponse = mapper.from(conversation);
     return ResponseEntity.ok(restResponse);
+  }
+
+  @GetMapping("/one/{conversationId}")
+  public ResponseEntity<RestDirectChatInfo> getDirectChatInfo(@PathVariable("conversationId") UUID conversationId) {
+    PublicId conversationPublicId = new PublicId(conversationId);
+
+    DirectChatInfo info = conversationService.getDirectChatInfo(conversationPublicId);
+    RestDirectChatInfo restInfo =  mapper.from(info);
+    return ResponseEntity.ok(restInfo);
   }
 
   @PostMapping("/group")

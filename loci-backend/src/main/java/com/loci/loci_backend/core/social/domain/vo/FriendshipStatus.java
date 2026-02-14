@@ -14,6 +14,10 @@ public record FriendshipStatus(@JsonProperty FriendshipStatusEnum value) impleme
     return value.equals(FriendshipStatusEnum.NOT_CONNECTED);
   }
 
+  public boolean isBlockedByOther() {
+    return value.equals(FriendshipStatusEnum.BLOCKED_BY_THEM);
+  }
+
   public static FriendshipStatus unknownConnection() {
     return new FriendshipStatus(FriendshipStatusEnum.UNKNOWN);
   }

@@ -6,7 +6,7 @@ import lombok.Getter;
 
 @Getter
 public enum ConversationTypeEnum {
-  ONE_TO_ONE("one to one"),
+  ONE_TO_ONE("one_to_one"),
   GROUP("group");
 
   @JsonValue

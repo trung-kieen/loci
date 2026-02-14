@@ -1,10 +1,10 @@
 import { Injectable, computed, signal } from '@angular/core';
-import { IChatError, IConversation } from '../models/chat.model';
+import { IChatError, IDirectConversation } from '../models/chat.model';
 import { IConversationMessage as IConversationMessage, IMessage, ParticipantState } from '../models/message.model';
 import { IPersonalProfile } from '../../user/models/user.model';
 export interface DirectConversationState {
-  currentUser: IPersonalProfile | null;
-  selectedConversation: IConversation | null;
+  // currentUser: IPersonalProfile | null;
+  selectedConversation: IDirectConversation | null;
   messages: IConversationMessage[];
   loading: boolean;
   error: IChatError | null;
@@ -13,7 +13,7 @@ export interface DirectConversationState {
 }
 
 const initialState: DirectConversationState = {
-  currentUser: null,
+  // currentUser: null,
   selectedConversation: null,
   messages: [],
   loading: false,
@@ -30,7 +30,7 @@ export class DirectConversationStateService {
   private state = signal<DirectConversationState>(initialState);
 
   // Computed selectors
-  readonly currentUser = computed(() => this.state().currentUser);
+  // readonly currentUser = computed(() => this.state().currentUser);
   readonly selectedConversation = computed(
     () => this.state().selectedConversation,
   );
@@ -42,14 +42,14 @@ export class DirectConversationStateService {
 
   // Derived computeds
   readonly participant = computed(
-    () => this.state().selectedConversation?.participant,
+    () => this.state().selectedConversation?.participant || null,
   );
   readonly conversationId = computed(
-    () => this.state().selectedConversation?.id,
+    () => this.state().selectedConversation?.conversationId,
   );
-  readonly isParticipantOnline = computed(
-    () => this.state().selectedConversation?.participant.status === 'online',
-  );
+  // readonly isParticipantOnline = computed(
+  //   () => this.state().selectedConversation?.participant.status === 'online',
+  // );
   readonly hasError = computed(() => this.state().error !== null);
   readonly isAnyLoading = computed(
     () =>
@@ -63,7 +63,7 @@ export class DirectConversationStateService {
     this.state.update((state) => ({ ...state, currentUser: user }));
   }
 
-  setSelectedConversation(conversation: IConversation): void {
+  setSelectedConversation(conversation: IDirectConversation): void {
     this.state.update((state) => ({
       ...state,
       selectedConversation: conversation,

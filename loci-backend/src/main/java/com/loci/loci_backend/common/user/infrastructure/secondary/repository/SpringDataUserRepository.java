@@ -80,9 +80,9 @@ public class SpringDataUserRepository implements UserRepository {
 
   // @Override
   // public Page<User> getPageByIds(List<UserDBId> ids, Pageable pageable) {
-  //   List<Long> userIds = ids.stream().map(UserDBId::value).toList();
-  //   Page<UserEntity> entities = repository.findByIdIn(userIds, pageable);
-  //   return userEntityMapper.toDomain(entities);
+  // List<Long> userIds = ids.stream().map(UserDBId::value).toList();
+  // Page<UserEntity> entities = repository.findByIdIn(userIds, pageable);
+  // return userEntityMapper.toDomain(entities);
   // }
 
   @Override
@@ -98,6 +98,11 @@ public class SpringDataUserRepository implements UserRepository {
   @Override
   public Optional<User> getByEmail(UserEmail userEmail) {
     return repository.findByEmail(userEmail.value()).map(userEntityMapper::toDomain);
+  }
+
+  @Override
+  public Optional<User> getByUserDBId(UserDBId id) {
+    return repository.findById(id.value()).map(userEntityMapper::toDomain);
   }
 
 }

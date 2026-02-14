@@ -3,7 +3,7 @@ import { WebApiService } from '../../../core/api/web-api.service';
 import { LoggerService } from '../../../core/services/logger.service';
 import { delay, EMPTY, Observable, of } from 'rxjs';
 import { IMessage } from '../models/message.model';
-import { IChat, IChatParticipant, IPaginationParams, IUserChatList } from '../models/chat.model';
+import { IChat, IChatBaseInfo, IPaginationParams, IUserChatList } from '../models/chat.model';
 
 // TODO: modification
 
@@ -162,12 +162,12 @@ export class ConversationService {
   }
 
   //
-  public getCurrentUser(): Observable<IChatParticipant> {
-    return this.apiService.get<IChatParticipant>('/users/me');
+  public getCurrentUser(): Observable<IChatBaseInfo> {
+    return this.apiService.get<IChatBaseInfo>('/users/me');
   }
 
   public getUser(userId: string) {
-    return this.apiService.get<IChatParticipant>(`/users/${userId}`);
+    return this.apiService.get<IChatBaseInfo>(`/users/${userId}`);
   }
 
   public getMessages(

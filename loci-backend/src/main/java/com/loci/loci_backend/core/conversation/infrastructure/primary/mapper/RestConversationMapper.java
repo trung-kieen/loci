@@ -12,10 +12,12 @@ import com.loci.loci_backend.core.conversation.infrastructure.primary.payload.Re
 import com.loci.loci_backend.core.conversation.infrastructure.primary.payload.RestCreateGroup;
 import com.loci.loci_backend.core.conversation.infrastructure.primary.payload.RestCreatedGroupConversationResponse;
 import com.loci.loci_backend.core.conversation.infrastructure.primary.payload.RestCreatedGroupConversationResponseBuilder;
+import com.loci.loci_backend.core.conversation.infrastructure.primary.payload.RestDirectChatInfo;
 import com.loci.loci_backend.core.conversation.infrastructure.primary.payload.RestGroupChatInfo;
 import com.loci.loci_backend.core.conversation.infrastructure.primary.payload.RestUserChatList;
 import com.loci.loci_backend.core.groups.infrastructure.primary.mapper.MapStructRestGroupMapper;
 import com.loci.loci_backend.core.groups.infrastructure.primary.payload.RestGroupProfile;
+import com.loci.loci_backend.core.messaging.domain.aggregate.DirectChatInfo;
 import com.loci.loci_backend.core.messaging.domain.aggregate.GroupChatInfo;
 
 import org.springframework.data.domain.Page;
@@ -41,6 +43,11 @@ public class RestConversationMapper {
         .chat(chat)
         .group(profile)
         .build();
+  }
+
+
+  public RestDirectChatInfo from(DirectChatInfo chatInfo) {
+    return mapstruct.from(chatInfo);
   }
 
   public RestGroupChatInfo from(GroupChatInfo metadata) {

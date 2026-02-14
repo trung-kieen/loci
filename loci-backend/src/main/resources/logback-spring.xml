@@ -3,9 +3,9 @@
   <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
   <!-- Rolling file appender use for trace log -->
   <appender name="ROLLING" class="ch.qos.logback.core.rolling.RollingFileAppender">
-    <file>logs/logFile-${HOSTNAME:-localhost}-${PID:-0}.log</file>
+    <file>logs/logFile-${HOSTNAME:-localhost}.log</file>
     <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-      <fileNamePattern>logs/logFile-${HOSTNAME:-localhost}-${PID:-0}.%d{yyyy-MM-dd_HH}.%i.log.gz</fileNamePattern>
+      <fileNamePattern>logs/logFile-.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
       <maxFileSize>100MB</maxFileSize>
       <maxHistory>360</maxHistory>
       <totalSizeCap>2GB</totalSizeCap>

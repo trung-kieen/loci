@@ -13,8 +13,10 @@ import com.loci.loci_backend.core.conversation.domain.repository.ConversationRep
 import com.loci.loci_backend.core.conversation.domain.repository.ParticipantRepository;
 import com.loci.loci_backend.core.conversation.domain.service.ConversationAuthenticationProvider;
 import com.loci.loci_backend.core.messaging.domain.aggregate.ConversationMessageList;
+import com.loci.loci_backend.core.messaging.domain.aggregate.ConversationMessageListBuilder;
 import com.loci.loci_backend.core.messaging.domain.aggregate.Message;
 import com.loci.loci_backend.core.messaging.domain.aggregate.MessageCursorQuery;
+import com.loci.loci_backend.core.messaging.domain.aggregate.MessageList;
 import com.loci.loci_backend.core.messaging.domain.repository.MessageRepository;
 
 import org.springframework.transaction.annotation.Transactional;
@@ -28,7 +30,7 @@ import lombok.RequiredArgsConstructor;
 public class MessageManager {
   private final ConversationAuthenticationProvider authenticationProvider;
   private final CurrentUser principal;
-  private final UserRepository UserRepository;
+  private final UserRepository userRepository;
   private final ConversationRepository conversationRepository;
   private final MessageRepository messageRepository;
   private final ParticipantRepository participantRepository;
@@ -48,16 +50,19 @@ public class MessageManager {
     Conversation conversation = conversationRepository.getByPublicId(query.getConversationId())
         .orElseThrow(EntityNotFoundException::new);
     // get current user
-    User user = UserRepository.getByPrincipal(principal).orElseThrow(EntityNotFoundException::new);
+    User user = userRepository.getByPrincipal(principal).orElseThrow(EntityNotFoundException::new);
 
     List<Participant> participants = participantRepository.getParticipantsByConversationId(conversation.getId());
     Participant targetParticipant = participants.stream().filter(p -> p.getUserId().equals(user.getDbId())).findFirst()
+        .orElseThrow(EntityNotFoundException::new);
+    User targetMessagingUser = userRepository.getByUserDBId(targetParticipant.getUserId())
         .orElseThrow(EntityNotFoundException::new);
     // check user is participant to conversation
     // check other user is not block current user in this conversation
     // authenticationProvider.validateUserCanMessage();
     // authenticationProvider.validateUserCanMessage(user, conversation);
-    authenticationProvider.validateUserCanMessage(user.getDbId(), targetParticipant.getUserId());
+    // authenticationProvider.validateUserCanMessage(user.getDbId(),
+    // targetParticipant.getUserId());
 
     // if not throw new UnauthorizationConversationRole
 
@@ -66,16 +71,28 @@ public class MessageManager {
     // query for latest message with latest order as paginate (lazyfetch) with desc
     // order of history
 
+    MessageList messagePage = null;
     if (query.forLastestMessage()) {
-      return messageRepository.getLastestMessages(conversation, query.getLimit(), user);
+      messagePage = messageRepository.getLastestMessages(conversation.getId(), query.getLimit());
     } else {
-      PublicId lastMessageId = query.getLastMessageId().get();
+      PublicId lastMessageId = query.getLastMessageId().orElseGet(null);
       Message lastMessage = messageRepository.getByPublicId(lastMessageId)
           .orElseThrow(EntityNotFoundException::new);
-      return messageRepository.getOlderMessages(lastMessage.getMessageId(), query.getLimit(),
-          user, conversation);
+      messagePage = messageRepository.getOlderMessages(conversation.getId(), lastMessage.getMessageId(),
+          query.getLimit());
 
     }
+
+    ConversationMessageList conversationMessages = ConversationMessageListBuilder.conversationMessageList()
+        .messages(messagePage.getMessages())
+        .hasMore(messagePage.isHasMore())
+        .nextBeforeMessageId(messagePage.getNextBeforeMessageId().orElse(null))
+        .viewerUser(user)
+        .targetMessagingUser(targetMessagingUser)
+        .conversation(conversation)
+        .build();
+
+    return conversationMessages;
 
     // attach information about content, sender, timestamps, attachment if needed
 

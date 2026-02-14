@@ -150,6 +150,7 @@ public class SpringDataConversationRepository implements ConversationRepository 
               conversationIdToPublicId.getOrDefault(new ConversationId(participant.getConversationId()), null))
           .messagingUser(userIdToPublicProfile.getOrDefault(new UserDBId(participant.getUserId()), null))
           .status(new PresenceStatus(presence.getStatus()))
+          .lastSeen(presence.getLastSeen())
           .build();
       return info;
     }).toList();
@@ -199,6 +200,7 @@ public class SpringDataConversationRepository implements ConversationRepository 
         .conversation(conversation)
         .recipientProfile(messagingProfile)
         .status(new PresenceStatus(presence.getStatus()))
+        .lastSeen(presence.getLastSeen())
         .build();
   }
 

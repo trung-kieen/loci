@@ -1,12 +1,21 @@
     <main id="main-content" class="flex h-[calc(100vh-4rem)]">
       <section id="chat-conversation" class="flex-1 bg-white flex flex-col">
 
+
+ <app-chat-header
+  [chat]="chatInfo()"
+  [showBackButton]="true"
+  [features]="singleChatFeatures"
+  (back)="onBack()"
+  (profileClick)="onViewProfile()"
+  (callClick)="onVoiceCall()"
+  (videoClick)="onVideoCall()" />
         <!-- Header -->
-        <app-chat-header
-          [participant]="chatParticipant()"
-          [showBackButton]="true"
-          (back)="onBack()"
-          (profileClick)="onViewProfile()" />
+        <!-- <app-chat-header -->
+        <!--   [participant]="participant()" -->
+        <!--   [showBackButton]="true" -->
+        <!--   (back)="onBack()" -->
+        <!--   (profileClick)="onViewProfile()" /> -->
 
         <!-- Messages -->
         <div
@@ -28,7 +37,7 @@
               [message]="msg"
               [avatarUrl]="getMessageSenderAvatarUrl(msg)"
               [senderName]="getMessageSenderName(msg)"
-              (donwload)="onDownloadAttachment($event)"
+              (download)="onDownloadAttachment($event)"
               (contextMenu)="onMessageContextMenu($event)" />
           }
         </div>

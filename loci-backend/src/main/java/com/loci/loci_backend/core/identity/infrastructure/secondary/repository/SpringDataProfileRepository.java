@@ -91,7 +91,4 @@ public class SpringDataProfileRepository implements ProfileRepository {
     return profileMapper.toPublicProfile(userEntity);
   }
 
-
-
-
 }

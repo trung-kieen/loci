@@ -20,31 +20,32 @@ import lombok.RequiredArgsConstructor;
 public class ConversationMessageEntityMapper {
   private final MessageEntityMapper messageMapper;
 
-  public ConversationMessageList toDomain(List<MessageEntity> messageEntities, Integer pageLimit, User viewerUser, Conversation conversation) {
-    boolean hasMore = pageLimit == messageEntities.size();
-    List<Message> messages = messageMapper.toDomain(messageEntities);
-    PublicId lastMessagePublicId = messages.stream().findFirst().map(Message::getPublicId).orElseGet(null);
-    return ConversationMessageListBuilder.conversationMessageList()
-        .messages(messages)
-        .hasMore(hasMore)
-        .nextBeforeMessageId(lastMessagePublicId)
-        .viewerUser(viewerUser)
-        .conversation(conversation)
-        .build();
+  // public ConversationMessageList toDomain(List<MessageEntity> messageEntities, Integer pageLimit, User viewerUser, Conversation conversation) {
+  //   boolean hasMore = pageLimit == messageEntities.size();
+  //   List<Message> messages = messageMapper.toDomain(messageEntities);
+  //   PublicId lastMessagePublicId = messages.stream().findFirst().map(Message::getPublicId).orElseGet(null);
+  //   return ConversationMessageListBuilder.conversationMessageList()
+  //       .messages(messages)
+  //       .hasMore(hasMore)
+  //       .nextBeforeMessageId(lastMessagePublicId)
+  //       .viewerUser(viewerUser)
+  //       .conversation(conversation)
+  //       .build();
 
-  }
+  // }
 
-  public ConversationMessageList toDomain(Page<MessageEntity> messageEntities, Integer pageLimit, User viewerUser, Conversation conversation) {
-    List<Message> messages = messageMapper.toDomain(messageEntities.getContent());
-    PublicId lastMessagePublicId = messages.stream().findFirst().map(Message::getPublicId).orElseGet(null);
+  // public ConversationMessageList toDomain(Page<MessageEntity> messageEntities, Integer pageLimit, User viewerUser, Conversation conversation) {
+  //   List<Message> messages = messageMapper.toDomain(messageEntities.getContent());
+  //   PublicId lastMessagePublicId = messages.stream().findFirst().map(Message::getPublicId).orElseGet(null);
 
-    return ConversationMessageListBuilder.conversationMessageList()
-        .messages(messages)
-        .hasMore(messageEntities.isLast())
-        .nextBeforeMessageId(lastMessagePublicId)
-        .viewerUser(viewerUser)
-        .conversation(conversation)
-        .build();
-  }
+  //   return ConversationMessageListBuilder.conversationMessageList()
+  //       .messages(messages)
+  //       .hasMore(messageEntities.isLast())
+  //       .nextBeforeMessageId(lastMessagePublicId)
+  //       .viewerUser(viewerUser)
+  //       .targetMessagingUser(targetMessagingUser)
+  //       .conversation(conversation)
+  //       .build();
+  // }
 
 }

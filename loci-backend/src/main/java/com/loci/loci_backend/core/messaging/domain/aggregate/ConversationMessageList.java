@@ -23,6 +23,7 @@ public class ConversationMessageList {
   private List<Message> messages;
   private boolean hasMore;
   private User viewerUser;
+  private User targetMessagingUser;
   private Conversation conversation;
 
   @Nullable
@@ -30,10 +31,11 @@ public class ConversationMessageList {
 
   @Builder(style = BuilderStyle.STAGED)
   public ConversationMessageList(List<Message> messages, boolean hasMore, PublicId nextBeforeMessageId,
-      User viewerUser, Conversation conversation) {
+      User viewerUser, User targetMessagingUser, Conversation conversation) {
     this.messages = messages;
     this.hasMore = hasMore;
     this.nextBeforeMessageId = Optional.ofNullable(nextBeforeMessageId);
+    this.targetMessagingUser = targetMessagingUser;
     this.viewerUser = viewerUser;
     this.conversation = conversation;
   }

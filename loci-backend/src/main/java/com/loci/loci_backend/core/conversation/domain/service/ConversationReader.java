@@ -113,6 +113,7 @@ public class ConversationReader {
         .conversation(conversation)
         .recipientProfile(recipientProfile)
         .status(presence.getStatus())
+        .lastSeen(presence.getLastSeen())
         .build();
 
   }

@@ -22,6 +22,8 @@ public interface UserRepository {
 
   Optional<User> getByEmail(UserEmail userEmail);
 
+  Optional<User> getByUserDBId(UserDBId id);
+
   boolean existByEmail(UserEmail email);
 
   User save(User user);
@@ -37,5 +39,6 @@ public interface UserRepository {
   public User getByPrincipalThrow(CurrentUser principal);
 
   public Optional<User> getByPrincipal(CurrentUser principal);
+
 
 }

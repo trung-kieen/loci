@@ -1,5 +1,7 @@
 package com.loci.loci_backend.core.messaging.domain.aggregate;
 
+import java.time.Instant;
+
 import com.loci.loci_backend.common.user.domain.vo.PublicId;
 import com.loci.loci_backend.core.conversation.domain.aggregate.Conversation;
 import com.loci.loci_backend.core.conversation.domain.vo.ConversationId;
@@ -21,24 +23,28 @@ public class DirectChatInfo {
   // dm conversation
   private PublicProfile messagingUser; // opponent with current user
   private PresenceStatus status;
+  private Instant lastSeen;
 
   @Builder(style = BuilderStyle.STAGED)
   public DirectChatInfo(ConversationId conversationId, PublicId conversationPublicId, PublicProfile messagingUser,
-       PresenceStatus status) {
+      PresenceStatus status, Instant lastSeen) {
     this.conversationId = conversationId;
     this.conversationPublicId = conversationPublicId;
     this.messagingUser = messagingUser;
-    this.status= status;
+    this.status = status;
+    this.lastSeen = lastSeen;
   }
 
   @Builder(style = BuilderStyle.STAGED, className = "DirectChatInfoBuilderForConversation")
-  public static DirectChatInfo from(Conversation conversation, PublicProfile recipientProfile, PresenceStatus status) {
+  public static DirectChatInfo from(Conversation conversation, PublicProfile recipientProfile, PresenceStatus status, Instant lastSeen) {
     return DirectChatInfoBuilder.directChatInfo()
         .conversationId(conversation.getId())
         .conversationPublicId(conversation.getPublicId())
         .messagingUser(recipientProfile)
         .status(status)
+        .lastSeen(lastSeen)
         .build();
+
   }
 
 }
