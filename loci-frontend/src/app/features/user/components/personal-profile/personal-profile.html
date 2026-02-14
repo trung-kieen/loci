@@ -1,191 +1,223 @@
-<section id="profile-panel" class="flex-1 bg-white flex flex-col max-w-full p-10 h-max">
+<section
+  id="profile-panel"
+  class="flex-1 bg-white flex flex-col min-h-screen md:min-h-0
+         w-full max-w-3xl mx-auto
+         px-4 sm:px-6 lg:px-10 py-6 lg:py-10
+         overflow-hidden"
+>
 
   @if (isLoading()) {
-
-  <!-- Loading State -->
-  <div class="flex items-center justify-center h-64">
-    <div class="text-center">
-      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-neutral-500 mx-auto mb-4"></div>
-      <p class="text-neutral-500">Loading profile...</p>
+    <div class="flex items-center justify-center min-h-[50vh]">
+      <div class="text-center">
+        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-neutral-500 mx-auto mb-4"></div>
+        <p class="text-neutral-600 font-medium">Loading profile...</p>
+      </div>
     </div>
-  </div>
   }
+
   @else if (error()) {
-  <!-- Error State -->
-  <div class="max-w-full">
-    <div class="bg-red-50 border border-red-200 rounded-lg p-6 m-10 text-center">
-      <i class="fa-solid fa-exclamation-triangle text-red-500 text-3xl mb-4"></i>
-      <h3 class="text-lg text-red-900 mb-2">Something went wrong</h3>
-      <p class="text-red-700 mb-4">{{ error() }}</p>
-      <button (click)="loadProfile()"
-        class="bg-red-500 text-white px-6 py-2 rounded-lg hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500">
-        Retry
-      </button>
+    <div class="flex items-center justify-center min-h-[50vh] px-4">
+      <div class="bg-red-50 border border-red-200 rounded-xl p-6 text-center max-w-md w-full">
+        <i class="fa-solid fa-exclamation-triangle text-red-500 text-4xl mb-4"></i>
+        <h3 class="text-lg font-semibold text-red-900 mb-2">Something went wrong</h3>
+        <p class="text-red-700 mb-6">{{ error() }}</p>
+        <button
+          (click)="loadProfile()"
+          class="bg-red-600 text-white px-8 py-3 rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors"
+        >
+          Retry
+        </button>
+      </div>
     </div>
-  </div>
-  }@else {
+  }
+
+  @else {
 
     <!-- Header -->
-    <div class="p-6 border-b border-neutral-200">
-      <h2 class="text-2xl text-black">My Profile</h2>
-      <p class="text-neutral-500 mt-1">Manage your personal information and privacy settings</p>
+    <div class="pb-5 border-b border-neutral-200">
+      <h2 class="text-xl text-black">My Profile</h2>
+      <p class="text-neutral-500 mt-1.5 text-sm sm:text-base">
+        Manage your personal information and privacy settings
+      </p>
     </div>
 
-    <!-- Content -->
-    <div class="flex-1 overflow-y-auto p-6">
+    <!-- Scrollable content area -->
+    <div class="flex-1 overflow-y-auto overflow-x-hidden -mx-4 sm:-mx-6 lg:-mx-0 px-4 sm:px-6 lg:px-0 mt-6">
 
-  <form [formGroup]="profileForm" (ngSubmit)="save()">
+      <form [formGroup]="profileForm" class="space-y-6 pb-10">
 
-      <!-- Profile Info -->
-      <div class="bg-white border border-neutral-200 rounded-lg p-6 mb-6">
-        <div class="flex items-center space-x-6 mb-6">
-          <div class="relative">
-    <app-avatar
-      size="big"
-      [src]="profileForm.value.profilePictureUrl || ''"
-      [alt]="profileForm.value.firstname || ''"
-      initials="JD"
-      [showOnline]="true"
-      (imageSelected)="onImageSelected($event)"
-    ></app-avatar>
-          <!-- <app-avatar size="big" [src]="profileForm.value.profilePictureUrl || ''" alt="avatar1" [showOnline]="false" /> -->
-            <!-- <img [src]="profileForm.value.profilePictureUrl" alt="Profile Avatar" class="w-20 h-20 rounded-full" (imageSelected)="handleUploadFile"> -->
+        <!-- Profile Info Card -->
+        <div class="bg-white border border-neutral-200 rounded-xl shadow-sm p-5 sm:p-6">
 
-            <!-- <button type="button" -->
-            <!--   class="absolute -bottom-1 -right-1 bg-neutral-500 text-white p-2 rounded-full hover:bg-neutral-600"> -->
-            <!--   <i class="fa-solid fa-camera text-sm"></i> -->
-            <!-- </button> -->
-          </div>
-
-          <div class="flex-1">
-            <h3 class="text-lg text-black">Profile Photo</h3>
-            <p class="text-neutral-500 text-sm">Click the camera icon to update your avatar</p>
-          </div>
-        </div>
-
-        <div class="space-y-4">
-
-          <!-- Full name -->
-          <div>
-            <label class="block text-sm text-neutral-700 mb-2">First Name</label>
-            <input type="text" formControlName="firstname"
-              class="w-full px-3 py-2 border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-neutral-500">
-          </div>
-
-          <div>
-            <label class="block text-sm text-neutral-700 mb-2">Last Name</label>
-            <input type="text" formControlName="lastname"
-              class="w-full px-3 py-2 border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-neutral-500">
-          </div>
-
-
-
-          <!-- Username -->
-          <div>
-            <label class="block text-sm text-neutral-700 mb-2">Username</label>
-            <div class="flex items-center space-x-2">
-              <span class="text-neutral-500">&#64;</span>
-              <input type="text" formControlName="username"
-                class="flex-1 px-3 py-2 border border-neutral-200 rounded-lg bg-neutral-50" readonly [value]="profileForm.value.username">
+          <div class="flex flex-col sm:flex-row sm:items-center gap-5 sm:gap-6 mb-6">
+            <div class="relative shrink-0">
+              <app-avatar
+                size="big"
+                [src]="profileForm.value.profilePictureUrl || ''"
+                [alt]="profileForm.value.firstname || 'User'"
+                initials="JD"
+                [showOnline]="true"
+                (imageSelected)="onImageSelected($event)"
+              ></app-avatar>
             </div>
-            <p class="text-xs text-neutral-500 mt-1">Username cannot be changed</p>
-          </div>
-
-          <!-- Email -->
-          <div>
-            <label class="block text-sm text-neutral-700 mb-2">Email Address</label>
-            <input type="email" formControlName="emailAddress"
-              class="w-full px-3 py-2 border border-neutral-200 rounded-lg bg-neutral-50" readonly>
-            <p class="text-xs text-neutral-500 mt-1">Contact support to change email</p>
-          </div>
-
-        </div>
-
-        <div class="flex justify-end mt-6">
-          <button (click)="save()"
-            class="bg-neutral-500 text-white px-6 py-2 rounded-lg hover:bg-neutral-600 focus:outline-none focus:ring-2 focus:ring-neutral-500">
-            Save Changes
-          </button>
-        </div>
-      </div>
-
-      <!-- Activity Status -->
-      <div class="bg-white border border-neutral-200 rounded-lg p-6 mb-6">
-        <h3 class="text-lg text-black mb-4">Activity Status</h3>
-        <div class="flex items-center justify-between">
-          <div>
-            <p class="text-sm text-neutral-700">Show when I'm active</p>
-            <p class="text-xs text-neutral-500">Let others see when you were last active</p>
-          </div>
-
-          <label class="relative inline-flex items-center cursor-pointer">
-            <input type="checkbox" formControlName="activityStatus" class="sr-only peer">
-            <div
-              class="w-11 h-6 bg-neutral-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-neutral-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-neutral-500">
-            </div>
-          </label>
-        </div>
-      </div>
-
-  </form>
-
-  <form [formGroup]="settingForm" (ngSubmit)="saveSettings()">
-      <!-- Privacy Settings -->
-      <div id="privacy" class="bg-white border border-neutral-200 rounded-lg p-6">
-        <h3 class="text-lg text-black mb-4">Privacy Settings</h3>
-
-        <div class="space-y-4">
-
-          <!-- Last Seen -->
-          <div class="flex items-center justify-between">
             <div>
-              <p class="text-sm text-neutral-700">Last Seen</p>
-              <p class="text-xs text-neutral-500">Control who can see when you were last online</p>
+              <h3 class="text-lg font-medium text-gray-900">Profile Photo</h3>
+              <p class="text-sm text-neutral-500 mt-1">
+                Tap the camera icon to update your avatar
+              </p>
             </div>
-
-            <select formControlName="lastSeenSetting" (change)="saveSettings()"
-              class="px-3 py-2 border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-neutral-500">
-              <option>Everyone</option>
-              <option>Contacts Only</option>
-              <option>Nobody</option>
-            </select>
           </div>
 
-          <!-- Friend requests -->
-          <div class="flex items-center justify-between">
+          <div class="space-y-5">
             <div>
-              <p class="text-sm text-neutral-700">Friend Requests</p>
-              <p class="text-xs text-neutral-500">Who can send you friend requests</p>
+              <label class="block text-sm font-medium text-neutral-700 mb-1.5">First Name</label>
+              <input
+                type="text"
+                formControlName="firstname"
+                class="w-full px-4 py-3 border border-neutral-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-neutral-400 text-base"
+                placeholder="Your first name"
+              />
             </div>
 
-            <select formControlName="friendRequests" (change)="saveSettings()"
-              class="px-3 py-2 border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-neutral-500">
-              <option>Everyone</option>
-              <option>Friends of Friends</option>
-              <option>Nobody</option>
-            </select>
-          </div>
-
-          <!-- Profile Visibility -->
-          <div class="flex items-center justify-between">
             <div>
-              <p class="text-sm text-neutral-700">Profile Visibility</p>
-              <p class="text-xs text-neutral-500">Control who can view your profile information</p>
+              <label class="block text-sm font-medium text-neutral-700 mb-1.5">Last Name</label>
+              <input
+                type="text"
+                formControlName="lastname"
+                class="w-full px-4 py-3 border border-neutral-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-neutral-400 text-base"
+                placeholder="Your last name"
+              />
             </div>
 
-            <label class="relative inline-flex items-center cursor-pointer">
-              <input (change)="saveSettings()" type="checkbox" formControlName="profileVisibility" class="sr-only peer">
-              <div
-                class="w-11 h-6 bg-neutral-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-neutral-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-neutral-500">
+            <div>
+              <label class="block text-sm font-medium text-neutral-700 mb-1.5">Username</label>
+              <div class="flex items-center border border-neutral-200 rounded-lg bg-neutral-50 overflow-hidden">
+                <span class="px-4 text-neutral-500 font-medium">@</span>
+                <input
+                  type="text"
+                  formControlName="username"
+                  class="flex-1 px-3 py-3 bg-transparent focus:outline-none text-base"
+                  readonly
+                />
               </div>
+              <p class="text-xs text-neutral-500 mt-1.5">Username cannot be changed</p>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-neutral-700 mb-1.5">Email Address</label>
+              <input
+                type="email"
+                formControlName="emailAddress"
+                class="w-full px-4 py-3 border border-neutral-200 rounded-lg bg-neutral-50 text-base cursor-not-allowed"
+                readonly
+              />
+              <p class="text-xs text-neutral-500 mt-1.5">Contact support to change email</p>
+            </div>
+          </div>
+
+          <div class="mt-8 flex justify-end">
+            <button
+              type="button"
+              (click)="save()"
+              class="w-full sm:w-auto min-h-[48px] px-8 py-3 bg-neutral-700 text-white font-medium rounded-lg hover:bg-neutral-800 focus:outline-none focus:ring-2 focus:ring-neutral-500 transition-colors"
+            >
+              Save Changes
+            </button>
+          </div>
+
+        </div>
+
+        <!-- Activity Status -->
+        <div class="bg-white border border-neutral-200 rounded-xl shadow-sm p-5 sm:p-6">
+          <h3 class="text-lg font-medium text-gray-900 mb-4">Activity Status</h3>
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm text-neutral-700 font-medium">Show when I'm active</p>
+              <p class="text-xs text-neutral-500 mt-0.5">Let others see when you were last active</p>
+            </div>
+            <label class="relative inline-flex items-center cursor-pointer">
+              <input
+                type="checkbox"
+                formControlName="activityStatus"
+                class="sr-only peer"
+              />
+              <div
+                class="w-11 h-6 bg-neutral-200 rounded-full peer peer-checked:bg-neutral-600
+                       after:content-[''] after:absolute after:top-1 after:left-1 after:bg-white
+                       after:rounded-full after:h-4 after:w-4 after:transition-all
+                       peer-checked:after:translate-x-5"
+              ></div>
             </label>
           </div>
-
         </div>
-      </div>
 
-        </form>
-      <!-- } -->
+      </form>
+
+      <form [formGroup]="settingForm" class="space-y-6 pb-12">
+
+        <!-- Privacy Settings -->
+        <div class="bg-white border border-neutral-200 rounded-xl shadow-sm p-5 sm:p-6">
+          <h3 class="text-lg font-medium text-gray-900 mb-5">Privacy Settings</h3>
+
+          <div class="space-y-6">
+            <div class="flex items-center justify-between gap-4">
+              <div>
+                <p class="text-sm text-neutral-700 font-medium">Last Seen</p>
+                <p class="text-xs text-neutral-500 mt-0.5">Control who can see when you were last online</p>
+              </div>
+              <select
+                formControlName="lastSeenSetting"
+                (change)="saveSettings()"
+                class="min-w-[140px] px-4 py-2.5 border border-neutral-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-neutral-400 bg-white text-sm"
+              >
+                <option>Everyone</option>
+                <option>Contacts Only</option>
+                <option>Nobody</option>
+              </select>
+            </div>
+
+            <div class="flex items-center justify-between gap-4">
+              <div>
+                <p class="text-sm text-neutral-700 font-medium">Friend Requests</p>
+                <p class="text-xs text-neutral-500 mt-0.5">Who can send you friend requests</p>
+              </div>
+              <select
+                formControlName="friendRequests"
+                (change)="saveSettings()"
+                class="min-w-[140px] px-4 py-2.5 border border-neutral-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-neutral-400 bg-white text-sm"
+              >
+                <option>Everyone</option>
+                <option>Friends of Friends</option>
+                <option>Nobody</option>
+              </select>
+            </div>
+
+            <div class="flex items-center justify-between gap-4">
+              <div>
+                <p class="text-sm text-neutral-700 font-medium">Profile Visibility</p>
+                <p class="text-xs text-neutral-500 mt-0.5">Control who can view your profile information</p>
+              </div>
+              <label class="relative inline-flex items-center cursor-pointer">
+                <input
+                  type="checkbox"
+                  formControlName="profileVisibility"
+                  (change)="saveSettings()"
+                  class="sr-only peer"
+                />
+                <div
+                  class="w-11 h-6 bg-neutral-200 rounded-full peer peer-checked:bg-neutral-600
+                         after:content-[''] after:absolute after:top-1 after:left-1 after:bg-white
+                         after:rounded-full after:h-4 after:w-4 after:transition-all
+                         peer-checked:after:translate-x-5"
+                ></div>
+              </label>
+            </div>
+          </div>
+        </div>
+
+      </form>
+
     </div>
+
   }
 </section>

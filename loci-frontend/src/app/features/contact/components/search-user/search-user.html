@@ -1,62 +1,75 @@
-<main id="main-content" class="flex h-[calc(100vh-4rem)]">
+<main id="main-content" class="flex flex-col min-h-screen bg-gray-50">
 
+  <section id="search-users-panel" class="flex-1 flex flex-col bg-white">
 
-  <section id="search-users-panel" class="flex-1 bg-white flex flex-col">
-    <!-- Header -->
-    <div class="p-6 border-b border-neutral-200">
-      <div class="flex items-center justify-between">
+    <!-- Header - sticky on mobile -->
+    <div class="sticky top-0 z-10 bg-white border-b border-neutral-200 px-4 py-5 sm:px-6">
+      <div class="flex items-center ">
+        <!-- <button type="button" class="py-2 px-10 -mr-2 text-neutral-500 hover:text-neutral-700 active:text-neutral-900"> -->
+        <!--   <i class="fa-solid fa-arrow-left text-xl"></i> -->
+        <!-- </button> -->
         <div>
-          <h2 class="text-2xl text-black">Search Users</h2>
-          <p class="text-neutral-500 mt-1">Find and connect with new people</p>
+          <h2 class="text-xl text-black">Search Users</h2>
+          <p class="text-sm sm:text-base text-neutral-500 mt-0.5">
+            Find and connect with new people
+          </p>
         </div>
-        <button type="button" class="text-neutral-400 hover:text-neutral-600">
-          <i class="fa-solid fa-arrow-left text-xl"></i>
-        </button>
       </div>
 
-      <div class="mt-6">
-        <div class="relative max-w-2xl m-auto">
-          <input type="text" placeholder="Search by username, email, or name..."
-            class="w-full pl-10 pr-4 py-3 border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-neutral-500 text-base"
-            [formControl]="searchControl" />
-          <i class="fa-solid fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-neutral-400"></i>
+      <!-- Search input -->
+      <div class="mt-5">
+        <div class="relative">
+          <input
+            type="text"
+            placeholder="Search by username, email, or name..."
+            class="w-full pl-11 pr-4 py-3.5 bg-white border border-neutral-300 rounded-xl text-base placeholder-neutral-400 focus:outline-none focus:border-neutral-500 focus:ring-1 focus:ring-neutral-400 transition"
+            [formControl]="searchControl"
+          />
+          <i class="fa-solid fa-search absolute left-4 top-1/2 -translate-y-1/2 text-neutral-400 text-lg"></i>
         </div>
       </div>
     </div>
 
-    <!-- Results area -->
-    <div class="flex-1 overflow-y-auto px-48 py-8">
-      <div class="max-w-2xl m-auto">
+    <!-- Scrollable results area -->
+    <div class="flex-1 overflow-y-auto overscroll-contain px-4 py-6 sm:px-8 md:px-12 lg:px-16">
+
+      <!-- Content wrapper with responsive max-width -->
+      <div class="mx-auto w-full max-w-screen-sm lg:max-w-3xl xl:max-w-4xl">
 
         @if (loading()) {
-        <!-- loading -->
-        <div class="flex items-center justify-center py-8">
-          <div class="flex items-center space-x-3">
-            <div class="w-6 h-6 border-2 border-neutral-300 border-t-neutral-600 rounded-full animate-spin"></div>
-            <span class="text-neutral-500">Searching users...</span>
-          </div>
-        </div>
-        } @else if (users() === null || users().length === 0 || searchControl.value.trim().length) {
-        <!-- empty -->
-        <div class="bg-white border border-neutral-200 rounded-lg p-8 text-center">
-          <div class="w-16 h-16 bg-neutral-100 rounded-full flex items-center justify-center mx-auto mb-4">
-            <i class="fa-solid fa-search text-neutral-400 text-xl"></i>
-          </div>
-          <h3 class="text-lg text-black mb-2">No users found</h3>
-          <p class="text-neutral-500">Try adjusting your search terms or check the spelling</p>
-        </div>
-        } @else {
-        <!-- list -->
-        <div class="space-y-4">
-          @for (user of users(); track user.userId) {
-            <div class="m-4">
-              <app-contact-list-item [user]="user" (addFriend)="onAddFriend($event)" />
+          <div class="flex items-center justify-center py-12">
+            <div class="flex items-center gap-3">
+              <div class="w-7 h-7 border-3 border-neutral-200 border-t-neutral-600 rounded-full animate-spin"></div>
+              <span class="text-neutral-600 font-medium">Searching users...</span>
             </div>
-          }
-        </div>
+          </div>
+        } @else if (!users() || users().length === 0) {
+          <!-- empty state -->
+          <div class="mt-10 bg-white border border-neutral-200 rounded-2xl p-8 sm:p-10 text-center">
+            <div class="w-20 h-20 bg-neutral-100 rounded-full flex items-center justify-center mx-auto mb-6">
+              <i class="fa-solid fa-search text-neutral-400 text-3xl"></i>
+            </div>
+            <h3 class="text-xl font-semibold text-black mb-3">No users found</h3>
+            <p class="text-neutral-500 leading-relaxed max-w-md mx-auto">
+              Try adjusting your search terms or check the spelling
+            </p>
+          </div>
+        } @else {
+          <!-- results list -->
+          <div class="space-y-4 sm:space-y-5">
+            @for (user of users(); track user.userId) {
+              <div class="transform transition-all duration-150 ">
+                <app-contact-list-item
+                  [user]="user"
+                  (addFriend)="onAddFriend($event)"
+                />
+              </div>
+            }
+          </div>
         }
 
       </div>
     </div>
+
   </section>
 </main>

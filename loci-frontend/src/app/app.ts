@@ -30,6 +30,12 @@ export class App {
         }
       });
   }
+  openSettings(){
+    this.router.navigate(['/user/settings']);
+  }
+  openNofications(){
+    this.router.navigate(['/notifications']);
+  }
 
   toggleSidebar() {
     this.isSidebarOpen.update((value) => !value);
