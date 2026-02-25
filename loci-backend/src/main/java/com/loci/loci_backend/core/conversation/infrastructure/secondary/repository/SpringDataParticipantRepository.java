@@ -5,9 +5,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import javax.management.RuntimeOperationsException;
-import javax.naming.OperationNotSupportedException;
-
 import com.loci.loci_backend.common.collection.Pages;
 import com.loci.loci_backend.common.ddd.infrastructure.stereotype.SecondaryPort;
 import com.loci.loci_backend.common.user.domain.aggregate.User;
@@ -24,6 +21,7 @@ import com.loci.loci_backend.core.conversation.infrastructure.secondary.mapper.C
 import com.loci.loci_backend.core.conversation.infrastructure.secondary.mapper.ParticipantEntityMapper;
 import com.loci.loci_backend.core.conversation.infrastructure.secondary.vo.UserConversationJpaVO;
 import com.loci.loci_backend.core.groups.domain.vo.GroupId;
+import com.loci.loci_backend.core.messaging.domain.vo.MessageId;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -67,7 +65,7 @@ public class SpringDataParticipantRepository implements ParticipantRepository {
   }
 
   @Override
-  public Participant findRecipientOfUserInConversation(User requestUser, Conversation conversation) {
+  public Participant getParticipantForUserInConversation(User requestUser, Conversation conversation) {
     ConversationParticipantEntity participantEntity = repository.getConnectedParticipant(conversation.getId().value(),
         requestUser.getDbId().value()).orElseThrow(EntityNotFoundException::new);
     return mapper.toDomain(participantEntity);
@@ -93,7 +91,7 @@ public class SpringDataParticipantRepository implements ParticipantRepository {
   }
 
   @Override
-  public Participant findTargetMessagingUserInDirectConversation(User requestUser, Conversation conversation) {
+  public Participant getTargetMessagingParticipantInDirectConversation(User requestUser, Conversation conversation) {
     if (conversation.isGroup()) {
       throw new RuntimeException("Method not support other type of conversation");
     }
@@ -109,6 +107,14 @@ public class SpringDataParticipantRepository implements ParticipantRepository {
     List<ConversationParticipantEntity> participantEntities = repository
         .findAllByConversationId(conversationId.value());
     return mapper.toDomain(participantEntities);
+  }
+
+  @Override
+  public Participant setLastReadMessage(Participant senderAsParticipant, MessageId messageId) {
+    ConversationParticipantEntity entity = mapper.from(senderAsParticipant);
+    entity.setLastReadMessageId(messageId.value());
+    ConversationParticipantEntity  savedEntity =  repository.save(entity);
+    return mapper.toDomain(savedEntity);
   }
 
 }

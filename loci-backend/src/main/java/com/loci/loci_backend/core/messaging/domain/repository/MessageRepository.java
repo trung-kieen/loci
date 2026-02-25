@@ -34,4 +34,6 @@ public interface MessageRepository {
   MessageList getLastestMessages(ConversationId conversationId, MessageLimit limit);
 
   MessageList getOlderMessages(ConversationId conversationId, MessageId beforeMessageId, MessageLimit limit);
+
+  Message save(Message newMessage);
 }

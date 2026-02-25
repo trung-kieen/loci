@@ -14,6 +14,7 @@ import com.loci.loci_backend.core.conversation.domain.vo.ConversationType;
 import com.loci.loci_backend.core.conversation.domain.vo.ParticipantRole;
 import com.loci.loci_backend.core.conversation.infrastructure.secondary.enumeration.ConversationTypeEnum;
 import com.loci.loci_backend.core.groups.domain.factory.ConversationParticipantFactory;
+import com.loci.loci_backend.core.messaging.domain.aggregate.Message;
 import com.loci.loci_backend.core.messaging.domain.vo.MessageId;
 
 import lombok.Data;
@@ -182,6 +183,11 @@ public class Conversation {
   public Set<Participant> getParticipants() {
     return Collections.unmodifiableSet(participants);
   }
+
+  public void markLatestMessage(Message message) {
+    this.setLastMessageId(message.getMessageId());
+  }
+
   //
   // public List<Message> getMessages() {
   // return Collections.unmodifiableList(messages);

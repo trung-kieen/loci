@@ -40,6 +40,7 @@ import com.loci.loci_backend.core.messaging.domain.aggregate.GroupChatInfo;
 import com.loci.loci_backend.core.messaging.domain.aggregate.GroupChatInfoBuilderForConversation;
 import com.loci.loci_backend.core.messaging.domain.aggregate.Message;
 import com.loci.loci_backend.core.messaging.domain.repository.MessageRepository;
+import com.loci.loci_backend.core.messaging.domain.vo.MessageId;
 import com.loci.loci_backend.core.social.domain.vo.FriendshipStatus;
 
 import org.springframework.data.domain.Page;
@@ -204,71 +205,75 @@ public class SpringDataConversationRepository implements ConversationRepository 
         .build();
   }
 
-  private GroupChatInfo getGroupChatInfo(Conversation conversation, User currentUser) {
+  // private GroupChatInfo getGroupChatInfo(Conversation conversation, User currentUser) {
 
-    // TODO:
-    GroupProfile group = null;
+  //   // TODO:
+  //   GroupProfile group = null;
 
-    ParticipantCount participantCount = null;
-    return GroupChatInfoBuilderForConversation.groupChatInfo()
-        .conversation(conversation)
-        .groupProfile(group)
-        .participantCount(participantCount)
-        .build();
+  //   ParticipantCount participantCount = null;
+  //   return GroupChatInfoBuilderForConversation.groupChatInfo()
+  //       .conversation(conversation)
+  //       .groupProfile(group)
+  //       .participantCount(participantCount)
+  //       .build();
 
-    // TODO: redis
-    // boolean isOnline = false;
-    //
-    // ConversationParticipantEntity messagingParticipant = participantRepository
-    // .getConnectedParticipant(conversation.getId().value(),
-    // currentUser.getDbId().value())
-    // .orElseThrow(EntityNotFoundException::new);
-    //
-    // UserEntity messagingUser =
-    // userRepository.findById(messagingParticipant.getUserId())
-    // .orElseThrow(EntityNotFoundException::new);
-    //
-    // PublicProfile messagingProfile =
-    // identityMapper.toPublicProfile(messagingUser, FriendshipStatus.connected());
-    //
-    // return DirectChatBuilderForConversation.directChatInfo()
-    // .conversation(conversation)
-    // .messagingUser(messagingProfile)
-    // .isOnline(isOnline)
-    // .build();
-  }
+  //   // TODO: redis
+  //   // boolean isOnline = false;
+  //   //
+  //   // ConversationParticipantEntity messagingParticipant = participantRepository
+  //   // .getConnectedParticipant(conversation.getId().value(),
+  //   // currentUser.getDbId().value())
+  //   // .orElseThrow(EntityNotFoundException::new);
+  //   //
+  //   // UserEntity messagingUser =
+  //   // userRepository.findById(messagingParticipant.getUserId())
+  //   // .orElseThrow(EntityNotFoundException::new);
+  //   //
+  //   // PublicProfile messagingProfile =
+  //   // identityMapper.toPublicProfile(messagingUser, FriendshipStatus.connected());
+  //   //
+  //   // return DirectChatBuilderForConversation.directChatInfo()
+  //   // .conversation(conversation)
+  //   // .messagingUser(messagingProfile)
+  //   // .isOnline(isOnline)
+  //   // .build();
+  // }
+
+  // @Override
+  // public Optional<Chat> getChatInfo(Conversation conversation, User currentUser) {
+
+  //   UnreadCount unreadCount = messageRepository.countUnreadForConversation(conversation.getId(),
+  //       conversation.getLastMessageId());
+
+  //   Message lastMessage = messageRepository.getById(conversation.getLastMessageId())
+  //       .orElseThrow(EntityNotFoundException::new);
+
+  //   if (conversation.isDirectMessaging()) {
+  //     DirectChatInfo chatInfo = getDirectChatInfo(conversation, currentUser);
+
+  //     // User messagingUser = identityMapper.toPublicProfile(currentUser);
+
+  //     // DirectChatInfo directChatMetadata =
+  //     // com.loci.loci_backend.core.messaging.domain.aggregate.ConversationToDirectChatBuilder.directChatInfo()
+  //     // .conversation(conversation)
+  //     // .messagingUser(currentUser)
+  //   } else {
+
+  //     GroupChatInfo groupInfo = getGroupChatInfo(conversation, currentUser);
+  //   }
+
+  //   // TODO Auto-generated method stub
+  //   throw new UnsupportedOperationException("Unimplemented method 'getChatInfo'");
+  // }
+
 
   @Override
-  public Optional<Chat> getChatInfo(Conversation conversation, User currentUser) {
+  public Conversation markLatestMessage(Conversation conversation, MessageId messageId) {
+    ConversationEntity entity = mapper.from(conversation);
+    entity.setLastMessageId(messageId.value());
+    ConversationEntity savedEntity = jpaConversationRepository.save(entity);
+    return mapper.toDomain(savedEntity);
 
-    UnreadCount unreadCount = messageRepository.countUnreadForConversation(conversation.getId(),
-        conversation.getLastMessageId());
-
-    Message lastMessage = messageRepository.getById(conversation.getLastMessageId())
-        .orElseThrow(EntityNotFoundException::new);
-
-    if (conversation.isDirectMessaging()) {
-      DirectChatInfo chatInfo = getDirectChatInfo(conversation, currentUser);
-
-      // User messagingUser = identityMapper.toPublicProfile(currentUser);
-
-      // DirectChatInfo directChatMetadata =
-      // com.loci.loci_backend.core.messaging.domain.aggregate.ConversationToDirectChatBuilder.directChatInfo()
-      // .conversation(conversation)
-      // .messagingUser(currentUser)
-    } else {
-
-      GroupChatInfo groupInfo = getGroupChatInfo(conversation, currentUser);
-    }
-
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'getChatInfo'");
-  }
-
-  @Override
-  public UserChatList getChatListByConversations(Page<UserConversation> userConversations, UserDBId userId) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'buildUserChatList'");
   }
 
 }

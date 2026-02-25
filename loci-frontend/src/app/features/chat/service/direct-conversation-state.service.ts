@@ -10,6 +10,7 @@ export interface DirectConversationState {
   error: IChatError | null;
   sendingMessage: boolean;
   uploadingFile: boolean;
+  selectedFile: File[];
 }
 
 const initialState: DirectConversationState = {
@@ -20,6 +21,7 @@ const initialState: DirectConversationState = {
   error: null,
   sendingMessage: false,
   uploadingFile: false,
+  selectedFile: []
 };
 
 @Injectable({
@@ -70,6 +72,12 @@ export class DirectConversationStateService {
     }));
   }
 
+
+  setSelectedFile(files: File[]) {
+    this.state.update((state) => ({
+      ...state, selectedFile: files
+    }))
+  }
   setMessages(messages: IConversationMessage[]): void {
     this.state.update((state) => ({ ...state, messages }));
   }

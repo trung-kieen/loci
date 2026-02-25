@@ -13,6 +13,7 @@ import com.loci.loci_backend.core.conversation.domain.aggregate.UserConversation
 import com.loci.loci_backend.core.conversation.domain.vo.ConversationId;
 import com.loci.loci_backend.core.messaging.domain.aggregate.DirectChatInfo;
 import com.loci.loci_backend.core.messaging.domain.aggregate.GroupChatInfo;
+import com.loci.loci_backend.core.messaging.domain.vo.MessageId;
 
 import org.springframework.data.domain.Page;
 
@@ -31,7 +32,8 @@ public interface ConversationRepository {
 
   public Optional<Conversation> getByPublicId(PublicId conversationId);
 
-  public Optional<Chat> getChatInfo(Conversation conversation, User currentUser);
+  // public Optional<Chat> getChatInfo(Conversation conversation, User currentUser);
 
-  public UserChatList getChatListByConversations(Page<UserConversation> userConversations, UserDBId userId);
+
+  public Conversation markLatestMessage(Conversation conversation, MessageId messageId);
 }

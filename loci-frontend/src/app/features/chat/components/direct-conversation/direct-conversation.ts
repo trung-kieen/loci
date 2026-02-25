@@ -32,6 +32,7 @@ import { ErrorAlert } from '../shared/error-alert/error-alert';
 import { DirectConversationStateService } from '../../service/direct-conversation-state.service';
 import { ChatInfo, IChatError } from '../../models/chat.model';
 import { IAttachment, IConversationMessage, ICreateMessage, IMessage } from '../../models/message.model';
+import { FriendshipStatus } from '../../../contact/models/contact.model';
 
 @Component({
   selector: 'app-direct-conversation',
@@ -59,6 +60,15 @@ export class DirectConversation implements OnInit {
   // ViewChildren
   messageArea = viewChild.required<ElementRef<HTMLDivElement>>('messageArea');
 
+  // bind signal
+  readonly messages = this.state.messages;
+
+  uiError = computed<IChatError | null>(() => {
+    const err = this.state.error();
+    return err ? { ...err } : null;
+  });
+
+  readonly chatInfo: Signal<ChatInfo | null> = this.state.participant;
 
 
   ngOnInit(): void {
@@ -101,15 +111,6 @@ export class DirectConversation implements OnInit {
 
 
 
-  // bind signal
-  readonly messages = this.state.messages;
-
-  uiError = computed<IChatError | null>(() => {
-    const err = this.state.error();
-    return err ? { ...err } : null;
-  });
-
-  readonly chatInfo: Signal<ChatInfo | null> = this.state.participant;
 
 
   // chatInfo = computed<ISingleChatInfo | null>(() => {
@@ -194,6 +195,15 @@ export class DirectConversation implements OnInit {
         tap(({ participant, messages }) => {
           // if (currentUser) this.state.setCurrentUser(currentUser);
 
+          if (participant.messagingUser.connectionStatus == FriendshipStatus.BLOCKED) {
+
+            this.state.setError({
+              message: "You are current blocked by this user",
+              description: "Unable to send message in this conversation",
+              type: 'blocked'
+            })
+
+          }
           console.log("Receive messages");
           console.log(messages.messages);
           if (participant && messages) {
@@ -326,7 +336,7 @@ export class DirectConversation implements OnInit {
         tap(sent => {
           if (sent) {
             this.state.addMessage(sent);
-            this.triggerAutoResponse(conversationId);
+            // this.triggerAutoResponse(conversationId);
           }
         }),
         catchError(error => {
@@ -369,6 +379,9 @@ export class DirectConversation implements OnInit {
     }
 
     this.state.setUploadingFile(true);
+    this.state.setSelectedFile([req.file])
+    this.state.setUploadingFile(false);
+    console.log("file", this.state.getState().selectedFile)
 
     this.apiService.uploadAttachment(conversationId, req.file)
       .pipe(

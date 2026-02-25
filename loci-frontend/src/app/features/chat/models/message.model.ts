@@ -3,6 +3,7 @@ export interface IAttachment {
   fileName: string;      // Original filename
   fileType: string;      // MIME type (e.g., 'image/jpeg', 'application/pdf')
   fileSize: number;      // Size in bytes
+  id: string;
 }
 
 
@@ -39,7 +40,8 @@ export interface ISendMessageRequest {
   conversationId: string;
   content: string;
   type: MessageType;
-  attachmentId?: string;
+  attachment?: File;
+  // attachmentId?: string;
 }
 
 export interface IMessageStatusUpdate {
@@ -52,6 +54,7 @@ export interface ICreateMessage {
   content: string;
   type: MessageType;
   attachmentId?: string;
+  attachments?: File[];
 }
 
 

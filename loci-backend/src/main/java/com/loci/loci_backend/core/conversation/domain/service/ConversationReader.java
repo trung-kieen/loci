@@ -105,7 +105,7 @@ public class ConversationReader {
   public DirectChatInfo getConversationInfo(Conversation conversation, User currentUser) {
     UserPresence presence = userPresenceRepository.findByUserId(currentUser.getDbId());
 
-    Participant recipient = participantRepository.findTargetMessagingUserInDirectConversation(currentUser, conversation);
+    Participant recipient = participantRepository.getTargetMessagingParticipantInDirectConversation(currentUser, conversation);
 
     PublicProfile recipientProfile = profileRepository.findPublicProfileById(recipient.getUserId());
 

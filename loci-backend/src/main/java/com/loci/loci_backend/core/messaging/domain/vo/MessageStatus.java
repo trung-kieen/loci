@@ -15,4 +15,8 @@ public record MessageStatus(
     return messageState().ordinal() < newStatus.ordinal();
   }
 
+  public static MessageStatus forNew(){
+    return new MessageStatus(MessageState.PREPARE, Instant.now());
+  }
+
 }

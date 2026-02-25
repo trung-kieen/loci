@@ -5,11 +5,10 @@ import com.loci.loci_backend.common.user.domain.vo.UserDBId;
 import com.loci.loci_backend.common.validation.domain.ResourceNotFoundException;
 import com.loci.loci_backend.core.conversation.domain.aggregate.Conversation;
 import com.loci.loci_backend.core.conversation.domain.aggregate.Participant;
-import com.loci.loci_backend.core.conversation.domain.exception.UserNotConnectedException;
 import com.loci.loci_backend.core.conversation.domain.exception.UserNotInConversationException;
 import com.loci.loci_backend.core.conversation.domain.repository.ParticipantRepository;
 import com.loci.loci_backend.core.discovery.domain.repository.UserConnectionResolver;
-import com.loci.loci_backend.core.messaging.domain.exceptions.UserIsBlockedByOtherException;
+import com.loci.loci_backend.core.messaging.domain.exception.UserIsBlockedByOtherException;
 import com.loci.loci_backend.core.social.domain.vo.FriendshipStatus;
 
 import org.apache.commons.lang3.NotImplementedException;
@@ -81,7 +80,7 @@ public class ConversationAuthenticationProvider {
     } else {
 
       // direct messaging converstaion
-      Participant recipient = participantRepository.findTargetMessagingUserInDirectConversation(user, conversation);
+      Participant recipient = participantRepository.getTargetMessagingParticipantInDirectConversation(user, conversation);
       validateUserCanMessage(user.getDbId(), recipient.getUserId());
 
     }

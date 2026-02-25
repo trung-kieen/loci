@@ -13,6 +13,7 @@ import com.loci.loci_backend.core.conversation.domain.aggregate.UserConversation
 import com.loci.loci_backend.core.conversation.domain.vo.ConversationId;
 import com.loci.loci_backend.core.conversation.domain.vo.ParticipantCount;
 import com.loci.loci_backend.core.groups.domain.vo.GroupId;
+import com.loci.loci_backend.core.messaging.domain.vo.MessageId;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -25,15 +26,16 @@ public interface ParticipantRepository {
 
   boolean isParticipantInConversation(User user, Conversation conversation);
 
-  Participant findRecipientOfUserInConversation(User requestUser, Conversation conversation);
+  Participant getParticipantForUserInConversation(User requestUser, Conversation conversation);
 
-  Participant findTargetMessagingUserInDirectConversation(User requestUser, Conversation conversation);
-
+  Participant getTargetMessagingParticipantInDirectConversation(User requestUser, Conversation conversation);
 
   ParticipantCount countConversationMember(Conversation conversation);
 
   Set<UserDBId> getGroupMemberIds(GroupId groupId);
 
   List<Participant> getParticipantsByConversationId(ConversationId conversationId);
+
+  Participant setLastReadMessage(Participant senderAsParticipant, MessageId messageId);
 
 }

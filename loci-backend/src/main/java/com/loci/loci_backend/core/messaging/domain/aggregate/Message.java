@@ -1,15 +1,21 @@
 package com.loci.loci_backend.core.messaging.domain.aggregate;
 
 import java.time.Instant;
+import java.util.Optional;
 
 import com.loci.loci_backend.common.user.domain.aggregate.User;
 import com.loci.loci_backend.common.user.domain.vo.PublicId;
 import com.loci.loci_backend.common.user.domain.vo.UserDBId;
+import com.loci.loci_backend.core.conversation.domain.aggregate.Conversation;
 import com.loci.loci_backend.core.conversation.domain.vo.ConversationId;
 import com.loci.loci_backend.core.messaging.domain.vo.MessageContent;
 import com.loci.loci_backend.core.messaging.domain.vo.MessageId;
 import com.loci.loci_backend.core.messaging.domain.vo.MessageState;
 import com.loci.loci_backend.core.messaging.domain.vo.MessageStatus;
+
+import org.jilt.Builder;
+import org.jilt.BuilderStyle;
+import org.jilt.Opt;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -46,6 +52,51 @@ public class Message {
 
   private Instant lastModifiedDate;
 
+  @Builder(style = BuilderStyle.STAGED)
+  public Message(MessageId messageId, PublicId publicId, ConversationId conversationId, PublicId conversationPublicId,
+      UserDBId senderId, PublicId senderPublicId, MessageContent content, Instant sentAt, MessageStatus status,
+      MessageId replyToMessageId, PublicId replyToMessagePublicId, boolean deleted, Instant deliveredAt, Instant readAt,
+      Instant lastModifiedDate) {
+    this.messageId = messageId;
+    this.publicId = publicId;
+    this.conversationId = conversationId;
+    this.conversationPublicId = conversationPublicId;
+    this.senderId = senderId;
+    this.senderPublicId = senderPublicId;
+    this.content = content;
+    this.sentAt = sentAt;
+    this.status = status;
+    this.replyToMessageId = replyToMessageId;
+    this.replyToMessagePublicId = replyToMessagePublicId;
+    this.deleted = deleted;
+    this.deliveredAt = deliveredAt;
+    this.readAt = readAt;
+    this.lastModifiedDate = lastModifiedDate;
+  }
+
+  @Builder(style = BuilderStyle.STAGED, className = "MessageFromSendMessageRequest")
+  public static Message messageFromSendMessageRequest(SendMessageRequest request, Conversation conversation,
+      User senderUser, @Opt Message replyToMessage) {
+    Optional<Message> replyMessageOpt = Optional.ofNullable(replyToMessage);
+    return MessageBuilder.message()
+        .messageId(null)
+        .publicId(PublicId.generate())
+        .conversationId(conversation.getId())
+        .conversationPublicId(conversation.getPublicId())
+        .senderId(senderUser.getDbId())
+        .senderPublicId(senderUser.getUserPublicId())
+        .content(request.getContent())
+        .sentAt(Instant.now())
+        .status(MessageStatus.forNew())
+        .replyToMessageId(replyMessageOpt.map(Message::getMessageId).orElse(null))
+        .replyToMessagePublicId(replyMessageOpt.map(Message::getPublicId).orElse(null))
+        .deleted(false)
+        .deliveredAt(null)
+        .readAt(null)
+        .lastModifiedDate(Instant.now())
+        .build();
+  }
+
   Message(UserDBId senderId, MessageContent content) {
     // this.messageId = MessageDBId.generate();
     this.senderId = senderId;
@@ -79,6 +130,5 @@ public class Message {
   public boolean isSenderUser(User user) {
     return user.getDbId().equals(this.getSenderId());
   }
-
 
 }
