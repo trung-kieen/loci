@@ -1,29 +1,53 @@
-// package com.loci.loci_backend.core.messaging.infrastructure.primary.resource;
+package com.loci.loci_backend.core.messaging.infrastructure.primary.resource;
 
-// import java.util.UUID;
+import com.loci.loci_backend.core.conversation.infrastructure.primary.payload.RestMessage;
+import com.loci.loci_backend.core.messaging.application.MessagingApplicationService;
+import com.loci.loci_backend.core.messaging.domain.aggregate.Message;
+import com.loci.loci_backend.core.messaging.domain.aggregate.SendMessageRequest;
+import com.loci.loci_backend.core.messaging.infrastructure.primary.mapper.RestMessageMapper;
+import com.loci.loci_backend.core.messaging.infrastructure.primary.payload.RestSendMessageRequest;
 
-// import com.loci.loci_backend.common.user.domain.vo.PublicId;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-// import org.springframework.data.domain.Pageable;
-// import org.springframework.http.ResponseEntity;
-// import org.springframework.web.bind.annotation.GetMapping;
-// import org.springframework.web.bind.annotation.PathVariable;
-// import org.springframework.web.bind.annotation.RequestMapping;
-// import org.springframework.web.bind.annotation.RestController;
+import lombok.RequiredArgsConstructor;
 
-// import lombok.RequiredArgsConstructor;
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("messages")
+public class MessageResource {
 
-// @RestController
-// @RequiredArgsConstructor
-// @RequestMapping("chats")
-// public class MessageResource {
-//   @GetMapping("/{chatId}/messages")
-//   public ResponseEntity<?> getConversationMessages(@PathVariable("chatId") UUID conversationPublicId,
-//       Pageable pageable) {
-//     // TODO:
-//     PublicId conversationId = new PublicId(conversationPublicId);
+  private final MessagingApplicationService messagingService;
+  private final RestMessageMapper mapper;
 
-//     return null;
-//   }
+  @PostMapping("/individual/send")
+  public ResponseEntity<RestMessage> sendIndividualMessage(
+      @RequestBody RestSendMessageRequest restRequest) {
 
-// }
+    SendMessageRequest sendMessageRequest = mapper.toDomain(restRequest);
+
+    Message response = messagingService.sendMessage(sendMessageRequest);
+
+    RestMessage restResponse = mapper.from(response);
+
+    return ResponseEntity.status(HttpStatus.CREATED).body(restResponse);
+  }
+
+  @PostMapping("/group/send")
+  public ResponseEntity<RestMessage> sendGroupMessage(
+      @RequestBody RestSendMessageRequest restRequest) {
+
+    SendMessageRequest sendMessageRequest = mapper.toDomain(restRequest);
+
+    Message response = messagingService.sendMessage(sendMessageRequest);
+
+    RestMessage restResponse = mapper.from(response);
+
+    return ResponseEntity.status(HttpStatus.CREATED).body(restResponse);
+  }
+
+}

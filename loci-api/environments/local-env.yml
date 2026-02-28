@@ -15,9 +15,7 @@ variables:
   - name: user_public_id_1
     value: a60d76e8-4c9f-4880-9d24-d190d831dbc0
   - name: conversation_id
-    value: ""
-  - name: conversation_id
-    value: 9803ca71-7356-4393-9d3c-ce5cb57f05ff
+    value: 7b5635e2-9ca3-426c-aa9f-6ac5db8eb3b0
   - name: group_id
     value: 0784ce65-4c88-4f72-81d7-dcb386e5e1bd
   - name: oponent_username

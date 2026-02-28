@@ -37,7 +37,8 @@ public class MessageSendingService {
   private final ParticipantRepository participantRepository;
 
   @Transactional(readOnly = false)
-  public void sendMessage(PublicId conversationId, SendMessageRequest messageRequest) {
+  public Message sendMessage(SendMessageRequest messageRequest) {
+    PublicId conversationId = messageRequest.getConversationPublicId();
     Conversation conversation = conversationRepository.getByPublicId(conversationId)
         .orElseThrow(EntityNotFoundException::new);
     // get conversation
@@ -47,7 +48,6 @@ public class MessageSendingService {
 
     // validate content of message or throw bad request
     validationService.validateMessageContent(messageRequest.getContent());
-
     // validate user can message to conversation (direct message / group message)
     conversationAuthenticationProvider.validateUserCanMessage(sender, conversation);
 
@@ -59,14 +59,14 @@ public class MessageSendingService {
         .conversation(conversation)
         .senderUser(sender)
         .build();
-    Message message = messageRepository.save(newMessage);
+    Message savedMessage = messageRepository.save(newMessage);
 
     // mark message as latest for this conversation
-    conversationRepository.markLatestMessage(conversation, newMessage.getMessageId());
+    conversation = conversationRepository.markLatestMessage(conversation, savedMessage.getMessageId());
 
     // mark message as latest for this sender (current user)
     Participant senderAsParticipant = participantRepository.getParticipantForUserInConversation(sender, conversation);
-    participantRepository.setLastReadMessage(senderAsParticipant, message.getMessageId());
+    participantRepository.setLastReadMessage(senderAsParticipant, savedMessage.getMessageId());
     // senderAsParticipant.setLastReadMessageId(message.getMessageId());
     // participantRepository.save(senderAsParticipant);
 
@@ -76,18 +76,19 @@ public class MessageSendingService {
       List<Participant> groupParticipants = participantRepository.getParticipantsByConversationId(conversation.getId());
       for (Participant member : groupParticipants) {
         if (!member.equals(senderAsParticipant)) {
-          forwardMessage(member, message);
+          forwardMessage(member, savedMessage);
         }
       }
     } else {
       Participant targetMessagingParticipant = participantRepository
           .getTargetMessagingParticipantInDirectConversation(sender, conversation);
-      forwardMessage(targetMessagingParticipant, message);
+      forwardMessage(targetMessagingParticipant, savedMessage);
     }
 
+    return savedMessage;
   }
 
-  /**
+  /*
    * retry to forward the message to target user id and handle the fail if needed
    *
    */

@@ -1,5 +1,6 @@
 package com.loci.loci_backend.core.messaging.infrastructure.secondary.repository;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -22,6 +23,7 @@ import com.loci.loci_backend.core.messaging.domain.vo.MessageLimit;
 import com.loci.loci_backend.core.messaging.infrastructure.secondary.entity.MessageEntity;
 import com.loci.loci_backend.core.messaging.infrastructure.secondary.mapper.MessageEntityMapper;
 
+import org.hibernate.query.SortDirection;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -112,9 +114,11 @@ public class SpringDataMessageRepository implements MessageRepository {
   @Override
   public MessageList getLastestMessages(ConversationId conversationId, MessageLimit limit) {
     Integer pageLimit = limit.value();
-    List<MessageEntity> messageEntities = messageRepository.findLatestByConversationId(conversationId.value(),
+    List<MessageEntity> messageEntities = messageRepository.findLatestByConversationIdDescOrder(conversationId.value(),
         pageLimit);
+
     List<Message> messages = mapper.toDomain(messageEntities);
+    // Reorder to asc by sent_at time
 
     // omit user not specify the last message
     PublicId lastMessagePublicId = null;
@@ -124,6 +128,7 @@ public class SpringDataMessageRepository implements MessageRepository {
         // NOTE: check logic of has more
         .hasMore(limit.value() == messages.size())
         .nextBeforeMessageId(lastMessagePublicId)
+        .sortDirection(SortDirection.DESCENDING)
         .build();
 
   }
@@ -134,7 +139,7 @@ public class SpringDataMessageRepository implements MessageRepository {
     Integer pageLimit = limit.value();
 
     Pageable pageable = PageRequest.of(0, pageLimit);
-    Page<MessageEntity> messageEntitiesPage = messageRepository.findOlderMessagesByConversationId(
+    Page<MessageEntity> messageEntitiesPage = messageRepository.findOlderMessagesByConversationIdDescOrder(
         conversationId.value(),
         cursorMessageId, pageable);
     List<Message> messages = mapper.toDomain(messageEntitiesPage.getContent());
@@ -143,6 +148,7 @@ public class SpringDataMessageRepository implements MessageRepository {
         .messages(messages)
         .hasMore(!messageEntitiesPage.isLast())
         .nextBeforeMessageId(lastMessagePublicId)
+        .sortDirection(SortDirection.DESCENDING)
         .build();
   }
 

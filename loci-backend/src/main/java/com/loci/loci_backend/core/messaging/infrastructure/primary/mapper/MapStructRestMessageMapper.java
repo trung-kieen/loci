@@ -3,6 +3,8 @@ package com.loci.loci_backend.core.messaging.infrastructure.primary.mapper;
 import com.loci.loci_backend.common.ddd.infrastructure.mapper.ValueObjectTypeConverter;
 import com.loci.loci_backend.core.conversation.infrastructure.primary.payload.RestMessage;
 import com.loci.loci_backend.core.messaging.domain.aggregate.Message;
+import com.loci.loci_backend.core.messaging.domain.aggregate.SendMessageRequest;
+import com.loci.loci_backend.core.messaging.infrastructure.primary.payload.RestSendMessageRequest;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -26,7 +28,11 @@ public interface MapStructRestMessageMapper {
   @Mapping(source = "replyToMessagePublicId", target = "replyToMessageId")
   public RestMessage from(Message domain);
 
+  // @Mapping(source = "content", target = "content")
+  // @Mapping(source = "conversationId", target = "conversationPublicId")
+  // @Mapping(source = "replyToMessageId", target = "replyToMessagePublicId")
 
+  // public SendMessageRequest toDomain(RestSendMessageRequest request);
 
 
 }

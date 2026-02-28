@@ -40,7 +40,9 @@ export interface ISendMessageRequest {
   conversationId: string;
   content: string;
   type: MessageType;
-  attachment?: File;
+  replyToMessageId?: string;
+  // reply to message
+  // attachment?: File;
   // attachmentId?: string;
 }
 

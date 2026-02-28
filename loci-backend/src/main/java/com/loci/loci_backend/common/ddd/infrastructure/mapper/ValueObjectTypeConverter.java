@@ -21,6 +21,7 @@ public class ValueObjectTypeConverter {
     return value;
   }
 
+
   @SuppressWarnings("unchecked")
   public <R, T extends ValueObject<R>> T wrap(@TargetType Class<T> clazz, Object value) {
     if (value == null) {

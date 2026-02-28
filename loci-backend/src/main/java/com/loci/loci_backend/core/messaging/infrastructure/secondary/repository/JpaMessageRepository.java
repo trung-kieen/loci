@@ -33,12 +33,13 @@ public interface JpaMessageRepository extends JpaRepository<MessageEntity, Long>
 
   Optional<MessageEntity> findByPublicId(UUID publicId);
 
+
   @Query(value = """
       SELECT * FROM message m WHERE m.conversation_id = :conversationId
       ORDER BY sent_at DESC
       LIMIT :limit
       """, nativeQuery = true)
-  List<MessageEntity> findLatestByConversationId(@Param("conversationId") Long conversationId,
+  List<MessageEntity> findLatestByConversationIdDescOrder(@Param("conversationId") Long conversationId,
       @Param("limit") Integer pageLimit);
 
   @Query("""
@@ -47,6 +48,6 @@ public interface JpaMessageRepository extends JpaRepository<MessageEntity, Long>
         AND m.sentAt < (SELECT m2.sentAt FROM MessageEntity  m2 WHERE m2.id = :beforeId)
       ORDER BY m.sentAt DESC
       """)
-  Page<MessageEntity> findOlderMessagesByConversationId(@Param("conversationId") Long conversationId,
+  Page<MessageEntity> findOlderMessagesByConversationIdDescOrder(@Param("conversationId") Long conversationId,
       @Param("beforeId") Long beforeMessageId, Pageable pageable);
 }

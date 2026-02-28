@@ -21,9 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
 
-/**
- * StudentController
- */
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("conversations")

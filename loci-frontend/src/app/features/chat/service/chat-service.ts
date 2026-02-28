@@ -109,16 +109,16 @@ export class ChatService {
   //   },
   // ];
 
-  private autoResponseTemplates = [
-    "That's great! Tell me more about it.",
-    "Interesting! I'd love to hear more details.",
-    'Sounds good! When can we start?',
-    'Perfect! Let me know if you need any help.',
-    "Thanks for sharing! I'll take a look at that.",
-    "Got it! I'll get back to you on this.",
-  ];
+  // private autoResponseTemplates = [
+  //   "That's great! Tell me more about it.",
+  //   "Interesting! I'd love to hear more details.",
+  //   'Sounds good! When can we start?',
+  //   'Perfect! Let me know if you need any help.',
+  //   "Thanks for sharing! I'll take a look at that.",
+  //   "Got it! I'll get back to you on this.",
+  // ];
 
-  private messageCounter = 7;
+  // private messageCounter = 7;
   // private isUserBlocked = false;
 
   getCurrentUser(): Observable<IPersonalProfile> {
@@ -147,7 +147,7 @@ export class ChatService {
   // }
 
   sendMessage(dto: ISendMessageRequest): Observable<IMessage> {
-    return this.apiService.post<IMessage>("/messages/individual", dto)
+    return this.apiService.post<IMessage>("/messages/individual/send", dto)
     // Simulate blocked user error
     // if (this.isUserBlocked) {
     //   return throwError(() => ({

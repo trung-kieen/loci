@@ -5,6 +5,7 @@ import java.time.Instant;
 import com.loci.loci_backend.common.validation.domain.DomainViolationException;
 import com.loci.loci_backend.common.validation.domain.DuplicateResourceException;
 import com.loci.loci_backend.common.validation.domain.ResourceNotFoundException;
+import com.loci.loci_backend.core.messaging.domain.exception.UserIsBlockedByOtherException;
 
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -52,6 +53,17 @@ class BusinessExceptionHandler {
     problem.setProperty("conflicting_field", ex.getConflictingField());
     return problem;
   }
+
+
+  @ExceptionHandler(UserIsBlockedByOtherException.class)
+  public ProblemDetail handleBlockedContact(UserIsBlockedByOtherException ex) {
+    ProblemDetail problem = ProblemDetail.forStatus(HttpStatus.FORBIDDEN);
+    problem.setTitle("User not found");
+    log.warn("User is current blocked {}", ex.getCause());
+    problem.setDetail(ex.getMessage());
+    return problem;
+  }
+
 
   @ExceptionHandler({ IllegalArgumentException.class, IllegalStateException.class })
   public ProblemDetail handleIllegalArgument(RuntimeException ex) {
