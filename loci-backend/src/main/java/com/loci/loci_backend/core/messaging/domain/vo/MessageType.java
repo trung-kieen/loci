@@ -19,4 +19,24 @@ public enum MessageType {
   public String value() {
     return value;
   }
+
+  public static MessageType fromMimeTypeWithWildcards(String mimeType) {
+    if (mimeType == null || mimeType.isBlank()) {
+      return FILE;
+    }
+
+    String type = mimeType.toLowerCase().split(";", 2)[0].trim();
+
+    if (type.startsWith("text/"))
+      return TEXT;
+    if (type.startsWith("image/"))
+      return IMAGE;
+    if (type.startsWith("video/"))
+      return VIDEO;
+    if (type.startsWith("audio/"))
+      return FILE;
+
+    return FILE;
+  }
+
 }

@@ -147,7 +147,7 @@ export class ChatService {
   // }
 
   sendMessage(dto: ISendMessageRequest): Observable<IMessage> {
-    return this.apiService.post<IMessage>("/messages/individual/send", dto)
+    const newMessage = this.apiService.post<IMessage>("/messages/individual/send", dto)
     // Simulate blocked user error
     // if (this.isUserBlocked) {
     //   return throwError(() => ({
@@ -163,7 +163,7 @@ export class ChatService {
     // TODO
     // this.apiService.post()
 
-    return EMPTY;
+    return newMessage;
     //     const newMessage: IMessage = {
     //       messageId: `msg-${String(this.messageCounter++).padStart(3, '0')}`,
     //       conversationId: dto.conversationId,
@@ -198,16 +198,10 @@ export class ChatService {
     conversationId: string,
     file: File,
   ): Observable<IAttachment> {
-    // Simulate file upload with success
-    const attachment: IAttachment = {
-      id: `att-${Date.now()}`,
-      fileName: file.name,
-      fileSize: file.size,
-      fileType: file.type,
-      url: `/api/attachments/att-${Date.now()}/download`,
-    };
 
-    return of(attachment).pipe(delay(1500));
+    const formData = new FormData();
+    formData.set("attachmentFile", file)
+    return this.apiService.postForm<IAttachment>("/messages/attachment", formData);
   }
 
   downloadAttachment(attachmentId: string): Observable<Blob> {

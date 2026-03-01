@@ -2,9 +2,9 @@ package com.loci.loci_backend.core.messaging.infrastructure.primary.mapper;
 
 import com.loci.loci_backend.common.ddd.infrastructure.mapper.ValueObjectTypeConverter;
 import com.loci.loci_backend.core.conversation.infrastructure.primary.payload.RestMessage;
+import com.loci.loci_backend.core.messaging.domain.aggregate.Attachment;
 import com.loci.loci_backend.core.messaging.domain.aggregate.Message;
-import com.loci.loci_backend.core.messaging.domain.aggregate.SendMessageRequest;
-import com.loci.loci_backend.core.messaging.infrastructure.primary.payload.RestSendMessageRequest;
+import com.loci.loci_backend.core.messaging.infrastructure.primary.payload.RestAttachment;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -34,5 +34,10 @@ public interface MapStructRestMessageMapper {
 
   // public SendMessageRequest toDomain(RestSendMessageRequest request);
 
+  @Mapping(source = "media.url", target = "url")
+  @Mapping(source = "media.name", target = "fileName")
+  public RestAttachment from(Attachment attachment);
+
+  public Attachment toDomain(RestAttachment attachment);
 
 }

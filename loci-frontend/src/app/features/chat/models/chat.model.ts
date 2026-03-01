@@ -1,7 +1,7 @@
 import { Page } from '../../../core/model/page';
 import { FriendshipStatus } from '../../contact/models/contact.model';
 import { PresenceStatus } from '../../user/models/user.model';
-import { IMessage } from './message.model';
+import { IMessage, MessageType } from './message.model';
 
 
 export type ConversationType = 'one_to_one' | 'group';
@@ -66,6 +66,7 @@ export interface IChat {
   avatarUrl: string;
   lastMessageContent?: string;
   lastMessageSender?: string; // group chat
+  lastMessageType?: MessageType; // group chat
   time: string;
   unreadCount: number;
   isOnline: boolean;

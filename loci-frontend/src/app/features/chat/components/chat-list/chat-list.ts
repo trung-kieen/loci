@@ -4,6 +4,7 @@ import { ConversationService } from '../../service/conversation-service';
 import { LoggerService } from '../../../../core/services/logger.service';
 import { ChatFilter, IChat } from '../../models/chat.model';
 import { CommonModule } from '@angular/common';
+import { MessageType } from '../../models/message.model';
 
 @Component({
   selector: 'app-chat-list',
@@ -96,4 +97,24 @@ export class ChatList implements OnInit {
 
     this.filteredConversations.set(filtered);
   }
+
+  // In your component
+  getMessagePreview(type: MessageType, content: string): string {
+    switch (type) {
+      case 'image': return 'Photo';
+      case 'video': return 'Video';
+      case 'file': return 'File';
+      default: return content;
+    }
+  }
+
+  getMessageIcon(type: MessageType): string {
+    switch (type) {
+      case 'image': return 'fa-regular fa-image';
+      case 'video': return 'fa-solid fa-video';
+      case 'file': return 'fa-regular fa-file';
+      default: return '';
+    }
+  }
+
 }

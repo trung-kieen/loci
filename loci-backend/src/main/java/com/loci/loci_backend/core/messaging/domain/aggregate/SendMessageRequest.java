@@ -21,13 +21,15 @@ public class SendMessageRequest {
 
   private Optional<PublicId> replyToMessagePublicId;
 
+  private Optional<Attachment> attachment;
+
   @Builder(style = BuilderStyle.STAGED)
   public SendMessageRequest(MessageContent content, PublicId conversationPublicId,
-      Optional<PublicId> replyToMessagePublicId) {
+      Optional<PublicId> replyToMessagePublicId, Attachment attachment) {
     this.content = content;
     this.conversationPublicId = conversationPublicId;
     this.replyToMessagePublicId = replyToMessagePublicId;
+    this.attachment = Optional.ofNullable(attachment);
   }
-
 
 }

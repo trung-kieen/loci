@@ -31,7 +31,7 @@ import { ISendMessageData, MessageInput } from '../shared/message-input/message-
 import { ErrorAlert } from '../shared/error-alert/error-alert';
 import { DirectConversationStateService } from '../../service/direct-conversation-state.service';
 import { ChatInfo, IChatError } from '../../models/chat.model';
-import { IAttachment, IConversationMessage, ICreateMessage, IMessage } from '../../models/message.model';
+import { IAttachment, IConversationMessage, IMessage, ISendMessageRequest } from '../../models/message.model';
 import { FriendshipStatus } from '../../../contact/models/contact.model';
 
 @Component({
@@ -323,7 +323,7 @@ export class DirectConversation implements OnInit {
     const conversationId = this.state.conversationId();
     if (!conversationId) return;
 
-    const dto: ICreateMessage = {
+    const dto: ISendMessageRequest = {
       conversationId,
       content: req.content,
       type: 'text',
@@ -388,17 +388,16 @@ export class DirectConversation implements OnInit {
         switchMap(attachment => {
           if (!attachment) throw new Error('Upload returned no data');
 
-          const dto: ICreateMessage = {
+          const dto: ISendMessageRequest = {
             conversationId,
-            content: attachment.fileName,
-            type: 'file',
-            attachmentId: attachment.url,
+            type: attachment.messageType,
+            attachment: attachment,
           };
 
           return this.apiService.sendMessage(dto).pipe(
             tap(sent => {
               if (sent) {
-                this.state.addMessage({ ...sent, attachment });
+                this.state.addMessage({ ...sent, mediaName: attachment.fileName, mediaUrl: attachment.url});
               }
             })
           );

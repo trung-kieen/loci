@@ -189,7 +189,7 @@ keycloak:
 
 upload:
   minio:
-    enable: ${UPLOAD_MINIO_ENABLE:false}
+    enable: ${UPLOAD_MINIO_ENABLE:true}
     url: ${UPLOAD_MINIO_URL:http://localhost:9000}
     access-key: ${UPLOAD_MINIO_ACCESS_KEY:minioadmin}
     secret-key: ${UPLOAD_MINIO_SECRET_KEY}

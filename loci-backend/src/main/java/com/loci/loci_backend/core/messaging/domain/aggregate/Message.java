@@ -8,6 +8,8 @@ import com.loci.loci_backend.common.user.domain.vo.PublicId;
 import com.loci.loci_backend.common.user.domain.vo.UserDBId;
 import com.loci.loci_backend.core.conversation.domain.aggregate.Conversation;
 import com.loci.loci_backend.core.conversation.domain.vo.ConversationId;
+import com.loci.loci_backend.core.messaging.domain.vo.MediaName;
+import com.loci.loci_backend.core.messaging.domain.vo.MediaUrl;
 import com.loci.loci_backend.core.messaging.domain.vo.MessageContent;
 import com.loci.loci_backend.core.messaging.domain.vo.MessageId;
 import com.loci.loci_backend.core.messaging.domain.vo.MessageState;
@@ -52,11 +54,18 @@ public class Message {
 
   private Instant lastModifiedDate;
 
+  // private MediaUrl mediaUrl;
+
+  // private MediaName mediaName;
+
+
   @Builder(style = BuilderStyle.STAGED)
   public Message(MessageId messageId, PublicId publicId, ConversationId conversationId, PublicId conversationPublicId,
       UserDBId senderId, PublicId senderPublicId, MessageContent content, Instant sentAt, MessageStatus status,
       MessageId replyToMessageId, PublicId replyToMessagePublicId, boolean deleted, Instant deliveredAt, Instant readAt,
-      Instant lastModifiedDate) {
+      Instant lastModifiedDate
+      // , MediaUrl mediaUrl, MediaName mediaName
+      ) {
     this.messageId = messageId;
     this.publicId = publicId;
     this.conversationId = conversationId;
@@ -72,6 +81,8 @@ public class Message {
     this.deliveredAt = deliveredAt;
     this.readAt = readAt;
     this.lastModifiedDate = lastModifiedDate;
+    // this.mediaUrl = mediaUrl;
+    // this.mediaName = mediaName;
   }
 
   @Builder(style = BuilderStyle.STAGED, className = "MessageFromSendMessageRequest")
@@ -94,6 +105,8 @@ public class Message {
         .deliveredAt(null)
         .readAt(null)
         .lastModifiedDate(Instant.now())
+        // .mediaUrl(request.getAttachment().map(Attachment::getMediaUrl).orElse(null))
+        // .mediaName(request.getAttachment().map(Attachment::getMediaName).orElse(null))
         .build();
   }
 

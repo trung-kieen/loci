@@ -6,9 +6,11 @@ import com.loci.loci_backend.common.ddd.infrastructure.contract.Domain2RestMappe
 import com.loci.loci_backend.common.ddd.infrastructure.stereotype.PrimaryMapper;
 import com.loci.loci_backend.core.conversation.domain.aggregate.Conversation;
 import com.loci.loci_backend.core.conversation.infrastructure.primary.payload.RestMessage;
+import com.loci.loci_backend.core.messaging.domain.aggregate.Attachment;
 import com.loci.loci_backend.core.messaging.domain.aggregate.Message;
 import com.loci.loci_backend.core.messaging.domain.aggregate.SendMessageRequest;
 import com.loci.loci_backend.core.messaging.domain.vo.MessageContent;
+import com.loci.loci_backend.core.messaging.infrastructure.primary.payload.RestAttachment;
 import com.loci.loci_backend.core.messaging.infrastructure.primary.payload.RestMessageContent;
 import com.loci.loci_backend.core.messaging.infrastructure.primary.payload.RestSendMessageRequest;
 
@@ -45,9 +47,16 @@ public class RestMessageMapper implements Domain2RestMapper<Message, RestMessage
         .content(from(request.getContent()))
         .conversationPublicId(new PublicId(request.getConversationId()))
         .replyToMessagePublicId(request.getReplyToMessageId().map(PublicId::new))
+        .attachment(this.toDomain(request.getAttachment()))
         .build();
   }
 
+  public RestAttachment from(Attachment attachment){
+    return mapstruct.from(attachment);
+  }
 
+  public Attachment toDomain(RestAttachment attachment){
+    return mapstruct.toDomain(attachment);
+  }
 
 }

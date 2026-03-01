@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import {
-  ICreateMessage,
   IMessage,
   IMessageStatusUpdate,
+  ISendMessageRequest,
 } from '../models/message.model';
 import { ITypingEvent, IUserStatusUpdate } from '../models/chat.model';
 
@@ -95,7 +95,7 @@ export class MockStompService {
   }
 
   // Send message via WebSocket
-  sendMessage(message: ICreateMessage): void {
+  sendMessage(message: ISendMessageRequest): void {
     console.log('[MockStompService] SEND /app/chat.send', message);
     // In mock, we don't actually send - API service handles it
   }

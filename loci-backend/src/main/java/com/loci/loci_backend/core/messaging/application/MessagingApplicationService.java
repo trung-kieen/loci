@@ -1,6 +1,8 @@
 package com.loci.loci_backend.core.messaging.application;
 
 import com.loci.loci_backend.common.ddd.infrastructure.stereotype.ApplicationService;
+import com.loci.loci_backend.common.store.domain.aggregate.File;
+import com.loci.loci_backend.core.messaging.domain.aggregate.Attachment;
 import com.loci.loci_backend.core.messaging.domain.aggregate.ConversationMessageList;
 import com.loci.loci_backend.core.messaging.domain.aggregate.Message;
 import com.loci.loci_backend.core.messaging.domain.aggregate.MessageCursorQuery;
@@ -24,4 +26,7 @@ public class MessagingApplicationService {
     return messageSendingService.sendMessage(request);
   }
 
+  public Attachment uploadAttachment(File file) {
+    return messageManager.uploadAttachment(file);
+  }
 }

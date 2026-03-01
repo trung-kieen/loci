@@ -155,8 +155,10 @@ public class SpringDataMessageRepository implements MessageRepository {
   @Override
   public Message save(Message newMessage) {
     MessageEntity messageEntity = mapper.from(newMessage);
-    MessageEntity savedMessage = messageRepository.save(messageEntity);
-    return mapper.toDomain(savedMessage);
+    MessageEntity savedMessageEntity = messageRepository.save(messageEntity);
+    Message savedMessageDomain = mapper.toDomain(savedMessageEntity);
+    mapper.applyChange(newMessage, savedMessageDomain);
+    return newMessage;
   }
 
 }

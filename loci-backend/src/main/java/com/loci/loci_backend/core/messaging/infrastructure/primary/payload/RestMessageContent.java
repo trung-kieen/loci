@@ -20,11 +20,11 @@ public abstract class RestMessageContent {
   /**
    * Static factory pattern
    */
-  public static RestMessageContent of(MessageType type, String content) {
+  public static RestMessageContent of(MessageType type, String content, Media media) {
     if (type.equals(MessageType.TEXT)) {
       return new RestTextMessageContent(type, content);
     }
-    return new RestMediaMessageContent(type, content);
+    return new RestMediaMessageContent(type, media);
 
   }
 

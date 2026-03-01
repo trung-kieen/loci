@@ -4,6 +4,7 @@ import java.util.Optional;
 import java.util.Random;
 
 import com.loci.loci_backend.common.ddd.domain.contract.ValueObject;
+import com.loci.loci_backend.common.store.domain.aggregate.File;
 import com.loci.loci_backend.common.validation.domain.Assert;
 
 import io.micrometer.common.util.StringUtils;
@@ -57,4 +58,7 @@ public record UserImageUrl(String value) implements ValueObject<String> {
         gender, size, random.nextInt(100));
   }
 
+  public static UserImageUrl fromFile(File file){
+    return new UserImageUrl(file.getPath().value());
+  }
 }

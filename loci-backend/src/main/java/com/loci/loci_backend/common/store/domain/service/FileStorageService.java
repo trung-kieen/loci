@@ -3,11 +3,8 @@ package com.loci.loci_backend.common.store.domain.service;
 import com.loci.loci_backend.common.ddd.infrastructure.stereotype.DomainService;
 import com.loci.loci_backend.common.store.domain.aggregate.File;
 import com.loci.loci_backend.common.store.domain.repository.ObjectStorage;
-import com.loci.loci_backend.common.store.domain.vo.FileContentType;
 import com.loci.loci_backend.common.store.domain.vo.FileInputStream;
 import com.loci.loci_backend.common.store.domain.vo.FilePath;
-
-import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 
@@ -16,16 +13,19 @@ import lombok.RequiredArgsConstructor;
 public class FileStorageService {
   private final ObjectStorage objectStorage;
 
-  public File saveFile(FilePath filePath, FileInputStream file, FileContentType contentType) {
-    return objectStorage.saveObject(filePath, file, contentType);
-  }
+  // public File saveFile(FilePath filePath, FileInputStream file, FileContentType contentType, FileName fileName,
+  //     FileSize fileSize) {
+  //   return objectStorage.saveObject(filePath, file, contentType, fileName, fileSize);
+  // }
 
   public File saveFile(File file, FilePath assignFilePath) {
-    return objectStorage.saveObject(assignFilePath, file.getStream(), file.getContentType());
+    return objectStorage.saveObject(assignFilePath, file.getStream(), file.getContentType(), file.getName(),
+        file.getFileSize());
   }
 
   public File saveFile(File file) {
-    return objectStorage.saveObject(file.getPath(), file.getStream(), file.getContentType());
+    return objectStorage.saveObject(file.getPath(), file.getStream(), file.getContentType(), file.getName(),
+        file.getFileSize());
   }
 
   public void deleteFile(FilePath filePath) {

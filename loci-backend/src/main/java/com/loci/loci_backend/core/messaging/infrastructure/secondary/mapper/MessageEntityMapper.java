@@ -7,6 +7,8 @@ import com.loci.loci_backend.core.conversation.infrastructure.secondary.entity.C
 import com.loci.loci_backend.core.messaging.domain.aggregate.Message;
 import com.loci.loci_backend.core.messaging.infrastructure.secondary.entity.MessageEntity;
 
+import org.mapstruct.MappingTarget;
+
 import lombok.RequiredArgsConstructor;
 
 @SecondaryMapper
@@ -29,6 +31,13 @@ public class MessageEntityMapper implements DomainEntityMapper<Message, MessageE
   @Override
   public MessageEntity from(Message message) {
     return mapstruct.from(message);
+  }
+
+  /**
+   *
+   */
+  public void applyChange(Message message, Message newChange){
+    mapstruct.from(message, newChange);
   }
 
 }

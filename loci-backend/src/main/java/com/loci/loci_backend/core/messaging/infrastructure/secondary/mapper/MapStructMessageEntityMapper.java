@@ -4,8 +4,11 @@ import com.loci.loci_backend.common.ddd.infrastructure.mapper.ValueObjectTypeCon
 import com.loci.loci_backend.core.messaging.domain.aggregate.Message;
 import com.loci.loci_backend.core.messaging.infrastructure.secondary.entity.MessageEntity;
 
+import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
+import org.mapstruct.NullValuePropertyMappingStrategy;
 
 @Mapper(componentModel = "spring", uses = ValueObjectTypeConverter.class)
 public interface MapStructMessageEntityMapper {
@@ -28,5 +31,8 @@ public interface MapStructMessageEntityMapper {
 
   @Mapping(source = "messageId", target = "id")
   public MessageEntity from(Message message);
+
+  @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+  public void from(@MappingTarget Message message, Message newChange);
 
 }

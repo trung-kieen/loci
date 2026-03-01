@@ -93,7 +93,7 @@ public class MessageSendingService {
    *
    */
   public void forwardMessage(Participant participant, Message message) {
-    log.warn("Sending message {} to participant {} ", message, participant);
+    log.warn("TODO: Sending message {} to participant {} ", message, participant);
 
     // get opponent user or group of user
 

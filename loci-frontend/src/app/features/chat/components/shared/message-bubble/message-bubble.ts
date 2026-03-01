@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, input, output, computed, signal } from '@angular/core';
 import { IAttachment, IMessage } from '../../../models/message.model';
+import { FileSignature } from 'lucide-angular';
 
 @Component({
   selector: 'app-message-bubble',
@@ -34,14 +35,14 @@ export class MessageBubble {
   }
 
   formattedFileSize = () => {
-    const bytes = this.message().attachment?.fileSize ?? 0;
+    const bytes = this.message().fileSize ?? 0;
     if (bytes < 1024) return `${bytes} B`;
     if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
     return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
   };
 
   fileIcon = () => {
-    const type = this.message().attachment?.fileType ?? '';
+    const type = this.message().fileType ?? '';
     if (type.includes('pdf')) return 'fa-file-pdf';
     if (type.includes('image')) return 'fa-file-image';
     if (type.includes('video')) return 'fa-file-video';
@@ -50,9 +51,23 @@ export class MessageBubble {
     return 'fa-file';
   };
 
+  getAttachment() {
+
+    const message = this.message();
+    const attachment: IAttachment = {
+      url: message.mediaUrl,
+      fileName: message.mediaName,
+      fileType: message.fileType,
+      messageType: message.type,
+      fileSize: message.fileSize
+    }
+    return attachment;
+  }
+
   // event handlers
   onDownload() {
-    const attachment = this.message().attachment;
+
+    const attachment = this.getAttachment();
     if (!attachment) return;
     this.download.emit(attachment);
   }
@@ -69,11 +84,33 @@ export class MessageBubble {
     this.imageError.set(true);
   }
 
+
+
   onImageClick() {
     if (this.imageError()) return;
-    const attachment = this.message().attachment;
+    const attachment = this.getAttachment();
     if (attachment) {
       this.imagePreview.emit(attachment);
     }
   }
+
+  onVideoClick(): void {
+    // Open video in modal or native player
+    const videoUrl = this.message().mediaUrl;
+    if (videoUrl) {
+      // Option 1: Open in new tab
+      window.open(videoUrl, '_blank');
+
+      // Option 2: Emit to parent for modal handling
+      // this.videoClick.emit(this.message());
+    }
+  }
+
+  // formattedDuration(): string {
+  //   const seconds = this.message().duration || 0;
+  //   const mins = Math.floor(seconds / 60);
+  //   const secs = Math.floor(seconds % 60);
+  //   return `${mins}:${secs.toString().padStart(2, '0')}`;
+  // }
+
 }

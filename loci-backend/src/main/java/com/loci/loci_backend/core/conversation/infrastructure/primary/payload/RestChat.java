@@ -7,6 +7,7 @@ import com.loci.loci_backend.common.validation.domain.Assert;
 import com.loci.loci_backend.core.conversation.domain.exception.InvalidConversationTypeException;
 import com.loci.loci_backend.core.conversation.infrastructure.secondary.enumeration.ConversationTypeEnum;
 import com.loci.loci_backend.core.messaging.domain.vo.MessageState;
+import com.loci.loci_backend.core.messaging.domain.vo.MessageType;
 
 import jakarta.annotation.Nullable;
 import lombok.Getter;
@@ -81,6 +82,15 @@ public class RestChat {
     }
     return lastMessage.getContent();
   }
+
+
+  public MessageType getLastMessageType() {
+    if (lastMessage == null) {
+      return null;
+    }
+    return lastMessage.getType();
+  }
+
 
   public boolean getIsGroup() {
     return type.equals(ConversationTypeEnum.GROUP);

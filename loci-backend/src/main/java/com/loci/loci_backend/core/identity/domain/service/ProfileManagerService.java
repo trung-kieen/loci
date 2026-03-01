@@ -65,7 +65,8 @@ public class ProfileManagerService {
 
   @Transactional(readOnly = true)
   public PublicProfile readPublicProfileByPublicId(ProfilePublicId profilePublicId) {
-    // Optional<User> currentUser = userRepository.getByUsername(principal.getUsername());
+    // Optional<User> currentUser =
+    // userRepository.getByUsername(principal.getUsername());
     Optional<User> currentUser = userRepository.getByEmail(principal.getUserEmail());
 
     UserDBId currentUserId = null;
@@ -102,10 +103,10 @@ public class ProfileManagerService {
 
   public PersonalProfile applyUpdate(File uploadImageFile) {
     // TODO: validate image file using file assertion
-    FilePath requestFilePath = new FilePath(UUID.randomUUID() + uploadImageFile.getPath().value());
-    File savedFile = fileStorageService.saveFile(uploadImageFile, requestFilePath);
+    // FilePath requestFilePath = FilePath.generateUniquePath(uploadImageFile);
+    File savedFile = fileStorageService.saveFile(uploadImageFile);
 
-    UserImageUrl newImageUrl = new UserImageUrl(savedFile.getPath().value());
+    UserImageUrl newImageUrl = UserImageUrl.fromFile(savedFile);
 
     PersonalProfileChanges changes = new PersonalProfileChanges();
     changes.setImageUrl(newImageUrl);

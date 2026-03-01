@@ -159,4 +159,5 @@ public class MessageEntity extends AbstractAuditingEntity<Long> {
     return new MessageStatus(status, this.getLastModifiedDate());
   }
 
+
 }

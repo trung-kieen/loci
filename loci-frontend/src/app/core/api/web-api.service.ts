@@ -118,7 +118,7 @@ export class WebApiService {
     formData: FormData,
     options?: RequestOptions,
   ): Observable<T> {
-    return this.patch<T>(endpoint, formData, {
+    return this.post<T>(endpoint, formData, {
       ...options,
       // Form data omit cotnent type of request
       // headers: { ...options?.headers, 'Content-Type': 'multipart/form-data', }

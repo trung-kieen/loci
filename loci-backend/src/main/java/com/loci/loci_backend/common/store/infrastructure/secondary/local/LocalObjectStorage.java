@@ -4,16 +4,18 @@ import com.loci.loci_backend.common.store.domain.aggregate.File;
 import com.loci.loci_backend.common.store.domain.repository.ObjectStorage;
 import com.loci.loci_backend.common.store.domain.vo.FileContentType;
 import com.loci.loci_backend.common.store.domain.vo.FileInputStream;
+import com.loci.loci_backend.common.store.domain.vo.FileName;
 import com.loci.loci_backend.common.store.domain.vo.FilePath;
+import com.loci.loci_backend.common.store.domain.vo.FileSize;
 
 import lombok.NoArgsConstructor;
 
-
 @NoArgsConstructor
-public class LocalObjectStorage implements ObjectStorage{
+public class LocalObjectStorage implements ObjectStorage {
 
   @Override
-  public File saveObject(FilePath filePath, FileInputStream file, FileContentType contentType) {
+  public File saveObject(FilePath path, FileInputStream file, FileContentType contentType, FileName fileName,
+      FileSize fileSize) {
     // TODO Auto-generated method stub
     throw new UnsupportedOperationException("Unimplemented method 'saveObject'");
   }
@@ -29,6 +31,5 @@ public class LocalObjectStorage implements ObjectStorage{
     // TODO Auto-generated method stub
     throw new UnsupportedOperationException("Unimplemented method 'getObject'");
   }
-
 
 }

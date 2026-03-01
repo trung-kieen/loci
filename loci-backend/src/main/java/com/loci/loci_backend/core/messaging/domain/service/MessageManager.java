@@ -4,6 +4,9 @@ import java.util.List;
 
 import com.loci.loci_backend.common.authentication.domain.CurrentUser;
 import com.loci.loci_backend.common.ddd.infrastructure.stereotype.DomainService;
+import com.loci.loci_backend.common.store.domain.aggregate.File;
+import com.loci.loci_backend.common.store.domain.service.FileStorageService;
+import com.loci.loci_backend.common.store.domain.vo.FilePath;
 import com.loci.loci_backend.common.user.domain.aggregate.User;
 import com.loci.loci_backend.common.user.domain.repository.UserRepository;
 import com.loci.loci_backend.common.user.domain.vo.PublicId;
@@ -12,6 +15,8 @@ import com.loci.loci_backend.core.conversation.domain.aggregate.Participant;
 import com.loci.loci_backend.core.conversation.domain.repository.ConversationRepository;
 import com.loci.loci_backend.core.conversation.domain.repository.ParticipantRepository;
 import com.loci.loci_backend.core.conversation.domain.service.ConversationAuthenticationProvider;
+import com.loci.loci_backend.core.messaging.domain.aggregate.Attachment;
+import com.loci.loci_backend.core.messaging.domain.aggregate.AttachmentBuilder;
 import com.loci.loci_backend.core.messaging.domain.aggregate.ConversationMessageList;
 import com.loci.loci_backend.core.messaging.domain.aggregate.ConversationMessageListBuilder;
 import com.loci.loci_backend.core.messaging.domain.aggregate.Message;
@@ -28,6 +33,7 @@ import lombok.RequiredArgsConstructor;
 @DomainService
 @RequiredArgsConstructor
 public class MessageManager {
+  private final FileStorageService fileStorageService;
   private final ConversationAuthenticationProvider authenticationProvider;
   private final CurrentUser principal;
   private final UserRepository userRepository;
@@ -98,6 +104,12 @@ public class MessageManager {
 
     // response mesage
     // throw new NotImplementedError();
+  }
+
+  public Attachment uploadAttachment(File file) {
+    File savedFile = fileStorageService.saveFile(file);
+    Attachment attachment = Attachment.fromFile(savedFile);
+    return attachment;
   }
 
 }

@@ -7,7 +7,7 @@
   <div class="flex flex-col max-w-[70%]" [class.items-end]="isOwn()">
 
     <!-- Image Message -->
-    @if (message().type === 'image' && message().attachment; as att) {
+    @if (message().type === 'image' && message().mediaUrl) {
     <div class="rounded-lg overflow-hidden cursor-pointer transition-all hover:opacity-95"
       [class.bg-neutral-500]="isOwn()"
       [class.bg-neutral-100]="!isOwn()"
@@ -18,8 +18,8 @@
 
       @if (!imageError()) {
         <img
-          [src]="att.url"
-          [alt]="att.fileName"
+          [src]="message().mediaUrl"
+          [alt]="message().mediaName"
           class="max-w-full max-h-[300px] object-cover block"
           (error)="onImageError()"
           loading="lazy">
@@ -41,27 +41,91 @@
     </div>
     }
 
+    <!-- Video Message -->
+    @else if (message().type === 'video' && message().mediaUrl) {
+    <div class="rounded-lg overflow-hidden cursor-pointer transition-all hover:opacity-95 relative group"
+      [class.bg-neutral-500]="isOwn()"
+      [class.bg-neutral-100]="!isOwn()"
+      (click)="onVideoClick()"
+      (contextmenu)="onContextMenu($event)">
+
+      <!-- Video Thumbnail -->
+      <div class="relative">
+        <!-- @if (message().thumbnailUrl) { -->
+        <!--   <img -->
+        <!--     [src]="message().thumbnailUrl" -->
+        <!--     [alt]="message().mediaName" -->
+        <!--     class="max-w-full max-h-[300px] object-cover block" -->
+        <!--     loading="lazy"> -->
+        <!-- } @else { -->
+          <div class="w-[300px] h-[200px] flex items-center justify-center" [class.bg-neutral-600]="isOwn()" [class.bg-neutral-200]="!isOwn()">
+            <i class="fa-solid fa-video text-3xl" [class.text-white]="isOwn()" [class.text-neutral-400]="!isOwn()"></i>
+          </div>
+        <!-- } -->
+
+        <!-- Play Button Overlay -->
+        <div class="absolute inset-0 flex items-center justify-center bg-black/30 group-hover:bg-black/40 transition-colors">
+          <div class="w-12 h-12 rounded-full bg-white/90 flex items-center justify-center shadow-lg">
+            <i class="fa-solid fa-play text-neutral-800 ml-1"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- Video Info -->
+      <div class="p-2 flex items-center justify-between" [class.bg-neutral-600]="isOwn()" [class.bg-neutral-200]="!isOwn()">
+        <span class="text-xs truncate max-w-[200px]" [class.text-white]="isOwn()">{{ message().mediaName || 'Video' }}</span>
+        <!-- @if(message().duration) { -->
+        <!--   <span class="text-xs font-mono opacity-75" [class.text-white]="isOwn()">{{ formattedDuration() }}</span> -->
+        <!-- } -->
+      </div>
+    </div>
+    }
+
     <!-- File Message -->
-    @else if (message().type === 'file' && message().attachment; as att) {
+    @else if (message().type === 'file' && message().mediaUrl) {
     <div class="rounded-lg p-3 cursor-pointer transition-colors" [class.bg-neutral-500]="isOwn()"
       [class.text-white]="isOwn()" [class.bg-neutral-100]="!isOwn()" [class.hover:bg-neutral-600]="isOwn()"
       [class.hover:bg-neutral-200]="!isOwn()" (click)="onDownload()" (contextmenu)="onContextMenu($event)">
 
       <div class="flex items-center gap-2 mb-1">
-        <i [class]="'fa-solid ' + fileIcon() + (isOwn ()? ' text-white' : ' text-neutral-500')"></i>
-        <span class="text-sm font-medium truncate max-w-[200px]">{{ att.fileName }}</span>
+        <i [class]="'fa-solid ' + fileIcon() + (isOwn() ? ' text-white' : ' text-neutral-500')"></i>
+        <span class="text-sm font-medium truncate max-w-[200px]">{{ message().mediaUrl }}</span>
       </div>
-
+      @if(message().fileSize && message().fileSize > 0 ) {
       <p class="text-xs opacity-75">{{ formattedFileSize() }}</p>
+      }
     </div>
     }
 
     <!-- Text Message -->
-    @else {
+    @else if (message().type === 'text') {
     <div class="rounded-lg p-3 text-sm" [class.bg-neutral-500]="isOwn()" [class.text-white]="isOwn()"
       [class.bg-neutral-100]="!isOwn()" [class.text-black]="!isOwn()" [class.cursor-context-menu]="!isOwn()"
       (contextmenu)="onContextMenu($event)">
       {{ message().content }}
+    </div>
+    }
+
+    <!-- Fallback for any other/unexpected types -->
+    @else {
+    <div class="rounded-lg p-3 cursor-pointer transition-colors border border-dashed"
+      [class.bg-neutral-500]="isOwn()"
+      [class.text-white]="isOwn()"
+      [class.bg-neutral-100]="!isOwn()"
+      [class.border-neutral-400]="isOwn()"
+      [class.border-neutral-300]="!isOwn()"
+      (click)="onDownload()"
+      (contextmenu)="onContextMenu($event)">
+
+      <div class="flex items-center gap-2">
+        <i class="fa-solid fa-file-circle-question" [class.text-white]="isOwn()" [class.text-neutral-500]="!isOwn()"></i>
+        <div class="flex flex-col">
+          <span class="text-sm font-medium">Unknown Message</span>
+          @if (message().mediaUrl) {
+            <span class="text-xs opacity-75 underline">Tap to download</span>
+          }
+        </div>
+      </div>
     </div>
     }
 

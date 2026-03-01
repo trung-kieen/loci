@@ -2,6 +2,7 @@ package com.loci.loci_backend.common.wire.store.secondary;
 
 import com.loci.loci_backend.common.store.domain.repository.ObjectStorage;
 import com.loci.loci_backend.common.store.infrastructure.secondary.local.LocalObjectStorage;
+import com.loci.loci_backend.common.store.infrastructure.secondary.minio.MinioFilePathResolver;
 import com.loci.loci_backend.common.store.infrastructure.secondary.minio.MinioObjectStorage;
 import com.loci.loci_backend.common.store.infrastructure.secondary.minio.MinioProperties;
 
@@ -66,9 +67,9 @@ public class StoreConfiguration {
 
   @Bean
   @ConditionalOnProperty(name = "upload.minio.enable", havingValue = "true")
-  public ObjectStorage minioObjectStorage(MinioClient client, MinioProperties config) {
+  public ObjectStorage minioObjectStorage(MinioClient client, MinioProperties config, MinioFilePathResolver filePathResolver) {
     log.info("Minio Object Storage on {}", config.getUrl());
-    return new MinioObjectStorage(client, config);
+    return new MinioObjectStorage(client, config, filePathResolver);
   }
 
   @ConditionalOnMissingBean(ObjectStorage.class)
