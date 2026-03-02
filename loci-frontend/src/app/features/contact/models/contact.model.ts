@@ -37,3 +37,18 @@ export interface IFriendSuggestion extends IContactProfile {
   bio: string;
   mutualConnections: number;
 }
+
+
+export interface BlockedUser {
+  userId: string;
+  username: string;
+  fullname: string;
+  profilePictureUrl: string;
+  // blockedAt: string; // ISO date string
+  reason?: string;
+}
+
+export interface BlockedUserList {
+  users: Page<BlockedUser>;
+  // totalCount: number;
+}

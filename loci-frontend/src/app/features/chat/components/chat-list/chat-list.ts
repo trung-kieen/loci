@@ -81,19 +81,20 @@ export class ChatList implements OnInit {
         );
       });
     }
-    switch (filter) {
-      case 'unread':
-        filtered = filtered.filter((conv) => conv.unreadCount > 0);
-        break;
-      case 'followups':
-        filtered = filtered.filter((conv) => conv.isFollowingUp);
-        break;
-      case 'archived':
-        filtered = filtered.filter((conv) => conv.isArchived);
-        break;
-      default: // inbox
-        filtered = filtered.filter((conv) => !conv.isArchived);
-    }
+    // TODO: use server filter instead
+    // switch (filter) {
+    //   case 'unread':
+    //     filtered = filtered.filter((conv) => conv.unreadCount > 0);
+    //     break;
+    //   case 'followups':
+    //     filtered = filtered.filter((conv) => conv.isFollowingUp);
+    //     break;
+    //   case 'archived':
+    //     filtered = filtered.filter((conv) => conv.isArchived);
+    //     break;
+    //   default: // inbox
+    //     filtered = filtered.filter((conv) => !conv.isArchived);
+    // }
 
     this.filteredConversations.set(filtered);
   }

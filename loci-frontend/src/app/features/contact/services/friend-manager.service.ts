@@ -1,8 +1,9 @@
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { HttpParams } from '@angular/common/http';
 import { LoggerService } from '../../../core/services/logger.service';
 import { WebApiService } from '../../../core/api/web-api.service';
-import { IFriendRequestList, FriendshipStatus } from '../models/contact.model';
+import { IFriendRequestList, FriendshipStatus, BlockedUserList } from '../models/contact.model';
 import { IChatReference, IFriendList } from '../../chat/models/chat.model';
 import { IUpdatedStatus } from '../../user/models/user.model';
 
@@ -24,6 +25,10 @@ export class FriendManagerService {
       {},
     );
   }
+
+
+
+
   denyFriendRequest(profileId: string): Observable<IUpdatedStatus> {
     return this.apiService.post<IUpdatedStatus>(
       `/contact-requests/user/${profileId}/reject`,
@@ -57,6 +62,32 @@ export class FriendManagerService {
       {},
     );
   }
+
+
+  getBlockedUser(page = 0, size= 50): Observable<BlockedUserList> {
+    const params = new HttpParams().set("page", page.toString()).set("size", size.toString());
+
+    return this.apiService.get<BlockedUserList>("/blocks", { params });
+
+    // const params = new HttpParams()
+    //   .set('page', page.toString())
+    //   .set('limit', limit.toString());
+
+    // return this.apiService.get<BlockedUsersResponseDto>("/blocked", { params }).pipe(
+    //   catchError(error => {
+    //     console.error('Failed to fetch blocked users:', error);
+    //     return throwError(() => new Error('Unable to load blocked users. Please try again.'));
+    //   })
+    // );
+
+    // return null;
+  }
+
+
+  reportUser(userId: string, reason: string): Observable<void> {
+    throw new Error('Method not implemented.');
+  }
+
 
   getConversationByUser(targetUserId: string): Observable<IChatReference> {
     return this.apiService.get<IChatReference>(

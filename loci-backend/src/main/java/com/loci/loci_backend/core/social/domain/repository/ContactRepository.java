@@ -25,4 +25,6 @@ public interface ContactRepository {
   public void delete(ContactConnection contact);
 
   public Page<Friend> findConnectedToUser(SearchQuery query, UserDBId userId, Pageable pageable);
+
+  public Page<ContactConnection> findBlockedUsersByUserId(UserDBId dbId, Pageable pageable);
 }

@@ -1,0 +1,41 @@
+info:
+  name: getBlockedUser
+  type: http
+  seq: 3
+
+http:
+  method: GET
+  url: "{{baseUrl}}/blocks"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 201 Response
+    description: Created
+    request:
+      url: "{{baseUrl}}/blocks/:blockUserId"
+      method: POST
+      params:
+        - name: blockUserId
+          value: ""
+          type: path
+    response:
+      statusText: Created
+      headers:
+        - name: Content-Type
+          value: "*/*"
+      body:
+        type: text
+        data: |-
+          {
+            "status": {
+              "value": "",
+              "connected": false,
+              "notConnected": false
+            }
+          }

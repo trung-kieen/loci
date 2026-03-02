@@ -7,6 +7,7 @@ import com.loci.loci_backend.core.social.domain.vo.FriendshipStatus;
 import org.jilt.Builder;
 import org.jilt.BuilderStyle;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.Data;
 
 @Data
@@ -17,7 +18,8 @@ public class ContactConnection {
   private UserDBId blockedByUserId;
 
   @Builder(style = BuilderStyle.STAGED)
-  public ContactConnection(ContactId contactId, UserDBId owningUserId, UserDBId contactUserId, UserDBId blockedByUserId) {
+  public ContactConnection(ContactId contactId, UserDBId owningUserId, UserDBId contactUserId,
+      UserDBId blockedByUserId) {
     this.contactId = contactId;
     this.owningUserId = owningUserId;
     this.contactUserId = contactUserId;
@@ -38,5 +40,16 @@ public class ContactConnection {
     }
     // Block by opponent user
     return FriendshipStatus.blockedByOther();
+  }
+
+  public UserDBId getOpponentUserId(UserDBId requestUserId) {
+    if (contactUserId.equals(requestUserId)) {
+      return owningUserId;
+    }
+    if (owningUserId.equals(requestUserId)) {
+      return contactUserId;
+    }
+    throw new EntityNotFoundException("Not found opponent user");
+
   }
 }

@@ -6,6 +6,7 @@ import com.loci.loci_backend.core.discovery.domain.aggregate.FriendList;
 import com.loci.loci_backend.core.discovery.domain.service.SearchEngine;
 import com.loci.loci_backend.core.discovery.domain.vo.SearchQuery;
 import com.loci.loci_backend.core.identity.domain.service.BlockManager;
+import com.loci.loci_backend.core.social.domain.aggregate.BlockedUserList;
 import com.loci.loci_backend.core.social.domain.aggregate.ContactConnection;
 import com.loci.loci_backend.core.social.domain.aggregate.ContactRequest;
 import com.loci.loci_backend.core.social.domain.aggregate.ContactRequestList;
@@ -72,6 +73,10 @@ public class SocialApplicationService {
   public FriendList searchFriends(SearchQuery query, Pageable pageable) {
     return this.searchEngine.searchFriends(query, pageable);
 
+  }
+
+  public BlockedUserList getBlockedUser(Pageable pageable) {
+    return this.blockManager.getBlockedUsers(pageable);
   }
 
 }

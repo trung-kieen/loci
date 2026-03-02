@@ -4,11 +4,18 @@ import java.util.UUID;
 
 import com.loci.loci_backend.common.user.domain.vo.PublicId;
 import com.loci.loci_backend.core.social.application.SocialApplicationService;
+import com.loci.loci_backend.core.social.domain.aggregate.BlockedUserList;
 import com.loci.loci_backend.core.social.domain.vo.FriendshipStatus;
+import com.loci.loci_backend.core.social.infrastructure.primary.mapper.RestBlockedUserMapper;
+import com.loci.loci_backend.core.social.infrastructure.primary.mapper.RestContactMapper;
+import com.loci.loci_backend.core.social.infrastructure.primary.payload.RestBlockedUserList;
 import com.loci.loci_backend.core.social.infrastructure.primary.payload.RestFriendshipUpdatedResponse;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,6 +30,7 @@ import lombok.RequiredArgsConstructor;
 public class BlockUserResource {
 
   private final SocialApplicationService socialApplicationService;
+  private final RestBlockedUserMapper mapper;
 
   @PostMapping("/{blockUserId}")
   @ResponseStatus(HttpStatus.CREATED)
@@ -41,5 +49,15 @@ public class BlockUserResource {
     FriendshipStatus newStatus = socialApplicationService.unblockUser(publicId);
     return new RestFriendshipUpdatedResponse(newStatus);
   }
+
+  @GetMapping()
+  @ResponseStatus(HttpStatus.OK)
+  public ResponseEntity<RestBlockedUserList> getBlockedUsers(Pageable pageable) {
+    BlockedUserList blockedUserList = socialApplicationService.getBlockedUser(pageable);
+    RestBlockedUserList restRespones = mapper.from(blockedUserList);
+    return ResponseEntity.ok(restRespones);
+  }
+
+  // get blocked user list
 
 }

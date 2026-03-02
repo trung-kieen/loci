@@ -1,17 +1,26 @@
 package com.loci.loci_backend.core.identity.domain.service;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
+import com.loci.loci_backend.common.authentication.domain.CurrentUser;
 import com.loci.loci_backend.common.authentication.domain.KeycloakPrincipal;
+import com.loci.loci_backend.common.collection.Maps;
+import com.loci.loci_backend.common.collection.Pages;
 import com.loci.loci_backend.common.ddd.infrastructure.stereotype.DomainService;
 import com.loci.loci_backend.common.user.domain.aggregate.User;
 import com.loci.loci_backend.common.user.domain.repository.UserRepository;
 import com.loci.loci_backend.common.user.domain.vo.PublicId;
+import com.loci.loci_backend.common.user.domain.vo.UserDBId;
 import com.loci.loci_backend.core.discovery.domain.repository.UserConnectionResolver;
+import com.loci.loci_backend.core.social.domain.aggregate.BlockedUserList;
 import com.loci.loci_backend.core.social.domain.aggregate.ContactConnection;
 import com.loci.loci_backend.core.social.domain.repository.ContactRepository;
 import com.loci.loci_backend.core.social.domain.vo.FriendshipStatus;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -25,6 +34,7 @@ public class BlockManager {
   private final ContactRepository contactRepository;
   private final KeycloakPrincipal keycloakPrincipal;
   private final UserConnectionResolver connectionResolver;
+  private final CurrentUser principal;
 
   @Transactional(readOnly = false)
   public FriendshipStatus blockUser(PublicId userId) {
@@ -90,6 +100,25 @@ public class BlockManager {
 
     return newStatus;
 
+  }
+
+  @Transactional(readOnly = true)
+  public BlockedUserList getBlockedUsers(Pageable pageable) {
+    User currentUser = userRepository.getByPrincipalThrow(principal);
+
+    Page<ContactConnection> blockedContact = contactRepository.findBlockedUsersByUserId(currentUser.getDbId(),
+        pageable);
+    List<UserDBId> blockedUserIds = blockedContact.stream().map(u -> u.getOpponentUserId(currentUser.getDbId()))
+        .toList();
+
+    List<User> blockedUsers = userRepository.getAllByIds(blockedUserIds);
+    Map<UserDBId, User> userIdToUser = Maps.toLookupMap(blockedUsers, User::getDbId);
+
+    Page<User> blockedUsersPage = Pages.map(blockedContact, contact -> {
+      return userIdToUser.get(contact.getOpponentUserId(currentUser.getDbId()));
+    });
+
+    return new BlockedUserList(blockedUsersPage);
   }
 
 }

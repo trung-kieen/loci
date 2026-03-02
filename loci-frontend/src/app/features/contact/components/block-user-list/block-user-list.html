@@ -1,80 +1,143 @@
-
+<!-- blocked-users.component.html -->
 <main id="main-content" class="flex h-[calc(100vh-4rem)]">
   <section id="blocked-users-panel" class="flex-1 bg-white flex flex-col">
+
+    <!-- Header -->
     <div class="border-b border-neutral-200 p-6">
       <div class="flex items-center justify-between">
         <div class="flex items-center space-x-3">
-          <!-- <button class="p-2 hover:bg-neutral-100 rounded-lg" aria-label="Back to accounts"> -->
-          <!--   <i class="fa-solid fa-arrow-left text-neutral-600"></i> -->
-          <!-- </button> -->
-          <h2 class="text-xl text-black">Blocked Users</h2>
+          <h2 class="text-xl text-black font-semibold">Blocked Users</h2>
+          @if (isLoading()) {
+          <span class="text-sm text-neutral-400 animate-pulse">Loading...</span>
+          }
         </div>
+        <button (click)="loadBlockedUsers()" [disabled]="isLoading()"
+          class="p-2 hover:bg-neutral-100 rounded-lg transition-colors disabled:opacity-50" aria-label="Refresh list">
+          <svg class="w-5 h-5 text-neutral-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+          </svg>
+        </button>
       </div>
     </div>
 
+    <!-- Content Area -->
     <div class="flex-1 overflow-y-auto p-6">
       <div class="max-w-2xl mx-auto space-y-4">
-        <div class="flex items-center justify-between p-4 border border-neutral-200 rounded-lg bg-white shadow-sm">
+
+        <!-- Error State -->
+        @if (error()) {
+        <div class="p-4 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
+          <div class="flex items-center gap-2">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span>{{ error() }}</span>
+          </div>
+          <button (click)="loadBlockedUsers()" class="mt-2 text-sm font-medium underline hover:no-underline">
+            Try again
+          </button>
+        </div>
+        }
+
+        <!-- Loading Skeleton -->
+        @if (isLoading() && !hasUsers()) {
+        @for (i of [1, 2, 3]; track i) {
+        <div
+          class="flex items-center justify-between p-4 border border-neutral-200 rounded-lg bg-white shadow-sm animate-pulse">
           <div class="flex items-center space-x-3">
-            <img src="https://api.dicebear.com/7.x/notionists/svg?scale=200&seed=3456" alt="Mark Wilson" class="w-10 h-10 rounded-full">
-            <div>
-              <p class="text-sm text-neutral-900">Mark Wilson</p>
-              <p class="text-xs text-neutral-500">@markwilson</p>
+            <div class="w-10 h-10 rounded-full bg-neutral-200"></div>
+            <div class="space-y-2">
+              <div class="w-32 h-4 bg-neutral-200 rounded"></div>
+              <div class="w-20 h-3 bg-neutral-200 rounded"></div>
             </div>
           </div>
+          <div class="flex space-x-2">
+            <div class="w-16 h-8 bg-neutral-200 rounded-lg"></div>
+            <div class="w-20 h-8 bg-neutral-200 rounded-lg"></div>
+          </div>
+        </div>
+        }
+        }
+
+        <!-- Users List -->
+        @if (hasUsers()) {
+        @for (user of users(); track user.userId) {
+        <div
+          class="flex items-center justify-between p-4 border border-neutral-200 rounded-lg bg-white shadow-sm hover:shadow-md transition-shadow">
+          <div class="flex items-center space-x-3">
+            <img [src]="user.profilePictureUrl" [alt]="user.fullname"
+              class="w-10 h-10 rounded-full object-cover bg-neutral-100" loading="lazy">
+            <div>
+              <p class="text-sm font-medium text-neutral-900">{{ user.fullname }}</p>
+              <p class="text-xs text-neutral-500">&#64;{{ user.username }}</p>
+              <!-- <p class="text-xs text-neutral-400 mt-0.5"> -->
+              <!--   Blocked {{ user.blockedAt | date:'mediumDate' }} -->
+              <!-- </p> -->
+            </div>
+          </div>
+
           <div class="flex items-center space-x-2">
-            <button class="px-3 py-1 text-sm text-neutral-600 border border-neutral-200 rounded-lg hover:bg-neutral-50">
+            <button (click)="onReport(user.userId)" [disabled]="isReporting(user.userId) || isUnblocking(user.userId)"
+              class="px-3 py-1.5 text-sm text-neutral-600 border border-neutral-200 rounded-lg hover:bg-neutral-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+              @if (isReporting(user.userId)) {
+              <span class="flex items-center gap-1">
+                <svg class="w-3 h-3 animate-spin" fill="none" viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                  <path class="opacity-75" fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                  </path>
+                </svg>
+                Reporting...
+              </span>
+              } @else {
               Report
+              }
             </button>
-            <button class="px-3 py-1 text-sm bg-neutral-600 text-white rounded-lg hover:bg-neutral-700">
+
+            <button (click)="onUnblock(user.userId)" [disabled]="isUnblocking(user.userId) || isReporting(user.userId)"
+              class="px-3 py-1.5 text-sm bg-neutral-600 text-white rounded-lg hover:bg-neutral-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-1">
+              @if (isUnblocking(user.userId)) {
+              <svg class="w-3 h-3 animate-spin" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                </path>
+              </svg>
+              Unblocking...
+              } @else {
               Unblock
+              }
             </button>
           </div>
         </div>
+        }
+        }
 
-        <div class="flex items-center justify-between p-4 border border-neutral-200 rounded-lg bg-white shadow-sm">
-          <div class="flex items-center space-x-3">
-            <img src="https://api.dicebear.com/7.x/notionists/svg?scale=200&seed=6789" alt="David Brown" class="w-10 h-10 rounded-full">
-            <div>
-              <p class="text-sm text-neutral-900">David Brown</p>
-              <p class="text-xs text-neutral-500">@davidbrown</p>
-            </div>
-          </div>
-          <div class="flex items-center space-x-2">
-            <button class="px-3 py-1 text-sm text-neutral-600 border border-neutral-200 rounded-lg hover:bg-neutral-50">
-              Report
-            </button>
-            <button class="px-3 py-1 text-sm bg-neutral-600 text-white rounded-lg hover:bg-neutral-700">
-              Unblock
-            </button>
-          </div>
-        </div>
-
-        <div class="flex items-center justify-between p-4 border border-neutral-200 rounded-lg bg-white shadow-sm">
-          <div class="flex items-center space-x-3">
-            <img src="https://api.dicebear.com/7.x/notionists/svg?scale=200&seed=9012" alt="Jennifer Lee" class="w-10 h-10 rounded-full">
-            <div>
-              <p class="text-sm text-neutral-900">Jennifer Lee</p>
-              <p class="text-xs text-neutral-500">@jenniferlee</p>
-            </div>
-          </div>
-          <div class="flex items-center space-x-2">
-            <button class="px-3 py-1 text-sm text-neutral-600 border border-neutral-200 rounded-lg hover:bg-neutral-50">
-              Report
-            </button>
-            <button class="px-3 py-1 text-sm bg-neutral-600 text-white rounded-lg hover:bg-neutral-700">
-              Unblock
-            </button>
-          </div>
-        </div>
-
+        <!-- Empty State -->
+        @if (!isLoading() && !hasUsers() && !error()) {
         <div class="text-center py-12">
           <div class="w-16 h-16 bg-neutral-100 rounded-full flex items-center justify-center mx-auto mb-4">
-            <i class="fa-solid fa-user-slash text-neutral-400 text-xl"></i>
+            <svg class="w-8 h-8 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
+            </svg>
           </div>
-          <p class="text-neutral-500 text-sm">You have blocked 3 users</p>
+          <p class="text-neutral-500 text-sm font-medium">You haven't blocked any users</p>
           <p class="text-neutral-400 text-xs mt-1">Users you block won't be able to send you messages</p>
         </div>
+        }
+
+        <!-- Summary Footer -->
+        @if (hasUsers()) {
+        <div class="text-center pt-4 border-t border-neutral-100">
+          <p class="text-neutral-400 text-xs">
+            You have blocked {{ userCountText() }}
+          </p>
+        </div>
+        }
+
       </div>
     </div>
   </section>

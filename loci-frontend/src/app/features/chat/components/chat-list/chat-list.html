@@ -113,11 +113,11 @@
               <span class="font-medium">{{ conv.lastMessageSender }}:</span>
               }
 
-              @if (conv.lastMessageType && conv.lastMessageContent){
+              @if (conv.lastMessageType){
               @if (conv.lastMessageType !== 'text') {
               <span class="italic flex items-center gap-1">
                 <i [class]="getMessageIcon(conv.lastMessageType) + ' text-xs'"></i>
-                {{ getMessagePreview(conv.lastMessageType, conv.lastMessageContent) }}
+                {{ getMessagePreview(conv.lastMessageType, conv.lastMessageContent || "") }}
               </span>
               } @else {
               {{ conv.lastMessageContent }}

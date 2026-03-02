@@ -1,5 +1,6 @@
 package com.loci.loci_backend.core.social.infrastructure.secondary.mapper;
 
+import com.loci.loci_backend.common.collection.Pages;
 import com.loci.loci_backend.common.ddd.infrastructure.stereotype.SecondaryMapper;
 import com.loci.loci_backend.core.social.domain.aggregate.ContactConnection;
 import com.loci.loci_backend.core.social.domain.aggregate.ContactRequest;
@@ -18,6 +19,9 @@ public class ContactEntityMapper {
   public ContactConnection toDomain(ContactEntity entity) {
     return mapstruct.toDomain(entity);
   }
+  // public Page<ContactConnection> toDomain(Page<ContactEntity> entity) {
+  //   return Pages.map(entity, this::toDomain);
+  // }
 
   public ContactRequest toDomain(ContactRequestEntity entity) {
     return mapstruct.toDomain(entity);
@@ -28,7 +32,8 @@ public class ContactEntityMapper {
   }
 
   public Page<ContactRequest> toDomain(Page<ContactRequestEntity> entities) {
-    return entities.map(this::toDomain);
+    return Pages.map(entities, this::toDomain);
+    // return entities.map(this::toDomain);
   }
 
   public ContactEntity from(ContactConnection contact) {

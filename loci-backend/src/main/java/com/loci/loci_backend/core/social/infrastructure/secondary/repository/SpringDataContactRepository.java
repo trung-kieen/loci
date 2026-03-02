@@ -3,6 +3,7 @@ package com.loci.loci_backend.core.social.infrastructure.secondary.repository;
 import java.util.List;
 import java.util.Optional;
 
+import com.loci.loci_backend.common.collection.Pages;
 import com.loci.loci_backend.common.ddd.infrastructure.stereotype.SecondaryPort;
 import com.loci.loci_backend.common.user.domain.aggregate.User;
 import com.loci.loci_backend.common.user.domain.vo.UserDBId;
@@ -79,6 +80,12 @@ public class SpringDataContactRepository implements ContactRepository {
     String prefixNameSearch = query.value();
     Page<UserEntity> users = repository.findContactsByNamePrefix(userId.value(), prefixNameSearch, pageable);
     return friendEntityMapper.toDomain(users);
+  }
+
+  @Override
+  public Page<ContactConnection> findBlockedUsersByUserId(UserDBId userDbId, Pageable pageable) {
+    Page<ContactEntity> contacts = repository.findBlockedContactByUserId(userDbId.value(), pageable);
+    return Pages.map(contacts, mapper::toDomain);
   }
 
 }

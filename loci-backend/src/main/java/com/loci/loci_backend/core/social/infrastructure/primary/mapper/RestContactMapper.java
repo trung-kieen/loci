@@ -11,10 +11,12 @@ import com.loci.loci_backend.common.ddd.infrastructure.stereotype.PrimaryMapper;
 import com.loci.loci_backend.common.user.domain.vo.PublicId;
 import com.loci.loci_backend.common.user.domain.vo.UserDBId;
 import com.loci.loci_backend.core.identity.domain.aggregate.UserSummary;
+import com.loci.loci_backend.core.social.domain.aggregate.BlockedUserList;
 import com.loci.loci_backend.core.social.domain.aggregate.ContactRequest;
 import com.loci.loci_backend.core.social.domain.aggregate.ContactRequestList;
 import com.loci.loci_backend.core.social.domain.aggregate.CreateContactRequest;
 import com.loci.loci_backend.core.social.domain.aggregate.CreateContactRequestBuilder;
+import com.loci.loci_backend.core.social.infrastructure.primary.payload.RestBlockedUserList;
 import com.loci.loci_backend.core.social.infrastructure.primary.payload.RestContactRequest;
 import com.loci.loci_backend.core.social.infrastructure.primary.payload.RestContactRequestCreated;
 import com.loci.loci_backend.core.social.infrastructure.primary.payload.RestContactRequestCreatedBuilder;
@@ -62,9 +64,6 @@ public class RestContactMapper {
     return new RestContactRequestList(restRequestPage);
 
   }
-
-
-
 
 
 }

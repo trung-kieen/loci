@@ -63,4 +63,10 @@ public interface JpaContactRepository
       "  OR LOWER(u.lastname) LIKE LOWER(CONCAT(:namePrefix, '%')))")
   Page<UserEntity> findContactsByNamePrefix(@Param("userId") Long userId,
       @Param("namePrefix") String namePrefix, Pageable pageable);
+
+  @Query("""
+          SELECT c FROM ContactEntity c WHERE (c.owningUserId = :requestUserId or c.contactUserId = :requestUserId) and c.blockedByUserId = :requestUserId
+      """)
+  Page<ContactEntity> findBlockedContactByUserId(@Param("requestUserId") Long requestUserId, Pageable pageable);
+
 }
