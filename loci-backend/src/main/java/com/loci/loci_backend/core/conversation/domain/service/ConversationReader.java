@@ -17,6 +17,7 @@ import com.loci.loci_backend.core.conversation.domain.repository.ParticipantRepo
 import com.loci.loci_backend.core.conversation.domain.vo.ConversationUnreadMessageCount;
 import com.loci.loci_backend.core.conversation.domain.vo.ParticipantCount;
 import com.loci.loci_backend.core.conversation.domain.vo.UnreadCount;
+import com.loci.loci_backend.core.discovery.domain.repository.UserConnectionResolver;
 import com.loci.loci_backend.core.groups.domain.aggregate.GroupProfile;
 import com.loci.loci_backend.core.groups.domain.repository.GroupRepository;
 import com.loci.loci_backend.core.identity.domain.aggregate.PublicProfile;
@@ -30,6 +31,7 @@ import com.loci.loci_backend.core.messaging.domain.aggregate.GroupChatInfo;
 import com.loci.loci_backend.core.messaging.domain.aggregate.GroupChatInfoBuilderForConversation;
 import com.loci.loci_backend.core.messaging.domain.aggregate.Message;
 import com.loci.loci_backend.core.messaging.domain.repository.MessageRepository;
+import com.loci.loci_backend.core.social.domain.vo.FriendshipStatus;
 
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -48,6 +50,7 @@ public class ConversationReader {
   private final ConversationRepository conversationRepository;
   private final MessageRepository messageRepository;
   private final GroupRepository groupRepository;
+  private final UserConnectionResolver connectionResolver;
   private final PresenceIndicator userPresenceIndicator;
   private final UserPresenceRepository userPresenceRepository;
 
@@ -105,9 +108,14 @@ public class ConversationReader {
   public DirectChatInfo getConversationInfo(Conversation conversation, User currentUser) {
     UserPresence presence = userPresenceRepository.findByUserId(currentUser.getDbId());
 
-    Participant recipient = participantRepository.getTargetMessagingParticipantInDirectConversation(currentUser, conversation);
+    Participant recipient = participantRepository.getTargetMessagingParticipantInDirectConversation(currentUser,
+        conversation);
 
     PublicProfile recipientProfile = profileRepository.findPublicProfileById(recipient.getUserId());
+
+    FriendshipStatus friendshipStatus = connectionResolver.aggreateConnection(currentUser.getDbId(),
+        recipient.getUserId());
+    recipientProfile.setConnectionStatus(friendshipStatus);
 
     return DirectChatInfoBuilderForConversation.directChatInfo()
         .conversation(conversation)

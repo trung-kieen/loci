@@ -18,7 +18,8 @@ import {
   switchMap,
   catchError,
   tap,
-  finalize
+  finalize,
+  delay
 } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
@@ -48,6 +49,14 @@ import { FriendshipStatus } from '../../../contact/models/contact.model';
 })
 export class DirectConversation implements OnInit {
 
+
+  singleChatFeatures: ChatFeatures = {
+    showMemberList: false,  // Not applicable for single chat
+    showSearch: true,
+    showCall: true,
+    showVideo: true
+  };
+
   // Dependencies
   state = inject(DirectConversationStateService);
   private route = inject(ActivatedRoute);
@@ -67,6 +76,11 @@ export class DirectConversation implements OnInit {
     const err = this.state.error();
     return err ? { ...err } : null;
   });
+
+  isBlocked = computed(() => {
+    const friendStatus = this.state.participant()?.messagingUser.connectionStatus;
+    return friendStatus === FriendshipStatus.BLOCKED || friendStatus === FriendshipStatus.BLOCKED_BY;
+  })
 
   readonly chatInfo: Signal<ChatInfo | null> = this.state.participant;
 
@@ -102,41 +116,6 @@ export class DirectConversation implements OnInit {
 
 
 
-  singleChatFeatures: ChatFeatures = {
-    showMemberList: false,  // Not applicable for single chat
-    showSearch: true,
-    showCall: true,
-    showVideo: true
-  };
-
-
-
-
-
-  // chatInfo = computed<ISingleChatInfo | null>(() => {
-  //   const p = this.state.participant();
-
-  //   if (!p) return null;
-
-  //   return {
-  //     type: 'one_to_one',
-  //     status: 'away',
-  //     conversationId: p.conversationId,
-  //     chatName: p.chatName,
-  //     avatarUrl: p.avatarUrl,
-  //     participant: {
-  //       userId: p.conversationId, // TODO: refactor to userid
-  //       username: '',
-  //       fullname: p.chatName,
-  //       avatarUrl: p.avatarUrl,
-  //       status: 'away',
-  //       lastSeen: new Date(),
-  //     },
-  //     lastSeen: new Date(),
-  //     createdAt: new Date(),
-  //   }
-
-  // })
 
 
 
@@ -195,7 +174,8 @@ export class DirectConversation implements OnInit {
         tap(({ participant, messages }) => {
           // if (currentUser) this.state.setCurrentUser(currentUser);
 
-          if (participant.messagingUser.connectionStatus == FriendshipStatus.BLOCKED) {
+          if (participant.messagingUser.connectionStatus == FriendshipStatus.BLOCKED_BY) {
+            console.log("Blocked by")
 
             this.state.setError({
               message: "You are current blocked by this user",
@@ -204,8 +184,18 @@ export class DirectConversation implements OnInit {
             })
 
           }
-          console.log("Receive messages");
-          console.log(messages.messages);
+
+          if (participant.messagingUser.connectionStatus == FriendshipStatus.BLOCKED) {
+
+            console.log("Blocking")
+            this.state.setError({
+              message: "You are current blocked this user",
+              description: "Unblock to message this person",
+              type: 'blocked'
+            })
+
+          }
+
           if (participant && messages) {
             this.state.setSelectedConversation({
               conversationId: conversationId,
@@ -287,6 +277,16 @@ export class DirectConversation implements OnInit {
       this.loadMoreMessages();
     }
   }
+  private scrollBottom() {
+    console.log("Scroll")
+    const el = this.messageArea().nativeElement;
+    // el.scrollTop = el.scrollHeight;
+    el.scroll({
+      top: el.scrollHeight,
+      behavior: 'smooth',
+    })
+
+  }
 
   private loadMoreMessages(): void {
     const messages = this.state.messages();
@@ -348,24 +348,35 @@ export class DirectConversation implements OnInit {
           // TODO: Return message content to input for retry
           return of(null);
         }),
-        finalize(() => this.state.setSendingMessage(false)),
+        finalize(() => {
+          this.state.setSendingMessage(false);
+        })
+        ,
+        delay(1000),
+        tap(() => {
+          this.scrollBottom();
+        })
+
+        ,
+
         takeUntilDestroyed(this.destroyRef)
       )
       .subscribe();
+
   }
 
-  private triggerAutoResponse(conversationId: string): void {
-    this.apiService.generateAutoResponse(conversationId)
-      .pipe(
-        tap(auto => this.stompService.simulateIncomingMessage(auto)),
-        catchError(err => {
-          console.error('Auto-response failed:', err);
-          return of(null);
-        }),
-        takeUntilDestroyed(this.destroyRef)
-      )
-      .subscribe();
-  }
+  // private triggerAutoResponse(conversationId: string): void {
+  //   this.apiService.generateAutoResponse(conversationId)
+  //     .pipe(
+  //       tap(auto => this.stompService.simulateIncomingMessage(auto)),
+  //       catchError(err => {
+  //         console.error('Auto-response failed:', err);
+  //         return of(null);
+  //       }),
+  //       takeUntilDestroyed(this.destroyRef)
+  //     )
+  //     .subscribe();
+  // }
 
   onFileSelected(req: { file: File; type: 'file' }): void {
     const conversationId = this.state.conversationId();
@@ -381,7 +392,6 @@ export class DirectConversation implements OnInit {
     this.state.setUploadingFile(true);
     this.state.setSelectedFile([req.file])
     this.state.setUploadingFile(false);
-    console.log("file", this.state.getState().selectedFile)
 
     this.apiService.uploadAttachment(conversationId, req.file)
       .pipe(
@@ -397,7 +407,7 @@ export class DirectConversation implements OnInit {
           return this.apiService.sendMessage(dto).pipe(
             tap(sent => {
               if (sent) {
-                this.state.addMessage({ ...sent, mediaName: attachment.fileName, mediaUrl: attachment.url});
+                this.state.addMessage({ ...sent, mediaName: attachment.fileName, mediaUrl: attachment.url });
               }
             })
           );

@@ -50,6 +50,7 @@ public interface JpaContactRepository
       FROM ContactEntity c
       WHERE (c.owningUserId = :currentUserId AND c.contactUserId = :targetId)
          OR (c.contactUserId = :currentUserId AND c.owningUserId = :targetId)
+         AND c.blockedByUserId IS NOT NULL
       """)
   Optional<ContactEntity> findConnection(
       @Param("currentUserId") Long currentUserId,
@@ -57,10 +58,12 @@ public interface JpaContactRepository
 
   @Query("SELECT u FROM ContactEntity c " +
       "JOIN UserEntity u ON (u.id = c.owningUserId OR u.id = c.contactUserId) " +
-      "WHERE (c.owningUserId = :userId OR c.contactUserId = :userId) " +
+      "WHERE c.blockedByUserId IS NULL " +
+      "AND (c.owningUserId = :userId OR c.contactUserId = :userId)" +
       "AND u.id != :userId " +
       "AND (LOWER(u.firstname) LIKE LOWER(CONCAT(:namePrefix, '%')) " +
-      "  OR LOWER(u.lastname) LIKE LOWER(CONCAT(:namePrefix, '%')))")
+      " OR LOWER(u.lastname) LIKE LOWER(CONCAT(:namePrefix, '%'))" +
+      ")")
   Page<UserEntity> findContactsByNamePrefix(@Param("userId") Long userId,
       @Param("namePrefix") String namePrefix, Pageable pageable);
 

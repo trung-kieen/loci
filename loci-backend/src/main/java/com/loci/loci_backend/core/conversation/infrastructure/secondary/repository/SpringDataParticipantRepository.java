@@ -16,6 +16,7 @@ import com.loci.loci_backend.core.conversation.domain.aggregate.UserConversation
 import com.loci.loci_backend.core.conversation.domain.repository.ParticipantRepository;
 import com.loci.loci_backend.core.conversation.domain.vo.ConversationId;
 import com.loci.loci_backend.core.conversation.domain.vo.ParticipantCount;
+import com.loci.loci_backend.core.conversation.infrastructure.secondary.entity.ConversationEntity;
 import com.loci.loci_backend.core.conversation.infrastructure.secondary.entity.ConversationParticipantEntity;
 import com.loci.loci_backend.core.conversation.infrastructure.secondary.mapper.ConversationEntityMapper;
 import com.loci.loci_backend.core.conversation.infrastructure.secondary.mapper.ParticipantEntityMapper;
@@ -95,11 +96,12 @@ public class SpringDataParticipantRepository implements ParticipantRepository {
     if (conversation.isGroup()) {
       throw new RuntimeException("Method not support other type of conversation");
     }
+    ConversationEntity conversationEntity = conversationMapper.from(conversation);
     ConversationParticipantEntity participantEntity = repository
         .getTargetParticipantInDirectConversation(conversation.getId().value(),
             requestUser.getDbId().value())
         .orElseThrow(EntityNotFoundException::new);
-    return mapper.toDomain(participantEntity);
+    return mapper.toDomain(participantEntity, conversationEntity);
   }
 
   @Override
@@ -113,7 +115,7 @@ public class SpringDataParticipantRepository implements ParticipantRepository {
   public Participant setLastReadMessage(Participant senderAsParticipant, MessageId messageId) {
     ConversationParticipantEntity entity = mapper.from(senderAsParticipant);
     entity.setLastReadMessageId(messageId.value());
-    ConversationParticipantEntity  savedEntity =  repository.save(entity);
+    ConversationParticipantEntity savedEntity = repository.save(entity);
     return mapper.toDomain(savedEntity);
   }
 

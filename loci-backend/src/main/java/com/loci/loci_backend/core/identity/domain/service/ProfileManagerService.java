@@ -1,14 +1,12 @@
 package com.loci.loci_backend.core.identity.domain.service;
 
 import java.util.Optional;
-import java.util.UUID;
 
 import com.loci.loci_backend.common.authentication.domain.CurrentUser;
 import com.loci.loci_backend.common.authentication.domain.Username;
 import com.loci.loci_backend.common.ddd.infrastructure.stereotype.DomainService;
 import com.loci.loci_backend.common.store.domain.aggregate.File;
 import com.loci.loci_backend.common.store.domain.service.FileStorageService;
-import com.loci.loci_backend.common.store.domain.vo.FilePath;
 import com.loci.loci_backend.common.user.domain.aggregate.User;
 import com.loci.loci_backend.common.user.domain.repository.UserRepository;
 import com.loci.loci_backend.common.user.domain.vo.PublicId;

@@ -1,10 +1,11 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
-import { ConversationService } from '../../service/conversation-service';
-import { LoggerService } from '../../../../core/services/logger.service';
-import { ChatFilter, IChat } from '../../models/chat.model';
+import { ChatFilter } from '../../models/chat.model';
 import { CommonModule } from '@angular/common';
 import { MessageType } from '../../models/message.model';
+import { ChatListStateService } from '../../service/chat-list-state.service';
+
+
 
 @Component({
   selector: 'app-chat-list',
@@ -14,92 +15,38 @@ import { MessageType } from '../../models/message.model';
 })
 export class ChatList implements OnInit {
   private router = inject(Router);
-  private loggerService = inject(LoggerService);
-  private logger = this.loggerService.getLogger('ChatList');
 
-  private conversationService = inject(ConversationService);
+  // ── All state lives here — inject & expose directly to template ────────────
+  protected readonly chatListState = inject(ChatListStateService);
 
-  conversations = signal<IChat[]>([]);
-  filteredConversations = signal<IChat[]>([]);
-  searchQuery = signal('');
-  activeFilter = signal<ChatFilter>('inbox');
-  isLoading = signal(true);
-
+  // Expose computed signals as direct template bindings
+  protected readonly isLoading = this.chatListState.isLoading;
+  protected readonly filteredConversations = this.chatListState.filteredConversations;
+  protected readonly activeFilter = this.chatListState.activeFilter;
   ngOnInit(): void {
-    this.loadConversations();
+    this.chatListState.load();
   }
 
-  getConversationRoute(conv: IChat): string {
-    return conv.isGroup ? `/chat/group/${conv.conversationId}` : `/chat/one/${conv.conversationId}`;
+  onSearch(event: Event): void {
+    const query = (event.target as HTMLInputElement).value;
+    this.chatListState.setSearchQuery(query);
   }
 
-  public goToCreateGroup() {
+  setFilter(filter: ChatFilter): void {
+    this.chatListState.setFilter(filter);
+  }
+
+  goToCreateGroup(): void {
     this.router.navigate(['/chat/create-group']);
   }
-
-  loadConversations() {
-    this.isLoading.set(true);
-    this.conversationService.getConversations().subscribe({
-      next: (data) => {
-        this.conversations.set(data.conversations.content);
-        this.applyFilters();
-        this.isLoading.set(false);
-      },
-      error: (err) => {
-        this.logger.error('Error loading conversations: ', err);
-      },
-    });
+  getConversationRoute(conv: { isGroup: boolean; conversationId: string }): string {
+    return conv.isGroup
+      ? `/chat/group/${conv.conversationId}`
+      : `/chat/one/${conv.conversationId}`;
   }
 
-  onSearch(event: Event) {
-    const query = (event.target as HTMLInputElement).value.toLowerCase();
-    this.searchQuery.set(query);
-    this.applyFilters();
-  }
+  // ── Message preview helpers (pure, no state) ──────────────────────────────
 
-
-  changeConversation(conversation: IChat) {
-    this.logger.debug("Change conversation ", conversation)
-    this.router.navigate([this.getConversationRoute(conversation)])
-  }
-
-  setFilter(filter: ChatFilter) {
-    this.activeFilter.set(filter);
-    this.applyFilters();
-  }
-
-  applyFilters() {
-    let filtered = this.conversations();
-    const query = this.searchQuery();
-    const filter = this.activeFilter();
-
-    if (query) {
-      filtered = filtered.filter((conv) => {
-        return (
-          conv.conversationName.toLowerCase().includes(query) ||
-          conv.lastMessageContent?.toLowerCase().includes(query)
-        );
-      });
-    }
-    // TODO: use server filter instead
-    // switch (filter) {
-    //   case 'unread':
-    //     filtered = filtered.filter((conv) => conv.unreadCount > 0);
-    //     break;
-    //   case 'followups':
-    //     filtered = filtered.filter((conv) => conv.isFollowingUp);
-    //     break;
-    //   case 'archived':
-    //     filtered = filtered.filter((conv) => conv.isArchived);
-    //     break;
-    //   default: // inbox
-    //     filtered = filtered.filter((conv) => !conv.isArchived);
-    // }
-
-    this.filteredConversations.set(filtered);
-  }
-
-  // In your component
   getMessagePreview(type: MessageType, content: string): string {
     switch (type) {
       case 'image': return 'Photo';
@@ -113,9 +60,10 @@ export class ChatList implements OnInit {
     switch (type) {
       case 'image': return 'fa-regular fa-image';
       case 'video': return 'fa-solid fa-video';
-      case 'file': return 'fa-regular fa-file';
-      default: return '';
+      case 'file':  return 'fa-regular fa-file';
+      default:      return '';
     }
   }
+
 
 }

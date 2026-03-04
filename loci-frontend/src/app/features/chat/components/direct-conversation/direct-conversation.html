@@ -51,6 +51,7 @@
 
         <!-- Input -->
         <app-message-input
+          [isDisabled]="isBlocked()"
           [isSending]="state.sendingMessage()"
           [isUploading]="state.uploadingFile()"
           (send)="onSendMessage($event)"

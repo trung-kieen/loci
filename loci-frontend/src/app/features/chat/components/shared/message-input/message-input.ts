@@ -20,6 +20,7 @@ export class MessageInput {
 
   // input
   isSending = input(false);
+  isDisabled = input(false);  // for blocked state
   isUploading = input(false);
   placeholder = input("Type a message...");
   acceptedFileTypes = input("*/*");
@@ -44,15 +45,17 @@ export class MessageInput {
 
   // computed
 
-  canSend = () => this.content().trim().length > 0 && !this.isSending();
+  canSend = () => this.content().trim().length > 0 && !this.isSending() && !this.isDisabled();
 
   // event
 
   onInput() {
+    if (this.isDisabled()) return;
     this.autoResize();
   }
 
   onKeydown(event: KeyboardEvent) {
+    if (this.isDisabled()) return;
     if (event.key === "Enter" && !event.shiftKey) {
       event.preventDefault();
       this.onSend();
@@ -61,6 +64,7 @@ export class MessageInput {
 
 
   onSend() {
+    if (this.isDisabled()) return;
     const text = this.content().trim();
     if (!text || this.isSending()) {
       return;

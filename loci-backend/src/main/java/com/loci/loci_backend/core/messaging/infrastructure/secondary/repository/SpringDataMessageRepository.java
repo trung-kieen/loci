@@ -64,10 +64,15 @@ public class SpringDataMessageRepository implements MessageRepository {
     batches.parallelStream().forEach(batch -> {
       // Each batch process many read query and put result to hashmap
       batch.forEach(pair -> {
+        if (pair.userLastReadMessageId() == null) {
+          results.put(pair.conversationId(), new UnreadCount(0L));
+          return;
+        }
         Long count = messageRepository.countUnreadForConversation(pair.conversationId().value(),
             pair.userLastReadMessageId().value());
         results.put(pair.conversationId(), new UnreadCount(count));
       });
+
     });
 
     return results.entrySet().stream()

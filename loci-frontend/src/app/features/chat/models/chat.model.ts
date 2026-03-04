@@ -157,3 +157,29 @@ export interface IFriend {
 export interface IFriendList {
   friends: Page<IFriend>;
 }
+
+
+
+
+export interface NewMessagePayload {
+  conversationId: string;
+  content: string;
+  type: MessageType;
+  sender?: string;       // only for group messages
+  time: string;
+}
+
+export interface MessageStateChangedPayload {
+  conversationId: string;
+  messageState: MessageState;
+}
+
+export interface PresenceChangedPayload {
+  conversationId: string;
+  isOnline: boolean;
+}
+
+export interface ConversationAddedPayload {
+  conversation: IChat;
+}
+

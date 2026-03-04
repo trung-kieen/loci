@@ -1,7 +1,7 @@
 <div class="p-4 border-t border-neutral-200 bg-white">
   <div class="flex items-end gap-3">
 
-    <input type="file" #fileInput (change)="onFileSelected($event)" hidden [accept]="acceptedFileTypes()">
+    <input type="file" #fileInput (change)="onFileSelected($event)" [disabled] = "isDisabled()" hidden [accept]="acceptedFileTypes()">
 
     <button class="p-2 text-neutral-400 hover:text-neutral-600 disabled:opacity-50 transition-colors"
       (click)="fileInput.click()" [disabled]="isUploading()"
