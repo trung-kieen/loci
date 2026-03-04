@@ -25,7 +25,9 @@ import com.loci.loci_backend.core.groups.domain.vo.GroupId;
 import com.loci.loci_backend.core.messaging.domain.vo.MessageId;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.transaction.annotation.Transactional;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -51,11 +53,13 @@ public class SpringDataParticipantRepository implements ParticipantRepository {
   }
 
   @Override
-  public Page<UserConversation> getConversationsUserJoined(User user, ConversationSearchCriteria criteria,
+  public Page<UserConversation> getLastestConversationsUserJoined(User user, ConversationSearchCriteria criteria,
       Pageable pageable) {
 
     Long requestUserId = criteria.getUserId().value();
-    Page<UserConversationJpaVO> conversation = repository.getUserConversation(requestUserId, pageable);
+    Pageable lastestConversationPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(),
+        Sort.by(Sort.Direction.DESC, "lastModifiedDate"));
+    Page<UserConversationJpaVO> conversation = repository.getUserConversation(requestUserId, lastestConversationPageable);
     return Pages.map(conversation, conversationMapper::toDomain);
 
   }

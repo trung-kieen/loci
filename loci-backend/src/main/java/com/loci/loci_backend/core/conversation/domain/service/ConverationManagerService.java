@@ -101,10 +101,10 @@ public class ConverationManagerService {
     // get current user id
     User user = userRepository.getByPrincipalThrow(principal);
 
-    ConversationSearchCriteria criteria = ConversationSearchCriteria.from(user, SortOrder.byLastUpdateDesc(),
+    ConversationSearchCriteria criteria = ConversationSearchCriteria.from(user,
         userQuery);
 
-    Page<UserConversation> userConversations = participantRepository.getConversationsUserJoined(user, criteria,
+    Page<UserConversation> userConversations = participantRepository.getLastestConversationsUserJoined(user, criteria,
         pageable);
 
     // Provide detail chat information from user conversation

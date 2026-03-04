@@ -3,6 +3,7 @@ import { FriendManagerService } from '../../services/friend-manager.service';
 import { BlockedUser } from '../../models/contact.model';
 import { catchError, of, tap } from 'rxjs';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-block-user-list',
@@ -14,6 +15,7 @@ export class BlockUserList implements OnInit {
 
   private readonly friendManager = inject(FriendManagerService);
 
+  private router = inject(Router);
 
   readonly users = signal<BlockedUser[]>([]);
 
@@ -137,4 +139,9 @@ export class BlockUserList implements OnInit {
   isReporting(userId: string): boolean {
     return this.processingReport().has(userId);
   }
+
+  navigateToProfile(user: BlockedUser) {
+    this.router.navigate(['/user', user.userId]);
+  }
+
 }

@@ -21,14 +21,13 @@ public class ConversationSearchCriteria {
   private ConversationFilter filter;
 
   @Builder
-  public ConversationSearchCriteria(UserDBId userId, SortOrder order, SearchQuery query, ConversationFilter filter) {
+  public ConversationSearchCriteria(UserDBId userId, SearchQuery query, ConversationFilter filter) {
     this.userId = userId;
-    this.order = order;
     this.query = query;
     this.filter = filter;
   }
 
-  public static ConversationSearchCriteria from(User user, SortOrder order, ConversationQuery conversationQuery) {
-    return new ConversationSearchCriteria(user.getDbId(), order, conversationQuery.query(), conversationQuery.filter());
+  public static ConversationSearchCriteria from(User user, ConversationQuery conversationQuery) {
+    return new ConversationSearchCriteria(user.getDbId(), conversationQuery.query(), conversationQuery.filter());
   }
 }

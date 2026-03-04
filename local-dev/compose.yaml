@@ -82,6 +82,7 @@ services:
       - ./rabbitmq/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf
     networks:
       - loci-net
+    restart: always
 
   loci-prometheus:
     image: prom/prometheus:v2.45.0

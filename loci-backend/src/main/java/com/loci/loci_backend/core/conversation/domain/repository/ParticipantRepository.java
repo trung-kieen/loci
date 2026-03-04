@@ -22,7 +22,7 @@ public interface ParticipantRepository {
 
   List<Participant> addParticipants(Conversation conversation, Collection<Participant> participants);
 
-  Page<UserConversation> getConversationsUserJoined(User user, ConversationSearchCriteria criteria, Pageable pageable);
+  Page<UserConversation> getLastestConversationsUserJoined(User user, ConversationSearchCriteria criteria, Pageable pageable);
 
   boolean isParticipantInConversation(User user, Conversation conversation);
 

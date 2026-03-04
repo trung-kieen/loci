@@ -61,16 +61,19 @@
         }
         }
 
+              <!-- (click)="navigateToProfile()" -->
         <!-- Users List -->
         @if (hasUsers()) {
         @for (user of users(); track user.userId) {
         <div
           class="flex items-center justify-between p-4 border border-neutral-200 rounded-lg bg-white shadow-sm hover:shadow-md transition-shadow">
           <div class="flex items-center space-x-3">
-            <img [src]="user.profilePictureUrl" [alt]="user.fullname"
+            <img
+              [src]="user.profilePictureUrl"
+              [alt]="user.fullname"
               class="w-10 h-10 rounded-full object-cover bg-neutral-100" loading="lazy">
             <div>
-              <p class="text-sm font-medium text-neutral-900">{{ user.fullname }}</p>
+              <p (click)="navigateToProfile(user)" class="text-sm font-medium text-neutral-900 cursor-pointer">{{ user.fullname }}</p>
               <p class="text-xs text-neutral-500">&#64;{{ user.username }}</p>
               <!-- <p class="text-xs text-neutral-400 mt-0.5"> -->
               <!--   Blocked {{ user.blockedAt | date:'mediumDate' }} -->
