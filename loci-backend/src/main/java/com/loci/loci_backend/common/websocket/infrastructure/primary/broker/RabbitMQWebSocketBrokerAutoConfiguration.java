@@ -46,7 +46,8 @@ public class RabbitMQWebSocketBrokerAutoConfiguration {
             .setAutoStartup(true)
             .setSystemHeartbeatReceiveInterval(relayProperties.getSystemHeartbeatReceiveInterval());
 
-        config.setApplicationDestinationPrefixes(WsPaths.APP);
+        config.setApplicationDestinationPrefixes(WsPaths.APP_PREFIX);
+        config.setUserDestinationPrefix(WsPaths.USER_PREFIX);
       }
     };
   }

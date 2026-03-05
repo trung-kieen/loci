@@ -12,10 +12,15 @@ import com.loci.loci_backend.core.conversation.domain.aggregate.Participant;
 import com.loci.loci_backend.core.conversation.domain.repository.ConversationRepository;
 import com.loci.loci_backend.core.conversation.domain.repository.ParticipantRepository;
 import com.loci.loci_backend.core.conversation.domain.service.ConversationAuthenticationProvider;
+import com.loci.loci_backend.core.groups.domain.repository.GroupRepository;
 import com.loci.loci_backend.core.messaging.domain.aggregate.Message;
 import com.loci.loci_backend.core.messaging.domain.aggregate.MessageFromSendMessageRequest;
 import com.loci.loci_backend.core.messaging.domain.aggregate.SendMessageRequest;
+import com.loci.loci_backend.core.messaging.domain.repository.ForwardIdTranslator;
+import com.loci.loci_backend.core.messaging.domain.repository.MessagePublisher;
 import com.loci.loci_backend.core.messaging.domain.repository.MessageRepository;
+import com.loci.loci_backend.core.messaging.domain.vo.GroupSubscriberId;
+import com.loci.loci_backend.core.messaging.domain.vo.UserSubcriberId;
 
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,6 +40,11 @@ public class MessageSendingService {
   private final ConversationAuthenticationProvider conversationAuthenticationProvider;
   private final MessageRepository messageRepository;
   private final ParticipantRepository participantRepository;
+  private final MessagePublisher messagePublisher;
+  private final ForwardIdTranslator forwardIdTranslator;
+
+  // TODO: migrate with inter commnucation
+  private final GroupRepository groupRepository;
 
   @Transactional(readOnly = false)
   public Message sendMessage(SendMessageRequest messageRequest) {
@@ -73,19 +83,42 @@ public class MessageSendingService {
     // forward message for single user / user in group via message queue
     // (forwardMessage)
     if (conversation.isGroup()) {
-      List<Participant> groupParticipants = participantRepository.getParticipantsByConversationId(conversation.getId());
-      for (Participant member : groupParticipants) {
-        if (!member.equals(senderAsParticipant)) {
-          forwardMessage(member, savedMessage);
-        }
-      }
+      // List<Participant> groupParticipants =
+      // participantRepository.getParticipantsByConversationId(conversation.getId());
+      sendGroupMessage(conversation, savedMessage);
+
+      // GroupProfile groupProfile =
+
+      // List<Participant> groupParticipants =
+      // participantRepository.getParticipantsByConversationId(conversation.getId());
+      // for (Participant member : groupParticipants) {
+      // if (!member.equals(senderAsParticipant)) {
+      // forwardMessage(member, savedMessage);
+      // }
+      // }
     } else {
       Participant targetMessagingParticipant = participantRepository
           .getTargetMessagingParticipantInDirectConversation(sender, conversation);
-      forwardMessage(targetMessagingParticipant, savedMessage);
+
+      sendPrivateMessage(conversation, targetMessagingParticipant, savedMessage);
+
+      // Participant targetMessagingParticipant = participantRepository
+      // .getTargetMessagingParticipantInDirectConversation(sender, conversation);
+      // forwardMessage(targetMessagingParticipant, savedMessage);
     }
 
     return savedMessage;
+  }
+
+  public void sendPrivateMessage(Conversation conversation, Participant targetReceiver, Message message) {
+    UserSubcriberId forwardId = forwardIdTranslator.toPrivateSubscriberId(targetReceiver);
+    messagePublisher.sendInvidualMessage(forwardId, message);
+  }
+
+  public void sendGroupMessage(Conversation conversation, Message message) {
+    GroupSubscriberId groupSubscriberId = forwardIdTranslator.toGroupSubscriberId(conversation);
+    messagePublisher.sendGroupMessage(groupSubscriberId, message);
+
   }
 
   /*
@@ -95,6 +128,7 @@ public class MessageSendingService {
   public void forwardMessage(Participant participant, Message message) {
     log.warn("TODO: Sending message {} to participant {} ", message, participant);
 
+    // UserSubcriberId targetReciverId =
     // get opponent user or group of user
 
     // determine unicast or multicast message

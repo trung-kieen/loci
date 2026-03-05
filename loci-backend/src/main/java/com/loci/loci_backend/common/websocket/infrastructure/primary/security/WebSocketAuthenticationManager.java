@@ -5,6 +5,9 @@ import java.util.stream.Collectors;
 
 import com.loci.loci_backend.common.authentication.domain.KeycloakPrincipal;
 import com.loci.loci_backend.common.authentication.infrastructure.primary.keycloak.KeycloakTokenVerifier;
+import com.loci.loci_backend.common.user.domain.vo.PublicId;
+import com.loci.loci_backend.common.user.infrastructure.secondary.entity.UserEntity;
+import com.loci.loci_backend.common.user.infrastructure.secondary.repository.JpaUserRepository;
 import com.loci.loci_backend.common.websocket.application.WebSocketTokenValicationException;
 import com.loci.loci_backend.common.websocket.domain.aggregate.JWSAuthentication;
 import com.loci.loci_backend.common.websocket.domain.vo.BearerToken;
@@ -17,6 +20,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -30,6 +34,7 @@ import lombok.extern.slf4j.Slf4j;
 public class WebSocketAuthenticationManager implements AuthenticationManager {
 
   private final KeycloakTokenVerifier tokenVerifier;
+  private final JpaUserRepository userRepository;
 
   @Override
   public Authentication authenticate(Authentication authentication) throws AuthenticationException {
@@ -42,7 +47,10 @@ public class WebSocketAuthenticationManager implements AuthenticationManager {
       List<GrantedAuthority> authorities = accessToken.getRealmAccess().getRoles().stream()
           .map(SimpleGrantedAuthority::new).collect(Collectors.toList());
       KeycloakPrincipal identityAccess = KeycloakPrincipal.fromKeycloakAccessToken(accessToken);
-      token = new JWSAuthentication(new BearerToken(tokenString), identityAccess, authorities);
+      UserEntity user = userRepository.findByUsername(identityAccess.getUsername().value())
+          .orElseThrow(EntityNotFoundException::new);
+      PublicId userPublicId = new PublicId(user.getPublicId());
+      token = new JWSAuthentication(new BearerToken(tokenString), identityAccess, authorities, userPublicId);
 
       token.setAuthenticated(true);
     } catch (VerificationException e) {

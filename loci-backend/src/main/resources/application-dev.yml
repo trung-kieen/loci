@@ -3,12 +3,12 @@ spring:
     type: hybrid # hybrid | redis | caffeine
   application:
     name: loci
-  boot:
-    admin:
-      client:
-        url: ${SPRING_BOOT_ADMIN_CLIENT_URL:http://localhost:7070}
-        username: ${SPRING_BOOT_ADMIN_CLIENT_USERNAME:admin}
-        password: ${SPRING_BOOT_ADMIN_CLIENT_PASSWORD:adminadmin}
+  # boot:
+  #   admin:
+  #     client:
+  #       url: ${SPRING_BOOT_ADMIN_CLIENT_URL:http://localhost:7070}
+  #       username: ${SPRING_BOOT_ADMIN_CLIENT_USERNAME:admin}
+  #       password: ${SPRING_BOOT_ADMIN_CLIENT_PASSWORD:adminadmin}
 
   # redis:
   #   host: localhost
@@ -110,10 +110,10 @@ stomp.relay:
   type: ${STOMP_RELAY_TYPE:inmemory} # rabbitmq | inmemory
   relay-host: ${STOMP_RELAY_HOST:localhost}
   relay-port: ${STOMP_RELAY_PORT:61613}
-  client-login: ${STOMP_RELAY_CLIENT_LOGIN:guest}
-  client-passcode: ${STOMP_RELAY_CLIENT_PASSCODE:guest}
-  system-login: ${STOMP_RELAY_SYSTEM_LOGIN:guest}
-  system-passcode: ${STOMP_RELAY_SYSTEM_PASSCODE:guest}
+  client-login: ${STOMP_RELAY_CLIENT_LOGIN:admin}
+  client-passcode: ${STOMP_RELAY_CLIENT_PASSCODE:admin}
+  system-login: ${STOMP_RELAY_SYSTEM_LOGIN:admin}
+  system-passcode: ${STOMP_RELAY_SYSTEM_PASSCODE:admin}
   system-heartbeat-send-interval: 5000
   system-heartbeat-receive-interval: 4000
 
@@ -175,6 +175,9 @@ shell:
 
 logging:
   com.loci.loci_backend: DEBUG
+  level.org.springframework:
+    messaging: TRACE
+    web.socket: TRACE
 
   level:
     org.springframework.security.web.FilterChainProxy: TRACE

@@ -9,20 +9,22 @@ export const rxStompConfig: RxStompConfig = {
 
   // Headers (typical keys: login, passcode, host)
   // connectHeaders: {
-  //   login: 'guest',
-  //   passcode: 'guest',
+  //   login: 'admin',
+  //   passcode: 'admin',
   // },
 
 
   // Heartbeats (ms). Set 0 to disable.
-  heartbeatIncoming: 2000,
-  heartbeatOutgoing: 20000,
+  heartbeatIncoming: 10000,
+  heartbeatOutgoing: 10000,
+
+
 
   // Reconnect delay (ms). Set 0 to disable.
-  reconnectDelay: 5000,
+  reconnectDelay: 2000,
 
   // Console diagnostics (avoid in production)
-  debug: (msg: string): void => {
-    console.log(new Date(), msg);
-  },
+  // debug: (msg: string): void => {
+  //   console.log(new Date(), msg);
+  // },
 };

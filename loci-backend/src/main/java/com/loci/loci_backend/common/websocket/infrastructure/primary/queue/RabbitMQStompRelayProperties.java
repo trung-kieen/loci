@@ -3,6 +3,7 @@ package com.loci.loci_backend.common.websocket.infrastructure.primary.queue;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Relay (broker) port configuration for communication between rabbitmq and
@@ -11,6 +12,7 @@ import lombok.Getter;
 // @Component
 @ConfigurationProperties(prefix = "stomp.relay")
 @Getter
+@Setter
 public class RabbitMQStompRelayProperties {
   // RabbitMQ host
   private String relayHost = "localhost";

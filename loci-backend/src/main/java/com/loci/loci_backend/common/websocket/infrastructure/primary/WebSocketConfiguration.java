@@ -59,6 +59,7 @@ public class WebSocketConfiguration implements WebSocketMessageBrokerConfigurer 
           .addEndpoint(WsPaths.ENDPOINT, WsPaths.MESSAGE_ENDPOINT, WsPaths.NOTIFICATION_ENDPOINT,
               WsPaths.PRESENCE_ENDPOINT)
           .setAllowedOrigins(origin)
+
       // .setAllowedOriginPatterns("*") // Or this for flexibility
       // .withSockJS()// to disable SockJS wrapping
       ;

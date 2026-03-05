@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable, OnInit } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import {
   IMessage,
@@ -6,6 +6,8 @@ import {
   ISendMessageRequest,
 } from '../models/message.model';
 import { ITypingEvent, IUserStatusUpdate } from '../models/chat.model';
+import { RxStomp } from '@stomp/rx-stomp';
+import { LoggerService } from '../../../core/services/logger.service';
 
 /**
  * Mock STOMP service for development
@@ -15,14 +17,22 @@ import { ITypingEvent, IUserStatusUpdate } from '../models/chat.model';
   providedIn: 'root',
 })
 export class MockStompService {
+  private loggerService = inject(LoggerService);
+  private logger = this.loggerService.getLogger("MockStompService");
   private messageSubject = new Subject<IMessage>();
   private typingSubject = new Subject<ITypingEvent>();
   private statusSubject = new Subject<IUserStatusUpdate>();
   private messageStatusSubject = new Subject<IMessageStatusUpdate>();
 
   private connected = false;
+  private rxStomp = inject(RxStomp);
+
+
+
 
   connect(): Promise<void> {
+
+    // return this.rxStomp.connected();
     return new Promise((resolve) => {
       setTimeout(() => {
         this.connected = true;
@@ -53,6 +63,7 @@ export class MockStompService {
   // }
 
   subscribeToMessages(): Observable<IMessage> {
+
     // console.log(
     //   `[MockStompService] Subscribed to /user/${userId}/queue/messages`,
     // );

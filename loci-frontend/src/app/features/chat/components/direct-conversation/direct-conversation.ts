@@ -34,6 +34,7 @@ import { DirectConversationStateService } from '../../service/direct-conversatio
 import { ChatInfo, IChatError } from '../../models/chat.model';
 import { IAttachment, IConversationMessage, IMessage, ISendMessageRequest } from '../../models/message.model';
 import { FriendshipStatus } from '../../../contact/models/contact.model';
+import { RxStomp } from '@stomp/rx-stomp';
 
 @Component({
   selector: 'app-direct-conversation',
@@ -64,6 +65,7 @@ export class DirectConversation implements OnInit {
   private stompService = inject(MockStompService);
   private router = inject(Router);
   private destroyRef = inject(DestroyRef);
+  private rxStomp = inject(RxStomp);
   private conversationId: string | null = null;
 
   // ViewChildren
@@ -103,6 +105,16 @@ export class DirectConversation implements OnInit {
 
         this.initializeChat();
       });
+
+
+    this.rxStomp.watch("/individual/send").subscribe((message) => {
+      console.log("receive the message ", message.body);
+      const chatMessage = JSON.parse(message.body) as IMessage;
+      console.log("content", chatMessage.content);
+      // const newMessage = message.body as ChatMessage;
+      // this.receivesMessage.update(m => [...m,  newMessage]);
+    })
+
   }
 
   private cleanupConversation(): void {

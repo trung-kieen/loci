@@ -10,10 +10,10 @@ export class RxStompAdapterService extends RxStomp {
     super();
     // if (!(authService instanceof AuthService && authService.getBearerToken)) {
     if (!authService.getBearerToken) {
-      console.log(Object.getOwnPropertyNames(authService));
+      // console.log(Object.getOwnPropertyNames(authService));
       throw new Error('Error auth object for rxstomp');
     }
-    console.log("Get auth success for rxStomp")
+    // console.log("Get auth success for rxStomp")
     this.authService = authService;
   }
   override configure(rxStompConfig: RxStompConfig): void {
@@ -22,7 +22,7 @@ export class RxStompAdapterService extends RxStomp {
     };
     this.authService.getBearerToken().then((token) => {
       headers['Authorization'] = token;
-      console.log("Header ", headers.Authorization)
+      // console.log("Header ", headers.Authorization)
       super.configure({
         ...rxStompConfig,
         connectHeaders: {
@@ -38,7 +38,7 @@ export class RxStompAdapterService extends RxStomp {
     };
     // fetch token asynchronously, then call super.publish to avoid recursive override
     this.authService.getBearerToken().then((token) => {
-      console.log("Header ", headers.Authorization)
+      // console.log("Header ", headers.Authorization)
       headers['Authorization'] = token;
       super.publish({
         ...parameters,

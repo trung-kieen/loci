@@ -1,8 +1,15 @@
+// NOTE: Decided separate sending and receive message instead use in one place
+
 package com.loci.loci_backend.core.messaging.infrastructure.primary.handler;
+
+import java.security.Principal;
 
 import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
+import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.messaging.simp.annotation.SendToUser;
 import org.springframework.stereotype.Controller;
 
@@ -11,12 +18,30 @@ import lombok.RequiredArgsConstructor;
 @Controller
 @RequiredArgsConstructor
 public class MessagingWebSocketHandler {
+  private final SimpMessageSendingOperations messageTemplate;
 
   // NOTE: use Ws like preffix for Rest or Socket
   // Ws...Request/Event
-  @MessageMapping("/individual/send")
-  @SendToUser("/queue/individual/receive")
-  public void sendIndividual() { // Use custom object to send message
+  @MessageMapping("/individual.send")
+  // @SendToUser("/queue/individual/receive")
+  public String sendIndividual(@Payload String body, Principal principal, SimpMessageHeaderAccessor headerAccessor) {
+
+    String currentUsername = headerAccessor.getUser().getName();
+    System.out.println(currentUsername);
+    System.out.println(principal.getName());
+    System.out.println(body);
+            String senderId = principal.getName();
+            System.out.println("Sender principal: " + senderId);
+    String userId = "e8fe4a7f-619c-4d14-a25f-fe3de4b90549";
+    if (!userId.equals(principal.getName())){
+      throw new RuntimeException("Princial note match userid");
+    }
+    if (!userId.equals(currentUsername)){
+      throw new RuntimeException("Username note match userid");
+    }
+    messageTemplate.convertAndSendToUser(userId, "/queue/individual.receive", body);
+
+    return principal.getName();
     // String senderId = headers.getUser().getName();
     // SendIndividualMessageCommand command = mapper.toCommand(payload, senderId);
     // Message message = sendIndividualUseCase.execute(command);
@@ -31,7 +56,7 @@ public class MessagingWebSocketHandler {
     // return mapper.toIndividualReceivePayload(message); // sender also gets
     // confirmation
     //
-    throw new NotImplementedException();
+    // throw new NotImplementedException();
   }
 
   @MessageMapping("/individual/seen")

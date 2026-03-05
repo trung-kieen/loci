@@ -28,7 +28,9 @@ public class InMemoryWebSocketBrokerAutoConfiguration {
       @Override
       public void configureMessageBroker(MessageBrokerRegistry config) {
         config.enableSimpleBroker(WsPaths.TOPIC, WsPaths.QUEUE);
-        config.setApplicationDestinationPrefixes(WsPaths.APP);
+        config.setApplicationDestinationPrefixes(WsPaths.APP_PREFIX);
+        config.setUserDestinationPrefix(WsPaths.USER_PREFIX);
+        // config.setUserDestinationPrefix(destinationPrefix)
       }
     };
   }
