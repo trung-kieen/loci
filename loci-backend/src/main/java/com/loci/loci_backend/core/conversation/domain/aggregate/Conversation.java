@@ -117,7 +117,7 @@ public class Conversation {
     if (!isParticipant(userId)) {
       this.participants.add(ConversationParticipantFactory.unmanagerParticipant(userId, role));
     }
-  }
+ }
 
   public void addParticipants(Collection<Participant> participants) {
     for (Participant p : participants) {

@@ -107,7 +107,7 @@ spring:
     max-binary-message-size: 8192
 
 stomp.relay:
-  type: ${STOMP_RELAY_TYPE:inmemory} # rabbitmq | inmemory
+  type: ${STOMP_RELAY_TYPE:rabbitmq} # rabbitmq | inmemory
   relay-host: ${STOMP_RELAY_HOST:localhost}
   relay-port: ${STOMP_RELAY_PORT:61613}
   client-login: ${STOMP_RELAY_CLIENT_LOGIN:admin}
@@ -175,12 +175,12 @@ shell:
 
 logging:
   com.loci.loci_backend: DEBUG
-  level.org.springframework:
-    messaging: TRACE
-    web.socket: TRACE
+  # level.org.springframework:
+  #   messaging: TRACE
+  #   web.socket: TRACE
 
-  level:
-    org.springframework.security.web.FilterChainProxy: TRACE
+  # level:
+  #   org.springframework.security.web.FilterChainProxy: TRACE
 keycloak:
   auth-server-url: ${KEYCLOAK_AUTH_SERVER_URL:http://localhost:8080}
   resource: ${KEYCLOAK_RESOURCE:spring}

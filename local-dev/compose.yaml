@@ -18,8 +18,7 @@ services:
 
     # entrypoint: ["postgres-entrypoint.sh"]
 
-    restart:
-      always
+    restart: always
     ports:
       - 5432:5432
     networks:
@@ -64,7 +63,6 @@ services:
     command: start-dev --import-realm
     restart: always
 
-
   loci-rabbitmq:
     image: rabbitmq:3.12-management-alpine
     container_name: "loci-mq"
@@ -75,11 +73,18 @@ services:
     volumes:
       - loci-rabbitmq:/var/lib/rabbitmq
       - ./rabbitmq/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf
+    command: >
+      sh -c "
+        rabbitmq-plugins enable --offline rabbitmq_stomp rabbitmq_web_stomp &&
+        rabbitmq-server
+      "
+
     environment:
       - ./enabled_plugins:/etc/rabbitmq/enabled_plugins # Use to enable stomp plugin
       - RABBITMQ_DEFAULT_USER=admin
       - RABBITMQ_DEFAULT_PASS=admin
       - ./rabbitmq/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf
+
     networks:
       - loci-net
     restart: always
@@ -156,8 +161,7 @@ services:
       interval: 30s
       timeout: 20s
       retries: 3
-    restart:
-      always
+    restart: always
 
   loci-minio-mc:
     image: minio/mc:RELEASE.2025-08-13T08-35-41Z-cpuv1
@@ -180,8 +184,7 @@ services:
     networks:
       - loci-net
 
-    restart:
-      always
+    restart: always
 networks:
   loci-net:
     driver: bridge

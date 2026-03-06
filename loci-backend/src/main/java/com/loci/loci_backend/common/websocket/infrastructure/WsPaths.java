@@ -15,4 +15,10 @@ public class WsPaths {
   public static final String MESSAGE_ENDPOINT = ENDPOINT + "/messages";
   public static final String NOTIFICATION_ENDPOINT = ENDPOINT + "/notifications";
   public static final String PRESENCE_ENDPOINT = ENDPOINT + "/presence";
+
+  // individual
+  public static final String INDIVIDUAL_RECEIVE_MESSAGE = QUEUE + "/messages.receive";
+
+  public static final String GROUP_RECEIVE_MESSAGE = TOPIC + "/messages.receive";
+
 }

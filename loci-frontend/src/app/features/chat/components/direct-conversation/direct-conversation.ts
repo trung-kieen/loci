@@ -107,7 +107,7 @@ export class DirectConversation implements OnInit {
       });
 
 
-    this.rxStomp.watch("/individual/send").subscribe((message) => {
+    this.rxStomp.watch("/user/individual/messages.receive").subscribe((message) => {
       console.log("receive the message ", message.body);
       const chatMessage = JSON.parse(message.body) as IMessage;
       console.log("content", chatMessage.content);

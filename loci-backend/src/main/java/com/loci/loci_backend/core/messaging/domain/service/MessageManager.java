@@ -6,7 +6,6 @@ import com.loci.loci_backend.common.authentication.domain.CurrentUser;
 import com.loci.loci_backend.common.ddd.infrastructure.stereotype.DomainService;
 import com.loci.loci_backend.common.store.domain.aggregate.File;
 import com.loci.loci_backend.common.store.domain.service.FileStorageService;
-import com.loci.loci_backend.common.store.domain.vo.FilePath;
 import com.loci.loci_backend.common.user.domain.aggregate.User;
 import com.loci.loci_backend.common.user.domain.repository.UserRepository;
 import com.loci.loci_backend.common.user.domain.vo.PublicId;
@@ -16,7 +15,6 @@ import com.loci.loci_backend.core.conversation.domain.repository.ConversationRep
 import com.loci.loci_backend.core.conversation.domain.repository.ParticipantRepository;
 import com.loci.loci_backend.core.conversation.domain.service.ConversationAuthenticationProvider;
 import com.loci.loci_backend.core.messaging.domain.aggregate.Attachment;
-import com.loci.loci_backend.core.messaging.domain.aggregate.AttachmentBuilder;
 import com.loci.loci_backend.core.messaging.domain.aggregate.ConversationMessageList;
 import com.loci.loci_backend.core.messaging.domain.aggregate.ConversationMessageListBuilder;
 import com.loci.loci_backend.core.messaging.domain.aggregate.Message;

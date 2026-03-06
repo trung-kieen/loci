@@ -1,8 +1,7 @@
 package com.loci.loci_backend.core.conversation.domain.aggregate;
 
 import java.time.Instant;
-import java.util.Collection;
-import java.util.List;
+import java.util.Objects;
 
 import com.loci.loci_backend.common.user.domain.vo.PublicId;
 import com.loci.loci_backend.common.user.domain.vo.UserDBId;
@@ -61,32 +60,30 @@ public class Participant implements Validatable {
 
   @Override
   public boolean equals(Object obj) {
-    if (this == obj) {
+    if (this == obj)
       return true;
-    }
-    if (obj == null) {
+    if (obj == null || getClass() != obj.getClass())
       return false;
-    }
-    if (getClass() != obj.getClass()) {
-      return false;
-    }
+
     Participant other = (Participant) obj;
-    if (id == null) {
-      if (other.id != null) {
-        return false;
-      }
-    } else if (!id.equals(other.id)) {
-      return false;
+
+    // If both are persisted, compare by database ID
+    if (id != null && other.id != null) {
+      return id.equals(other.id);
     }
-    return true;
+
+    // If either is transient, compare by business key (userId + conversationId)
+    // This prevents two new participants in same conversation being "equal"
+    return Objects.equals(userId, other.userId) &&
+        Objects.equals(conversationId, other.conversationId);
   }
 
   @Override
   public int hashCode() {
-    final int prime = 31;
-    int result = 1;
-    result = prime * result + ((id == null) ? 0 : id.hashCode());
-    return result;
+    // Must be consistent with equals
+    if (id != null) {
+      return Objects.hash(id);
+    }
+    return Objects.hash(userId, conversationId);
   }
-
 }

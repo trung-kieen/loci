@@ -1,6 +1,5 @@
 package com.loci.loci_backend.core.conversation.domain.service;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -8,10 +7,8 @@ import com.loci.loci_backend.common.user.domain.aggregate.User;
 import com.loci.loci_backend.common.user.domain.vo.UserDBId;
 import com.loci.loci_backend.common.validation.domain.DuplicateResourceException;
 import com.loci.loci_backend.core.conversation.domain.aggregate.Conversation;
-import com.loci.loci_backend.core.conversation.domain.aggregate.Participant;
 import com.loci.loci_backend.core.conversation.domain.repository.ConversationRepository;
 import com.loci.loci_backend.core.conversation.domain.repository.ParticipantRepository;
-import com.loci.loci_backend.core.groups.domain.factory.ConversationParticipantFactory;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

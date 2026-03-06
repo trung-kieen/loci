@@ -3,6 +3,9 @@ package com.loci.loci_backend.core.messaging.infrastructure.secondary.translatio
 import java.util.UUID;
 
 import com.loci.loci_backend.common.ddd.infrastructure.stereotype.SecondaryPort;
+import com.loci.loci_backend.common.user.domain.repository.UserRepository;
+import com.loci.loci_backend.common.user.infrastructure.secondary.entity.UserEntity;
+import com.loci.loci_backend.common.user.infrastructure.secondary.repository.JpaUserRepository;
 import com.loci.loci_backend.core.conversation.domain.aggregate.Conversation;
 import com.loci.loci_backend.core.conversation.domain.aggregate.Participant;
 import com.loci.loci_backend.core.groups.infrastructure.secondary.entity.GroupEntity;
@@ -20,12 +23,13 @@ import lombok.RequiredArgsConstructor;
 public class SimpleForwardIdTranslator implements ForwardIdTranslator {
 
   private final JpaGroupRepository groupRepository;
-  private final CacheUserIdRepository userIdRepository;
+  private final JpaUserRepository userRepository;
 
   @Override
   public UserSubcriberId toPrivateSubscriberId(Participant targetReceiver) {
-    UUID userPublicId = userIdRepository.getByDbId(targetReceiver.getUserId().value());
-    return new UserSubcriberId(userPublicId);
+    UserEntity user = userRepository.findById(targetReceiver.getUserId().value())
+        .orElseThrow(EntityNotFoundException::new);
+    return new UserSubcriberId(user.getPublicId());
   }
 
   @Override
