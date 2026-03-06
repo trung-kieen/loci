@@ -125,7 +125,7 @@ We ❤️ contributions! Whether fixing bugs, adding features, or improving docs
 - Report issues via GitHub issues
 
 ## License
-Loci is open-source under the MIT License. Use it freely, but give credit where due.
+Loci is open-source under the Apache V2. 
 
 
 ---
