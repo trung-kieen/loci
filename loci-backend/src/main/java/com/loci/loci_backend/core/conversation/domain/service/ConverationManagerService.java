@@ -112,6 +112,7 @@ public class ConverationManagerService {
     return conversation;
   }
 
+  @Transactional(readOnly = true)
   public UserChatList getUserChatList(Pageable pageable, ConversationQuery userQuery) {
 
     // get current user id

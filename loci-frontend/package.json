@@ -46,6 +46,7 @@
     "@angular/router": "^20.2.1",
     "@fortawesome/fontawesome-free": "^7.1.0",
     "@stomp/rx-stomp": "^2.2.0",
+    "date-fns": "^4.1.0",
     "keycloak-angular": "^20.0.0",
     "keycloak-js": "^26.2.0",
     "lucide": "^0.553.0",

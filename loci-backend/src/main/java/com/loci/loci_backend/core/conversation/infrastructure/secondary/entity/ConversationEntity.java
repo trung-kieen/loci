@@ -40,6 +40,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @Entity
 @Table(name = "conversation")
@@ -59,6 +60,7 @@ public class ConversationEntity extends AbstractAuditingEntity<Long> {
   @JoinColumn(name = "creator_id", insertable = false, updatable = false)
   @Getter(AccessLevel.NONE)
   @Setter(AccessLevel.NONE)
+  @ToString.Exclude
   private UserEntity creator;
 
   @Column(name = "creator_id", nullable = false, updatable = false)
@@ -72,6 +74,7 @@ public class ConversationEntity extends AbstractAuditingEntity<Long> {
   @JoinColumn(name = "last_message_id", nullable = true, updatable = false, insertable = false)
   @Getter(AccessLevel.NONE)
   @Setter(AccessLevel.NONE)
+  @ToString.Exclude
   private MessageEntity lastMessage;
 
   @Column(name = "last_message_id", nullable = true, updatable = true, insertable = true)

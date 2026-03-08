@@ -30,8 +30,6 @@ import com.loci.loci_backend.core.conversation.infrastructure.primary.payload.Re
 import com.loci.loci_backend.core.conversation.infrastructure.primary.payload.RestCreateGroup;
 import com.loci.loci_backend.core.conversation.infrastructure.primary.payload.RestDirectChatInfo;
 import com.loci.loci_backend.core.conversation.infrastructure.primary.payload.RestGroupChatInfo;
-import com.loci.loci_backend.core.groups.domain.aggregate.MemberPublicIdList;
-import com.loci.loci_backend.core.groups.infrastructure.primary.payload.RestMemberIdList;
 import com.loci.loci_backend.core.identity.infrastructure.primary.mapper.MapStructRestProfileMapper;
 import com.loci.loci_backend.core.messaging.domain.aggregate.DirectChatInfo;
 import com.loci.loci_backend.core.messaging.domain.aggregate.GroupChatInfo;

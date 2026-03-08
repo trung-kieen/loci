@@ -19,11 +19,8 @@ package com.loci.loci_backend.core.conversation.infrastructure.primary.payload;
 import java.util.Random;
 import java.util.UUID;
 
-import com.loci.loci_backend.common.validation.domain.Assert;
 import com.loci.loci_backend.core.conversation.domain.exception.InvalidConversationTypeException;
 import com.loci.loci_backend.core.conversation.infrastructure.secondary.enumeration.ConversationTypeEnum;
-import com.loci.loci_backend.core.messaging.domain.vo.MessageState;
-import com.loci.loci_backend.core.messaging.domain.vo.MessageType;
 
 import jakarta.annotation.Nullable;
 import lombok.Getter;
@@ -64,7 +61,7 @@ public class RestChat {
   }
 
   @Nullable
-  public RestMessage getLastMessage(){
+  public RestMessage getLastMessage() {
     return lastMessage;
   }
 
@@ -80,16 +77,15 @@ public class RestChat {
     throw new InvalidConversationTypeException();
   }
 
-  public UUID getLastMessageSender() {
+  // public UUID getLastMessageSender() {
 
-    if (lastMessage == null) {
-      return null;
-    }
-    // check is is own this message
-    return dmMetadata.getMessagingUser().getUserId();
+  //   if (lastMessage == null) {
+  //     return null;
+  //   }
+  //   // check is is own this message
+  //   return dmMetadata.getMessagingUser().getUserId();
 
-  }
-
+  // }
 
   public boolean getIsOnline() {
 
@@ -104,24 +100,23 @@ public class RestChat {
     return lastMessage.getContent();
   }
 
-
-  public MessageType getLastMessageType() {
-    if (lastMessage == null) {
-      return null;
-    }
-    return lastMessage.getType();
-  }
-
+  // public MessageType getLastMessageType() {
+  //   if (lastMessage == null) {
+  //     return null;
+  //   }
+  //   return lastMessage.getType();
+  // }
 
   public boolean getIsGroup() {
     return type.equals(ConversationTypeEnum.GROUP);
   }
-  public MessageState getMessageState() {
-    if (lastMessage == null) {
-      return null;
-    }
-    return lastMessage.getMessageState();
-  }
+
+  // public MessageState getMessageState() {
+  //   if (lastMessage == null) {
+  //     return null;
+  //   }
+  //   return lastMessage.getMessageState();
+  // }
 
   public boolean isFollowingUp() {
 

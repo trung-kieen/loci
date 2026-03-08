@@ -131,7 +131,8 @@
 
     <!-- Metadata -->
     <div class="flex items-center gap-2 mt-1" [class.flex-row-reverse]="!isOwn()">
-      <span class="text-xs text-neutral-500">{{ formattedTime() }}</span>
+      <!-- <span class="text-xs text-neutral-500">{{ formattedTime() }}</span> -->
+      <span class="text-xs text-neutral-500">{{ this.message().timestamp | messageTime }}</span>
 
       @if (isOwn()) {
       <i class="fa-solid text-xs" [class.fa-clock]="message().messageState === 'sending'"

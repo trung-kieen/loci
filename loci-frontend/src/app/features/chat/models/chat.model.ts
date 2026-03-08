@@ -80,10 +80,11 @@ export interface IChat {
   conversationId: string;
   conversationName: string;
   avatarUrl: string;
-  lastMessageContent?: string;
-  lastMessageSender?: string; // group chat
-  lastMessageType?: MessageType; // group chat
-  time: string;
+  lastMessage?: IMessage;
+  // lastMessageContent?: string;
+  // lastMessageSender?: string; // group chat
+  // lastMessageType?: MessageType; // group chat
+  time: Date;
   unreadCount: number;
   isOnline: boolean;
   isGroup: boolean;
@@ -176,14 +177,15 @@ export interface IFriendList {
 
 
 
+export type ArrvalMessage = IMessage;
 
-export interface ArrvalMessage {
-  conversationId: string;
-  content: string;
-  type: MessageType;
-  sender?: string;       // only for group messages
-  time: string;
-}
+// export interface ArrvalMessage {
+//   conversationId: string;
+//   content: string;
+//   type: MessageType;
+//   sender?: string;       // only for group messages
+//   time: string;
+// }
 
 export interface MessageStateChangedPayload {
   conversationId: string;

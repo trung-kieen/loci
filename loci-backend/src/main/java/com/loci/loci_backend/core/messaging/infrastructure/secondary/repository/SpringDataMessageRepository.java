@@ -16,20 +16,26 @@
 
 package com.loci.loci_backend.core.messaging.infrastructure.secondary.repository;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.loci.loci_backend.common.collection.Lists;
+import com.loci.loci_backend.common.collection.Maps;
 import com.loci.loci_backend.common.ddd.infrastructure.stereotype.SecondaryPort;
 import com.loci.loci_backend.common.user.domain.vo.PublicId;
+import com.loci.loci_backend.common.user.infrastructure.secondary.entity.UserEntity;
+import com.loci.loci_backend.common.user.infrastructure.secondary.repository.JpaUserRepository;
+import com.loci.loci_backend.core.conversation.domain.aggregate.Conversation;
 import com.loci.loci_backend.core.conversation.domain.aggregate.UserConversation;
 import com.loci.loci_backend.core.conversation.domain.vo.ConversationId;
 import com.loci.loci_backend.core.conversation.domain.vo.ConversationUnreadMessageCount;
 import com.loci.loci_backend.core.conversation.domain.vo.ConversationUnreadMessageQuery;
 import com.loci.loci_backend.core.conversation.domain.vo.UnreadCount;
+import com.loci.loci_backend.core.conversation.infrastructure.secondary.entity.ConversationEntity;
+import com.loci.loci_backend.core.conversation.infrastructure.secondary.repository.JpaConversationRepository;
 import com.loci.loci_backend.core.messaging.domain.aggregate.Message;
 import com.loci.loci_backend.core.messaging.domain.aggregate.MessageList;
 import com.loci.loci_backend.core.messaging.domain.aggregate.MessageListBuilder;
@@ -51,8 +57,11 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class SpringDataMessageRepository implements MessageRepository {
   private final JpaMessageRepository messageRepository;
+  private final JpaUserRepository userRepository;
+  private final JpaConversationRepository conversationRepository;
   private final MessageEntityMapper mapper;
 
+  @Transactional(readOnly = true)
   @Override
   public List<Message> getByIds(List<MessageId> messageIds) {
     if (messageIds.isEmpty()) {
@@ -61,7 +70,15 @@ public class SpringDataMessageRepository implements MessageRepository {
     List<Long> ids = messageIds.stream().filter(i -> i != null).map(MessageId::value).toList();
     List<MessageEntity> entities = messageRepository.findAllById(ids);
 
-    return mapper.toDomain(entities);
+    // get sender
+    List<Long> senderDBIds = entities.stream().map(MessageEntity::getSenderId).toList();
+    List<UserEntity> senders = userRepository.findAllById(senderDBIds);
+
+    // get conversations
+    // List<Long> conversationDBIds = entities.stream().map(MessageEntity::getConversationId).toList();
+    // List<ConversationEntity> conversations = conversationRepository.findAllById(conversationDBIds);
+
+    return mapper.toDomain(entities, senders);
   }
 
   @Transactional(readOnly = true)

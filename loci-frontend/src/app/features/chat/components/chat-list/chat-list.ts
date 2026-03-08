@@ -14,18 +14,19 @@
  * limitations under the License.
  */
 
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { ChatFilter } from '../../models/chat.model';
 import { CommonModule } from '@angular/common';
 import { MessageType } from '../../models/message.model';
 import { ChatListStateService } from '../../service/chat-list-state.service';
+import { MessageTimePipe } from '../../pipe/message-time.pipe';
 
 
 
 @Component({
   selector: 'app-chat-list',
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, MessageTimePipe],
   templateUrl: './chat-list.html',
   styleUrl: './chat-list.css',
 })
@@ -38,6 +39,11 @@ export class ChatList implements OnInit {
   protected readonly isLoading = this.chatListState.isLoading;
   protected readonly filteredConversations = this.chatListState.filteredConversations;
   protected readonly activeFilter = this.chatListState.activeFilter;
+
+
+  filterOptions = ['inbox', 'unread', 'followups', 'archived'] as const;
+  totalUnread = signal(10);
+
   ngOnInit(): void {
     this.chatListState.load();
   }
@@ -73,8 +79,8 @@ export class ChatList implements OnInit {
     switch (type) {
       case 'image': return 'fa-regular fa-image';
       case 'video': return 'fa-solid fa-video';
-      case 'file':  return 'fa-regular fa-file';
-      default:      return '';
+      case 'file': return 'fa-regular fa-file';
+      default: return '';
     }
   }
 

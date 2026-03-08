@@ -30,6 +30,7 @@ import com.loci.loci_backend.core.conversation.infrastructure.primary.payload.Re
 import com.loci.loci_backend.core.conversation.infrastructure.primary.payload.RestCreatedGroupConversationResponseBuilder;
 import com.loci.loci_backend.core.conversation.infrastructure.primary.payload.RestDirectChatInfo;
 import com.loci.loci_backend.core.conversation.infrastructure.primary.payload.RestGroupChatInfo;
+import com.loci.loci_backend.core.conversation.infrastructure.primary.payload.RestMessage;
 import com.loci.loci_backend.core.conversation.infrastructure.primary.payload.RestUserChatList;
 import com.loci.loci_backend.core.groups.infrastructure.primary.mapper.MapStructRestGroupMapper;
 import com.loci.loci_backend.core.groups.infrastructure.primary.payload.RestGroupProfile;
@@ -61,7 +62,6 @@ public class RestConversationMapper {
         .build();
   }
 
-
   public RestDirectChatInfo from(DirectChatInfo chatInfo) {
     return mapstruct.from(chatInfo);
   }
@@ -75,7 +75,9 @@ public class RestConversationMapper {
   }
 
   public RestChat from(Chat conversation) {
-    return mapstruct.from(conversation);
+    RestChat rest = mapstruct.from(conversation);
+    RestMessage lastMessage = rest.getLastMessage();
+    return rest;
   }
 
   public RestUserChatList from(UserChatList userList) {

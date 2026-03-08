@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { computed, inject, Injectable, signal, effect } from "@angular/core";
+import { computed, inject, Injectable, signal } from "@angular/core";
 import { ChatFilter, ConversationAddedPayload, IChat, MessageStateChangedPayload, ArrvalMessage as ArrivalMessage, PresenceChangedPayload } from "../models/chat.model";
 import { ConversationService } from "./conversation-service";
 import { LoggerService } from "../../../core/services/logger.service";
@@ -62,7 +62,7 @@ export class ChatListStateService {
       result = result.filter(
         (c) =>
           c.conversationName.toLowerCase().includes(q) ||
-          c.lastMessageContent?.toLowerCase().includes(q)
+          (c.lastMessage && c.lastMessage.content && c.lastMessage.content?.toLowerCase().includes(q))
       );
     }
 
@@ -78,7 +78,7 @@ export class ChatListStateService {
         result = result.filter((c) => (c).isArchived);
         break;
       default: // inbox
-        // result = result.filter((c) => !(c).isArchived);
+      // result = result.filter((c) => !(c).isArchived);
     }
 
     return result;
@@ -91,7 +91,6 @@ export class ChatListStateService {
     this.conversationService.getConversations().subscribe({
 
       next: (data) => {
-        this.logger.info("Load conversation receive value", JSON.stringify(data))
         this.patch({
           conversations: data.conversations.content,
           isLoading: false,
@@ -117,10 +116,9 @@ export class ChatListStateService {
     const snapshot = this.state().conversations;           // for rollback
 
     this.updateConversation(payload.conversationId, {
-      lastMessageContent: payload.content,
-      lastMessageType: payload.type,
-      time: payload.time,
-      messageState: 'delivered',
+      lastMessage: payload,
+      time: payload.timestamp,
+      // messageState: payload.messageState,
     });
     this.bringToTop(payload.conversationId);
 
@@ -149,9 +147,9 @@ export class ChatListStateService {
     const snapshot = [...this.state().conversations];
 
     this.updateConversation(payload.conversationId, {
-      lastMessageContent: payload.content,
-      lastMessageType: payload.type,
-      time: payload.time,
+      // TODO:
+      lastMessage: payload,
+      // type: payload.type,
       messageState: 'delivered',
     });
     this.bringToTop(payload.conversationId);
@@ -169,8 +167,8 @@ export class ChatListStateService {
     this.updateConversation(message.conversationId, (conv) => ({
       lastMessageContent: message.content,
       lastMessageType: message.type,
-      lastMessageSender: message.sender,
-      time: message.time,
+      // lastMessageSender: message.sender,
+      // time: message.time,
       unreadCount: conv.unreadCount + 1,
       messageState: 'delivered',
     }));

@@ -16,11 +16,11 @@
 
 import { ChangeDetectionStrategy, Component, input, output, computed, signal } from '@angular/core';
 import { IAttachment, IMessage } from '../../../models/message.model';
-import { FileSignature } from 'lucide-angular';
+import { MessageTimePipe } from '../../../pipe/message-time.pipe';
 
 @Component({
   selector: 'app-message-bubble',
-  imports: [],
+  imports: [MessageTimePipe],
   templateUrl: './message-bubble.html',
   styleUrl: './message-bubble.css',
   changeDetection: ChangeDetectionStrategy.OnPush,

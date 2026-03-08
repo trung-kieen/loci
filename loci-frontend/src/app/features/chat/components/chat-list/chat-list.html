@@ -1,6 +1,8 @@
 <section class="h-full bg-white flex flex-col overflow-hidden">
+
   <!-- Search & Filter Section -->
   <div class="flex-shrink-0 p-4 border-b border-neutral-200 space-y-4">
+
     <!-- Search bar -->
     <div class="relative">
       <input type="text" placeholder="Search conversations..." (input)="onSearch($event)"
@@ -10,142 +12,158 @@
 
     <!-- Filter buttons -->
     <div class="flex gap-1 overflow-x-auto scrollbar-hide">
-      <button (click)="setFilter('inbox')" [class.bg-neutral-100]="activeFilter() === 'inbox'"
-        [class.text-neutral-700]="activeFilter() === 'inbox'" [class.text-neutral-500]="activeFilter() !== 'inbox'"
-        class="px-4 py-2 text-sm rounded-lg whitespace-nowrap transition-colors hover:text-neutral-700 flex-shrink-0">
-        Inbox
-      </button>
-      <button (click)="setFilter('unread')" [class.bg-neutral-100]="activeFilter() === 'unread'"
-        [class.text-neutral-700]="activeFilter() === 'unread'" [class.text-neutral-500]="activeFilter() !== 'unread'"
-        class="px-4 py-2 text-sm rounded-lg whitespace-nowrap transition-colors hover:text-neutral-700 flex-shrink-0">
-        Unread
-      </button>
-      <button (click)="setFilter('followups')" [class.bg-neutral-100]="activeFilter() === 'followups'"
-        [class.text-neutral-700]="activeFilter() === 'followups'"
-        [class.text-neutral-500]="activeFilter() !== 'followups'"
-        class="px-4 py-2 text-sm rounded-lg whitespace-nowrap transition-colors hover:text-neutral-700 flex-shrink-0">
-        Follow-ups
-      </button>
-      <button (click)="setFilter('archived')" [class.bg-neutral-100]="activeFilter() === 'archived'"
-        [class.text-neutral-700]="activeFilter() === 'archived'"
-        [class.text-neutral-500]="activeFilter() !== 'archived'"
-        class="px-4 py-2 text-sm rounded-lg whitespace-nowrap transition-colors hover:text-neutral-700 flex-shrink-0">
-        Archived
-      </button>
+      @for (filter of filterOptions; track filter) {
+        <button (click)="setFilter(filter)"
+          [class.bg-neutral-100]="activeFilter() === filter"
+          [class.text-neutral-700]="activeFilter() === filter"
+          [class.text-neutral-500]="activeFilter() !== filter"
+          class="px-4 py-2 text-sm rounded-lg whitespace-nowrap transition-colors hover:text-neutral-700 flex-shrink-0 flex items-center gap-1.5">
+          {{ filter}}
+          <!-- @if (filter=== 'unread' && totalUnread() > 0) { -->
+          <!--   <span class="bg-neutral-500 text-white text-[10px] rounded-full px-1.5 py-0.5 leading-none"> -->
+          <!--     {{ totalUnread() }} -->
+          <!--   </span> -->
+          <!-- } -->
+        </button>
+      }
     </div>
   </div>
 
-  <!-- Conversations list - scrollable -->
+  <!-- Conversations List -->
   <div class="flex-1 overflow-y-auto">
+
     <!-- Loading state -->
     @if (isLoading()) {
-    <div class="flex items-center justify-center h-32">
-      <i class="fa-solid fa-spinner fa-spin text-neutral-400 text-2xl"></i>
-    </div>
+      <div class="flex items-center justify-center h-32">
+        <i class="fa-solid fa-spinner fa-spin text-neutral-400 text-2xl"></i>
+      </div>
     }
 
     <!-- Empty state -->
     @else if (filteredConversations().length === 0) {
-    <div class="flex flex-col items-center justify-center h-32 text-center px-4">
-      <i class="fa-solid fa-inbox text-neutral-300 text-3xl mb-2"></i>
-      <p class="text-sm text-neutral-500">No conversations found</p>
-    </div>
+      <div class="flex flex-col items-center justify-center h-32 text-center px-4">
+        <i class="fa-solid fa-inbox text-neutral-300 text-3xl mb-2"></i>
+        <p class="text-sm text-neutral-500">
+          {{ activeFilter() === 'unread' ? 'All caught up!' : 'No conversations found' }}
+        </p>
+      </div>
     }
 
     <!-- Conversation items -->
     @else {
-    <div class="p-2">
-      <!-- Create new group button -->
-      <button (click)="goToCreateGroup()"
-        class="w-full flex items-center space-x-3 p-3 rounded-lg hover:bg-neutral-50 active:bg-neutral-100 cursor-pointer text-left mb-2 transition-colors">
-        <div
-          class="w-10 h-10 md:w-11 md:h-11 bg-neutral-500 rounded-full flex items-center justify-center flex-shrink-0">
-          <i class="fa-solid fa-plus text-white text-sm"></i>
-        </div>
-        <div class="flex-1 min-w-0">
-          <p class="text-sm font-medium text-neutral-700">Create New Group</p>
-          <p class="text-xs text-neutral-500">Start a group conversation</p>
-        </div>
-      </button>
+      <div class="p-2">
 
-
-      <!-- (click)="changeConversation(conv)" -->
-      <!-- Loop through conversations -->
-      @for (conv of filteredConversations(); track conv.conversationId) {
-      <a [routerLink]="getConversationRoute(conv)" routerLinkActive="bg-neutral-50 border-l-4 border-neutral-500"
-        class="flex items-center space-x-3 p-3 rounded-lg hover:bg-neutral-50 active:bg-neutral-100 cursor-pointer transition-colors block">
-        <!-- Avatar -->
-        <div class="relative flex-shrink-0">
-          <img [src]="conv.avatarUrl" [alt]="conv.conversationName"
-            class="w-10 h-10 md:w-11 md:h-11 rounded-full object-cover" />
-          <!-- Online indicator -->
-          @if (conv.isOnline) {
-          <div class="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-green-500 border-2 border-white rounded-full">
+        <!-- Create new group button -->
+        <button (click)="goToCreateGroup()"
+          class="w-full flex items-center space-x-3 p-3 rounded-lg hover:bg-neutral-50 active:bg-neutral-100 cursor-pointer text-left mb-2 transition-colors">
+          <div class="w-10 h-10 md:w-11 md:h-11 bg-neutral-500 rounded-full flex items-center justify-center flex-shrink-0">
+            <i class="fa-solid fa-plus text-white text-sm"></i>
           </div>
-          }
-        </div>
+          <div class="flex-1 min-w-0">
+            <p class="text-sm font-medium text-neutral-700">Create New Group</p>
+            <p class="text-xs text-neutral-500">Start a group conversation</p>
+          </div>
+        </button>
 
-        <!-- Content -->
-        <div class="flex-1 min-w-0">
-          <!-- Name & Time row -->
-          <div class="flex items-center justify-between mb-0.5">
-            <div class="flex items-center space-x-1 min-w-0 flex-1">
-              <p class="text-sm font-medium text-neutral-900 truncate">
-                {{ conv.conversationName}}
-              </p>
+        <!-- Loop through conversations -->
+        @for (conv of filteredConversations(); track conv.conversationId) {
+          <a [routerLink]="getConversationRoute(conv)"
+            routerLinkActive="bg-neutral-50 border-l-4 border-neutral-500"
+            class="flex items-center space-x-3 p-3 rounded-lg hover:bg-neutral-50 active:bg-neutral-100 cursor-pointer transition-colors block">
+
+            <!-- Avatar -->
+            <div class="relative flex-shrink-0">
+              <img [src]="conv.avatarUrl" [alt]="conv.conversationName"
+                class="w-10 h-10 md:w-11 md:h-11 rounded-full object-cover" />
+              <!-- Group badge -->
               @if (conv.isGroup) {
-              <i class="fa-solid fa-users text-neutral-400 text-xs flex-shrink-0"></i>
+                <div class="absolute -bottom-0.5 -right-0.5 w-4 h-4 bg-neutral-700
+                            border-2 border-white rounded-full flex items-center justify-center">
+                  <i class="fa-solid fa-users text-white text-[7px]"></i>
+                </div>
+              }
+              <!-- Online dot (only for 1-on-1) -->
+              @else if (conv.isOnline) {
+                <div class="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-green-500 border-2 border-white rounded-full"></div>
               }
             </div>
 
-            <div class="flex items-center space-x-1 flex-shrink-0 ml-2">
-              <p class="text-xs text-neutral-500">{{ conv.time }}</p>
-              @if (conv.unreadCount > 0) {
-              <div class="w-2 h-2 bg-neutral-500 rounded-full"></div>
-              }
-            </div>
-          </div>
+            <!-- Content -->
+            <div class="flex-1 min-w-0">
 
-          <!-- Message & Status row -->
-          <div class="flex items-center justify-between">
-            <p class="text-sm text-neutral-600 truncate flex-1 mr-2" [class.text-neutral-500]="conv.unreadCount === 0">
-              @if (conv.isGroup && conv.lastMessageSender) {
-              <span class="font-medium">{{ conv.lastMessageSender }}:</span>
-              }
+              <!-- Name & Time row -->
+              <div class="flex items-center justify-between mb-0.5">
+                <div class="flex items-center space-x-1 min-w-0 flex-1">
+                  <p class="text-sm font-medium text-neutral-900 truncate">
+                    {{ conv.conversationName }}
+                  </p>
+                  @if (conv.isGroup) {
+                    <i class="fa-solid fa-users text-neutral-400 text-xs flex-shrink-0"></i>
+                  }
+                </div>
 
-              @if (conv.lastMessageType){
-              @if (conv.lastMessageType !== 'text') {
-              <span class="italic flex items-center gap-1">
-                <i [class]="getMessageIcon(conv.lastMessageType) + ' text-xs'"></i>
-                {{ getMessagePreview(conv.lastMessageType, conv.lastMessageContent || "") }}
-              </span>
-              } @else {
-              {{ conv.lastMessageContent }}
-              }
-              }
-
-              <!-- {{ conv.lastMessageContent }} -->
-            </p>
-
-            <!-- Status icons -->
-            <div class="flex items-center space-x-1 flex-shrink-0">
-              @if (conv.unreadCount > 0) {
-              <div
-                class="bg-neutral-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-medium">
-                {{ conv.unreadCount }}
+                <div class="flex items-center space-x-1 flex-shrink-0 ml-2">
+                  <!-- time: Date → messageTime pipe (smart format) -->
+                  <time [dateTime]="conv.time | date:'yyyy-MM-ddTHH:mm'"
+                        [title]="conv.time | messageTime:'full'"
+                        class="text-xs text-neutral-500">
+                    {{ conv.time | messageTime }}
+                  </time>
+                  @if (conv.unreadCount > 0) {
+                    <div class="w-2 h-2 bg-neutral-500 rounded-full"></div>
+                  }
+                </div>
               </div>
-              }
-              @if (conv.messageState === "seen") {
-              <i class="fa-solid fa-check-double text-neutral-500 text-xs"></i>
-              } @else if (conv.messageState === "delivered") {
-              <i class="fa-solid fa-check text-neutral-400 text-xs"></i>
-              }
+
+              <!-- Message & Status row -->
+              <div class="flex items-center justify-between">
+                <p class="text-sm text-neutral-600 truncate flex-1 mr-2"
+                   [class.text-neutral-500]="conv.unreadCount === 0">
+
+                  @if (conv.lastMessage) {
+                    <!-- Group sender prefix -->
+                    @if (conv.isGroup && conv.lastMessage.senderId) {
+                      <span class="font-medium">{{ conv.lastMessage.senderId }}:</span>
+                    }
+                    <!-- Media / non-text preview -->
+                    @if (conv.lastMessage.type !== 'text') {
+                      <span class="italic flex items-center gap-1">
+                        <i [class]="getMessageIcon(conv.lastMessage.type) + ' text-xs'"></i>
+                        {{ getMessagePreview(conv.lastMessage.type, conv.lastMessage.content ?? '') }}
+                      </span>
+                    } @else {
+                      {{ conv.lastMessage.content ?? '' }}
+                    }
+                  } @else {
+                    <span class="italic text-neutral-400">No messages yet</span>
+                  }
+                </p>
+
+                <!-- Status icons -->
+                <div class="flex items-center space-x-1 flex-shrink-0">
+                  @if (conv.unreadCount > 0) {
+                    <div class="bg-neutral-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-medium">
+                      {{ conv.unreadCount > 99 ? '99+' : conv.unreadCount }}
+                    </div>
+                  }
+                  @if (conv.messageState === 'seen') {
+                    <i class="fa-solid fa-check-double text-neutral-500 text-xs" title="Seen"></i>
+                  } @else if (conv.messageState === 'delivered') {
+                    <i class="fa-solid fa-check text-neutral-400 text-xs" title="Delivered"></i>
+                  } @else if (conv.messageState === 'sent') {
+                    <i class="fa-regular fa-clock text-neutral-300 text-xs" title="Sent"></i>
+                  }
+                  @if (conv.isFollowingUp) {
+                    <i class="fa-solid fa-flag text-amber-400 text-xs" title="Follow-up"></i>
+                  }
+                </div>
+              </div>
+
             </div>
-          </div>
-        </div>
-      </a>
-      }
-    </div>
+          </a>
+        }
+
+      </div>
     }
   </div>
 </section>
