@@ -105,6 +105,15 @@ export class DirectConversationStateService {
     }));
   }
 
+
+  receiveMessage(message: IMessage): void {
+    this.state.update((state) => ({
+      ...state,
+      messages: [...state.messages, { owner: false, ...message }],
+    }));
+  }
+
+
   updateMessage(messageId: string, updates: Partial<IMessage>): void {
     this.state.update((state) => ({
       ...state,

@@ -26,7 +26,7 @@ import { LoggerService } from '../../../../core/services/logger.service';
   styleUrl: './chat-layout.css',
 })
 export class ChatLayout {
-  private isInChatDetail$ = signal<boolean>(false);
+  isInChatDetail$ = signal<boolean>(false);
   private loggerService = inject(LoggerService);
   private logger = this.loggerService.getLogger('ChatLayout');
 
@@ -38,7 +38,6 @@ export class ChatLayout {
   }
 
   isChatListPage(url: string) {
-    console.log(url);
     return url === '/chat' || url === '/chat/';
   }
 }

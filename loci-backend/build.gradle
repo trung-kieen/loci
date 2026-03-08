@@ -1,3 +1,11 @@
+// buildscript {
+//     repositories {
+//         mavenCentral()
+//     }
+//     dependencies {
+//         classpath 'com.guardsquare:proguard-gradle:7.4.2'
+//     }
+// }
 plugins {
     id 'java-library'
     // id 'io.freefair.lombok' version '3.8.4'
@@ -22,6 +30,10 @@ repositories {
     mavenLocal()
     mavenCentral()
 }
+
+
+
+
 
 dependencies {
     // Spring Boot starters
@@ -120,21 +132,73 @@ dependencies {
     // Testing
     testImplementation libs.org.springframework.boot.spring.boot.starter.test
     testImplementation libs.org.springframework.security.spring.security.test
+
 }
+
+
+
+
+
+
+
+
+// import proguard.gradle.ProGuardTask
+
+// // build fat JAR via bootJar as preparation
+// bootJar {
+//     // rename original to avoid conflict
+//     archiveClassifier.set('original')
+// }
+
+// // obfuscation
+// task proguard(type: ProGuardTask, dependsOn: bootJar) {
+
+//     // input and output jar
+//     injars  tasks.bootJar.archiveFile  // input: the fat JAR from bootJar
+//     outjars "${buildDir}/libs/${rootProject.name}-obfuscated.jar"
+
+//     // Java 9+ uses jmods instead of rt.jar
+//     if (JavaVersion.current().isJava9Compatible()) {
+//         libraryjars "${System.getProperty('java.home')}/jmods"
+//     } else {
+//         libraryjars "${System.getProperty('java.home')}/lib/rt.jar"
+//     }
+
+//     configuration 'proguard.cfg'
+
+//     printmapping "${buildDir}/outputs/mapping.txt"   // keep for crash de-obfuscation
+//     printseeds   "${buildDir}/outputs/seeds.txt"
+//     printusage   "${buildDir}/outputs/usage.txt"
+// }
+
+// // Make 'build' task trigger proguard automatically
+// build.finalizedBy(proguard)
+
+
+
+
 
 // Code quality tools
 spotbugs {
-    toolVersion = '4.8.3'
-    effort = 'max'
-    reportLevel = 'low'
+    effort = com.github.spotbugs.snom.Effort.valueOf("MAX")
+    reportLevel = com.github.spotbugs.snom.Confidence.valueOf("LOW")
 }
 
+
 pmd {
-    consoleOutput = true
-    toolVersion = '7.0.0'
-    ruleSets = ['category/java/errorprone.xml', 'category/java/bestpractices.xml']
-    ignoreFailures = false
+    toolVersion = '6.55.0'
+    ruleSets = []
+    ruleSetFiles = files('pmd-rules.xml')
+    ignoreFailures = true
+    consoleOutput = false
 }
+
+// pmd {
+//     consoleOutput = true
+//     toolVersion = '7.0.0'
+//     ruleSets = ['category/java/errorprone.xml', 'category/java/bestpractices.xml']
+//     ignoreFailures = false
+// }
 
 checkstyle {
     configFile = file('google_checks.xml')

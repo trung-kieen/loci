@@ -15,7 +15,7 @@
  */
 
 import { computed, inject, Injectable, signal, effect } from "@angular/core";
-import { ChatFilter, ConversationAddedPayload, IChat, MessageStateChangedPayload, NewMessagePayload, PresenceChangedPayload } from "../models/chat.model";
+import { ChatFilter, ConversationAddedPayload, IChat, MessageStateChangedPayload, ArrvalMessage as ArrivalMessage, PresenceChangedPayload } from "../models/chat.model";
 import { ConversationService } from "./conversation-service";
 import { LoggerService } from "../../../core/services/logger.service";
 
@@ -43,16 +43,16 @@ export class ChatListStateService {
   private conversationService = inject(ConversationService);
   private logger = inject(LoggerService).getLogger('ChatListState');
 
-  // ── Raw state ──────────────────────────────────────────────────────────────
+  // raw state
   private readonly state = signal<ChatListState>(INITIAL_STATE);
 
-  // ── Public read-only slices ────────────────────────────────────────────────
+  // public slices
   readonly isLoading = computed(() => this.state().isLoading);
   readonly error = computed(() => this.state().error);
   readonly activeFilter = computed(() => this.state().activeFilter);
   readonly searchQuery = computed(() => this.state().searchQuery);
 
-  /** Derived: conversations after search + filter applied */
+  // Derivedafter search and filter applied
   readonly filteredConversations = computed(() => {
     const { conversations, searchQuery, activeFilter } = this.state();
     let result = conversations;
@@ -84,13 +84,14 @@ export class ChatListStateService {
     return result;
   });
 
-  // ─── Load ─────────────────────────────────────────────────────────────────
 
   load(): void {
     this.patch({ isLoading: true, error: null });
 
     this.conversationService.getConversations().subscribe({
+
       next: (data) => {
+        this.logger.info("Load conversation receive value", JSON.stringify(data))
         this.patch({
           conversations: data.conversations.content,
           isLoading: false,
@@ -103,8 +104,7 @@ export class ChatListStateService {
     });
   }
 
-  // ─── UI actions ───────────────────────────────────────────────────────────
-
+  // UI actions
   setSearchQuery(query: string): void {
     this.patch({ searchQuery: query.toLowerCase() });
   }
@@ -113,23 +113,7 @@ export class ChatListStateService {
     this.patch({ activeFilter: filter });
   }
 
-  // ─── Real-time event handlers ─────────────────────────────────────────────
-  // Call these from other components OR from a future StompWebSocketService.
-  //
-  // STOMP wiring (future):
-  //   this.stomp.subscribe('/topic/messages').pipe(
-  //     map(frame => JSON.parse(frame.body))
-  //   ).subscribe(event => {
-  //     if (event.type === 'NEW_MESSAGE') this.onMessageReceived(event.payload);
-  //     if (event.type === 'MSG_STATE')   this.onMessageStateChanged(event.payload);
-  //     if (event.type === 'PRESENCE')    this.onPresenceChanged(event.payload);
-  //   });
-
-  /**
-   * Call when the current user SENDS a message.
-   * Applies optimistically — rolls back if the API call fails.
-   */
-  onMessageSent(payload: NewMessagePayload): void {
+  onMessageSent(payload: ArrivalMessage): void {
     const snapshot = this.state().conversations;           // for rollback
 
     this.updateConversation(payload.conversationId, {
@@ -161,7 +145,7 @@ export class ChatListStateService {
    *   const rollback = this.chatListState.prepareOptimisticSend(payload);
    *   this.conversationService.sendMessage(...).subscribe({ error: rollback });
    */
-  prepareOptimisticSend(payload: NewMessagePayload): () => void {
+  prepareOptimisticSend(payload: ArrivalMessage): () => void {
     const snapshot = [...this.state().conversations];
 
     this.updateConversation(payload.conversationId, {
@@ -181,16 +165,16 @@ export class ChatListStateService {
   /**
    * Call when a NEW message arrives from another user (WebSocket push).
    */
-  onMessageReceived(payload: NewMessagePayload): void {
-    this.updateConversation(payload.conversationId, (conv) => ({
-      lastMessageContent: payload.content,
-      lastMessageType: payload.type,
-      lastMessageSender: payload.sender,
-      time: payload.time,
+  onMessageReceived(message: ArrivalMessage): void {
+    this.updateConversation(message.conversationId, (conv) => ({
+      lastMessageContent: message.content,
+      lastMessageType: message.type,
+      lastMessageSender: message.sender,
+      time: message.time,
       unreadCount: conv.unreadCount + 1,
       messageState: 'delivered',
     }));
-    this.bringToTop(payload.conversationId);
+    this.bringToTop(message.conversationId);
   }
 
   /**
@@ -253,14 +237,14 @@ export class ChatListStateService {
     this.updateConversation(conversationId, meta);
   }
 
-  // ─── Private helpers ──────────────────────────────────────────────────────
+  // Private helpers
 
-  /** Shallow-merge into top-level state */
+  // Shallow-merge into top-level state
   private patch(partial: Partial<ChatListState>): void {
     this.state.update((s) => ({ ...s, ...partial }));
   }
 
-  /** Update a single conversation by id. Accepts a patch object OR a factory fn */
+  // Update a single conversation by id. Accepts a patch object OR a factory fn
   private updateConversation(
     conversationId: string,
     patchOrFactory:
@@ -280,7 +264,7 @@ export class ChatListStateService {
     }));
   }
 
-  /** Move a conversation to the top of the list */
+  // Move a conversation to the top of the list
   private bringToTop(conversationId: string): void {
     this.state.update((s) => {
       const idx = s.conversations.findIndex(

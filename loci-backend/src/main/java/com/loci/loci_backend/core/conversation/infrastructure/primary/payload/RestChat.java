@@ -63,6 +63,11 @@ public class RestChat {
     throw new InvalidConversationTypeException();
   }
 
+  @Nullable
+  public RestMessage getLastMessage(){
+    return lastMessage;
+  }
+
   public String getAvatarUrl() {
 
     if (groupMetadata != null) {

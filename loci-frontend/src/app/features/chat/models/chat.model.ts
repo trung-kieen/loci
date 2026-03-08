@@ -177,7 +177,7 @@ export interface IFriendList {
 
 
 
-export interface NewMessagePayload {
+export interface ArrvalMessage {
   conversationId: string;
   content: string;
   type: MessageType;

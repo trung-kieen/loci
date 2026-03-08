@@ -22,7 +22,7 @@ import {
   viewChild,
   ElementRef,
   computed,
-  Signal
+  Signal,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -35,7 +35,7 @@ import {
   catchError,
   tap,
   finalize,
-  delay
+  delay,
 } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
@@ -51,6 +51,8 @@ import { ChatInfo, IChatError } from '../../models/chat.model';
 import { IAttachment, IConversationMessage, IMessage, ISendMessageRequest } from '../../models/message.model';
 import { FriendshipStatus } from '../../../contact/models/contact.model';
 import { RxStomp } from '@stomp/rx-stomp';
+import { MessageObservableService } from '../../service/message-observable.service';
+
 
 @Component({
   selector: 'app-direct-conversation',
@@ -83,9 +85,15 @@ export class DirectConversation implements OnInit {
   private destroyRef = inject(DestroyRef);
   private rxStomp = inject(RxStomp);
   private conversationId: string | null = null;
+  private messageObservable = inject(MessageObservableService);
+
+
+
+
 
   // ViewChildren
   messageArea = viewChild.required<ElementRef<HTMLDivElement>>('messageArea');
+
 
   // bind signal
   readonly messages = this.state.messages;
@@ -116,22 +124,34 @@ export class DirectConversation implements OnInit {
         // Clean up previous conversation state
         this.cleanupConversation();
 
+
         this.conversationId = conversationId;
         console.log("conversationId changed to:", this.conversationId);
 
         this.initializeChat();
+
+
+        // subscribe to new message user receive
+        this.messageObservable.messageReceiveInConversation$(conversationId).pipe(
+          takeUntilDestroyed(this.destroyRef)
+        )
+          .subscribe(arrivalMessage => this.receiveMessage(arrivalMessage));
+
+        setTimeout(() => this.scrollBottom(), 1000);
+
       });
 
 
-    this.rxStomp.watch("/user/individual/messages.receive").subscribe((message) => {
-      console.log("receive the message ", message.body);
-      const chatMessage = JSON.parse(message.body) as IMessage;
-      console.log("content", chatMessage.content);
-      // const newMessage = message.body as ChatMessage;
-      // this.receivesMessage.update(m => [...m,  newMessage]);
-    })
 
   }
+  receiveMessage(arrivalMessage: IMessage): void {
+    console.log(arrivalMessage);
+    this.state.receiveMessage(arrivalMessage);
+    setTimeout(() => this.scrollBottom(), 1000);
+  }
+
+
+
 
   private cleanupConversation(): void {
     // Reset state when switching conversations
@@ -306,6 +326,7 @@ export class DirectConversation implements OnInit {
     }
   }
   private scrollBottom() {
+
     console.log("Scroll")
     const el = this.messageArea().nativeElement;
     // el.scrollTop = el.scrollHeight;

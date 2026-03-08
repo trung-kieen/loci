@@ -32,6 +32,7 @@ import { rxStompConfig } from './socket/rx-stomp.config';
 import { KeycloakAuthenticationManager } from './auth/keycloak-auth-manager';
 import { WebApiService } from './api/web-api.service';
 import { LoggerService } from './services/logger.service';
+import { WebSocketService } from './socket/websocket.service';
 
 @NgModule({
   imports: [],
@@ -87,6 +88,10 @@ export class CoreModule {
           provide: LoggerService,
           useClass: LoggerService,
         },
+        {
+          provide: WebSocketService,
+          useClass: WebSocketService
+        }
       ],
     };
   }

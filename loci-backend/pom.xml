@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
     <version>3.5.3</version>
-    <relativePath/>
+    <relativePath />
     <!-- lookup parent from repository -->
   </parent>
   <groupId>com.loci</groupId>
@@ -13,18 +15,18 @@
   <version>0.0.1-SNAPSHOT</version>
   <name>loci</name>
   <description>Demo project for Spring Boot</description>
-  <url/>
+  <url />
   <licenses>
-    <license/>
+    <license />
   </licenses>
   <developers>
-    <developer/>
+    <developer />
   </developers>
   <scm>
-    <connection/>
-    <developerConnection/>
-    <tag/>
-    <url/>
+    <connection />
+    <developerConnection />
+    <tag />
+    <url />
   </scm>
   <properties>
     <java.version>17</java.version>
@@ -295,6 +297,12 @@
               src/main/resources/flyway.conf
             </configFile>
           </configFiles>
+          <excludes>
+            <exclude>
+              <groupId>com.guardsquare</groupId>
+              <artifactId>proguard-base</artifactId>
+            </exclude>
+          </excludes>
         </configuration>
         <!-- <executions> -->
         <!--   <execution> -->
@@ -308,6 +316,48 @@
         <!--   </execution> -->
         <!-- </executions> -->
       </plugin>
+
+      <plugin>
+        <groupId>com.github.wvengen</groupId>
+        <artifactId>proguard-maven-plugin</artifactId>
+        <version>2.6.0</version>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>proguard</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <!-- Spring jar file before -->
+          <injar>${project.build.finalName}.jar</injar>
+          <!-- obfuscated JAR -->
+          <outjar>${project.build.finalName}-obfuscated.jar</outjar>
+          <!-- Java libraries needed for analysis -->
+          <libs>
+            <lib>${java.home}/jmods</lib>
+            <!-- For Java 8: use <lib>${java.home}/lib/rt.jar</lib> -->
+          </libs>
+          <!-- ProGuard config file -->
+          <proguardInclude>${project.basedir}/proguard.cfg</proguardInclude>
+          <proguardVersion>7.4.2</proguardVersion>
+        </configuration>
+        <dependencies>
+          <dependency>
+            <groupId>com.guardsquare</groupId>
+            <artifactId>proguard-base</artifactId>
+            <version>7.4.2</version>
+          </dependency>
+          <dependency>
+            <groupId>com.guardsquare</groupId>
+            <artifactId>proguard-core</artifactId>
+            <version>9.1.4</version>
+          </dependency>
+        </dependencies>
+      </plugin>
+
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
@@ -339,6 +389,18 @@
       <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>repackage</id>
+            <goals>
+              <goal>repackage</goal>
+            </goals>
+            <configuration>
+              <!-- Point to the obfuscated JAR as source -->
+              <classifier>exec</classifier>
+            </configuration>
+          </execution>
+        </executions>
         <configuration>
           <excludes>
             <exclude>

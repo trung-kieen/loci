@@ -32,7 +32,6 @@ import { ChatListStateService } from '../../service/chat-list-state.service';
 export class ChatList implements OnInit {
   private router = inject(Router);
 
-  // ── All state lives here — inject & expose directly to template ────────────
   protected readonly chatListState = inject(ChatListStateService);
 
   // Expose computed signals as direct template bindings
@@ -60,8 +59,6 @@ export class ChatList implements OnInit {
       ? `/chat/group/${conv.conversationId}`
       : `/chat/one/${conv.conversationId}`;
   }
-
-  // ── Message preview helpers (pure, no state) ──────────────────────────────
 
   getMessagePreview(type: MessageType, content: string): string {
     switch (type) {
