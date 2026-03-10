@@ -28,20 +28,19 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
   forkJoin,
-  from,
   of,
-  concatMap,
   switchMap,
   catchError,
   tap,
   finalize,
   delay,
+  merge,
+  EMPTY,
 } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 // Services
-import { MockStompService } from '../../service/mock-stomp.service';
-import { ChatService } from '../../service/chat-service';
+import { ChatApiService, IUserPresence } from '../../service/chat-api.service';
 import { ChatFeatures, ChatHeader } from '../shared/chat-header/chat-header';
 import { MessageBubble } from '../shared/message-bubble/message-bubble';
 import { ISendMessageData, MessageInput } from '../shared/message-input/message-input';
@@ -50,8 +49,7 @@ import { DirectConversationStateService } from '../../service/direct-conversatio
 import { ChatInfo, IChatError } from '../../models/chat.model';
 import { IAttachment, IConversationMessage, IMessage, ISendMessageRequest } from '../../models/message.model';
 import { FriendshipStatus } from '../../../contact/models/contact.model';
-import { RxStomp } from '@stomp/rx-stomp';
-import { MessageObservableService } from '../../service/message-observable.service';
+import { LoggerService } from '../../../../core/services/logger.service';
 
 
 @Component({
@@ -79,21 +77,17 @@ export class DirectConversation implements OnInit {
   // Dependencies
   state = inject(DirectConversationStateService);
   private route = inject(ActivatedRoute);
-  private apiService = inject(ChatService);
-  private stompService = inject(MockStompService);
+  private loggerService = inject(LoggerService);
+  private logger = this.loggerService.getLogger("DirectConversation");
+  private chatApiService = inject(ChatApiService);
   private router = inject(Router);
   private destroyRef = inject(DestroyRef);
-  private rxStomp = inject(RxStomp);
   private conversationId: string | null = null;
-  private messageObservable = inject(MessageObservableService);
 
-
-
-
+  readonly chatInfo: Signal<ChatInfo | null> = this.state.participant;
 
   // ViewChildren
   messageArea = viewChild.required<ElementRef<HTMLDivElement>>('messageArea');
-
 
   // bind signal
   readonly messages = this.state.messages;
@@ -108,78 +102,74 @@ export class DirectConversation implements OnInit {
     return friendStatus === FriendshipStatus.BLOCKED || friendStatus === FriendshipStatus.BLOCKED_BY;
   })
 
-  readonly chatInfo: Signal<ChatInfo | null> = this.state.participant;
 
 
   ngOnInit(): void {
-    this.route.paramMap
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(params => {
+    this.route.paramMap.pipe(
+      takeUntilDestroyed(this.destroyRef),
+      switchMap(params => {
         const conversationId = params.get('conversationId');
         if (!conversationId) {
           this.router.navigate(["/not-found"]);
-          return;
+          return EMPTY;
         }
 
-        // Clean up previous conversation state
         this.cleanupConversation();
-
-
         this.conversationId = conversationId;
-        console.log("conversationId changed to:", this.conversationId);
-
         this.initializeChat();
 
+        // switchMap cancels when conversationId emit again
+        return merge(
+          this.chatApiService.direct.onReceiveNewMessage(conversationId).pipe(
+            tap(m => this.onReceiveMessage(m))
+          ),
+          this.chatApiService.direct.onMessageSent(conversationId).pipe(
+            tap(m => this.onMessageSentNotify(m))
+          ),
+          this.chatApiService.direct.onUserStatusUpdate(conversationId).pipe(
+            tap(updated => this.onUpdateUserStatus(updated))
+          )
+        );
+      })
+    ).subscribe();
+  }
+  onMessageSentNotify(m: IMessage): void {
+    this.logger.info("Message is sent", m);
+    this.state.updateMessage(m.messageId, { messageState: 'sent' });
 
-        // subscribe to new message user receive
-        this.messageObservable.messageReceiveInConversation$(conversationId).pipe(
-          takeUntilDestroyed(this.destroyRef)
-        )
-          .subscribe(arrivalMessage => this.receiveMessage(arrivalMessage));
+  }
 
-        setTimeout(() => this.scrollBottom(), 1000);
-
-      });
-
+  // listen event
+  onUpdateUserStatus(updated: IUserPresence) {
+    this.state.updateParticipantStatus(updated.status, updated.lastSeen)
 
 
   }
-  receiveMessage(arrivalMessage: IMessage): void {
-    console.log(arrivalMessage);
+  onReceiveMessage(arrivalMessage: IMessage): void {
     this.state.receiveMessage(arrivalMessage);
+    this.logger.info(JSON.stringify(this.state));
     setTimeout(() => this.scrollBottom(), 1000);
   }
-
-
-
 
   private cleanupConversation(): void {
     // Reset state when switching conversations
     this.state.setMessages([]);
     this.state.setLoading(true);
-
-    // Unsubscribe from previous WebSocket if needed
-    // this.stompService.disconnect(); // if you need to disconnect
   }
-
-
-
-
 
 
   // Chat header
   onVoiceCall(): void {
     const participant = this.state.participant();
     if (!participant) return;
-    console.log('Initiating voice call with:', participant.chatName);
-    // Implement voice call logic
+    // TODO:
   }
+
 
   onVideoCall(): void {
     const participant = this.state.participant();
     if (!participant) return;
-    console.log('Initiating video call with:', participant.chatName);
-    // Implement video call logic
+    // TODO:
   }
 
 
@@ -207,23 +197,21 @@ export class DirectConversation implements OnInit {
   private initializeChat(): void {
     const conversationId = this.conversationId;
     if (!conversationId) {
-      console.log("Not found conversationId");
+      this.logger.error("Not found conversationId");
       return;
     }
     this.state.setLoading(true);
 
+    // run parallel
     forkJoin({
-      // fetch current user, participant and messages
-      // currentUser: this.apiService.getCurrentUser(),
-      participant: this.apiService.getDirectChatInfo(conversationId),
-      messages: this.apiService.getMessages(conversationId, { limit: 20 }),
+      participant: this.chatApiService.direct.getChatInfo(conversationId),
+      messages: this.chatApiService.getMessages(conversationId, { limit: 20 }),
     })
       .pipe(
         tap(({ participant, messages }) => {
-          // if (currentUser) this.state.setCurrentUser(currentUser);
 
           if (participant.messagingUser.connectionStatus == FriendshipStatus.BLOCKED_BY) {
-            console.log("Blocked by")
+            this.logger.warn("Blocked by other user")
 
             this.state.setError({
               message: "You are current blocked by this user",
@@ -235,7 +223,7 @@ export class DirectConversation implements OnInit {
 
           if (participant.messagingUser.connectionStatus == FriendshipStatus.BLOCKED) {
 
-            console.log("Blocking")
+            this.logger.warn("Unblock this user to be able to message")
             this.state.setError({
               message: "You are current blocked this user",
               description: "Unblock to message this person",
@@ -253,23 +241,10 @@ export class DirectConversation implements OnInit {
             });
             this.state.setMessages(messages.messages);
           }
-        }),
-        concatMap(() =>
-          from(this.stompService.connect()).pipe(
-            catchError(err => {
-              console.error('WebSocket connection failed:', err);
-              return of(null);
-            })
-          )
-        ),
-        tap(() => this.subscribeToWebSocket()),
-        catchError(error => {
-          this.state.setError({
-            message: 'Failed to load conversation',
-            description: 'Please try refreshing the page',
-            type: 'network',
-          });
-          return of(null);
+
+          // scroll down after load all message
+          setTimeout(() => this.scrollBottom(), 1000);
+
         }),
         finalize(() => this.state.setLoading(false)),
         takeUntilDestroyed(this.destroyRef)
@@ -277,36 +252,9 @@ export class DirectConversation implements OnInit {
       .subscribe();
   }
 
-  private subscribeToWebSocket(): void {
-    // const userId = this.state.currentUser()?.userId;
-    // if (!userId) return;
-
-    // Messages
-    this.stompService.subscribeToMessages()
-      .pipe(
-        tap(msg => this.state.addMessage(msg)),
-        catchError(err => {
-          console.error('WebSocket message error:', err);
-          return of(null);
-        }),
-        takeUntilDestroyed(this.destroyRef)
-      )
-      .subscribe();
-
-    // Status updates
-    this.stompService.subscribeToStatus()
-      .pipe(
-        tap(update => this.state.updateParticipantStatus(update.status, update.lastSeen)),
-        catchError(err => {
-          console.error('WebSocket status error:', err);
-          return of(null);
-        }),
-        takeUntilDestroyed(this.destroyRef)
-      )
-      .subscribe();
-  }
 
   // Event Handlers
+
   onBack(): void {
     this.router.navigate(['/chat']);
   }
@@ -316,7 +264,6 @@ export class DirectConversation implements OnInit {
     if (!messagingUser) return;
     // TODO: navigate to participant user id
     this.router.navigate([`user/${messagingUser.messagingUser.userId}`])
-    console.log('Open profile:', messagingUser.chatName);
   }
 
   onScroll(event: Event): void {
@@ -327,7 +274,6 @@ export class DirectConversation implements OnInit {
   }
   private scrollBottom() {
 
-    console.log("Scroll")
     const el = this.messageArea().nativeElement;
     // el.scrollTop = el.scrollHeight;
     el.scroll({
@@ -348,7 +294,7 @@ export class DirectConversation implements OnInit {
     const area = this.messageArea().nativeElement;
     const oldHeight = area.scrollHeight;
 
-    this.apiService
+    this.chatApiService
       .getMessages(conversationId, {
         limit: 20,
         before: messages[0].messageId
@@ -380,7 +326,7 @@ export class DirectConversation implements OnInit {
 
     this.state.setSendingMessage(true);
 
-    this.apiService.sendMessage(dto)
+    this.chatApiService.direct.sendMessage(dto)
       .pipe(
         tap(sent => {
           if (sent) {
@@ -390,7 +336,7 @@ export class DirectConversation implements OnInit {
         }),
         catchError(error => {
           this.state.setError({
-            message: 'Failed to send message',
+            message: error.message,
             description: 'Please try again',
             type: 'network',
           });
@@ -414,19 +360,6 @@ export class DirectConversation implements OnInit {
 
   }
 
-  // private triggerAutoResponse(conversationId: string): void {
-  //   this.apiService.generateAutoResponse(conversationId)
-  //     .pipe(
-  //       tap(auto => this.stompService.simulateIncomingMessage(auto)),
-  //       catchError(err => {
-  //         console.error('Auto-response failed:', err);
-  //         return of(null);
-  //       }),
-  //       takeUntilDestroyed(this.destroyRef)
-  //     )
-  //     .subscribe();
-  // }
-
   onFileSelected(req: { file: File; type: 'file' }): void {
     const conversationId = this.state.conversationId();
     if (!conversationId) {
@@ -442,7 +375,7 @@ export class DirectConversation implements OnInit {
     this.state.setSelectedFile([req.file])
     this.state.setUploadingFile(false);
 
-    this.apiService.uploadAttachment(conversationId, req.file)
+    this.chatApiService.direct.uploadAttachment(conversationId, req.file)
       .pipe(
         switchMap(attachment => {
           if (!attachment) throw new Error('Upload returned no data');
@@ -453,7 +386,7 @@ export class DirectConversation implements OnInit {
             attachment: attachment,
           };
 
-          return this.apiService.sendMessage(dto).pipe(
+          return this.chatApiService.direct.sendMessage(dto).pipe(
             tap(sent => {
               if (sent) {
                 this.state.addMessage({ ...sent, mediaName: attachment.fileName, mediaUrl: attachment.url });
@@ -479,7 +412,7 @@ export class DirectConversation implements OnInit {
 
   onDownloadAttachment(event: IAttachment): void {
     const attachment = event;
-    this.apiService.downloadAttachment(attachment.url)
+    this.chatApiService.direct.downloadAttachment(attachment.url)
       .pipe(
         tap(blob => {
           const url = window.URL.createObjectURL(blob);

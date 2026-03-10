@@ -14,28 +14,26 @@
  * limitations under the License.
  */
 
-package com.loci.loci_backend.core.messaging.domain.service;
+package com.loci.loci_backend.common.ddd.infrastructure.eventbus;
 
-import java.util.List;
+import com.loci.loci_backend.common.ddd.domain.contract.DomainEvent;
+import com.loci.loci_backend.common.ddd.domain.contract.DomainEventPublisher;
+import com.loci.loci_backend.common.ddd.infrastructure.stereotype.SecondaryPort;
+import com.loci.loci_backend.common.log.Loggable;
 
-import com.loci.loci_backend.core.conversation.domain.aggregate.Conversation;
-import com.loci.loci_backend.core.conversation.domain.aggregate.Participant;
-import com.loci.loci_backend.core.messaging.domain.aggregate.Message;
-
-import org.springframework.stereotype.Service;
+import org.springframework.context.ApplicationEventPublisher;
 
 import lombok.RequiredArgsConstructor;
 
-@Service
+@SecondaryPort
+@Loggable
 @RequiredArgsConstructor
-public class MessagePublisher {
+public class SpringDomainEventPublisher implements DomainEventPublisher {
+  private final ApplicationEventPublisher publisher;
 
-  public void sendPrivateMessage(Conversation conversation, Participant targetReciver, Message message) {
-
-  }
-
-  public void sendGroupMessage(Conversation conversation, List<Participant> groupParticipants, Message message) {
-
+  @Override
+  public void publish(DomainEvent event) {
+    publisher.publishEvent(event);
   }
 
 }

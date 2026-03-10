@@ -114,7 +114,9 @@ export class DirectConversationStateService {
   }
 
 
+
   updateMessage(messageId: string, updates: Partial<IMessage>): void {
+    // TODO: use state pattern to check valid transition
     this.state.update((state) => ({
       ...state,
       messages: state.messages.map((msg) =>

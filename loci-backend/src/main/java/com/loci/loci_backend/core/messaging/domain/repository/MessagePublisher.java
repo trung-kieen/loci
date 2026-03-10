@@ -26,4 +26,6 @@ public interface MessagePublisher {
 
   void sendGroupMessage(GroupSubscriberId conversationId, Message message);
 
+  public void notifyMessageSent(UserSubcriberId senderForwardId, Message message);
+
 }

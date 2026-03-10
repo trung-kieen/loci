@@ -46,4 +46,10 @@ public class RealtimeMessageSender implements MessagePublisher {
     messageOperations.sendGroupMessage(subscribeId.value(), restMessage);
   }
 
+  @Override
+  public void notifyMessageSent(UserSubcriberId senderForwardId, Message message) {
+    STOMPMessage restMessage = primaryMapper.from(message);
+    messageOperations.notifyMessageSent(senderForwardId.value(), restMessage);
+  }
+
 }

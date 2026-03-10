@@ -16,8 +16,8 @@
 
 package com.loci.loci_backend.core.messaging.domain.repository;
 
+import com.loci.loci_backend.common.user.domain.vo.UserDBId;
 import com.loci.loci_backend.core.conversation.domain.aggregate.Conversation;
-import com.loci.loci_backend.core.conversation.domain.aggregate.Participant;
 import com.loci.loci_backend.core.messaging.domain.vo.GroupSubscriberId;
 import com.loci.loci_backend.core.messaging.domain.vo.UserSubcriberId;
 
@@ -26,7 +26,7 @@ public interface ForwardIdTranslator {
   /**
    * {@link} JWSAuthentication
    */
-  public UserSubcriberId toPrivateSubscriberId(Participant targetReceiver);
+  public UserSubcriberId toPrivateSubscriberId(UserDBId targetReceiver);
 
   public GroupSubscriberId toGroupSubscriberId(Conversation conversation);
 

@@ -54,7 +54,7 @@ export interface IConversationMessage extends IMessage {
 
 export type ParticipantState = 'online' | 'offline' | 'away';
 
-export type MessageState = 'sending' | 'sent' | 'delivered' | 'read';
+export type MessageState = 'created' | 'prepare' | 'sent' | 'delivered' | 'read' | 'failed';
 
 export interface ISendMessageRequest {
   conversationId: string;
@@ -70,6 +70,7 @@ export interface ISendMessageRequest {
 export interface IMessageStatusUpdate {
   messageId: string;
   status: MessageState;
+  conversationId: string;
 }
 
 // export interface ICreateMessage {

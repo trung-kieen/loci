@@ -30,6 +30,8 @@ import com.loci.loci_backend.core.messaging.domain.aggregate.MessageList;
 import com.loci.loci_backend.core.messaging.domain.vo.MessageId;
 import com.loci.loci_backend.core.messaging.domain.vo.MessageLimit;
 
+import jakarta.mail.search.MessageIDTerm;
+
 public interface MessageRepository {
 
   List<Message> getByIds(List<MessageId> messageIds);
@@ -52,4 +54,6 @@ public interface MessageRepository {
   MessageList getOlderMessages(ConversationId conversationId, MessageId beforeMessageId, MessageLimit limit);
 
   Message save(Message newMessage);
+
+  Message markAsSent(Message message);
 }

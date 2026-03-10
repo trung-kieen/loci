@@ -111,21 +111,27 @@ export class ChatListStateService {
   setFilter(filter: ChatFilter): void {
     this.patch({ activeFilter: filter });
   }
+  onMessageSent(conversationId: string) {
+    this.updateConversation(conversationId, {
+      messageState: 'sent'
+    })
+  }
 
-  onMessageSent(payload: ArrivalMessage): void {
-    const snapshot = this.state().conversations;           // for rollback
+  onMessageSending(payload: ArrivalMessage): void {
+    // for rollback if sent not success
+    const snapshot = this.state().conversations;
 
     this.updateConversation(payload.conversationId, {
       lastMessage: payload,
       time: payload.timestamp,
-      // messageState: payload.messageState,
+      messageState: 'prepare'
+      // messageState: payload.messageState ?? 'prepare',
     });
     this.bringToTop(payload.conversationId);
+    // TODO:
 
     // ── Rollback hook ──────────────────────────────────────────────────────
-    // Your HTTP/STOMP send call lives in ConversationService.
     // Pass the rollback callback so the caller can trigger it on error:
-    //
     //   this.conversationService.sendMessage(msg).subscribe({
     //     error: () => rollback()
     //   });
@@ -137,12 +143,6 @@ export class ChatListStateService {
     });
   }
 
-  /**
-   * Rollback factory — use this pattern from your component:
-   *
-   *   const rollback = this.chatListState.prepareOptimisticSend(payload);
-   *   this.conversationService.sendMessage(...).subscribe({ error: rollback });
-   */
   prepareOptimisticSend(payload: ArrivalMessage): () => void {
     const snapshot = [...this.state().conversations];
 
@@ -160,15 +160,9 @@ export class ChatListStateService {
     };
   }
 
-  /**
-   * Call when a NEW message arrives from another user (WebSocket push).
-   */
   onMessageReceived(message: ArrivalMessage): void {
     this.updateConversation(message.conversationId, (conv) => ({
-      lastMessageContent: message.content,
-      lastMessageType: message.type,
-      // lastMessageSender: message.sender,
-      // time: message.time,
+      lastMessage: message,
       unreadCount: conv.unreadCount + 1,
       messageState: 'delivered',
     }));
@@ -176,15 +170,12 @@ export class ChatListStateService {
   }
 
   /**
-   * Call when the user opens a conversation → clears unread badge.
+   * when user open conversation
    */
   onConversationRead(conversationId: string): void {
     this.updateConversation(conversationId, { unreadCount: 0 });
   }
 
-  /**
-   * Call when delivery/seen receipt arrives (WebSocket push).
-   */
   onMessageStateChanged(payload: MessageStateChangedPayload): void {
     this.updateConversation(payload.conversationId, {
       messageState: payload.messageState,

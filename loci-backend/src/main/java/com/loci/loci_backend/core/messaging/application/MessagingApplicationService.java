@@ -23,6 +23,7 @@ import com.loci.loci_backend.core.messaging.domain.aggregate.ConversationMessage
 import com.loci.loci_backend.core.messaging.domain.aggregate.Message;
 import com.loci.loci_backend.core.messaging.domain.aggregate.MessageCursorQuery;
 import com.loci.loci_backend.core.messaging.domain.aggregate.SendMessageRequest;
+import com.loci.loci_backend.core.messaging.domain.event.MessageSentEvent;
 import com.loci.loci_backend.core.messaging.domain.service.MessageManager;
 import com.loci.loci_backend.core.messaging.domain.service.MessageSendingService;
 
@@ -44,5 +45,14 @@ public class MessagingApplicationService {
 
   public Attachment uploadAttachment(File file) {
     return messageManager.uploadAttachment(file);
+  }
+
+  public void handleGroupMessageDelivery(MessageSentEvent event) {
+    messageSendingService.sendGroupMessage(event);
+  }
+
+
+  public void handleDirectMessageDelivery(MessageSentEvent event) {
+    messageSendingService.sendPrivateMessage(event);
   }
 }

@@ -40,4 +40,8 @@ public class STOMPMessageSendingOperation {
     messageTemplate.convertAndSend(WsPaths.GROUP_RECEIVE_MESSAGE + groupId, message);
 
   }
+
+  public void notifyMessageSent(String username, STOMPMessage message) {
+    messageTemplate.convertAndSendToUser(username, WsPaths.INDIVIDUAL_NOTIFY_MESSAGE_SENT, message);
+  }
 }

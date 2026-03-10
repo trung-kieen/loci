@@ -16,8 +16,8 @@
 
 import { inject, Injectable } from "@angular/core";
 import { WebSocketService } from "../../../core/socket/websocket.service";
-import { IMessage } from "../models/message.model";
-import { filter } from "rxjs";
+import { IMessage, IMessageStatusUpdate } from "../models/message.model";
+import { filter, Observable } from "rxjs";
 @Injectable({
   providedIn: 'root'
 })
@@ -25,13 +25,51 @@ export class MessageObservableService {
 
   private wsService = inject(WebSocketService);
 
-  public messageReceive$() {
+  // direct conversation message event
+
+  public directMessageReceive$() {
     return this.wsService.subscribe<IMessage>("/user/queue/messages.receive");
   }
-  public messageReceiveInConversation$(targetConversationId: string) {
-    return this.messageReceive$().pipe(
-      filter(m => m.conversationId  === targetConversationId)
+
+  public directMessageReceiveInConversation$(targetConversationId: string) {
+    return this.directMessageReceive$().pipe(
+      filter(m => m.conversationId === targetConversationId)
     )
   }
+
+  public directMessageSent() {
+    return this.wsService.subscribe<IMessage>("/user/queue/messages.sent");
+  }
+
+  public directMessageSentInConversation$(targetConversationId: string) {
+    return this.directMessageSent().pipe(
+      filter(m => m.conversationId === targetConversationId)
+    )
+  }
+
+  /**
+   * The message user sent to other is received the target user
+   */
+  public directMessageDelivered$() {
+    return this.wsService.subscribe<IMessageStatusUpdate>("/user/queue/message.delivered")
+  }
+
+  public directMessageDeliveredInConversation$(targetConversationId: string) {
+    return this.directMessageDelivered$().pipe(
+      filter(u => u.conversationId === targetConversationId)
+    )
+  }
+
+
+  public directMessageSeen$() {
+    return this.wsService.subscribe<IMessageStatusUpdate>("/user/queue/message.seen");
+  }
+
+  public directMessageSeenInConversation$(targetConversationId: string) {
+    return this.directMessageDelivered$().pipe(
+      filter(u => u.conversationId === targetConversationId)
+    )
+  }
+
 
 }

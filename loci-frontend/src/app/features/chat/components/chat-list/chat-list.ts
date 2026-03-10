@@ -17,7 +17,7 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { ChatFilter } from '../../models/chat.model';
-import { CommonModule } from '@angular/common';
+import { CommonModule, TitleCasePipe } from '@angular/common';
 import { MessageType } from '../../models/message.model';
 import { ChatListStateService } from '../../service/chat-list-state.service';
 import { MessageTimePipe } from '../../pipe/message-time.pipe';
@@ -26,7 +26,7 @@ import { MessageTimePipe } from '../../pipe/message-time.pipe';
 
 @Component({
   selector: 'app-chat-list',
-  imports: [CommonModule, RouterModule, MessageTimePipe],
+  imports: [CommonModule, RouterModule, MessageTimePipe, TitleCasePipe],
   templateUrl: './chat-list.html',
   styleUrl: './chat-list.css',
 })

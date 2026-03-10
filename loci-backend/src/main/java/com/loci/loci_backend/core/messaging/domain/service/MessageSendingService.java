@@ -16,9 +16,8 @@
 
 package com.loci.loci_backend.core.messaging.domain.service;
 
-import java.util.List;
-
 import com.loci.loci_backend.common.authentication.domain.CurrentUser;
+import com.loci.loci_backend.common.ddd.domain.contract.DomainEventPublisher;
 import com.loci.loci_backend.common.ddd.infrastructure.stereotype.DomainService;
 import com.loci.loci_backend.common.user.domain.aggregate.User;
 import com.loci.loci_backend.common.user.domain.repository.UserRepository;
@@ -32,6 +31,7 @@ import com.loci.loci_backend.core.groups.domain.repository.GroupRepository;
 import com.loci.loci_backend.core.messaging.domain.aggregate.Message;
 import com.loci.loci_backend.core.messaging.domain.aggregate.MessageFromSendMessageRequest;
 import com.loci.loci_backend.core.messaging.domain.aggregate.SendMessageRequest;
+import com.loci.loci_backend.core.messaging.domain.event.MessageSentEvent;
 import com.loci.loci_backend.core.messaging.domain.repository.ForwardIdTranslator;
 import com.loci.loci_backend.core.messaging.domain.repository.MessagePublisher;
 import com.loci.loci_backend.core.messaging.domain.repository.MessageRepository;
@@ -49,6 +49,7 @@ import lombok.extern.log4j.Log4j2;
 @DomainService
 public class MessageSendingService {
 
+  private final DomainEventPublisher publisher;
   private final ConversationRepository conversationRepository;
   private final CurrentUser principal;
   private final UserRepository userRepository;
@@ -96,42 +97,48 @@ public class MessageSendingService {
     // senderAsParticipant.setLastReadMessageId(message.getMessageId());
     // participantRepository.save(senderAsParticipant);
 
-    // forward message for single user / user in group via message queue
-    // (forwardMessage)
-    if (conversation.isGroup()) {
-      // List<Participant> groupParticipants =
-      // participantRepository.getParticipantsByConversationId(conversation.getId());
-      sendGroupMessage(conversation, savedMessage);
-
-      // GroupProfile groupProfile =
-
-      // List<Participant> groupParticipants =
-      // participantRepository.getParticipantsByConversationId(conversation.getId());
-      // for (Participant member : groupParticipants) {
-      // if (!member.equals(senderAsParticipant)) {
-      // forwardMessage(member, savedMessage);
-      // }
-      // }
-    } else {
-      Participant targetMessagingParticipant = participantRepository
-          .getTargetMessagingParticipantInDirectConversation(sender, conversation);
-
-      sendPrivateMessage(conversation, targetMessagingParticipant, savedMessage);
-
-      // Participant targetMessagingParticipant = participantRepository
-      // .getTargetMessagingParticipantInDirectConversation(sender, conversation);
-      // forwardMessage(targetMessagingParticipant, savedMessage);
-    }
+    publisher.publish(new MessageSentEvent(savedMessage, conversation, sender));
 
     return savedMessage;
   }
 
-  public void sendPrivateMessage(Conversation conversation, Participant targetReceiver, Message message) {
-    UserSubcriberId forwardId = forwardIdTranslator.toPrivateSubscriberId(targetReceiver);
-    messagePublisher.sendInvidualMessage(forwardId, message);
+  @Transactional(readOnly = false)
+  public void sendPrivateMessage(MessageSentEvent event) {
+
+    User sender = event.sender();
+    Conversation conversation = event.conversation();
+    Message message = event.message();
+
+    Participant targetMessagingParticipant = participantRepository
+        .getTargetMessagingParticipantInDirectConversation(sender, conversation);
+
+    UserSubcriberId receiverForwardId = forwardIdTranslator
+        .toPrivateSubscriberId(targetMessagingParticipant.getUserId());
+    messagePublisher.sendInvidualMessage(receiverForwardId, message);
+    Message sentMessage = messageRepository.markAsSent(message);
+
+    UserSubcriberId senderForwardId = forwardIdTranslator.toPrivateSubscriberId(sender.getDbId());
+    messagePublisher.notifyMessageSent(senderForwardId, sentMessage);
   }
 
-  public void sendGroupMessage(Conversation conversation, Message message) {
+  @Transactional(readOnly = false)
+  public void sendGroupMessage(MessageSentEvent event) {
+    Conversation conversation = event.conversation();
+    Message message = event.message();
+
+    // List<Participant> groupParticipants =
+    // participantRepository.getParticipantsByConversationId(conversation.getId());
+
+    // GroupProfile groupProfile =
+
+    // List<Participant> groupParticipants =
+    // participantRepository.getParticipantsByConversationId(conversation.getId());
+    // for (Participant member : groupParticipants) {
+    // if (!member.equals(senderAsParticipant)) {
+    // forwardMessage(member, savedMessage);
+    // }
+    // }
+
     GroupSubscriberId groupSubscriberId = forwardIdTranslator.toGroupSubscriberId(conversation);
     messagePublisher.sendGroupMessage(groupSubscriberId, message);
 

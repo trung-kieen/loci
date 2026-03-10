@@ -16,8 +16,9 @@
 
 package com.loci.loci_backend.common.ddd.domain.contract;
 
+import com.loci.loci_backend.common.ddd.domain.contract.DomainEvent;
 import java.io.Serializable;
 
 public interface DomainEventPublisher {
-    void publish(Serializable event);
+    void publish(DomainEvent event);
 }

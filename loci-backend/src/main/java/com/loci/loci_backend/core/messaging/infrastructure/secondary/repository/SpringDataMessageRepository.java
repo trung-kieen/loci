@@ -19,22 +19,18 @@ package com.loci.loci_backend.core.messaging.infrastructure.secondary.repository
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.loci.loci_backend.common.collection.Lists;
-import com.loci.loci_backend.common.collection.Maps;
 import com.loci.loci_backend.common.ddd.infrastructure.stereotype.SecondaryPort;
 import com.loci.loci_backend.common.user.domain.vo.PublicId;
 import com.loci.loci_backend.common.user.infrastructure.secondary.entity.UserEntity;
 import com.loci.loci_backend.common.user.infrastructure.secondary.repository.JpaUserRepository;
-import com.loci.loci_backend.core.conversation.domain.aggregate.Conversation;
 import com.loci.loci_backend.core.conversation.domain.aggregate.UserConversation;
 import com.loci.loci_backend.core.conversation.domain.vo.ConversationId;
 import com.loci.loci_backend.core.conversation.domain.vo.ConversationUnreadMessageCount;
 import com.loci.loci_backend.core.conversation.domain.vo.ConversationUnreadMessageQuery;
 import com.loci.loci_backend.core.conversation.domain.vo.UnreadCount;
-import com.loci.loci_backend.core.conversation.infrastructure.secondary.entity.ConversationEntity;
 import com.loci.loci_backend.core.conversation.infrastructure.secondary.repository.JpaConversationRepository;
 import com.loci.loci_backend.core.messaging.domain.aggregate.Message;
 import com.loci.loci_backend.core.messaging.domain.aggregate.MessageList;
@@ -42,6 +38,7 @@ import com.loci.loci_backend.core.messaging.domain.aggregate.MessageListBuilder;
 import com.loci.loci_backend.core.messaging.domain.repository.MessageRepository;
 import com.loci.loci_backend.core.messaging.domain.vo.MessageId;
 import com.loci.loci_backend.core.messaging.domain.vo.MessageLimit;
+import com.loci.loci_backend.core.messaging.domain.vo.MessageState;
 import com.loci.loci_backend.core.messaging.infrastructure.secondary.entity.MessageEntity;
 import com.loci.loci_backend.core.messaging.infrastructure.secondary.mapper.MessageEntityMapper;
 
@@ -51,9 +48,12 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 
 @SecondaryPort
+@Log4j2
 @RequiredArgsConstructor
 public class SpringDataMessageRepository implements MessageRepository {
   private final JpaMessageRepository messageRepository;
@@ -75,8 +75,10 @@ public class SpringDataMessageRepository implements MessageRepository {
     List<UserEntity> senders = userRepository.findAllById(senderDBIds);
 
     // get conversations
-    // List<Long> conversationDBIds = entities.stream().map(MessageEntity::getConversationId).toList();
-    // List<ConversationEntity> conversations = conversationRepository.findAllById(conversationDBIds);
+    // List<Long> conversationDBIds =
+    // entities.stream().map(MessageEntity::getConversationId).toList();
+    // List<ConversationEntity> conversations =
+    // conversationRepository.findAllById(conversationDBIds);
 
     return mapper.toDomain(entities, senders);
   }
@@ -197,6 +199,21 @@ public class SpringDataMessageRepository implements MessageRepository {
     Message savedMessageDomain = mapper.toDomain(savedMessageEntity);
     mapper.applyChange(newMessage, savedMessageDomain);
     return newMessage;
+  }
+
+  @Override
+  public Message markAsSent(Message message) {
+    MessageEntity messageEntity = messageRepository.findById(message.getMessageId().value())
+        .orElseThrow(EntityNotFoundException::new);
+    if (messageEntity.getStatus().equals(MessageState.PREPARE)) {
+      log.error("Invalid state prepare to mark message as sent {}", messageEntity);
+    }
+    messageEntity.setStatus(MessageState.SENT);
+    messageEntity = messageRepository.save(messageEntity);
+    Message savedMessageDomain = mapper.toDomain(messageEntity);
+    mapper.applyChange(message, savedMessageDomain);
+
+    return message;
   }
 
 }
