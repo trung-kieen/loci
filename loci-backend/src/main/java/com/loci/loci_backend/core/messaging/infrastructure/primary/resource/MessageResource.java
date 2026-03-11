@@ -24,14 +24,17 @@ import com.loci.loci_backend.core.conversation.infrastructure.primary.payload.Re
 import com.loci.loci_backend.core.messaging.application.MessagingApplicationService;
 import com.loci.loci_backend.core.messaging.domain.aggregate.Attachment;
 import com.loci.loci_backend.core.messaging.domain.aggregate.Message;
+import com.loci.loci_backend.core.messaging.domain.aggregate.MessageReceiveAcknowledgement;
 import com.loci.loci_backend.core.messaging.domain.aggregate.SendMessageRequest;
+import com.loci.loci_backend.core.messaging.domain.repository.MessagePublisher;
 import com.loci.loci_backend.core.messaging.infrastructure.primary.mapper.RestMessageMapper;
+import com.loci.loci_backend.core.messaging.infrastructure.primary.payload.RestAcknowledgeReceiveMessage;
 import com.loci.loci_backend.core.messaging.infrastructure.primary.payload.RestAttachment;
 import com.loci.loci_backend.core.messaging.infrastructure.primary.payload.RestSendMessageRequest;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -49,6 +52,7 @@ public class MessageResource {
   private final MessagingApplicationService messagingService;
   private final RestMessageMapper mapper;
   private final RestFileMapper restFileMapper;
+  private final MessagePublisher messagePublisher;
 
   @PostMapping("/individual/send")
   public ResponseEntity<RestMessage> sendIndividualMessage(
@@ -61,6 +65,19 @@ public class MessageResource {
     RestMessage restResponse = mapper.from(response);
 
     return ResponseEntity.status(HttpStatus.CREATED).body(restResponse);
+  }
+
+  @PatchMapping("/individual/receive")
+  public ResponseEntity<RestMessage> acknowledgeReceiveMessage(
+      @RequestBody RestAcknowledgeReceiveMessage restRequest) {
+
+    MessageReceiveAcknowledgement messageReceiveRequest = mapper.toDomain(restRequest);
+
+    Message response = messagingService.markMessageDelivered(messageReceiveRequest);
+
+    RestMessage restResponse = mapper.from(response);
+
+    return ResponseEntity.status(HttpStatus.OK).body(restResponse);
   }
 
   @PostMapping("/group/send")
@@ -86,7 +103,6 @@ public class MessageResource {
     return ResponseEntity.ok(restResponse);
 
   }
-
 
   // TODO: handle get attachment metadata
 

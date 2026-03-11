@@ -52,4 +52,9 @@ public class RealtimeMessageSender implements MessagePublisher {
     messageOperations.notifyMessageSent(senderForwardId.value(), restMessage);
   }
 
+  @Override
+  public void notifyMessageDelivered(UserSubcriberId senderForwardId, Message message) {
+    STOMPMessage restMessage = primaryMapper.from(message);
+    messageOperations.notifyMessageDelivered(senderForwardId.value(), restMessage);
+  }
 }

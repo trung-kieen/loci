@@ -23,7 +23,9 @@ import com.loci.loci_backend.common.collection.Maps;
 import com.loci.loci_backend.common.ddd.infrastructure.contract.DomainEntityMapper;
 import com.loci.loci_backend.common.ddd.infrastructure.stereotype.SecondaryMapper;
 import com.loci.loci_backend.common.user.domain.vo.PublicId;
+import com.loci.loci_backend.common.user.domain.vo.UserDBId;
 import com.loci.loci_backend.common.user.infrastructure.secondary.entity.UserEntity;
+import com.loci.loci_backend.core.conversation.domain.vo.ConversationId;
 import com.loci.loci_backend.core.conversation.infrastructure.secondary.entity.ConversationEntity;
 import com.loci.loci_backend.core.messaging.domain.aggregate.Message;
 import com.loci.loci_backend.core.messaging.infrastructure.secondary.entity.MessageEntity;
@@ -43,6 +45,7 @@ public class MessageEntityMapper implements DomainEntityMapper<Message, MessageE
 
   public Message toDomain(MessageEntity messageEntity, ConversationEntity conversationEntity) {
     Message message = this.toDomain(messageEntity);
+    message.setConversationId(new ConversationId(conversationEntity.getId()));
     message.setPublicId(new PublicId(conversationEntity.getPublicId()));
     return message;
   }
@@ -51,14 +54,18 @@ public class MessageEntityMapper implements DomainEntityMapper<Message, MessageE
     Message message = this.toDomain(messageEntity);
     message.setPublicId(new PublicId(conversationEntity.getPublicId()));
     message.setSenderPublicId(new PublicId(sender.getPublicId()));
-    return message;
-  }
-  public Message toDomain(MessageEntity messageEntity,  UserEntity sender) {
-    Message message = this.toDomain(messageEntity);
-    message.setSenderPublicId(new PublicId(sender.getPublicId()));
+    message.setSenderId(new UserDBId(sender.getId()));
+    message.setConversationPublicId(new PublicId(conversationEntity.getPublicId()));
+    message.setConversationId(new ConversationId(conversationEntity.getId()));
     return message;
   }
 
+  public Message toDomain(MessageEntity messageEntity, UserEntity sender) {
+    Message message = this.toDomain(messageEntity);
+    message.setSenderPublicId(new PublicId(sender.getPublicId()));
+    message.setSenderId(new UserDBId(sender.getId()));
+    return message;
+  }
 
   @Override
   public MessageEntity from(Message message) {
@@ -84,7 +91,6 @@ public class MessageEntityMapper implements DomainEntityMapper<Message, MessageE
       // return this.toDomain(message, conversation, sender);
     }).toList();
   }
-
 
   public List<Message> toDomain(List<MessageEntity> entities, List<UserEntity> senders) {
     Map<Long, UserEntity> senderLookup = Maps.toLookupMap(senders, UserEntity::getId);

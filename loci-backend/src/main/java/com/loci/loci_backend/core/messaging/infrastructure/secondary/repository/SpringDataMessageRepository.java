@@ -16,6 +16,7 @@
 
 package com.loci.loci_backend.core.messaging.infrastructure.secondary.repository;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -31,6 +32,7 @@ import com.loci.loci_backend.core.conversation.domain.vo.ConversationId;
 import com.loci.loci_backend.core.conversation.domain.vo.ConversationUnreadMessageCount;
 import com.loci.loci_backend.core.conversation.domain.vo.ConversationUnreadMessageQuery;
 import com.loci.loci_backend.core.conversation.domain.vo.UnreadCount;
+import com.loci.loci_backend.core.conversation.infrastructure.secondary.entity.ConversationEntity;
 import com.loci.loci_backend.core.conversation.infrastructure.secondary.repository.JpaConversationRepository;
 import com.loci.loci_backend.core.messaging.domain.aggregate.Message;
 import com.loci.loci_backend.core.messaging.domain.aggregate.MessageList;
@@ -148,7 +150,14 @@ public class SpringDataMessageRepository implements MessageRepository {
 
   @Override
   public Optional<Message> getByPublicId(PublicId messageId) {
-    return messageRepository.findByPublicId(messageId.value()).map(mapper::toDomain);
+    return messageRepository.findByPublicId(messageId.value()).map(m -> {
+      ConversationEntity conversationEntity = conversationRepository.findById(m.getConversationId())
+          .orElseThrow(EntityNotFoundException::new);
+
+      UserEntity senderEntity = userRepository.findById(m.getSenderId()).orElseThrow();
+      return mapper.toDomain(m, conversationEntity, senderEntity);
+
+    });
   }
 
   @Override
@@ -192,28 +201,57 @@ public class SpringDataMessageRepository implements MessageRepository {
         .build();
   }
 
+  @Transactional(readOnly = false)
   @Override
   public Message save(Message newMessage) {
     MessageEntity messageEntity = mapper.from(newMessage);
     MessageEntity savedMessageEntity = messageRepository.save(messageEntity);
     Message savedMessageDomain = mapper.toDomain(savedMessageEntity);
+    // Avoid losing conversation and sender information
     mapper.applyChange(newMessage, savedMessageDomain);
     return newMessage;
   }
 
+  @Transactional(readOnly = false)
   @Override
   public Message markAsSent(Message message) {
     MessageEntity messageEntity = messageRepository.findById(message.getMessageId().value())
         .orElseThrow(EntityNotFoundException::new);
-    if (messageEntity.getStatus().equals(MessageState.PREPARE)) {
-      log.error("Invalid state prepare to mark message as sent {}", messageEntity);
-    }
+    // if (messageEntity.getStatus().equals(MessageState.PREPARE)) {
+    // log.error("Invalid state prepare to mark message as sent {}", messageEntity);
+    // }
     messageEntity.setStatus(MessageState.SENT);
     messageEntity = messageRepository.save(messageEntity);
     Message savedMessageDomain = mapper.toDomain(messageEntity);
     mapper.applyChange(message, savedMessageDomain);
 
     return message;
+  }
+
+  @Transactional(readOnly = false)
+  @Override
+  public Message markAsDelivered(Message message) {
+    MessageEntity messageEntity = messageRepository.findById(message.getMessageId().value())
+        .orElseThrow(EntityNotFoundException::new);
+    messageEntity.setStatus(MessageState.DELIVERED);
+    messageEntity.setDeliveredAt(Instant.now());
+    messageEntity = messageRepository.save(messageEntity);
+    Message savedMessageDomain = mapper.toDomain(messageEntity);
+    mapper.applyChange(message, savedMessageDomain);
+
+    return message;
+  }
+
+  @Transactional(readOnly = false)
+  @Override
+  public Message create(Message newMessage) {
+    MessageEntity messageEntity = mapper.from(newMessage);
+    MessageEntity savedMessageEntity = messageRepository.saveAndFlush(messageEntity);
+
+    Message savedMessageDomain = mapper.toDomain(savedMessageEntity);
+    // Avoid losing conversation and sender information
+    mapper.applyChange(newMessage, savedMessageDomain);
+    return newMessage;
   }
 
 }

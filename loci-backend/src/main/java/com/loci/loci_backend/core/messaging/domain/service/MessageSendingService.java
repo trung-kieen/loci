@@ -27,15 +27,16 @@ import com.loci.loci_backend.core.conversation.domain.aggregate.Participant;
 import com.loci.loci_backend.core.conversation.domain.repository.ConversationRepository;
 import com.loci.loci_backend.core.conversation.domain.repository.ParticipantRepository;
 import com.loci.loci_backend.core.conversation.domain.service.ConversationAuthenticationProvider;
-import com.loci.loci_backend.core.groups.domain.repository.GroupRepository;
 import com.loci.loci_backend.core.messaging.domain.aggregate.Message;
 import com.loci.loci_backend.core.messaging.domain.aggregate.MessageFromSendMessageRequest;
 import com.loci.loci_backend.core.messaging.domain.aggregate.SendMessageRequest;
 import com.loci.loci_backend.core.messaging.domain.event.MessageSentEvent;
+import com.loci.loci_backend.core.messaging.domain.exception.BadMessageStateException;
 import com.loci.loci_backend.core.messaging.domain.repository.ForwardIdTranslator;
 import com.loci.loci_backend.core.messaging.domain.repository.MessagePublisher;
 import com.loci.loci_backend.core.messaging.domain.repository.MessageRepository;
 import com.loci.loci_backend.core.messaging.domain.vo.GroupSubscriberId;
+import com.loci.loci_backend.core.messaging.domain.vo.MessageState;
 import com.loci.loci_backend.core.messaging.domain.vo.UserSubcriberId;
 
 import org.springframework.transaction.annotation.Transactional;
@@ -60,11 +61,8 @@ public class MessageSendingService {
   private final MessagePublisher messagePublisher;
   private final ForwardIdTranslator forwardIdTranslator;
 
-  // TODO: migrate with inter commnucation
-  private final GroupRepository groupRepository;
-
   @Transactional(readOnly = false)
-  public Message sendMessage(SendMessageRequest messageRequest) {
+  public Message prepareSendingMessage(SendMessageRequest messageRequest) {
     PublicId conversationId = messageRequest.getConversationPublicId();
     Conversation conversation = conversationRepository.getByPublicId(conversationId)
         .orElseThrow(EntityNotFoundException::new);
@@ -86,7 +84,7 @@ public class MessageSendingService {
         .conversation(conversation)
         .senderUser(sender)
         .build();
-    Message savedMessage = messageRepository.save(newMessage);
+    Message savedMessage = messageRepository.create(newMessage);
 
     // mark message as latest for this conversation
     conversation = conversationRepository.markLatestMessage(conversation, savedMessage.getMessageId());
@@ -115,6 +113,9 @@ public class MessageSendingService {
     UserSubcriberId receiverForwardId = forwardIdTranslator
         .toPrivateSubscriberId(targetMessagingParticipant.getUserId());
     messagePublisher.sendInvidualMessage(receiverForwardId, message);
+    if (!message.getStatus().canTransitionTo(MessageState.SENT)) {
+      throw new BadMessageStateException();
+    }
     Message sentMessage = messageRepository.markAsSent(message);
 
     UserSubcriberId senderForwardId = forwardIdTranslator.toPrivateSubscriberId(sender.getDbId());
@@ -142,27 +143,6 @@ public class MessageSendingService {
     GroupSubscriberId groupSubscriberId = forwardIdTranslator.toGroupSubscriberId(conversation);
     messagePublisher.sendGroupMessage(groupSubscriberId, message);
 
-  }
-
-  /*
-   * retry to forward the message to target user id and handle the fail if needed
-   *
-   */
-  public void forwardMessage(Participant participant, Message message) {
-    log.warn("TODO: Sending message {} to participant {} ", message, participant);
-
-    // UserSubcriberId targetReciverId =
-    // get opponent user or group of user
-
-    // determine unicast or multicast message
-
-    // forward message via messaging service (rabbit mq)
-
-    // forward notification to target receiver too via notification service
-
-  }
-
-  void trackMessage() {
   }
 
 }

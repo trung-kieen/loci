@@ -22,10 +22,12 @@ import com.loci.loci_backend.core.messaging.domain.aggregate.Attachment;
 import com.loci.loci_backend.core.messaging.domain.aggregate.ConversationMessageList;
 import com.loci.loci_backend.core.messaging.domain.aggregate.Message;
 import com.loci.loci_backend.core.messaging.domain.aggregate.MessageCursorQuery;
+import com.loci.loci_backend.core.messaging.domain.aggregate.MessageReceiveAcknowledgement;
 import com.loci.loci_backend.core.messaging.domain.aggregate.SendMessageRequest;
 import com.loci.loci_backend.core.messaging.domain.event.MessageSentEvent;
 import com.loci.loci_backend.core.messaging.domain.service.MessageManager;
 import com.loci.loci_backend.core.messaging.domain.service.MessageSendingService;
+import com.loci.loci_backend.core.messaging.domain.service.MessageTrackingStateService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -34,13 +36,14 @@ import lombok.RequiredArgsConstructor;
 public class MessagingApplicationService {
   private final MessageManager messageManager;
   private final MessageSendingService messageSendingService;
+  private final MessageTrackingStateService messageTrackingStateService;
 
   public ConversationMessageList getConversationMessages(MessageCursorQuery query) {
     return messageManager.getConversationMessages(query);
   }
 
   public Message sendMessage(SendMessageRequest request) {
-    return messageSendingService.sendMessage(request);
+    return messageSendingService.prepareSendingMessage(request);
   }
 
   public Attachment uploadAttachment(File file) {
@@ -54,5 +57,10 @@ public class MessagingApplicationService {
 
   public void handleDirectMessageDelivery(MessageSentEvent event) {
     messageSendingService.sendPrivateMessage(event);
+  }
+
+  public Message markMessageDelivered(MessageReceiveAcknowledgement messageReceiveRequest) {
+
+    return messageTrackingStateService.markMessageDelivered(messageReceiveRequest);
   }
 }

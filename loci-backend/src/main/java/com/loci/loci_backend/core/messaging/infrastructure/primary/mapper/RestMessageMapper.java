@@ -22,10 +22,12 @@ import com.loci.loci_backend.common.ddd.infrastructure.contract.Domain2RestMappe
 import com.loci.loci_backend.common.ddd.infrastructure.stereotype.PrimaryMapper;
 import com.loci.loci_backend.core.conversation.domain.aggregate.Conversation;
 import com.loci.loci_backend.core.conversation.infrastructure.primary.payload.RestMessage;
+import com.loci.loci_backend.core.messaging.domain.aggregate.MessageReceiveAcknowledgement;
 import com.loci.loci_backend.core.messaging.domain.aggregate.Attachment;
 import com.loci.loci_backend.core.messaging.domain.aggregate.Message;
 import com.loci.loci_backend.core.messaging.domain.aggregate.SendMessageRequest;
 import com.loci.loci_backend.core.messaging.domain.vo.MessageContent;
+import com.loci.loci_backend.core.messaging.infrastructure.primary.payload.RestAcknowledgeReceiveMessage;
 import com.loci.loci_backend.core.messaging.infrastructure.primary.payload.RestAttachment;
 import com.loci.loci_backend.core.messaging.infrastructure.primary.payload.RestMessageContent;
 import com.loci.loci_backend.core.messaging.infrastructure.primary.payload.RestSendMessageRequest;
@@ -73,6 +75,10 @@ public class RestMessageMapper implements Domain2RestMapper<Message, RestMessage
 
   public Attachment toDomain(RestAttachment attachment){
     return mapstruct.toDomain(attachment);
+  }
+
+  public MessageReceiveAcknowledgement toDomain(RestAcknowledgeReceiveMessage restRequest) {
+    return mapstruct.toDomain(restRequest);
   }
 
 }

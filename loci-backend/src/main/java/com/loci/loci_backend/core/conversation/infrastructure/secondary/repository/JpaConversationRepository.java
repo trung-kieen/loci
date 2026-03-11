@@ -24,7 +24,9 @@ import java.util.UUID;
 import com.loci.loci_backend.core.conversation.infrastructure.secondary.entity.ConversationEntity;
 import com.loci.loci_backend.core.conversation.infrastructure.secondary.vo.GroupConversationMetadataJpaVO;
 
+import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -76,8 +78,13 @@ public interface JpaConversationRepository extends JpaRepository<ConversationEnt
       GROUP BY c.id, c.publicId, g.id, g.publicId, g.groupName, g.groupProfilePicture
 
       """)
-  List<GroupConversationMetadataJpaVO> getGroupMetadataByConversationIds(@Param("conversationIds") Set<Long> conversationIds);
+  List<GroupConversationMetadataJpaVO> getGroupMetadataByConversationIds(
+      @Param("conversationIds") Set<Long> conversationIds);
 
   Optional<ConversationEntity> findByPublicId(UUID publicId);
+
+  @Modifying
+  @Query("UPDATE ConversationEntity c SET c.lastMessageId = :messageId WHERE c.id = :conversationId")
+  void markAsLatestMessage(@Param("conversationId") Long conversationId,@Param("messageId") Long messageId);
 
 }

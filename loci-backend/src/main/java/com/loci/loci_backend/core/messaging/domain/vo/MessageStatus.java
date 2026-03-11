@@ -31,8 +31,12 @@ public record MessageStatus(
     return messageState().ordinal() < newStatus.ordinal();
   }
 
-  public static MessageStatus forNew(){
+  public static MessageStatus forNew() {
     return new MessageStatus(MessageState.PREPARE, Instant.now());
+  }
+
+  public static MessageStatus delivered() {
+    return new MessageStatus(MessageState.DELIVERED, Instant.now());
   }
 
 }

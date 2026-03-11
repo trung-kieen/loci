@@ -126,12 +126,19 @@ export class DirectConversation implements OnInit {
           this.chatApiService.direct.onMessageSent(conversationId).pipe(
             tap(m => this.onMessageSentNotify(m))
           ),
+          this.chatApiService.direct.onMessageDelivered(conversationId).pipe(
+            tap(m => this.onMessageDeliveredNotify(m))
+          ),
           this.chatApiService.direct.onUserStatusUpdate(conversationId).pipe(
             tap(updated => this.onUpdateUserStatus(updated))
           )
         );
       })
     ).subscribe();
+  }
+  onMessageDeliveredNotify(m: IMessage): void {
+    this.logger.info("Message is delivered", m)
+    this.state.updateMessage(m.messageId, { messageState: 'delivered' });
   }
   onMessageSentNotify(m: IMessage): void {
     this.logger.info("Message is sent", m);

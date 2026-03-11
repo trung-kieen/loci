@@ -18,8 +18,10 @@ package com.loci.loci_backend.core.messaging.infrastructure.primary.mapper;
 
 import com.loci.loci_backend.common.ddd.infrastructure.mapper.ValueObjectTypeConverter;
 import com.loci.loci_backend.core.conversation.infrastructure.primary.payload.RestMessage;
+import com.loci.loci_backend.core.messaging.domain.aggregate.MessageReceiveAcknowledgement;
 import com.loci.loci_backend.core.messaging.domain.aggregate.Attachment;
 import com.loci.loci_backend.core.messaging.domain.aggregate.Message;
+import com.loci.loci_backend.core.messaging.infrastructure.primary.payload.RestAcknowledgeReceiveMessage;
 import com.loci.loci_backend.core.messaging.infrastructure.primary.payload.RestAttachment;
 
 import org.mapstruct.Mapper;
@@ -55,5 +57,8 @@ public interface MapStructRestMessageMapper {
   public RestAttachment from(Attachment attachment);
 
   public Attachment toDomain(RestAttachment attachment);
+
+  @Mapping(source = "messageId", target = "messagePublicId")
+  public MessageReceiveAcknowledgement toDomain(RestAcknowledgeReceiveMessage restRequest);
 
 }

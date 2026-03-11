@@ -38,15 +38,12 @@ export class DirectChatApiService {
   private chatListStateService = inject(ChatListStateService);
 
   onReceiveNewMessage(conversationId: string) {
-    const stream$ = this.messageObservable.directMessageReceiveInConversation$(conversationId).pipe(
-      // tap(message => {
-      //   // sent acknowledgement user receive message
-      //   this.ackReceiveMessage(message.messageId, message.conversationId);
-      // })
-    )
+    return this.messageObservable.directMessageReceiveInConversation$(conversationId);
 
-    return stream$;
   }
+
+
+
 
   onMessageSent(conversationId: string) {
     return this.messageObservable.directMessageSentInConversation$(conversationId);
@@ -56,7 +53,7 @@ export class DirectChatApiService {
     return this.messageObservable.directMessageDeliveredInConversation$(conversationId);
   }
 
-  onMessageSeen(conversationId: string): Observable<IMessageStatusUpdate> {
+  onMessageSeen(conversationId: string) {
     return this.messageObservable.directMessageSeenInConversation$(conversationId);
   }
 
@@ -64,18 +61,6 @@ export class DirectChatApiService {
     return this.presenceObservable.status(userId);
   }
 
-  /**
-   * Acknowledgement current user (receiver) has received the new message back to server
-   */
-  ackReceiveMessage(messageId: string, conversationId: string) {
-    const request: IMessageStatusUpdate = {
-      messageId,
-      conversationId,
-      status: 'delivered'
-    }
-    // TODO: implment api and test
-    return this.apiService.patch("/messages/individual/receive", request);
-  }
 
 
   markAsRead(messageId: string, conversationId: string): Observable<void> {

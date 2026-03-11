@@ -17,19 +17,48 @@
 import { inject, Injectable } from "@angular/core";
 import { WebSocketService } from "../../../core/socket/websocket.service";
 import { IMessage, IMessageStatusUpdate } from "../models/message.model";
-import { filter, Observable } from "rxjs";
+import { filter, Observable, tap } from "rxjs";
+import { LoggerService } from "../../../core/services/logger.service";
+import { WebApiService } from "../../../core/api/web-api.service";
 @Injectable({
   providedIn: 'root'
 })
 export class MessageObservableService {
 
+  private loggerService = inject(LoggerService);
+  private logger = this.loggerService.getLogger("MessageObservableService");
   private wsService = inject(WebSocketService);
+  private apiService = inject(WebApiService);
 
-  // direct conversation message event
 
+  /**
+   * Received message and send ack message to server
+   */
   public directMessageReceive$() {
-    return this.wsService.subscribe<IMessage>("/user/queue/messages.receive");
+    return this.wsService.subscribe<IMessage>("/user/queue/messages.receive").pipe(
+      tap(message => {
+        // sent acknowledgement user receive message
+        this.ackReceiveMessage(message.messageId).subscribe({
+          next: (d) => this.logger.debug("Ack receive message to server success ", d),
+          error: (e) => this.logger.debug("Unable to ack to server that browser is received the message ", e)
+        })
+
+
+      })
+    )
   }
+
+  private ackReceiveMessage(messageId: string) {
+    const request = {
+      messageId,
+      // conversationId,
+      // status: 'delivered'
+    }
+    this.logger.debug("Ack receive message to server ", messageId);
+    // TODO: implment api and test
+    return this.apiService.patch("/messages/individual/receive", request);
+  }
+
 
   public directMessageReceiveInConversation$(targetConversationId: string) {
     return this.directMessageReceive$().pipe(
@@ -51,7 +80,7 @@ export class MessageObservableService {
    * The message user sent to other is received the target user
    */
   public directMessageDelivered$() {
-    return this.wsService.subscribe<IMessageStatusUpdate>("/user/queue/message.delivered")
+    return this.wsService.subscribe<IMessage>("/user/queue/messages.delivered")
   }
 
   public directMessageDeliveredInConversation$(targetConversationId: string) {

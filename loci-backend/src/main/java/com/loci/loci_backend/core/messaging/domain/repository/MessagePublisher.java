@@ -28,4 +28,5 @@ public interface MessagePublisher {
 
   public void notifyMessageSent(UserSubcriberId senderForwardId, Message message);
 
+  public void notifyMessageDelivered(UserSubcriberId senderForwardId, Message message);
 }

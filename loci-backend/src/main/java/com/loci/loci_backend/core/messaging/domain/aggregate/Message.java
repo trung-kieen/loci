@@ -24,8 +24,6 @@ import com.loci.loci_backend.common.user.domain.vo.PublicId;
 import com.loci.loci_backend.common.user.domain.vo.UserDBId;
 import com.loci.loci_backend.core.conversation.domain.aggregate.Conversation;
 import com.loci.loci_backend.core.conversation.domain.vo.ConversationId;
-import com.loci.loci_backend.core.messaging.domain.vo.MediaName;
-import com.loci.loci_backend.core.messaging.domain.vo.MediaUrl;
 import com.loci.loci_backend.core.messaging.domain.vo.MessageContent;
 import com.loci.loci_backend.core.messaging.domain.vo.MessageId;
 import com.loci.loci_backend.core.messaging.domain.vo.MessageState;
