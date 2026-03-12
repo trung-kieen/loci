@@ -54,7 +54,7 @@ export interface IConversationMessage extends IMessage {
 
 export type ParticipantState = 'online' | 'offline' | 'away';
 
-export type MessageState = 'created' | 'prepare' | 'sent' | 'delivered' | 'read' | 'failed';
+export type MessageState = 'created' | 'prepare' | 'sent' | 'delivered' | 'seen' | 'failed';
 
 export interface ISendMessageRequest {
   conversationId: string;
@@ -67,7 +67,22 @@ export interface ISendMessageRequest {
   // attachmentId?: string;
 }
 
-export interface IMessageStatusUpdate {
+
+export interface IMarkMessageSeenRequest {
+  lastSeenMessageId: string;
+  conversationId: string;
+}
+
+export interface IMarkMessageSeenResponse {
+  seenAt: Date;
+}
+
+export interface IMessageSeenEvent {
+  messageId: string,
+  conversationId: string
+}
+
+export interface IMessageStatusEvent {
   messageId: string;
   status: MessageState;
   conversationId: string;

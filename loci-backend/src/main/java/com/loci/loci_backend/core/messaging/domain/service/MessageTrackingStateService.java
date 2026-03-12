@@ -16,10 +16,15 @@
 
 package com.loci.loci_backend.core.messaging.domain.service;
 
+import com.loci.loci_backend.common.authentication.domain.CurrentUser;
 import com.loci.loci_backend.common.ddd.infrastructure.stereotype.DomainService;
+import com.loci.loci_backend.common.user.domain.aggregate.User;
+import com.loci.loci_backend.common.user.domain.repository.UserRepository;
+import com.loci.loci_backend.core.messaging.domain.aggregate.MarkMessageSeenRequest;
 import com.loci.loci_backend.core.messaging.domain.aggregate.Message;
 import com.loci.loci_backend.core.messaging.domain.aggregate.MessageReceiveAcknowledgement;
 import com.loci.loci_backend.core.messaging.domain.exception.BadMessageStateException;
+import com.loci.loci_backend.core.messaging.domain.exception.UserNotOwnMessageException;
 import com.loci.loci_backend.core.messaging.domain.repository.ForwardIdTranslator;
 import com.loci.loci_backend.core.messaging.domain.repository.MessagePublisher;
 import com.loci.loci_backend.core.messaging.domain.repository.MessageRepository;
@@ -39,9 +44,14 @@ public class MessageTrackingStateService {
   private final MessageRepository messageRepository;
   private final MessagePublisher messagePublisher;
   private final ForwardIdTranslator forwardIdTranslator;
+  private final CurrentUser principal;
+  private final UserRepository userRepository;
 
   @Transactional(readOnly = false)
   public Message markMessageDelivered(MessageReceiveAcknowledgement request) {
+
+    // TODO: validate
+
     Message message = messageRepository.getByPublicId(request.getMessagePublicId())
         .orElseThrow(EntityNotFoundException::new);
     if (!message.getStatus().canTransitionTo(MessageState.DELIVERED)) {
@@ -53,6 +63,29 @@ public class MessageTrackingStateService {
     UserSubcriberId senderForwardId = forwardIdTranslator.toPrivateSubscriberId(message.getSenderId());
     messagePublisher.notifyMessageDelivered(senderForwardId, message);
     return message;
+  }
+
+  @Transactional(readOnly = false)
+  public void markSeenMessage(MarkMessageSeenRequest request) {
+    // TODO: validate user is in this conversation
+
+    Message message = messageRepository.getByPublicId(request.getMessagePublicId())
+        .orElseThrow(EntityNotFoundException::new);
+
+    if (!message.getStatus().canTransitionTo(MessageState.SEEN)) {
+      log.warn("Omit seen message {}", message);
+      return;
+    }
+
+    // if (!message.getStatus().canTransitionTo(MessageState.SEEN)) {
+    // throw new BadMessageStateException();
+    // }
+
+    messageRepository.markAsSeen(message);
+
+
+    UserSubcriberId senderForwardId = forwardIdTranslator.toPrivateSubscriberId(message.getSenderId());
+    messagePublisher.notifyMessageSeen(senderForwardId, message);
   }
 
 }

@@ -17,6 +17,7 @@
 package com.loci.loci_backend.core.messaging.infrastructure.primary.mapper;
 
 import java.util.List;
+import java.util.UUID;
 
 import com.loci.loci_backend.common.ddd.infrastructure.stereotype.PrimaryMapper;
 import com.loci.loci_backend.common.user.domain.aggregate.User;
@@ -24,10 +25,13 @@ import com.loci.loci_backend.common.user.domain.vo.PublicId;
 import com.loci.loci_backend.core.conversation.domain.aggregate.Conversation;
 import com.loci.loci_backend.core.conversation.infrastructure.primary.payload.RestMessage;
 import com.loci.loci_backend.core.messaging.domain.aggregate.ConversationMessageList;
+import com.loci.loci_backend.core.messaging.domain.aggregate.MarkMessageSeenRequest;
+import com.loci.loci_backend.core.messaging.domain.aggregate.MarkMessageSeenRequestBuilder;
 import com.loci.loci_backend.core.messaging.domain.aggregate.Message;
 import com.loci.loci_backend.core.messaging.infrastructure.primary.payload.RestConversationMessage;
 import com.loci.loci_backend.core.messaging.infrastructure.primary.payload.RestConversationMessageList;
 import com.loci.loci_backend.core.messaging.infrastructure.primary.payload.RestConversationMessageListBuilder;
+import com.loci.loci_backend.core.messaging.infrastructure.primary.payload.RestMarkMessageSeenRequest;
 
 import lombok.RequiredArgsConstructor;
 
@@ -62,5 +66,12 @@ public class RestConversationMessageMapper {
     }).toList();
   }
 
+  public MarkMessageSeenRequest toDomain(UUID conversationId, RestMarkMessageSeenRequest restRequest) {
+    PublicId conversationPublicId = new PublicId(conversationId);
+    return MarkMessageSeenRequestBuilder.markMessageSeenRequest()
+        .conversationPublicId(conversationPublicId)
+        .messagePublicId(new PublicId(restRequest.getLastSeenMessageId()))
+        .build();
+  }
 
 }

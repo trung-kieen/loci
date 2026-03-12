@@ -58,4 +58,6 @@ public interface MessageRepository {
   Message markAsSent(Message message);
 
   Message markAsDelivered(Message message);
+
+  Message markAsSeen(Message message);
 }

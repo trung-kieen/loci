@@ -14,64 +14,51 @@
  limitations under the License.
 -->
 
-    <main id="main-content" class="flex h-[calc(100vh-4rem)]">
-      <section id="chat-conversation" class="flex-1 bg-white flex flex-col">
+<main id="main-content" class="flex h-[calc(100vh-4rem)]">
+  <section id="chat-conversation" class="flex-1 bg-white flex flex-col">
 
 
- <app-chat-header
-  [chat]="chatInfo()"
-  [showBackButton]="true"
-  [features]="singleChatFeatures"
-  (back)="onBack()"
-  (profileClick)="onViewProfile()"
-  (callClick)="onVoiceCall()"
-  (videoClick)="onVideoCall()" />
-        <!-- Header -->
-        <!-- <app-chat-header -->
-        <!--   [participant]="participant()" -->
-        <!--   [showBackButton]="true" -->
-        <!--   (back)="onBack()" -->
-        <!--   (profileClick)="onViewProfile()" /> -->
+    <app-chat-header [chat]="chatInfo()" [showBackButton]="true" [features]="singleChatFeatures" (back)="onBack()"
+      (profileClick)="onViewProfile()" (callClick)="onVoiceCall()" (videoClick)="onVideoCall()" />
+    <!-- Header -->
+    <!-- <app-chat-header -->
+    <!--   [participant]="participant()" -->
+    <!--   [showBackButton]="true" -->
+    <!--   (back)="onBack()" -->
+    <!--   (profileClick)="onViewProfile()" /> -->
 
-        <!-- Messages -->
-        <div
-          #messageArea
-          id="message-area"
-          class="flex-1 overflow-y-auto p-4 space-y-4"
-          (scroll)="onScroll($event)">
+    <!-- Messages -->
+    <div #messageArea id="message-area" class="flex-1 overflow-y-auto p-4 space-y-4" (scroll)="onScroll($event)">
 
-          @if (state.loading()) {
-            <div class="flex justify-center py-4">
-              <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-neutral-500"></div>
-            </div>
-          }
+      @if (state.loading()) {
+      <div class="flex justify-center py-4">
+        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-neutral-500"></div>
+      </div>
+      }
 
-          <!-- [isOwn]="isOwnerMessage(msg)" -->
-          @for (msg of messages(); track msg.messageId) {
-            <app-message-bubble
-              [isOwn]="msg.owner"
-              [message]="msg"
-              [avatarUrl]="getMessageSenderAvatarUrl(msg)"
-              [senderName]="getMessageSenderName(msg)"
-              (download)="onDownloadAttachment($event)"
-              (contextMenu)="onMessageContextMenu($event)" />
-          }
-        </div>
+      <!-- [isOwn]="isOwnerMessage(msg)" -->
+      @for (msg of messages(); track msg.messageId; let last = $last) {
+      <app-message-bubble [isOwn]="msg.owner" [message]="msg" [avatarUrl]="getMessageSenderAvatarUrl(msg)"
+        [senderName]="getMessageSenderName(msg)" [attr.data-message-id]="msg.messageId"
+        [attr.data-incoming]="!msg.owner" (download)="onDownloadAttachment($event)"
+        (contextMenu)="onMessageContextMenu($event)"
+        [isLast]="last"
+        />
 
-        <!-- Error -->
-        @if (uiError() !== null){
-        <app-error-alert
-          [error]="uiError()"
-          (dismiss)="state.clearError()" />
-        }
+      <!-- @if (last && msg.owner) { -->
+      <!-- <span class="message-state">{{ msg.messageState }}</span> -->
+    <!-- } -->
+      }
+    </div>
 
-        <!-- Input -->
-        <app-message-input
-          [isDisabled]="isBlocked()"
-          [isSending]="state.sendingMessage()"
-          [isUploading]="state.uploadingFile()"
-          (send)="onSendMessage($event)"
-          (fileSelect)="onFileSelected($event)" />
+    <!-- Error -->
+    @if (uiError() !== null){
+    <app-error-alert [error]="uiError()" (dismiss)="state.clearError()" />
+    }
 
-      </section>
-    </main>
+    <!-- Input -->
+    <app-message-input [isDisabled]="isBlocked()" [isSending]="state.sendingMessage()"
+      [isUploading]="state.uploadingFile()" (send)="onSendMessage($event)" (fileSelect)="onFileSelected($event)" />
+
+  </section>
+</main>

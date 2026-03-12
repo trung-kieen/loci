@@ -254,4 +254,20 @@ public class SpringDataMessageRepository implements MessageRepository {
     return newMessage;
   }
 
+  @Transactional(readOnly = false)
+  @Override
+  public Message markAsSeen(Message message) {
+    MessageEntity messageEntity = messageRepository.findById(message.getMessageId().value())
+        .orElseThrow(EntityNotFoundException::new);
+    if (messageEntity.getStatus().messageState() != MessageState.SEEN) {
+      messageEntity.setStatus(MessageState.SEEN);
+      messageEntity.setReadAt(Instant.now());
+      messageEntity = messageRepository.save(messageEntity);
+      Message savedMessageDomain = mapper.toDomain(messageEntity);
+      mapper.applyChange(message, savedMessageDomain);
+    }
+
+    return message;
+  }
+
 }

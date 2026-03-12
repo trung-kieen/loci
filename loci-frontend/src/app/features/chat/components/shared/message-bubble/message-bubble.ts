@@ -33,6 +33,7 @@ export class MessageBubble {
   avatarUrl = input.required<string>();
   senderName = input<string>('');
   isOwn = input.required<boolean>();
+  isLast = input<boolean>(false);
 
   // output signal
   download = output<IAttachment>();

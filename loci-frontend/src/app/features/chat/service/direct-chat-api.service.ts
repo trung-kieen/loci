@@ -19,19 +19,22 @@ import {
   Injectable,
 } from '@angular/core';
 import { MessageObservableService } from './message-observable.service';
-import { IAttachment, IMessage, IMessageStatusUpdate, ISendMessageRequest } from '../models/message.model';
+import { IAttachment, IMarkMessageSeenRequest, IMarkMessageSeenResponse, IMessage, IMessageStatusEvent, ISendMessageRequest } from '../models/message.model';
 import { WebApiService } from '../../../core/api/web-api.service';
 import { delay, EMPTY, Observable, of, tap } from 'rxjs';
 import { ISingleChatInfo } from '../models/chat.model';
 import { IPersonalProfile } from '../../user/models/user.model';
 import { ChatListStateService } from './chat-list-state.service';
 import { UserPresenceObservableService } from '../../user/services/user-presence-observable.service';
+import { LoggerService } from '../../../core/services/logger.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DirectChatApiService {
 
+  private loggerService = inject(LoggerService);
+  private logger = this.loggerService.getLogger("DirectChatApiService");
   private messageObservable = inject(MessageObservableService);
   private presenceObservable = inject(UserPresenceObservableService);
   private apiService = inject(WebApiService);
@@ -63,15 +66,15 @@ export class DirectChatApiService {
 
 
 
-  markAsRead(messageId: string, conversationId: string): Observable<void> {
-    const request: IMessageStatusUpdate = {
-      messageId,
-      conversationId,
-      status: 'read'
-    }
-    this.apiService.patch("/messages/individual/seen", request)
-    return EMPTY;
-  }
+  // markAsRead(messageId: string, conversationId: string): Observable<void> {
+  //   const request: IMessageStatusUpdate = {
+  //     messageId,
+  //     conversationId,
+  //     status: 'seen'
+  //   }
+  //   this.apiService.patch("/messages/individual/seen", request)
+  //   return EMPTY;
+  // }
 
 
 
@@ -99,6 +102,19 @@ export class DirectChatApiService {
     return newMessage;
   }
 
+  markAsSeen(request: IMarkMessageSeenRequest) {
+    this.logger.info("Tracking message seen stage to backend ", request);
+    // const request: IMessageStatusUpdate = {
+    // messageId,
+    // conversationId,
+    // status: 'seen'
+    // }
+    // this.apiService.patch("/messages/individual/seen", request)
+    // return EMPTY;
+
+    // TODO: implement the api
+    return this.apiService.patch<IMarkMessageSeenResponse>(`/conversations/${request.conversationId}/seen`, request);
+  }
 
   uploadAttachment(
     conversationId: string,

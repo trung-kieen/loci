@@ -36,7 +36,7 @@ public class WsPaths {
   public static final String INDIVIDUAL_RECEIVE_MESSAGE = QUEUE + "/messages.receive";
   public static final String INDIVIDUAL_NOTIFY_MESSAGE_SENT = QUEUE + "/messages.sent";
   public static final String INDIVIDUAL_NOTIFY_MESSAGE_DELIVERED = QUEUE + "/messages.delivered";
-
+  public static final String INDIVIDUAL_NOTIFY_MESSAGE_SEEN = QUEUE + "/messages.seen";
 
   public static final String GROUP_RECEIVE_MESSAGE = TOPIC + "/messages.receive";
 

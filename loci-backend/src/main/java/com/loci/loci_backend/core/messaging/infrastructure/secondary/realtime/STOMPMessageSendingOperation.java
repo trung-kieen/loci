@@ -48,4 +48,8 @@ public class STOMPMessageSendingOperation {
   public void notifyMessageDelivered(String username, STOMPMessage message) {
     messageTemplate.convertAndSendToUser(username, WsPaths.INDIVIDUAL_NOTIFY_MESSAGE_DELIVERED , message);
   }
+
+  public void notifyMessageSeen(String username, STOMPMessage message) {
+    messageTemplate.convertAndSendToUser(username, WsPaths.INDIVIDUAL_NOTIFY_MESSAGE_SEEN , message);
+  }
 }

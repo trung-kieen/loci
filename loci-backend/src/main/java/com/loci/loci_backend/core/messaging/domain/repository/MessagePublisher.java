@@ -22,11 +22,13 @@ import com.loci.loci_backend.core.messaging.domain.vo.UserSubcriberId;
 
 public interface MessagePublisher {
 
-  void sendInvidualMessage(UserSubcriberId forwardId, Message message);
+  public void sendInvidualMessage(UserSubcriberId forwardId, Message message);
 
-  void sendGroupMessage(GroupSubscriberId conversationId, Message message);
+  public void sendGroupMessage(GroupSubscriberId conversationId, Message message);
 
   public void notifyMessageSent(UserSubcriberId senderForwardId, Message message);
 
   public void notifyMessageDelivered(UserSubcriberId senderForwardId, Message message);
+
+  public void notifyMessageSeen(UserSubcriberId senderForwardId, Message message);
 }

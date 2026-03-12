@@ -20,6 +20,7 @@ import com.loci.loci_backend.common.ddd.infrastructure.stereotype.ApplicationSer
 import com.loci.loci_backend.common.store.domain.aggregate.File;
 import com.loci.loci_backend.core.messaging.domain.aggregate.Attachment;
 import com.loci.loci_backend.core.messaging.domain.aggregate.ConversationMessageList;
+import com.loci.loci_backend.core.messaging.domain.aggregate.MarkMessageSeenRequest;
 import com.loci.loci_backend.core.messaging.domain.aggregate.Message;
 import com.loci.loci_backend.core.messaging.domain.aggregate.MessageCursorQuery;
 import com.loci.loci_backend.core.messaging.domain.aggregate.MessageReceiveAcknowledgement;
@@ -54,7 +55,6 @@ public class MessagingApplicationService {
     messageSendingService.sendGroupMessage(event);
   }
 
-
   public void handleDirectMessageDelivery(MessageSentEvent event) {
     messageSendingService.sendPrivateMessage(event);
   }
@@ -63,4 +63,9 @@ public class MessagingApplicationService {
 
     return messageTrackingStateService.markMessageDelivered(messageReceiveRequest);
   }
+
+  public void markSeenMessage(MarkMessageSeenRequest request) {
+    messageTrackingStateService.markSeenMessage(request);
+  }
+
 }

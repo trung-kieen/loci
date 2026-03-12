@@ -16,7 +16,7 @@
 
 import { inject, Injectable } from "@angular/core";
 import { WebSocketService } from "../../../core/socket/websocket.service";
-import { IMessage, IMessageStatusUpdate } from "../models/message.model";
+import { IMessage, IMessageStatusEvent } from "../models/message.model";
 import { filter, Observable, tap } from "rxjs";
 import { LoggerService } from "../../../core/services/logger.service";
 import { WebApiService } from "../../../core/api/web-api.service";
@@ -91,11 +91,12 @@ export class MessageObservableService {
 
 
   public directMessageSeen$() {
-    return this.wsService.subscribe<IMessageStatusUpdate>("/user/queue/message.seen");
+    // TODO: create seprate dto
+    return this.wsService.subscribe<IMessageStatusEvent>("/user/queue/messages.seen");
   }
 
   public directMessageSeenInConversation$(targetConversationId: string) {
-    return this.directMessageDelivered$().pipe(
+    return this.directMessageSeen$().pipe(
       filter(u => u.conversationId === targetConversationId)
     )
   }

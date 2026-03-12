@@ -22,25 +22,30 @@ import java.util.UUID;
 import com.loci.loci_backend.common.user.domain.vo.PublicId;
 import com.loci.loci_backend.core.messaging.application.MessagingApplicationService;
 import com.loci.loci_backend.core.messaging.domain.aggregate.ConversationMessageList;
+import com.loci.loci_backend.core.messaging.domain.aggregate.MarkMessageSeenRequest;
 import com.loci.loci_backend.core.messaging.domain.aggregate.MessageCursorQuery;
 import com.loci.loci_backend.core.messaging.domain.aggregate.MessageCursorQueryBuilder;
 import com.loci.loci_backend.core.messaging.domain.vo.MessageLimit;
 import com.loci.loci_backend.core.messaging.infrastructure.primary.mapper.RestConversationMessageMapper;
 import com.loci.loci_backend.core.messaging.infrastructure.primary.payload.RestConversationMessageList;
+import com.loci.loci_backend.core.messaging.infrastructure.primary.payload.RestMarkMessageSeenRequest;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
-
+import lombok.extern.log4j.Log4j2;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("conversations")
+@Log4j2
 public class ConversationMessageResource {
 
   private final MessagingApplicationService messagingService;
@@ -70,4 +75,13 @@ public class ConversationMessageResource {
     return ResponseEntity.ok(restMessages);
   }
 
+  @PatchMapping("/{conversationId}/seen")
+  public ResponseEntity<?> markSeenMessage(@PathVariable("conversationId") UUID conversationId,
+      @RequestBody RestMarkMessageSeenRequest restRequest) {
+    MarkMessageSeenRequest request = conversationMessageMapper.toDomain(conversationId, restRequest);
+    messagingService.markSeenMessage(request);
+    log.debug("Receive request for message seen ", request);
+    // MessagingApplicationService.markSeenMessage();
+    return ResponseEntity.ok(null);
+  }
 }

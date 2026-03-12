@@ -23,6 +23,9 @@ import {
   ElementRef,
   computed,
   Signal,
+  effect,
+  untracked,
+  afterNextRender,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -39,7 +42,6 @@ import {
 } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
-// Services
 import { ChatApiService, IUserPresence } from '../../service/chat-api.service';
 import { ChatFeatures, ChatHeader } from '../shared/chat-header/chat-header';
 import { MessageBubble } from '../shared/message-bubble/message-bubble';
@@ -47,62 +49,84 @@ import { ISendMessageData, MessageInput } from '../shared/message-input/message-
 import { ErrorAlert } from '../shared/error-alert/error-alert';
 import { DirectConversationStateService } from '../../service/direct-conversation-state.service';
 import { ChatInfo, IChatError } from '../../models/chat.model';
-import { IAttachment, IConversationMessage, IMessage, ISendMessageRequest } from '../../models/message.model';
+import { IAttachment, IConversationMessage, IMarkMessageSeenRequest, IMessage, IMessageSeenEvent, ISendMessageRequest } from '../../models/message.model';
 import { FriendshipStatus } from '../../../contact/models/contact.model';
 import { LoggerService } from '../../../../core/services/logger.service';
-
 
 @Component({
   selector: 'app-direct-conversation',
   standalone: true,
-  imports: [
-    CommonModule,
-    ChatHeader,
-    MessageBubble,
-    MessageInput,
-    ErrorAlert
-  ],
-  templateUrl: "./direct-conversation.html"
+  imports: [CommonModule, ChatHeader, MessageBubble, MessageInput, ErrorAlert],
+  templateUrl: './direct-conversation.html',
 })
 export class DirectConversation implements OnInit {
 
-
-  singleChatFeatures: ChatFeatures = {
-    showMemberList: false,  // Not applicable for single chat
+  readonly singleChatFeatures: ChatFeatures = {
+    showMemberList: false,
     showSearch: true,
     showCall: true,
-    showVideo: true
+    showVideo: true,
   };
 
-  // Dependencies
-  state = inject(DirectConversationStateService);
-  private route = inject(ActivatedRoute);
-  private loggerService = inject(LoggerService);
-  private logger = this.loggerService.getLogger("DirectConversation");
-  private chatApiService = inject(ChatApiService);
-  private router = inject(Router);
-  private destroyRef = inject(DestroyRef);
-  private conversationId: string | null = null;
+  readonly state = inject(DirectConversationStateService);
 
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly chatApiService = inject(ChatApiService);
+  private readonly logger = inject(LoggerService).getLogger('DirectConversation');
+
+  private readonly messageArea = viewChild.required<ElementRef<HTMLDivElement>>('messageArea');
+
+  // Signals
   readonly chatInfo: Signal<ChatInfo | null> = this.state.participant;
-
-  // ViewChildren
-  messageArea = viewChild.required<ElementRef<HTMLDivElement>>('messageArea');
-
-  // bind signal
   readonly messages = this.state.messages;
 
-  uiError = computed<IChatError | null>(() => {
+  readonly uiError = computed<IChatError | null>(() => {
     const err = this.state.error();
     return err ? { ...err } : null;
   });
 
-  isBlocked = computed(() => {
-    const friendStatus = this.state.participant()?.messagingUser.connectionStatus;
-    return friendStatus === FriendshipStatus.BLOCKED || friendStatus === FriendshipStatus.BLOCKED_BY;
-  })
+  readonly isBlocked = computed(() => {
+    const status = this.state.participant()?.messagingUser.connectionStatus;
+    return status === FriendshipStatus.BLOCKED || status === FriendshipStatus.BLOCKED_BY;
+  });
 
+  // Seen state
+  private seenObserver: IntersectionObserver | null = null;
+  private readonly reportedSeenIds = new Set<string>();
+  private pendingSeenIds: string[] = [];
 
+  // DOM event refs
+  private readonly onVisibilityChange = () => this.flushPendingSeen();
+  private readonly onWindowFocus = () => this.flushPendingSeen();
+
+  private conversationId: string | null = null;
+
+  constructor() {
+    afterNextRender(() => {
+      this.initSeenObserver();
+      document.addEventListener('visibilitychange', this.onVisibilityChange);
+      window.addEventListener('focus', this.onWindowFocus);
+    });
+
+    // Clean up observer + global listeners on destroy
+    this.destroyRef.onDestroy(() => {
+      this.seenObserver?.disconnect();
+      document.removeEventListener('visibilitychange', this.onVisibilityChange);
+      window.removeEventListener('focus', this.onWindowFocus);
+    });
+
+    // Re-observe incoming bubbles whenever the message list re-renders.
+    // untracked() prevents DOM calls from registering extra signal dependencies.
+    effect(() => {
+      this.messages();
+      untracked(() => {
+        // Flush the microtask queue so Angular has written to the DOM first
+        Promise.resolve().then(() => this.observeIncomingMessages());
+      });
+    });
+  }
 
   ngOnInit(): void {
     this.route.paramMap.pipe(
@@ -110,7 +134,7 @@ export class DirectConversation implements OnInit {
       switchMap(params => {
         const conversationId = params.get('conversationId');
         if (!conversationId) {
-          this.router.navigate(["/not-found"]);
+          this.router.navigate(['/not-found']);
           return EMPTY;
         }
 
@@ -118,7 +142,6 @@ export class DirectConversation implements OnInit {
         this.conversationId = conversationId;
         this.initializeChat();
 
-        // switchMap cancels when conversationId emit again
         return merge(
           this.chatApiService.direct.onReceiveNewMessage(conversationId).pipe(
             tap(m => this.onReceiveMessage(m))
@@ -131,185 +154,331 @@ export class DirectConversation implements OnInit {
           ),
           this.chatApiService.direct.onUserStatusUpdate(conversationId).pipe(
             tap(updated => this.onUpdateUserStatus(updated))
-          )
+          ),
+          this.chatApiService.direct.onMessageSeen(conversationId).pipe(
+            tap(event => this.onMessageSeenNotify(event))
+          ),
         );
       })
     ).subscribe();
   }
+
+  // Socket event handlers
+
+  onMessageSeenNotify(event: IMessageSeenEvent): void {
+    this.logger.info('Messages seen by recipient up to', event.messageId);
+
+    const messages = this.state.messages();
+    const targetIndex = messages.findIndex(m => m.messageId === event.messageId);
+    if (targetIndex === -1) return;
+
+    for (let i = 0; i <= targetIndex; i++) {
+      const msg = messages[i];
+      if (msg.owner && msg.messageState !== 'seen') {
+        this.state.updateMessage(msg.messageId, { messageState: 'seen' });
+      }
+    }
+  }
+
   onMessageDeliveredNotify(m: IMessage): void {
-    this.logger.info("Message is delivered", m)
+    this.logger.info('Message delivered', m);
     this.state.updateMessage(m.messageId, { messageState: 'delivered' });
   }
+
   onMessageSentNotify(m: IMessage): void {
-    this.logger.info("Message is sent", m);
+    this.logger.info('Message sent', m);
     this.state.updateMessage(m.messageId, { messageState: 'sent' });
-
   }
 
-  // listen event
-  onUpdateUserStatus(updated: IUserPresence) {
-    this.state.updateParticipantStatus(updated.status, updated.lastSeen)
-
-
-  }
-  onReceiveMessage(arrivalMessage: IMessage): void {
-    this.state.receiveMessage(arrivalMessage);
-    this.logger.info(JSON.stringify(this.state));
-    setTimeout(() => this.scrollBottom(), 1000);
+  onUpdateUserStatus(updated: IUserPresence): void {
+    this.state.updateParticipantStatus(updated.status, updated.lastSeen);
   }
 
-  private cleanupConversation(): void {
-    // Reset state when switching conversations
-    this.state.setMessages([]);
-    this.state.setLoading(true);
+  onReceiveMessage(message: IMessage): void {
+    this.state.receiveMessage(message);
+    // Wait DOM reload
+    setTimeout(() => {
+      Promise.resolve().then(() => this.scrollBottom());
+    }, 300)
   }
 
 
-  // Chat header
-  onVoiceCall(): void {
-    const participant = this.state.participant();
-    if (!participant) return;
-    // TODO:
+  private initSeenObserver(): void {
+    this.seenObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach(entry => {
+          if (!entry.isIntersecting) return;
+
+          const el = entry.target as HTMLElement;
+          const messageId = el.dataset['messageId']!;
+
+          // Stop watching once registered
+          this.seenObserver?.unobserve(el);
+          if (this.reportedSeenIds.has(messageId)) return;
+
+          const windowActive =
+            document.visibilityState === 'visible' && document.hasFocus();
+
+          if (windowActive) {
+            this.markSeen(messageId);
+          } else {
+            this.pendingSeenIds.push(messageId);
+          }
+        });
+      },
+      {
+        root: this.messageArea().nativeElement,
+        threshold: 0.5,
+      }
+    );
   }
 
+  private observeIncomingMessages(): void {
+    if (!this.seenObserver) return;
 
-  onVideoCall(): void {
-    const participant = this.state.participant();
-    if (!participant) return;
-    // TODO:
+    const area = this.messageArea()?.nativeElement;
+    if (!area) return;
+
+    area
+      .querySelectorAll<HTMLElement>('[data-message-id][data-incoming="true"]')
+      .forEach(el => {
+        const id = el.dataset['messageId']!;
+        if (!this.reportedSeenIds.has(id)) {
+          this.seenObserver!.observe(el);
+        }
+      });
   }
 
+  private flushPendingSeen(): void {
+    if (document.visibilityState !== 'visible' || !document.hasFocus()) return;
+    if (!this.pendingSeenIds.length) return;
 
-  getMessageSenderAvatarUrl(message: IConversationMessage): string {
-    // only show avatar when not own this message
-    if (message.owner) {
-      return '';
-    }
-
-    return this.state.participant()?.avatarUrl ?? '';
+    const lastId = this.pendingSeenIds.at(-1)!;
+    this.pendingSeenIds = [];
+    this.markSeen(lastId);
   }
 
-  getMessageSenderName(message: IConversationMessage): string {
-    if (message.owner) {
-      // ignore arvatar display for currentUser;
-      return '';
-    }
-    return this.state.participant()?.chatName ?? '';
-
-  }
-
-
-
-
-  private initializeChat(): void {
+  private markSeen(lastMessageId: string): void {
     const conversationId = this.conversationId;
-    if (!conversationId) {
-      this.logger.error("Not found conversationId");
+    if (!conversationId) return;
+    const messages = this.messages();
+
+    // Ignore message is seen state or current user owner message
+    if (messages.some(m => m.messageId === lastMessageId && (m.messageState === 'seen' || m.owner === true))) {
       return;
     }
-    this.state.setLoading(true);
 
-    // run parallel
-    forkJoin({
-      participant: this.chatApiService.direct.getChatInfo(conversationId),
-      messages: this.chatApiService.getMessages(conversationId, { limit: 20 }),
-    })
+
+    this.reportedSeenIds.add(lastMessageId);
+
+    const request: IMarkMessageSeenRequest = { conversationId, lastSeenMessageId: lastMessageId };
+    this.chatApiService.direct
+      .markAsSeen(request)
       .pipe(
-        tap(({ participant, messages }) => {
-
-          if (participant.messagingUser.connectionStatus == FriendshipStatus.BLOCKED_BY) {
-            this.logger.warn("Blocked by other user")
-
-            this.state.setError({
-              message: "You are current blocked by this user",
-              description: "Unable to send message in this conversation",
-              type: 'blocked'
-            })
-
-          }
-
-          if (participant.messagingUser.connectionStatus == FriendshipStatus.BLOCKED) {
-
-            this.logger.warn("Unblock this user to be able to message")
-            this.state.setError({
-              message: "You are current blocked this user",
-              description: "Unblock to message this person",
-              type: 'blocked'
-            })
-
-          }
-
-          if (participant && messages) {
-            this.state.setSelectedConversation({
-              conversationId: conversationId,
-              participant,
-              messages: messages.messages,
-              unreadCount: 0,
-            });
-            this.state.setMessages(messages.messages);
-          }
-
-          // scroll down after load all message
-          setTimeout(() => this.scrollBottom(), 1000);
-
+        tap(() => this.logger.info('Marked as seen up to', lastMessageId)),
+        catchError(err => {
+          // Rollback so the message can be retried
+          this.reportedSeenIds.delete(lastMessageId);
+          this.logger.error('markAsSeen failed', err);
+          return of(null);
         }),
-        finalize(() => this.state.setLoading(false)),
         takeUntilDestroyed(this.destroyRef)
       )
       .subscribe();
   }
 
 
-  // Event Handlers
+  private initializeChat(): void {
+    const conversationId = this.conversationId;
+    if (!conversationId) {
+      this.logger.error('No conversationId');
+      return;
+    }
+
+    this.state.setLoading(true);
+
+    forkJoin({
+      participant: this.chatApiService.direct.getChatInfo(conversationId),
+      messages: this.chatApiService.getMessages(conversationId, { limit: 20 }),
+    }).pipe(
+      tap(({ participant, messages }) => {
+        const { connectionStatus } = participant.messagingUser;
+
+        if (connectionStatus === FriendshipStatus.BLOCKED_BY) {
+          this.state.setError({
+            message: 'You are currently blocked by this user',
+            description: 'Unable to send message in this conversation',
+            type: 'blocked',
+          });
+        }
+
+        if (connectionStatus === FriendshipStatus.BLOCKED) {
+          this.state.setError({
+            message: 'You have blocked this user',
+            description: 'Unblock to message this person',
+            type: 'blocked',
+          });
+        }
+
+        this.state.setSelectedConversation({
+          conversationId,
+          participant,
+          messages: messages.messages,
+          unreadCount: 0,
+        });
+        this.state.setMessages(messages.messages);
+
+        Promise.resolve().then(() => this.scrollBottom());
+      }),
+      finalize(() => this.state.setLoading(false)),
+      takeUntilDestroyed(this.destroyRef)
+    ).subscribe();
+  }
+
+  private cleanupConversation(): void {
+    this.state.setMessages([]);
+    this.state.setLoading(true);
+    this.reportedSeenIds.clear();
+    this.pendingSeenIds = [];
+  }
+
+  // Template event handlers
 
   onBack(): void {
     this.router.navigate(['/chat']);
   }
 
   onViewProfile(): void {
-    const messagingUser = this.state.participant();
-    if (!messagingUser) return;
-    // TODO: navigate to participant user id
-    this.router.navigate([`user/${messagingUser.messagingUser.userId}`])
+    const user = this.state.participant()?.messagingUser;
+    if (!user) return;
+    this.router.navigate([`user/${user.userId}`]);
   }
+
+  onVoiceCall(): void { /* TODO */ }
+  onVideoCall(): void { /* TODO */ }
 
   onScroll(event: Event): void {
-    const element = event.target as HTMLDivElement;
-    if (element.scrollTop === 0 && !this.state.loading()) {
+    const el = event.target as HTMLDivElement;
+    if (el.scrollTop === 0 && !this.state.loading()) {
       this.loadMoreMessages();
     }
+    this.observeIncomingMessages();
   }
-  private scrollBottom() {
 
-    const el = this.messageArea().nativeElement;
-    // el.scrollTop = el.scrollHeight;
-    el.scroll({
-      top: el.scrollHeight,
-      behavior: 'smooth',
-    })
+  onSendMessage(req: ISendMessageData): void {
+    const conversationId = this.state.conversationId();
+    if (!conversationId) return;
 
+    this.state.setSendingMessage(true);
+
+    this.chatApiService.direct
+      .sendMessage({ conversationId, content: req.content, type: 'text' })
+      .pipe(
+        tap(sent => sent && this.state.addMessage(sent)),
+        catchError(error => {
+          this.state.setError({ message: error.message, description: 'Please try again', type: 'network' });
+          return of(null);
+        }),
+        finalize(() => this.state.setSendingMessage(false)),
+        delay(300),
+        tap(() => this.scrollBottom()),
+        takeUntilDestroyed(this.destroyRef)
+      )
+      .subscribe();
+  }
+
+  onFileSelected(req: { file: File; type: 'file' }): void {
+    const conversationId = this.state.conversationId();
+    if (!conversationId) {
+      this.state.setError({ message: 'Upload failed', description: 'No conversation selected', type: 'validation' });
+      return;
+    }
+
+    this.state.setUploadingFile(true);
+    this.state.setSelectedFile([req.file]);
+
+    this.chatApiService.direct
+      .uploadAttachment(conversationId, req.file)
+      .pipe(
+        switchMap(attachment => {
+          if (!attachment) throw new Error('Upload returned no data');
+          return this.chatApiService.direct
+            .sendMessage({ conversationId, type: attachment.messageType, attachment })
+            .pipe(
+              tap(sent => sent && this.state.addMessage({
+                ...sent,
+                mediaName: attachment.fileName,
+                mediaUrl: attachment.url,
+              }))
+            );
+        }),
+        catchError(() => {
+          this.state.setError({ message: 'Upload failed', description: 'Unable to upload file.', type: 'network' });
+          return of(null);
+        }),
+        finalize(() => this.state.setUploadingFile(false)),
+        takeUntilDestroyed(this.destroyRef)
+      )
+      .subscribe();
+  }
+
+  onDownloadAttachment(attachment: IAttachment): void {
+    this.chatApiService.direct
+      .downloadAttachment(attachment.url)
+      .pipe(
+        tap(blob => {
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = attachment.fileName;
+          a.click();
+          window.URL.revokeObjectURL(url);
+        }),
+        catchError(() => {
+          this.state.setError({ message: 'Download failed', description: 'Unable to download file.', type: 'network' });
+          return of(null);
+        }),
+        takeUntilDestroyed(this.destroyRef)
+      )
+      .subscribe();
+  }
+
+  onMessageContextMenu(event: { message: IMessage; event: MouseEvent }): void {
+    this.logger.info('Context menu', event.message);
+  }
+
+  // Template helpers
+
+  getMessageSenderAvatarUrl(message: IConversationMessage): string {
+    return message.owner ? '' : (this.state.participant()?.avatarUrl ?? '');
+  }
+
+  getMessageSenderName(message: IConversationMessage): string {
+    return message.owner ? '' : (this.state.participant()?.chatName ?? '');
+  }
+
+  // Private DOM helpers
+
+  private scrollBottom(): void {
+    this.messageArea().nativeElement.scroll({ top: Number.MAX_SAFE_INTEGER, behavior: 'smooth' });
   }
 
   private loadMoreMessages(): void {
     const messages = this.state.messages();
-    if (messages.length === 0) return;
-
     const conversationId = this.conversationId;
-    if (!conversationId) return;
+    if (!messages.length || !conversationId) return;
 
     this.state.setLoading(true);
     const area = this.messageArea().nativeElement;
     const oldHeight = area.scrollHeight;
 
     this.chatApiService
-      .getMessages(conversationId, {
-        limit: 20,
-        before: messages[0].messageId
-      })
+      .getMessages(conversationId, { limit: 20, before: messages[0].messageId })
       .pipe(
         tap(older => {
           if (older?.messages.length) {
-            this.state.prependMessages(older.messages); // todo
+            this.state.prependMessages(older.messages);
+            // requestAnimationFrame preserves scroll position after prepend
             requestAnimationFrame(() => {
               area.scrollTop = area.scrollHeight - oldHeight;
             });
@@ -319,131 +488,5 @@ export class DirectConversation implements OnInit {
         takeUntilDestroyed(this.destroyRef)
       )
       .subscribe();
-  }
-
-  onSendMessage(req: ISendMessageData): void {
-    const conversationId = this.state.conversationId();
-    if (!conversationId) return;
-
-    const dto: ISendMessageRequest = {
-      conversationId,
-      content: req.content,
-      type: 'text',
-    };
-
-    this.state.setSendingMessage(true);
-
-    this.chatApiService.direct.sendMessage(dto)
-      .pipe(
-        tap(sent => {
-          if (sent) {
-            this.state.addMessage(sent);
-            // this.triggerAutoResponse(conversationId);
-          }
-        }),
-        catchError(error => {
-          this.state.setError({
-            message: error.message,
-            description: 'Please try again',
-            type: 'network',
-          });
-          // TODO: Return message content to input for retry
-          return of(null);
-        }),
-        finalize(() => {
-          this.state.setSendingMessage(false);
-        })
-        ,
-        delay(1000),
-        tap(() => {
-          this.scrollBottom();
-        })
-
-        ,
-
-        takeUntilDestroyed(this.destroyRef)
-      )
-      .subscribe();
-
-  }
-
-  onFileSelected(req: { file: File; type: 'file' }): void {
-    const conversationId = this.state.conversationId();
-    if (!conversationId) {
-      this.state.setError({
-        message: 'Upload failed',
-        description: 'No conversation selected',
-        type: 'validation',
-      });
-      return;
-    }
-
-    this.state.setUploadingFile(true);
-    this.state.setSelectedFile([req.file])
-    this.state.setUploadingFile(false);
-
-    this.chatApiService.direct.uploadAttachment(conversationId, req.file)
-      .pipe(
-        switchMap(attachment => {
-          if (!attachment) throw new Error('Upload returned no data');
-
-          const dto: ISendMessageRequest = {
-            conversationId,
-            type: attachment.messageType,
-            attachment: attachment,
-          };
-
-          return this.chatApiService.direct.sendMessage(dto).pipe(
-            tap(sent => {
-              if (sent) {
-                this.state.addMessage({ ...sent, mediaName: attachment.fileName, mediaUrl: attachment.url });
-              }
-            })
-          );
-        }),
-        catchError(error => {
-          this.state.setError({
-            message: 'Upload failed',
-            description: 'Unable to upload file. Please try again.',
-            type: 'network',
-          });
-          return of(null);
-        }),
-        finalize(() => this.state.setUploadingFile(false)),
-        takeUntilDestroyed(this.destroyRef)
-      )
-      .subscribe();
-  }
-
-
-
-  onDownloadAttachment(event: IAttachment): void {
-    const attachment = event;
-    this.chatApiService.direct.downloadAttachment(attachment.url)
-      .pipe(
-        tap(blob => {
-          const url = window.URL.createObjectURL(blob);
-          const link = document.createElement('a');
-          link.href = url;
-          link.download = attachment.fileName;
-          link.click();
-          window.URL.revokeObjectURL(url);
-        }),
-        catchError(error => {
-          this.state.setError({
-            message: 'Download failed',
-            description: 'Unable to download the file.',
-            type: 'network',
-          });
-          return of(null);
-        }),
-        takeUntilDestroyed(this.destroyRef)
-      )
-      .subscribe();
-  }
-
-  onMessageContextMenu(event: { message: IMessage; event: MouseEvent }): void {
-    console.log('Context menu for:', event.message);
-    // Implement context menu logic
   }
 }

@@ -30,7 +30,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Loggable
 @PrimaryPort
-public class RealtimeMessageSender implements MessagePublisher {
+public class SpringWebSocketMessagePublisher implements MessagePublisher {
   private final STOMPMessageSendingOperation messageOperations;
   private final STOMPMessageMapper primaryMapper;
 
@@ -56,5 +56,11 @@ public class RealtimeMessageSender implements MessagePublisher {
   public void notifyMessageDelivered(UserSubcriberId senderForwardId, Message message) {
     STOMPMessage restMessage = primaryMapper.from(message);
     messageOperations.notifyMessageDelivered(senderForwardId.value(), restMessage);
+  }
+
+  @Override
+  public void notifyMessageSeen(UserSubcriberId senderForwardId, Message message) {
+    STOMPMessage restMessage = primaryMapper.from(message);
+    messageOperations.notifyMessageSeen(senderForwardId.value(), restMessage);
   }
 }

@@ -18,7 +18,7 @@ import { inject, Injectable, OnInit } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import {
   IMessage,
-  IMessageStatusUpdate,
+  IMessageStatusEvent,
   ISendMessageRequest,
 } from '../models/message.model';
 import { ITypingEvent, IUserStatusUpdate } from '../models/chat.model';
@@ -38,7 +38,7 @@ export class MockStompService {
   private messageSubject = new Subject<IMessage>();
   private typingSubject = new Subject<ITypingEvent>();
   private statusSubject = new Subject<IUserStatusUpdate>();
-  private messageStatusSubject = new Subject<IMessageStatusUpdate>();
+  private messageStatusSubject = new Subject<IMessageStatusEvent>();
 
   private connected = false;
   private rxStomp = inject(RxStomp);
@@ -114,7 +114,7 @@ export class MockStompService {
   // Subscribe to message status updates (delivery/read receipts)
   subscribeToMessageStatus(
     messageId: string,
-  ): Observable<IMessageStatusUpdate> {
+  ): Observable<IMessageStatusEvent> {
     console.log(
       `[MockStompService] Subscribed to /topic/messages/${messageId}/status`,
     );
@@ -156,7 +156,7 @@ export class MockStompService {
   }
 
   // Simulate message status update (for testing)
-  simulateMessageStatusUpdate(update: IMessageStatusUpdate): void {
+  simulateMessageStatusUpdate(update: IMessageStatusEvent): void {
     this.messageStatusSubject.next(update);
   }
 }
