@@ -24,6 +24,7 @@ import {
 import { IPaginationParams } from '../models/chat.model';
 import { WebApiService } from '../../../core/api/web-api.service';
 import { DirectChatApiService } from './direct-chat-api.service';
+import { MessageObservableService } from './message-observable.service';
 
 export interface IUserPresence {
   status: ParticipantState,
@@ -40,12 +41,19 @@ export class ChatApiService {
 
   private apiService = inject(WebApiService);
 
+  private messageObservable = inject(MessageObservableService);
+
   public getMessages(
     conversationId: string,
     pagination: IPaginationParams,
   ): Observable<IConversationMessageList> {
     // Simulate pagination - return last 20 messages
     return this.apiService.get<IConversationMessageList>(`/conversations/${conversationId}/messages?before=${pagination.before || ''}&limit=${pagination.limit}`)
+  }
+
+
+  onReceiveNewMessage() {
+    return this.messageObservable.directMessageReceive$();
   }
 
 }

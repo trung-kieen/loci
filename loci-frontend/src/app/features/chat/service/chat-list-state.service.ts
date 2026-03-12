@@ -115,7 +115,20 @@ export class ChatListStateService {
     this.updateConversation(conversationId, {
       messageState: 'sent'
     })
+    // })
   }
+  onMessageDelivered(conversationId: string) {
+    this.updateConversation(conversationId, {
+      messageState: 'delivered'
+    })
+  }
+  onMessageSeen(conversationId: string) {
+    this.updateConversation(conversationId, {
+      messageState: 'seen'
+    })
+  }
+
+
 
   onMessageSending(payload: ArrivalMessage): void {
     // for rollback if sent not success
@@ -164,7 +177,7 @@ export class ChatListStateService {
     this.updateConversation(message.conversationId, (conv) => ({
       lastMessage: message,
       unreadCount: conv.unreadCount + 1,
-      messageState: 'delivered',
+      messageState: undefined,
     }));
     this.bringToTop(message.conversationId);
   }
@@ -181,6 +194,7 @@ export class ChatListStateService {
       messageState: payload.messageState,
     });
   }
+
 
   /**
    * Call when a contact's presence changes (WebSocket push).

@@ -75,7 +75,8 @@ public class SpringDataParticipantRepository implements ParticipantRepository {
     Long requestUserId = criteria.getUserId().value();
     Pageable lastestConversationPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(),
         Sort.by(Sort.Direction.DESC, "lastModifiedDate"));
-    Page<UserConversationJpaVO> conversation = repository.getUserConversation(requestUserId, lastestConversationPageable);
+    Page<UserConversationJpaVO> conversation = repository.getUserConversation(requestUserId,
+        lastestConversationPageable);
     return Pages.map(conversation, conversationMapper::toDomain);
 
   }
@@ -86,9 +87,9 @@ public class SpringDataParticipantRepository implements ParticipantRepository {
   }
 
   @Override
-  public Participant getParticipantForUserInConversation(User requestUser, Conversation conversation) {
-    ConversationParticipantEntity participantEntity = repository.getConnectedParticipant(conversation.getId().value(),
-        requestUser.getDbId().value()).orElseThrow(EntityNotFoundException::new);
+  public Participant getParticipantForUserInConversation(UserDBId requestUserDbId, ConversationId conversationId) {
+    ConversationParticipantEntity participantEntity = repository.getConnectedParticipant(conversationId.value(),
+        requestUserDbId.value()).orElseThrow(EntityNotFoundException::new);
     return mapper.toDomain(participantEntity);
   }
 
@@ -137,6 +138,18 @@ public class SpringDataParticipantRepository implements ParticipantRepository {
     entity.setLastReadMessageId(messageId.value());
     ConversationParticipantEntity savedEntity = repository.save(entity);
     return mapper.toDomain(savedEntity);
+  }
+
+  @Transactional(readOnly = false)
+  @Override
+  public Participant markLatestMessage(Participant participant, MessageId messageId) {
+    participant.setLastReadMessageId(messageId);
+    // ConversationParticipantEntity entity = mapper.from(participant);
+    // entity = repository.save(entity);
+
+    // return mapper.toDomain(entity);
+    repository.markLatestReadMessage(participant.getId().value(), messageId.value());
+    return participant;
   }
 
 }

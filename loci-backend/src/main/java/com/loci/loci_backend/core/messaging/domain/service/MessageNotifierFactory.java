@@ -14,20 +14,24 @@
  * limitations under the License.
  */
 
-package com.loci.loci_backend.core.messaging.domain.vo;
+package com.loci.loci_backend.core.messaging.domain.service;
 
-import java.util.UUID;
+import com.loci.loci_backend.core.messaging.domain.repository.DirectMessageNotifier;
 
-import com.loci.loci_backend.common.ddd.domain.contract.ValueObject;
+import org.springframework.stereotype.Service;
 
-/**
- *
- */
-public record GroupSubscriberId(UUID groupPublicId) implements ValueObject<String>, SubscriberId {
+import lombok.RequiredArgsConstructor;
 
-  @Override
-  public String value() {
-    return groupPublicId.toString();
+@Service
+@RequiredArgsConstructor
+public class MessageNotifierFactory {
+  private final DirectMessageNotifier directMessageNotifier;
+
+
+
+  public DirectMessageNotifier forDirectConversation(){
+    return directMessageNotifier;
   }
+
 
 }

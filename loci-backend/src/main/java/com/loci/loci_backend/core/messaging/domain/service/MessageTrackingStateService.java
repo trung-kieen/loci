@@ -20,13 +20,15 @@ import com.loci.loci_backend.common.authentication.domain.CurrentUser;
 import com.loci.loci_backend.common.ddd.infrastructure.stereotype.DomainService;
 import com.loci.loci_backend.common.user.domain.aggregate.User;
 import com.loci.loci_backend.common.user.domain.repository.UserRepository;
+import com.loci.loci_backend.common.user.domain.vo.UserDBId;
+import com.loci.loci_backend.core.conversation.domain.aggregate.Participant;
+import com.loci.loci_backend.core.conversation.domain.repository.ParticipantRepository;
 import com.loci.loci_backend.core.messaging.domain.aggregate.MarkMessageSeenRequest;
 import com.loci.loci_backend.core.messaging.domain.aggregate.Message;
 import com.loci.loci_backend.core.messaging.domain.aggregate.MessageReceiveAcknowledgement;
 import com.loci.loci_backend.core.messaging.domain.exception.BadMessageStateException;
-import com.loci.loci_backend.core.messaging.domain.exception.UserNotOwnMessageException;
+import com.loci.loci_backend.core.messaging.domain.repository.DirectMessagePublisher;
 import com.loci.loci_backend.core.messaging.domain.repository.ForwardIdTranslator;
-import com.loci.loci_backend.core.messaging.domain.repository.MessagePublisher;
 import com.loci.loci_backend.core.messaging.domain.repository.MessageRepository;
 import com.loci.loci_backend.core.messaging.domain.vo.MessageState;
 import com.loci.loci_backend.core.messaging.domain.vo.UserSubcriberId;
@@ -42,10 +44,13 @@ import lombok.extern.log4j.Log4j2;
 @DomainService
 public class MessageTrackingStateService {
   private final MessageRepository messageRepository;
-  private final MessagePublisher messagePublisher;
+  private final ParticipantRepository participantRepository;
+  private final DirectMessagePublisher messagePublisher;
   private final ForwardIdTranslator forwardIdTranslator;
+
   private final CurrentUser principal;
   private final UserRepository userRepository;
+  private final MessageNotifierFactory messageNotifier;
 
   @Transactional(readOnly = false)
   public Message markMessageDelivered(MessageReceiveAcknowledgement request) {
@@ -61,7 +66,7 @@ public class MessageTrackingStateService {
     message = messageRepository.markAsDelivered(message);
 
     UserSubcriberId senderForwardId = forwardIdTranslator.toPrivateSubscriberId(message.getSenderId());
-    messagePublisher.notifyMessageDelivered(senderForwardId, message);
+    messageNotifier.forDirectConversation().notifyMessageDelivered(senderForwardId, message);
     return message;
   }
 
@@ -69,8 +74,19 @@ public class MessageTrackingStateService {
   public void markSeenMessage(MarkMessageSeenRequest request) {
     // TODO: validate user is in this conversation
 
+    User requestUser = userRepository.getByPrincipalThrow(principal);
+
     Message message = messageRepository.getByPublicId(request.getMessagePublicId())
         .orElseThrow(EntityNotFoundException::new);
+
+    if (requestUser.getDbId().equals(message.getSenderId())) {
+      log.warn("Bad request tracking message state of message owner user");
+      return;
+    }
+
+    Participant participant = participantRepository.getParticipantForUserInConversation(requestUser.getDbId(),
+        message.getConversationId());
+    participantRepository.markLatestMessage(participant, message.getMessageId());
 
     if (!message.getStatus().canTransitionTo(MessageState.SEEN)) {
       log.warn("Omit seen message {}", message);
@@ -83,9 +99,8 @@ public class MessageTrackingStateService {
 
     messageRepository.markAsSeen(message);
 
-
     UserSubcriberId senderForwardId = forwardIdTranslator.toPrivateSubscriberId(message.getSenderId());
-    messagePublisher.notifyMessageSeen(senderForwardId, message);
+    messageNotifier.forDirectConversation().notifyMessageSeen(senderForwardId, message);
   }
 
 }

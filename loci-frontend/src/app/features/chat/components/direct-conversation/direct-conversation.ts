@@ -52,6 +52,7 @@ import { ChatInfo, IChatError } from '../../models/chat.model';
 import { IAttachment, IConversationMessage, IMarkMessageSeenRequest, IMessage, IMessageSeenEvent, ISendMessageRequest } from '../../models/message.model';
 import { FriendshipStatus } from '../../../contact/models/contact.model';
 import { LoggerService } from '../../../../core/services/logger.service';
+import { ChatListStateService } from '../../service/chat-list-state.service';
 
 @Component({
   selector: 'app-direct-conversation',
@@ -74,6 +75,7 @@ export class DirectConversation implements OnInit {
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
   private readonly chatApiService = inject(ChatApiService);
+  private readonly chatListStateService = inject(ChatListStateService);
   private readonly logger = inject(LoggerService).getLogger('DirectConversation');
 
   private readonly messageArea = viewChild.required<ElementRef<HTMLDivElement>>('messageArea');
@@ -138,25 +140,40 @@ export class DirectConversation implements OnInit {
           return EMPTY;
         }
 
+        this.chatListStateService.onConversationRead(conversationId);
         this.cleanupConversation();
         this.conversationId = conversationId;
         this.initializeChat();
 
         return merge(
           this.chatApiService.direct.onReceiveNewMessage(conversationId).pipe(
-            tap(m => this.onReceiveMessage(m))
+            tap(m => {
+              this.onReceiveMessage(m)
+              // NOTE: Global receiver will obtain this message
+              // this.chatListStateService.onMessageReceived(m);
+
+            })
           ),
           this.chatApiService.direct.onMessageSent(conversationId).pipe(
-            tap(m => this.onMessageSentNotify(m))
+            tap(m => {
+              this.onMessageSentNotify(m);
+              this.chatListStateService.onMessageSent(conversationId);
+            })
           ),
           this.chatApiService.direct.onMessageDelivered(conversationId).pipe(
-            tap(m => this.onMessageDeliveredNotify(m))
+            tap(m => {
+              this.onMessageDeliveredNotify(m);
+              this.chatListStateService.onMessageDelivered(conversationId);
+            })
           ),
           this.chatApiService.direct.onUserStatusUpdate(conversationId).pipe(
             tap(updated => this.onUpdateUserStatus(updated))
           ),
           this.chatApiService.direct.onMessageSeen(conversationId).pipe(
-            tap(event => this.onMessageSeenNotify(event))
+            tap(event => {
+              this.onMessageSeenNotify(event);
+              this.chatListStateService.onMessageSeen(conversationId);
+            })
           ),
         );
       })
@@ -250,12 +267,17 @@ export class DirectConversation implements OnInit {
   }
 
   private flushPendingSeen(): void {
+
+    if (!this.conversationId) return;
+    this.chatListStateService.onConversationRead(this.conversationId);
+
     if (document.visibilityState !== 'visible' || !document.hasFocus()) return;
     if (!this.pendingSeenIds.length) return;
 
     const lastId = this.pendingSeenIds.at(-1)!;
     this.pendingSeenIds = [];
     this.markSeen(lastId);
+
   }
 
   private markSeen(lastMessageId: string): void {
@@ -338,6 +360,7 @@ export class DirectConversation implements OnInit {
   private cleanupConversation(): void {
     this.state.setMessages([]);
     this.state.setLoading(true);
+    this.state.clearError();
     this.reportedSeenIds.clear();
     this.pendingSeenIds = [];
   }

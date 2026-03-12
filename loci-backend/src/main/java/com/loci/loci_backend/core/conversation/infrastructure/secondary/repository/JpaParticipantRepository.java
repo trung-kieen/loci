@@ -26,6 +26,7 @@ import com.loci.loci_backend.core.conversation.infrastructure.secondary.vo.UserC
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -95,5 +96,12 @@ public interface JpaParticipantRepository extends JpaRepository<ConversationPart
       @Param("requestUserId") Long requestUserId);
 
   List<ConversationParticipantEntity> findAllByConversationId(Long conversationId);
+
+  @Modifying
+  @Query("""
+    UPDATE ConversationParticipantEntity p SET p.lastReadMessageId = :messageId
+    WHERE p.id = :participantId
+  """)
+  public void markLatestReadMessage(@Param("participantId") Long participantId, @Param("messageId") Long messageId);
 
 }

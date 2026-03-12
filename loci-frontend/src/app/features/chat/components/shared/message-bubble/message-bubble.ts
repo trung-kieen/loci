@@ -17,10 +17,11 @@
 import { ChangeDetectionStrategy, Component, input, output, computed, signal } from '@angular/core';
 import { IAttachment, IMessage } from '../../../models/message.model';
 import { MessageTimePipe } from '../../../pipe/message-time.pipe';
+import { MessageStateIndicator } from '../message-state-indicator/message-state-indicator';
 
 @Component({
   selector: 'app-message-bubble',
-  imports: [MessageTimePipe],
+  imports: [MessageTimePipe, MessageStateIndicator],
   templateUrl: './message-bubble.html',
   styleUrl: './message-bubble.css',
   changeDetection: ChangeDetectionStrategy.OnPush,

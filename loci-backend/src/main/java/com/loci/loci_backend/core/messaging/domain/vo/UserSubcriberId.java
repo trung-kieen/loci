@@ -20,12 +20,11 @@ import java.util.UUID;
 
 import com.loci.loci_backend.common.ddd.domain.contract.ValueObject;
 
-public record UserSubcriberId(UUID userPublicId) implements ValueObject<String> {
+public record UserSubcriberId(UUID userPublicId) implements ValueObject<String>, SubscriberId {
 
   @Override
   public String value() {
     return userPublicId.toString();
   }
-
 
 }

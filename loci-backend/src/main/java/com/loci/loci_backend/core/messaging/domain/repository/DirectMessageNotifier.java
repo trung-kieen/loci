@@ -17,10 +17,25 @@
 package com.loci.loci_backend.core.messaging.domain.repository;
 
 import com.loci.loci_backend.core.messaging.domain.aggregate.Message;
-import com.loci.loci_backend.core.messaging.domain.vo.SubscriberId;
+import com.loci.loci_backend.core.messaging.domain.vo.UserSubcriberId;
 
-public interface MessagePublisher<T extends SubscriberId> {
+public interface DirectMessageNotifier extends MessageNotifier {
 
-  void forward(T targetSubscriber, Message message);
+  /**
+   * Notify to sender of message when message send to sent success
+   */
+  public void notifyMessageSent(UserSubcriberId senderId, Message message);
+
+  /**
+   * Notify to sender of message when the target receiver device obtain the
+   * message
+   */
+  public void notifyMessageDelivered(UserSubcriberId senderId, Message message);
+
+  /**
+   * Notify to sender of message when the target receiver active clict to
+   * conversation and other explicit action
+   */
+  public void notifyMessageSeen(UserSubcriberId senderId, Message message);
 
 }

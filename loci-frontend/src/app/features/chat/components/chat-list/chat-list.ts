@@ -21,12 +21,14 @@ import { CommonModule, TitleCasePipe } from '@angular/common';
 import { MessageType } from '../../models/message.model';
 import { ChatListStateService } from '../../service/chat-list-state.service';
 import { MessageTimePipe } from '../../pipe/message-time.pipe';
+import { MessageStateIndicator } from '../shared/message-state-indicator/message-state-indicator';
+import { ChatApiService } from '../../service/chat-api.service';
 
 
 
 @Component({
   selector: 'app-chat-list',
-  imports: [CommonModule, RouterModule, MessageTimePipe, TitleCasePipe],
+  imports: [CommonModule, RouterModule, MessageTimePipe, TitleCasePipe, MessageStateIndicator],
   templateUrl: './chat-list.html',
   styleUrl: './chat-list.css',
 })
@@ -34,6 +36,7 @@ export class ChatList implements OnInit {
   private router = inject(Router);
 
   protected readonly chatListState = inject(ChatListStateService);
+  private readonly chatApi = inject(ChatApiService);
 
   // Expose computed signals as direct template bindings
   protected readonly isLoading = this.chatListState.isLoading;
@@ -46,6 +49,11 @@ export class ChatList implements OnInit {
 
   ngOnInit(): void {
     this.chatListState.load();
+    this.chatApi.onReceiveNewMessage().subscribe({
+      next: message => {
+        this.chatListState.onMessageReceived(message);
+      }
+    })
   }
 
   onSearch(event: Event): void {
@@ -56,6 +64,9 @@ export class ChatList implements OnInit {
   setFilter(filter: ChatFilter): void {
     this.chatListState.setFilter(filter);
   }
+
+
+
 
   goToCreateGroup(): void {
     this.router.navigate(['/chat/create-group']);

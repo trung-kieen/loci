@@ -22,16 +22,12 @@ import java.util.Optional;
 import com.loci.loci_backend.common.user.domain.aggregate.User;
 import com.loci.loci_backend.common.user.domain.vo.PublicId;
 import com.loci.loci_backend.common.user.domain.vo.UserDBId;
-import com.loci.loci_backend.core.conversation.domain.aggregate.Chat;
 import com.loci.loci_backend.core.conversation.domain.aggregate.Conversation;
-import com.loci.loci_backend.core.conversation.domain.aggregate.UserChatList;
 import com.loci.loci_backend.core.conversation.domain.aggregate.UserConversation;
 import com.loci.loci_backend.core.conversation.domain.vo.ConversationId;
 import com.loci.loci_backend.core.messaging.domain.aggregate.DirectChatInfo;
 import com.loci.loci_backend.core.messaging.domain.aggregate.GroupChatInfo;
 import com.loci.loci_backend.core.messaging.domain.vo.MessageId;
-
-import org.springframework.data.domain.Page;
 
 public interface ConversationRepository {
 
@@ -48,8 +44,8 @@ public interface ConversationRepository {
 
   public Optional<Conversation> getByPublicId(PublicId conversationId);
 
-  // public Optional<Chat> getChatInfo(Conversation conversation, User currentUser);
-
+  // public Optional<Chat> getChatInfo(Conversation conversation, User
+  // currentUser);
 
   public Conversation markLatestMessage(Conversation conversation, MessageId messageId);
 }

@@ -33,7 +33,6 @@ import com.loci.loci_backend.core.messaging.domain.aggregate.SendMessageRequest;
 import com.loci.loci_backend.core.messaging.domain.event.MessageSentEvent;
 import com.loci.loci_backend.core.messaging.domain.exception.BadMessageStateException;
 import com.loci.loci_backend.core.messaging.domain.repository.ForwardIdTranslator;
-import com.loci.loci_backend.core.messaging.domain.repository.MessagePublisher;
 import com.loci.loci_backend.core.messaging.domain.repository.MessageRepository;
 import com.loci.loci_backend.core.messaging.domain.vo.GroupSubscriberId;
 import com.loci.loci_backend.core.messaging.domain.vo.MessageState;
@@ -58,8 +57,9 @@ public class MessageSendingService {
   private final ConversationAuthenticationProvider conversationAuthenticationProvider;
   private final MessageRepository messageRepository;
   private final ParticipantRepository participantRepository;
-  private final MessagePublisher messagePublisher;
+  private final MessagePublisherFactory messagePublisher;
   private final ForwardIdTranslator forwardIdTranslator;
+  private final MessageNotifierFactory messageNotifier;
 
   @Transactional(readOnly = false)
   public Message prepareSendingMessage(SendMessageRequest messageRequest) {
@@ -90,7 +90,7 @@ public class MessageSendingService {
     conversation = conversationRepository.markLatestMessage(conversation, savedMessage.getMessageId());
 
     // mark message as latest for this sender (current user)
-    Participant senderAsParticipant = participantRepository.getParticipantForUserInConversation(sender, conversation);
+    Participant senderAsParticipant = participantRepository.getParticipantForUserInConversation(sender.getDbId(), conversation.getId());
     participantRepository.setLastReadMessage(senderAsParticipant, savedMessage.getMessageId());
     // senderAsParticipant.setLastReadMessageId(message.getMessageId());
     // participantRepository.save(senderAsParticipant);
@@ -112,14 +112,15 @@ public class MessageSendingService {
 
     UserSubcriberId receiverForwardId = forwardIdTranslator
         .toPrivateSubscriberId(targetMessagingParticipant.getUserId());
-    messagePublisher.sendInvidualMessage(receiverForwardId, message);
+
+    messagePublisher.forDirectConversation().forward(receiverForwardId, message);
     if (!message.getStatus().canTransitionTo(MessageState.SENT)) {
       throw new BadMessageStateException();
     }
     Message sentMessage = messageRepository.markAsSent(message);
 
     UserSubcriberId senderForwardId = forwardIdTranslator.toPrivateSubscriberId(sender.getDbId());
-    messagePublisher.notifyMessageSent(senderForwardId, sentMessage);
+    messageNotifier.forDirectConversation().notifyMessageSent(senderForwardId, sentMessage);
   }
 
   @Transactional(readOnly = false)
@@ -141,7 +142,7 @@ public class MessageSendingService {
     // }
 
     GroupSubscriberId groupSubscriberId = forwardIdTranslator.toGroupSubscriberId(conversation);
-    messagePublisher.sendGroupMessage(groupSubscriberId, message);
+    messagePublisher.forGroupConversation().forward(groupSubscriberId, message);
 
   }
 

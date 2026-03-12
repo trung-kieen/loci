@@ -26,7 +26,7 @@ import com.loci.loci_backend.core.messaging.domain.aggregate.Attachment;
 import com.loci.loci_backend.core.messaging.domain.aggregate.Message;
 import com.loci.loci_backend.core.messaging.domain.aggregate.MessageReceiveAcknowledgement;
 import com.loci.loci_backend.core.messaging.domain.aggregate.SendMessageRequest;
-import com.loci.loci_backend.core.messaging.domain.repository.MessagePublisher;
+import com.loci.loci_backend.core.messaging.domain.repository.DirectMessagePublisher;
 import com.loci.loci_backend.core.messaging.infrastructure.primary.mapper.RestMessageMapper;
 import com.loci.loci_backend.core.messaging.infrastructure.primary.payload.RestAcknowledgeReceiveMessage;
 import com.loci.loci_backend.core.messaging.infrastructure.primary.payload.RestAttachment;
@@ -52,7 +52,7 @@ public class MessageResource {
   private final MessagingApplicationService messagingService;
   private final RestMessageMapper mapper;
   private final RestFileMapper restFileMapper;
-  private final MessagePublisher messagePublisher;
+  private final DirectMessagePublisher messagePublisher;
 
   @PostMapping("/individual/send")
   public ResponseEntity<RestMessage> sendIndividualMessage(

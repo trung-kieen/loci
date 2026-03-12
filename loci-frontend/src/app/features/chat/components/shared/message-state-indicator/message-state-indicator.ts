@@ -1,4 +1,4 @@
-/*
+/**
  * Copyright 2026 trung-kieen
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,20 +14,16 @@
  * limitations under the License.
  */
 
-package com.loci.loci_backend.core.messaging.domain.vo;
+import { Component, input } from '@angular/core';
+import { MessageState } from '../../../models/message.model';
 
-import java.util.UUID;
-
-import com.loci.loci_backend.common.ddd.domain.contract.ValueObject;
-
-/**
- *
- */
-public record GroupSubscriberId(UUID groupPublicId) implements ValueObject<String>, SubscriberId {
-
-  @Override
-  public String value() {
-    return groupPublicId.toString();
-  }
+@Component({
+  selector: 'app-message-state-indicator',
+  imports: [],
+  templateUrl: './message-state-indicator.html',
+  styleUrl: './message-state-indicator.css',
+})
+export class MessageStateIndicator {
+  messageState = input.required<MessageState | undefined>();
 
 }

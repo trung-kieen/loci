@@ -14,20 +14,8 @@
  * limitations under the License.
  */
 
-package com.loci.loci_backend.core.messaging.domain.vo;
+package com.loci.loci_backend.core.messaging.domain.repository;
 
-import java.util.UUID;
-
-import com.loci.loci_backend.common.ddd.domain.contract.ValueObject;
-
-/**
- *
- */
-public record GroupSubscriberId(UUID groupPublicId) implements ValueObject<String>, SubscriberId {
-
-  @Override
-  public String value() {
-    return groupPublicId.toString();
-  }
+public interface GroupMessageNotifier extends MessageNotifier {
 
 }

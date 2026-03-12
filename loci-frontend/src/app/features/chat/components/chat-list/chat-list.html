@@ -162,13 +162,7 @@
                       {{ conv.unreadCount > 99 ? '99+' : conv.unreadCount }}
                     </div>
                   }
-                  @if (conv.messageState === 'seen') {
-                    <i class="fa-solid fa-check-double text-neutral-500 text-xs" title="Seen"></i>
-                  } @else if (conv.messageState === 'delivered') {
-                    <i class="fa-solid fa-check text-neutral-400 text-xs" title="Delivered"></i>
-                  } @else if (conv.messageState === 'sent') {
-                    <i class="fa-regular fa-clock text-neutral-300 text-xs" title="Sent"></i>
-                  }
+                  <app-message-state-indicator [messageState]="conv.messageState" />
                   @if (conv.isFollowingUp) {
                     <i class="fa-solid fa-flag text-amber-400 text-xs" title="Follow-up"></i>
                   }

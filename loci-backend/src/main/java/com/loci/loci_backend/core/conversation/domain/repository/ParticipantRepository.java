@@ -38,11 +38,12 @@ public interface ParticipantRepository {
 
   List<Participant> addParticipants(Conversation conversation, Collection<Participant> participants);
 
-  Page<UserConversation> getLastestConversationsUserJoined(User user, ConversationSearchCriteria criteria, Pageable pageable);
+  Page<UserConversation> getLastestConversationsUserJoined(User user, ConversationSearchCriteria criteria,
+      Pageable pageable);
 
   boolean isParticipantInConversation(User user, Conversation conversation);
 
-  Participant getParticipantForUserInConversation(User requestUser, Conversation conversation);
+  Participant getParticipantForUserInConversation(UserDBId requestUserDbId, ConversationId conversationId);
 
   Participant getTargetMessagingParticipantInDirectConversation(User requestUser, Conversation conversation);
 
@@ -54,4 +55,5 @@ public interface ParticipantRepository {
 
   Participant setLastReadMessage(Participant senderAsParticipant, MessageId messageId);
 
+  Participant markLatestMessage(Participant participant, MessageId messageId);
 }
