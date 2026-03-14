@@ -25,10 +25,12 @@ import { IPaginationParams } from '../models/chat.model';
 import { WebApiService } from '../../../core/api/web-api.service';
 import { DirectChatApiService } from './direct-chat-api.service';
 import { MessageObservableService } from './message-observable.service';
+import { GroupChatApiService } from './group-chat-api.service';
 
 export interface IUserPresence {
-  status: ParticipantState,
-  lastSeen?: Date,
+  userId: string;
+  status: ParticipantState;
+  lastSeen: string | null;
 }
 
 @Injectable({
@@ -39,9 +41,14 @@ export class ChatApiService {
   // facade
   public readonly direct = inject(DirectChatApiService);
 
+  // facade
+  readonly group = inject(GroupChatApiService);
+
   private apiService = inject(WebApiService);
 
   private messageObservable = inject(MessageObservableService);
+
+
 
   public getMessages(
     conversationId: string,

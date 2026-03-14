@@ -44,8 +44,5 @@ public interface ConversationRepository {
 
   public Optional<Conversation> getByPublicId(PublicId conversationId);
 
-  // public Optional<Chat> getChatInfo(Conversation conversation, User
-  // currentUser);
-
   public Conversation markLatestMessage(Conversation conversation, MessageId messageId);
 }

@@ -34,7 +34,7 @@ public class ConversationParticipantFactory {
    */
   public static List<Participant> groupMembers(Conversation conversation, Collection<UserDBId> memberIds) {
     return memberIds.stream().map(id -> {
-      return ConversationParticipantFactory.inConversation(conversation, ParticipantRole.MEMBER, id);
+      return ConversationParticipantFactory.inConversation(conversation, ParticipantRole.member(), id);
     }).collect(Collectors.toList());
   }
 
@@ -71,7 +71,7 @@ public class ConversationParticipantFactory {
     return ParticipantBuilder.participant()
         .id(null)
         .userId(userId)
-        .role(ParticipantRole.ADMIN)
+        .role(ParticipantRole.admin())
         .lastReadMessageId(null)
         .conversationId(conversation.getId())
         .conversationPublicId(conversation.getPublicId())

@@ -17,14 +17,18 @@
 package com.loci.loci_backend.core.groups.infrastructure.primary.resource;
 
 import java.io.IOException;
+import java.util.UUID;
 
 import com.loci.loci_backend.common.store.domain.aggregate.File;
 import com.loci.loci_backend.common.store.infrastructure.primary.mapper.RestFileMapper;
 import com.loci.loci_backend.common.user.domain.vo.PublicId;
 import com.loci.loci_backend.core.groups.application.GroupApplicationService;
+import com.loci.loci_backend.core.groups.domain.aggregate.GroupParticipantList;
 import com.loci.loci_backend.core.groups.domain.aggregate.GroupProfile;
 import com.loci.loci_backend.core.groups.domain.aggregate.GroupProfileChanges;
 import com.loci.loci_backend.core.groups.infrastructure.primary.mapper.RestGroupMapper;
+import com.loci.loci_backend.core.groups.infrastructure.primary.payload.RestGroupOnlineStatusResponse;
+import com.loci.loci_backend.core.groups.infrastructure.primary.payload.RestGroupParticipantList;
 import com.loci.loci_backend.core.groups.infrastructure.primary.payload.RestGroupProfile;
 import com.loci.loci_backend.core.groups.infrastructure.primary.payload.RestGroupProfileChanges;
 
@@ -68,6 +72,19 @@ public class GroupResource {
     File file = fileMapper.toDomain(formFile);
     GroupProfile profile = groupApplicationService.updateProfileAvatar(groupPublicId, file);
     return ResponseEntity.ok(groupMapper.from(profile));
+  }
+
+  @GetMapping("/{groupId}/participants")
+  public ResponseEntity<RestGroupParticipantList> getGroupParticipants(@PathVariable("groupId") UUID publicId) {
+    PublicId groupPublicId = new PublicId(publicId);
+    GroupParticipantList groupParticipantList = groupApplicationService.getGroupParticipants(groupPublicId);
+    RestGroupParticipantList restResponse = groupMapper.from(groupParticipantList);
+    return ResponseEntity.ok(restResponse);
+  }
+
+  @GetMapping("/{groupId}/participants/online")
+  public ResponseEntity<RestGroupOnlineStatusResponse> getGroupMembersOnlineStatus() {
+    return ResponseEntity.ok(RestGroupOnlineStatusResponse.EMPTY());
   }
 
 }

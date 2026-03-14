@@ -28,6 +28,7 @@ import com.loci.loci_backend.core.groups.domain.aggregate.CreateGroupProfileRequ
 import com.loci.loci_backend.core.groups.domain.aggregate.GroupProfile;
 import com.loci.loci_backend.core.groups.domain.service.GroupManager;
 import com.loci.loci_backend.core.messaging.domain.aggregate.DirectChatInfo;
+import com.loci.loci_backend.core.messaging.domain.aggregate.GroupChatInfo;
 
 import org.springframework.data.domain.Pageable;
 
@@ -75,5 +76,9 @@ public class ConversationApplicationService {
 
   public DirectChatInfo getDirectChatInfo(PublicId conversationPublicId) {
     return converationManager.getDirectChatInfo(conversationPublicId);
+  }
+
+  public GroupChatInfo getGroupChatInfo(PublicId conversationPublicId) {
+    return converationManager.getGroupChatInfo(conversationPublicId);
   }
 }

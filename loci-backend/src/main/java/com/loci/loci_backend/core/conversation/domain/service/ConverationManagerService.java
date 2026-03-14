@@ -39,9 +39,14 @@ import com.loci.loci_backend.core.conversation.domain.exception.UserNotConnected
 import com.loci.loci_backend.core.conversation.domain.repository.ConversationRepository;
 import com.loci.loci_backend.core.conversation.domain.repository.ParticipantRepository;
 import com.loci.loci_backend.core.conversation.domain.vo.ConversationQuery;
+import com.loci.loci_backend.core.conversation.domain.vo.ParticipantCount;
 import com.loci.loci_backend.core.discovery.domain.repository.UserConnectionResolver;
+import com.loci.loci_backend.core.groups.domain.aggregate.GroupProfile;
+import com.loci.loci_backend.core.groups.domain.repository.GroupRepository;
 import com.loci.loci_backend.core.identity.domain.repository.UserIdTranslator;
 import com.loci.loci_backend.core.messaging.domain.aggregate.DirectChatInfo;
+import com.loci.loci_backend.core.messaging.domain.aggregate.GroupChatInfo;
+import com.loci.loci_backend.core.messaging.domain.aggregate.GroupChatInfoBuilderForConversation;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -57,6 +62,7 @@ import lombok.extern.log4j.Log4j2;
 public class ConverationManagerService {
   private final UserRepository userRepository;
   private final ConversationRepository conversationRepository;
+  private final GroupRepository groupRepository;
   private final ConversationReader conversationReader;
   private final CurrentUser principal;
   private final ParticipantRepository participantRepository;
@@ -171,6 +177,16 @@ public class ConverationManagerService {
         .orElseThrow(ResourceNotFoundException::new);
 
     return conversationReader.getConversationInfo(conversation, currentUser);
+  }
+
+  @Transactional(readOnly = false)
+  public GroupChatInfo getGroupChatInfo(PublicId conversationPublicId) {
+    Conversation conversation = conversationRepository.getByPublicId(conversationPublicId)
+        .orElseThrow(EntityNotFoundException::new);
+    GroupProfile groupProfile= groupRepository.getByConversationId(conversation.getId())
+        .orElseThrow(EntityNotFoundException::new);
+
+    return conversationReader.getConversationInfo(conversation, groupProfile);
   }
 
 }

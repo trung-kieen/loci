@@ -38,10 +38,10 @@ export interface IMessage {
   timestamp: Date;
   type: MessageType;
   messageState: MessageState;
-  mediaName: string;
-  mediaUrl: string;
-  fileSize: number;
-  fileType: string;
+  mediaName?: string;
+  mediaUrl?: string;
+  fileSize?: number;
+  fileType?: string;
   // attachment?: IAttachment;
   isDeleted: boolean;
   // isOwn: boolean;

@@ -172,4 +172,13 @@ public class ConversationReader {
     }
   }
 
+  public GroupChatInfo getConversationInfo(Conversation conversation, GroupProfile groupProfile) {
+    ParticipantCount participantCount = participantRepository.countConversationMember(conversation);
+    return GroupChatInfoBuilderForConversation.groupChatInfo()
+        .conversation(conversation)
+        .groupProfile(groupProfile)
+        .participantCount(participantCount)
+        .build();
+  }
+
 }

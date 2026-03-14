@@ -33,6 +33,7 @@ export class MessageBubble {
   message = input.required<IMessage>();
   avatarUrl = input.required<string>();
   senderName = input<string>('');
+  showSenderName = input<boolean>(false);  // only show in group conversation
   isOwn = input.required<boolean>();
   isLast = input<boolean>(false);
 
@@ -73,11 +74,11 @@ export class MessageBubble {
 
     const message = this.message();
     const attachment: IAttachment = {
-      url: message.mediaUrl,
-      fileName: message.mediaName,
-      fileType: message.fileType,
+      url: message.mediaUrl || '',
+      fileName: message.mediaName || '',
+      fileType: message.fileType || '',
       messageType: message.type,
-      fileSize: message.fileSize
+      fileSize: message.fileSize || 0,
     }
     return attachment;
   }

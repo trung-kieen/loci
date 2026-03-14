@@ -17,8 +17,10 @@
 package com.loci.loci_backend.core.groups.infrastructure.primary.mapper;
 
 import com.loci.loci_backend.common.ddd.infrastructure.mapper.ValueObjectTypeConverter;
+import com.loci.loci_backend.core.groups.domain.aggregate.GroupParticipant;
 import com.loci.loci_backend.core.groups.domain.aggregate.GroupProfile;
 import com.loci.loci_backend.core.groups.domain.aggregate.GroupProfileChanges;
+import com.loci.loci_backend.core.groups.infrastructure.primary.payload.RestGroupParticipant;
 import com.loci.loci_backend.core.groups.infrastructure.primary.payload.RestGroupProfile;
 import com.loci.loci_backend.core.groups.infrastructure.primary.payload.RestGroupProfileChanges;
 
@@ -33,5 +35,8 @@ public interface MapStructRestGroupMapper {
   public RestGroupProfile from(GroupProfile domain);
 
   public GroupProfileChanges toDomain(RestGroupProfileChanges restModel);
+
+  @Mapping(source = "userPublicId", target = "userId")
+  public RestGroupParticipant from(GroupParticipant participant);
 
 }

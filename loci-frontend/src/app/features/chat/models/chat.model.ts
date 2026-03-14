@@ -53,11 +53,8 @@ export interface IDirectConversationProfile {
 
 export interface IGroupChatInfo extends IChatBaseInfo {
   type: 'group';
-  participants: IParticipant[];
-  adminUserIds: string[];
   memberCount: number;
-  onlineCount: number;
-  description: string;
+  onlineCount: number;       // ← header reads this for groupSubtitle()
 }
 export type ChatInfo = ISingleChatInfo | IGroupChatInfo
 

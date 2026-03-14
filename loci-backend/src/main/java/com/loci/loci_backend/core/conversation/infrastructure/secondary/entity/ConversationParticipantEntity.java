@@ -18,7 +18,7 @@ package com.loci.loci_backend.core.conversation.infrastructure.secondary.entity;
 
 import com.loci.loci_backend.common.jpa.AbstractAuditingEntity;
 import com.loci.loci_backend.common.user.infrastructure.secondary.entity.UserEntity;
-import com.loci.loci_backend.core.conversation.domain.vo.ParticipantRole;
+import com.loci.loci_backend.core.conversation.domain.vo.ParticipantRoleEnum;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -70,7 +70,7 @@ public class ConversationParticipantEntity extends AbstractAuditingEntity<Long> 
 
   @Enumerated(EnumType.STRING)
   @Column(name = "role", nullable = false, length = 20)
-  private ParticipantRole role = ParticipantRole.MEMBER;
+  private ParticipantRoleEnum role = ParticipantRoleEnum.MEMBER;
 
   // @Column(name = "joined_at", nullable = false)
   // private Instant joinedAt;

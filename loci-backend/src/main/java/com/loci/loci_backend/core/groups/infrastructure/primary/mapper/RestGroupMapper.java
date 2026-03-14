@@ -16,11 +16,17 @@
 
 package com.loci.loci_backend.core.groups.infrastructure.primary.mapper;
 
+import java.util.List;
+
 import com.loci.loci_backend.common.ddd.infrastructure.contract.Domain2RestMapper;
 import com.loci.loci_backend.common.ddd.infrastructure.contract.Rest2DomainMapper;
 import com.loci.loci_backend.common.ddd.infrastructure.stereotype.PrimaryMapper;
+import com.loci.loci_backend.core.groups.domain.aggregate.GroupParticipant;
+import com.loci.loci_backend.core.groups.domain.aggregate.GroupParticipantList;
 import com.loci.loci_backend.core.groups.domain.aggregate.GroupProfile;
 import com.loci.loci_backend.core.groups.domain.aggregate.GroupProfileChanges;
+import com.loci.loci_backend.core.groups.infrastructure.primary.payload.RestGroupParticipant;
+import com.loci.loci_backend.core.groups.infrastructure.primary.payload.RestGroupParticipantList;
 import com.loci.loci_backend.core.groups.infrastructure.primary.payload.RestGroupProfile;
 import com.loci.loci_backend.core.groups.infrastructure.primary.payload.RestGroupProfileChanges;
 
@@ -40,6 +46,15 @@ public class RestGroupMapper implements Domain2RestMapper<GroupProfile, RestGrou
   @Override
   public GroupProfileChanges toDomain(RestGroupProfileChanges restModel) {
     return mapstruct.toDomain(restModel);
+  }
+
+  public RestGroupParticipantList from(GroupParticipantList groupParticipantList) {
+    List<RestGroupParticipant> restList = groupParticipantList.getParticipants().stream().map(this::from).toList();
+    return new RestGroupParticipantList(restList);
+  }
+
+  private RestGroupParticipant from(GroupParticipant participant) {
+    return mapstruct.from(participant);
   }
 
 }

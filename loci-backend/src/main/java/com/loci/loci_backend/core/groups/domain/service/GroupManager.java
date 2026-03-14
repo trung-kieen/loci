@@ -16,18 +16,23 @@
 
 package com.loci.loci_backend.core.groups.domain.service;
 
+import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
+import com.loci.loci_backend.common.collection.Lists;
 import com.loci.loci_backend.common.ddd.infrastructure.stereotype.DomainService;
 import com.loci.loci_backend.common.store.domain.aggregate.File;
 import com.loci.loci_backend.common.store.domain.service.FileStorageService;
-import com.loci.loci_backend.common.store.domain.vo.FilePath;
+import com.loci.loci_backend.common.user.domain.aggregate.User;
+import com.loci.loci_backend.common.user.domain.repository.UserRepository;
 import com.loci.loci_backend.common.user.domain.vo.PublicId;
 import com.loci.loci_backend.common.validation.domain.DuplicateResourceException;
 import com.loci.loci_backend.common.validation.domain.ResourceNotFoundException;
+import com.loci.loci_backend.core.conversation.domain.aggregate.Participant;
 import com.loci.loci_backend.core.conversation.domain.repository.ConversationRepository;
+import com.loci.loci_backend.core.conversation.domain.repository.ParticipantRepository;
 import com.loci.loci_backend.core.groups.domain.aggregate.CreateGroupProfileRequest;
+import com.loci.loci_backend.core.groups.domain.aggregate.GroupParticipantList;
 import com.loci.loci_backend.core.groups.domain.aggregate.GroupProfile;
 import com.loci.loci_backend.core.groups.domain.aggregate.GroupProfileChanges;
 import com.loci.loci_backend.core.groups.domain.repository.GroupRepository;
@@ -43,6 +48,10 @@ import lombok.RequiredArgsConstructor;
 public class GroupManager {
   private final GroupRepository groupRepository;
   private final FileStorageService fileStorageService;
+  private final ParticipantRepository participantRepository;
+  private final UserRepository userRepository;
+
+  // inter communication
   private final ConversationRepository conversationRepository;
 
   public GroupProfile updatGroupInfo(PublicId groupPublicId, GroupProfileChanges profileChanges) {
@@ -78,5 +87,15 @@ public class GroupManager {
     GroupProfileChanges changes = new GroupProfileChanges();
     changes.setGroupProfilePicture(newImageUrl);
     return this.updatGroupInfo(groupPublicId, changes);
+  }
+
+  @Transactional(readOnly = false)
+  public GroupParticipantList getGroupParticipants(PublicId groupPublicId) {
+    // TODO: valdiate user in group
+    GroupProfile group = groupRepository.getByPublicId(groupPublicId).orElseThrow(EntityNotFoundException::new);
+    List<Participant> participants = participantRepository.getParticipantsByConversationId(group.getConversationId());
+    List<User> userDataOfParticipants = userRepository.getAllByIds(Lists.byField(participants, Participant::getUserId));
+    return GroupParticipantList.buildFromList(participants, userDataOfParticipants);
+
   }
 }

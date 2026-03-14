@@ -1,0 +1,19 @@
+info:
+  name: "{conversationId}"
+  type: http
+  seq: 2
+
+http:
+  method: GET
+  url: "{{baseUrl}}/conversations/group/:conversationId"
+  params:
+    - name: conversationId
+      value: 7b5635e2-9ca3-426c-aa9f-6ac5db8eb3b0
+      type: path
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

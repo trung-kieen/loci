@@ -14,241 +14,66 @@
  limitations under the License.
 -->
 
-<!-- chat.component.html -->
-<div class="flex flex-col h-full min-h-0 bg-white">
-  <!-- Header: Stays at top -->
-  <header class="bg-white border-b border-neutral-200 h-16 flex items-center justify-between px-4 flex-shrink-0">
-    <div class="flex items-center space-x-3">
-      <button class="p-2 hover:bg-neutral-100 rounded-lg" (click)="goBack()">
-        <i class="fa-solid fa-arrow-left text-neutral-600"></i>
-      </button>
-      <div class="w-10 h-10 bg-neutral-400 rounded-full flex items-center justify-center">
-        <i class="fa-solid fa-users text-white text-sm"></i>
-      </div>
-      <a href="/chat/group/c4338c6b-8480-4864-920a-2112d2dfe73a/profile">
-        <div class="flex flex-col">
-          <h2 class="text-neutral-900">{{ teamName() }}</h2>
-          <span class="text-sm text-neutral-500">{{ onlineCount() }} online</span>
+<main id="main-content" class="flex h-[calc(100vh-4rem)]">
+  <section id="chat-conversation" class="flex-1 bg-white flex flex-col">
+
+    <!-- Header -->
+    <app-chat-header
+      [chat]="groupChatInfo()"
+      [showBackButton]="true"
+      [features]="groupChatFeatures"
+      (back)="onBack()"
+      (profileClick)="onViewGroupProfile()"
+    />
+
+    <!-- Message area -->
+    <div
+      #messageArea
+      id="message-area"
+      class="flex-1 overflow-y-auto p-4 space-y-4"
+      (scroll)="onScroll($event)"
+    >
+      <!-- Pagination loading spinner -->
+      @if (state.loading()) {
+        <div class="flex justify-center py-4">
+          <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-neutral-500"></div>
         </div>
-      </a>
-    </div>
-    <div class="flex items-center space-x-2">
-      <button class="p-2 hover:bg-neutral-100 rounded-lg" (click)="toggleSearch()">
-        <i class="fa-solid fa-magnifying-glass text-neutral-600"></i>
-      </button>
-      <button class="p-2 hover:bg-neutral-100 rounded-lg">
-        <i class="fa-solid fa-circle-info text-neutral-600"></i>
-      </button>
-    </div>
-  </header>
-
-  <!-- Pinned Message Bar -->
-  <div class="bg-neutral-50 border-b border-neutral-200 px-4 py-3 flex-shrink-0">
-    <div class="flex items-center justify-between">
-      <div class="flex items-center space-x-3">
-        <i class="fa-solid fa-thumbtack text-neutral-600"></i>
-        <div class="flex items-center space-x-2">
-          <img [src]="pinnedMessage().avatar" alt="Avatar" class="w-6 h-6 rounded-full">
-          <span class="text-sm text-neutral-900">{{ pinnedMessage().author }}:</span>
-          <span class="text-sm text-neutral-700 truncate">{{ pinnedMessage().text }}</span>
-        </div>
-      </div>
-      <div class="flex items-center space-x-2">
-        <button class="text-sm text-neutral-600 hover:text-neutral-800">Go to message</button>
-        <button class="p-1 hover:bg-neutral-100 rounded">
-          <i class="fa-solid fa-xmark text-neutral-600"></i>
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Search Bar (conditional) -->
-  @if (showSearchBar()) {
-  <div class="bg-white border-b border-neutral-200 px-4 py-3 flex-shrink-0">
-    <div class="flex items-center space-x-3">
-      <div class="flex-1 relative">
-        <input type="text" placeholder="Search messages..."
-          class="w-full pl-10 pr-4 py-2 border border-neutral-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-neutral-500"
-          [formControl]="searchControl">
-        <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400"></i>
-      </div>
-      <select class="border border-neutral-300 rounded-lg px-3 py-2 text-sm">
-        <option>All messages</option>
-        <option>From John Doe</option>
-        <option>Media only</option>
-        <option>Files only</option>
-      </select>
-      <button class="p-2 hover:bg-neutral-100 rounded-lg" (click)="toggleSearch()">
-        <i class="fa-solid fa-xmark text-neutral-600"></i>
-      </button>
-    </div>
-  </div>
-  }
-
-  <!-- Main Chat Area: Grows and scrolls -->
-  <main class="flex-1 overflow-y-scroll px-4 relative">
-    <div class="space-y-4 py-4">
-      <!-- Messages -->
-      @for (message of messages(); track message.id) {
-      <div class="flex items-start space-x-3">
-        <img [src]="message.avatar" [alt]="message.author" class="w-8 h-8 rounded-full">
-        <div class="flex-1">
-          <div class="flex items-center space-x-2 mb-1">
-            <span class="text-neutral-900">{{ message.author }}</span>
-            @if (message.isAdmin) {
-            <span class="px-2 py-1 bg-neutral-100 text-neutral-800 text-xs rounded-full">Admin</span>
-            }
-            <span class="text-xs text-neutral-500">{{ message.time }}</span>
-          </div>
-
-          <!-- Reply quote -->
-          @if (message.replyTo) {
-          <div class="bg-neutral-50 border-l-4 border-neutral-400 p-2 mb-2 rounded">
-            <div class="flex items-center space-x-2 text-sm text-neutral-600">
-              <img [src]="message.replyTo.avatar" alt="Avatar" class="w-4 h-4 rounded-full">
-              <span>{{ message.replyTo.author }}</span>
-              <span class="truncate">{{ message.replyTo.text }}</span>
-            </div>
-          </div>
-          }
-
-          <!-- Message content -->
-          <div class="bg-neutral-100 rounded-lg p-3 max-w-md">
-            @if (message.file) {
-            <div class="flex items-center space-x-2 mb-2">
-              <div class="w-12 h-12 bg-neutral-300 rounded flex items-center justify-center">
-                <i class="fa-solid fa-file-pdf text-neutral-600"></i>
-              </div>
-              <div>
-                <p class="text-sm text-neutral-900">{{ message.file.name }}</p>
-                <p class="text-xs text-neutral-500">{{ message.file.size }}</p>
-              </div>
-            </div>
-            }
-            <p class="text-neutral-900">{{ message.text }}</p>
-          </div>
-
-          <!-- Message footer -->
-          <div class="flex items-center justify-between mt-1">
-            <div class="flex items-center space-x-2">
-              @for (reaction of message.reactions; track reaction.emoji) {
-              <div class="flex items-center space-x-1">
-                <span class="text-sm">{{ reaction.emoji }}</span>
-                <span class="text-xs text-neutral-500">{{ reaction.count }}</span>
-              </div>
-              }
-            </div>
-            <div class="flex items-center space-x-2">
-              @if (message.edited) {
-              <span class="text-xs text-neutral-500">Edited</span>
-              }
-              <i class="fa-solid fa-check text-neutral-400 text-xs"></i>
-            </div>
-          </div>
-        </div>
-      </div>
       }
 
-      <!-- Typing indicator -->
-      <div class="flex justify-center">
-        <span class="text-sm text-neutral-500 italic">{{ typingText() }}</span>
-      </div>
-    </div>
+      <!-- Timeline: messages + system events -->
+      @for (item of items(); track itemTrackId(item)) {
 
-    <!-- Error Card (absolute within scrollable area) -->
-    @if (showErrorCard()) {
-    <div class="absolute top-4 left-4 right-4 bg-neutral-50 border border-neutral-200 rounded-lg p-4 shadow-sm">
-      <div class="flex items-center space-x-3">
-        <i class="fa-solid fa-triangle-exclamation text-neutral-600"></i>
-        <div class="flex-1">
-          <p class="text-sm text-neutral-800">Unable to send message</p>
-          <p class="text-sm text-neutral-600">Only admins can send messages in this group</p>
-        </div>
-        <button class="text-sm text-neutral-600 hover:text-neutral-800">Retry</button>
-      </div>
-    </div>
-    }
-  </main>
+        @if (item.kind === 'message') {
+          <app-message-bubble
+            [isOwn]="item.data.owner"
+            [message]="item.data"
+            [showSenderName]="!item.data.owner"
+            [avatarUrl]="getMessageSenderAvatarUrl(item.data)"
+            [senderName]="getMessageSenderName(item.data)"
+            [attr.data-message-id]="item.data.messageId"
+            [attr.data-incoming]="!item.data.owner"
+            (download)="onDownloadAttachment($event)"
+          />
+        } @else {
+          <app-system-event-bubble [event]="item.data" />
+        }
 
-  <!-- Footer: Stays at bottom -->
-  <footer class="bg-white border-t border-neutral-200 p-4 flex-shrink-0">
-    <!-- Reply Preview -->
-    @if (showReplyPreview()) {
-    <div class="mb-3 p-3 bg-neutral-50 border-l-4 border-neutral-400 rounded">
-      <div class="flex items-center justify-between">
-        <div class="flex items-center space-x-2 text-sm">
-          <i class="fa-solid fa-reply text-neutral-600"></i>
-          <span class="text-neutral-900">Replying to John Doe</span>
-          <span class="text-neutral-600 truncate">Hey everyone! Let's discuss...</span>
-        </div>
-        <button class="p-1 hover:bg-neutral-100 rounded" (click)="showReplyPreview.set(false)">
-          <i class="fa-solid fa-xmark text-neutral-600"></i>
-        </button>
-      </div>
-    </div>
-    }
-
-    <!-- File Preview -->
-    @if (showFilePreview()) {
-    <div class="mb-3">
-      <div class="flex items-center space-x-3 p-3 bg-neutral-50 rounded-lg">
-        <div class="w-12 h-12 bg-neutral-300 rounded flex items-center justify-center">
-          <i class="fa-solid fa-image text-neutral-600"></i>
-        </div>
-        <div class="flex-1">
-          <p class="text-sm text-neutral-900">screenshot.png</p>
-          <p class="text-xs text-neutral-500">1.2 MB</p>
-        </div>
-        <button class="p-2 hover:bg-neutral-200 rounded" (click)="showFilePreview.set(false)">
-          <i class="fa-solid fa-xmark text-neutral-600"></i>
-        </button>
-      </div>
-    </div>
-    }
-
-    <!-- Input Area -->
-    <div class="flex items-end space-x-3">
-      <button class="p-3 hover:bg-neutral-100 rounded-lg">
-        <i class="fa-solid fa-paperclip text-neutral-600"></i>
-      </button>
-      <div class="flex-1">
-        <textarea placeholder="Type a message..." rows="1"
-          class="w-full resize-none border border-neutral-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-neutral-500 max-h-32"
-          [formControl]="messageControl"></textarea>
-        <div class="flex items-center space-x-2 mt-2">
-          @for (format of textFormats; track format) {
-          <button class="text-sm text-neutral-600 hover:text-neutral-800" (click)="applyFormat(format)">
-            <i class="fa-solid" [ngClass]="formatIcon(format)"></i>
-          </button>
-          }
-        </div>
-      </div>
-      <button class="bg-neutral-600 hover:bg-neutral-700 text-white p-3 rounded-lg" (click)="sendMessage()">
-        <i class="fa-solid fa-paper-plane"></i>
-      </button>
-    </div>
-  </footer>
-</div>
-
-<!-- Reactions Modal (fixed overlay is appropriate here) -->
-@if (showReactionsModal()) {
-<div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-  <div class="bg-white rounded-lg p-6 max-w-md w-full mx-4">
-    <div class="flex items-center justify-between mb-4">
-      <h3 class="text-lg text-neutral-900">Add Reaction</h3>
-      <button class="p-2 hover:bg-neutral-100 rounded-lg" (click)="toggleReactionsModal()">
-        <i class="fa-solid fa-xmark text-neutral-600"></i>
-      </button>
-    </div>
-    <div class="mb-4">
-      <input type="text" placeholder="Search emojis..."
-        class="w-full px-3 py-2 border border-neutral-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-neutral-500">
-    </div>
-    <div class="grid grid-cols-8 gap-2">
-      @for (emoji of reactionEmojis; track emoji) {
-      <button class="p-2 hover:bg-neutral-100 rounded text-2xl" (click)="addReaction(emoji)">{{ emoji }}</button>
       }
     </div>
-  </div>
-</div>
-}
+
+    <!-- Error alert -->
+    @if (uiError() !== null) {
+      <app-error-alert [error]="uiError()" (dismiss)="state.clearError()" />
+    }
+
+    <!-- Message input -->
+    <app-message-input
+      [isDisabled]="!canSendMessage()"
+      [isSending]="state.sendingMessage()"
+      [isUploading]="state.uploadingFile()"
+      (send)="onSendMessage($event)"
+      (fileSelect)="onFileSelected($event)"
+    />
+
+  </section>
+</main>

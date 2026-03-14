@@ -22,6 +22,12 @@
 
   <div class="flex flex-col max-w-[70%]" [class.items-end]="isOwn()">
 
+
+    @if (showSenderName() && senderName()) {
+      <span class="text-xs font-medium text-neutral-600 mb-1 px-1">
+        {{ senderName() }}
+      </span>
+    }
     <!-- Image Message -->
     @if (message().type === 'image' && message().mediaUrl) {
     <div class="rounded-lg overflow-hidden cursor-pointer transition-all hover:opacity-95"
@@ -107,7 +113,7 @@
         <i [class]="'fa-solid ' + fileIcon() + (isOwn() ? ' text-white' : ' text-neutral-500')"></i>
         <span class="text-sm font-medium truncate max-w-[200px]">{{ message().mediaUrl }}</span>
       </div>
-      @if(message().fileSize && message().fileSize > 0 ) {
+      @if((message().fileSize ?? 0) > 0 ) {
       <p class="text-xs opacity-75">{{ formattedFileSize() }}</p>
       }
     </div>

@@ -112,6 +112,7 @@ public class SpringDataConversationRepository implements ConversationRepository 
     return jpaConversationRepository.existsGroupConversation(conversationId.value());
   }
 
+  // TODO: Move to group manager boundcontext
   @Override
   public List<GroupChatInfo> getGroupConversationMetadataByIds(List<UserConversation> groupConversations) {
     Set<Long> conversationIds = groupConversations.stream().map(UserConversation::getConversationId)
@@ -164,25 +165,6 @@ public class SpringDataConversationRepository implements ConversationRepository 
       return info;
     }).toList();
 
-  }
-
-  @Override
-  public int hashCode() {
-    return super.hashCode();
-  }
-
-  @Override
-  public boolean equals(Object obj) {
-    if (this == obj) {
-      return true;
-    }
-    if (obj == null) {
-      return false;
-    }
-    if (getClass() != obj.getClass()) {
-      return false;
-    }
-    return true;
   }
 
   @Override
@@ -294,5 +276,7 @@ public class SpringDataConversationRepository implements ConversationRepository 
     return conversation;
 
   }
+
+
 
 }

@@ -208,7 +208,9 @@ export class DirectConversation implements OnInit {
   }
 
   onUpdateUserStatus(updated: IUserPresence): void {
-    this.state.updateParticipantStatus(updated.status, updated.lastSeen);
+    // TOOD:
+    return;
+    // this.state.updateParticipantStatus(updated.status, updated.lastSeen);
   }
 
   onReceiveMessage(message: IMessage): void {

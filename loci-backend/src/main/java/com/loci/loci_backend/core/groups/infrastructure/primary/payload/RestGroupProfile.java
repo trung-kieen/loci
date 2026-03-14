@@ -16,6 +16,7 @@
 
 package com.loci.loci_backend.core.groups.infrastructure.primary.payload;
 
+import java.time.Instant;
 import java.util.UUID;
 
 import lombok.Data;
@@ -23,12 +24,25 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class RestGroupProfile {
+public class RestGroupProfile { // IGroupChatInfoMeta
   private UUID groupId;
 
   private String groupName;
 
   private String groupPictureUrl;
+
+
+  // todo conversationId
+
+
+  public int getTotalMemberCount() {
+    // TODO: provide information about member in group
+    return 10;
+  }
+
+  public Instant getCreatedAt() {
+    return Instant.now();
+  }
 
   // Optional
   // public UUID conversationId;

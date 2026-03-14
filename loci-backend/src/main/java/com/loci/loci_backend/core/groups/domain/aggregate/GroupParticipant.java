@@ -1,0 +1,58 @@
+package com.loci.loci_backend.core.groups.domain.aggregate;
+
+import com.loci.loci_backend.common.authentication.domain.Username;
+import com.loci.loci_backend.common.user.domain.aggregate.User;
+import com.loci.loci_backend.common.user.domain.vo.PublicId;
+import com.loci.loci_backend.common.user.domain.vo.UserDBId;
+import com.loci.loci_backend.common.user.domain.vo.UserImageUrl;
+import com.loci.loci_backend.core.conversation.domain.aggregate.Participant;
+import com.loci.loci_backend.core.conversation.domain.vo.ParticipantId;
+import com.loci.loci_backend.core.conversation.domain.vo.ParticipantRole;
+import com.loci.loci_backend.core.identity.domain.aggregate.UserFullname;
+
+import org.jilt.Builder;
+import org.jilt.BuilderStyle;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Setter
+@Getter
+@NoArgsConstructor
+public class GroupParticipant {
+  private ParticipantId participantId;
+  private UserDBId userId;
+  private PublicId userPublicId;
+  private UserFullname fullname;
+  private Username username;
+  private UserImageUrl avatarUrl;
+  private ParticipantRole role;
+
+  @Builder(style = BuilderStyle.STAGED)
+  public GroupParticipant(ParticipantId participantId, UserDBId userId, PublicId userPublicId, UserFullname fullname,
+      Username username, UserImageUrl avatarUrl, ParticipantRole role) {
+    this.participantId = participantId;
+    this.userPublicId = userPublicId;
+    this.userId = userId;
+    this.fullname = fullname;
+    this.username = username;
+    this.avatarUrl = avatarUrl;
+    this.role = role;
+  }
+
+  public static GroupParticipant forUserParticipantGroup(User user, Participant participant) {
+    return GroupParticipantBuilder.groupParticipant()
+        .participantId(participant.getId())
+        .userId(user.getDbId())
+        .userPublicId(user.getUserPublicId())
+        .fullname(user.getFullname())
+        .username(user.getUsername())
+        .avatarUrl(user.getProfilePicture())
+        .role(participant.getRole())
+        .build();
+
+  }
+
+}

@@ -56,7 +56,7 @@ public class Participant implements Validatable {
   }
 
   void promoteToAdmin() {
-    this.role = ParticipantRole.ADMIN;
+    this.role = ParticipantRole.admin();
   }
 
   void updateLastRead(MessageId messageId) {
