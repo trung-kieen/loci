@@ -52,13 +52,12 @@ public class MessageTrackingStateService {
   private final MessageNotifierFactory messageNotifier;
 
   @Transactional(readOnly = false)
-  public Message markMessageDelivered(MessageReceiveAcknowledgement request) {
-
-    // TODO: validate
+  public Message markDirectMessageDelivered(MessageReceiveAcknowledgement request) {
 
     Message message = messageRepository.getByPublicId(request.getMessagePublicId())
         .orElseThrow(EntityNotFoundException::new);
-    if (!message.getStatus().canTransitionTo(MessageState.DELIVERED)) {
+
+    if (!message.canMarkAsDelivered()) {
       throw new BadMessageStateException(String.format("Invalid message state {} unable to transition to {}",
           message.getStatus(), MessageState.DELIVERED));
     }
@@ -70,7 +69,27 @@ public class MessageTrackingStateService {
   }
 
   @Transactional(readOnly = false)
-  public void markSeenMessage(MarkMessageSeenRequest request) {
+  public Message markGroupMessageDelivered(MessageReceiveAcknowledgement messageReceiveRequest) {
+    Message message = messageRepository.getByPublicId(messageReceiveRequest.getMessagePublicId())
+        .orElseThrow(EntityNotFoundException::new);
+
+    if (message.isDelivered()) {
+      return message;
+    }
+
+    if (!message.canMarkAsDelivered()) {
+      throw new BadMessageStateException(String.format("Invalid message state {} unable to transition to {}",
+          message.getStatus(), MessageState.DELIVERED));
+    }
+    Message deliveredMessage = messageRepository.markAsDelivered(message);
+
+    UserSubcriberId senderForwardId = forwardIdTranslator.toPrivateSubscriberId(deliveredMessage.getSenderId());
+    messageNotifier.forDirectConversation().notifyMessageDelivered(senderForwardId, deliveredMessage);
+    return message;
+  }
+
+  @Transactional(readOnly = false)
+  public void markDirectMessageSeen(MarkMessageSeenRequest request) {
     // TODO: validate user is in this conversation
 
     User requestUser = userRepository.getByPrincipalThrow(principal);
@@ -78,7 +97,7 @@ public class MessageTrackingStateService {
     Message message = messageRepository.getByPublicId(request.getMessagePublicId())
         .orElseThrow(EntityNotFoundException::new);
 
-    if (requestUser.getDbId().equals(message.getSenderId())) {
+    if (requestUser.isOwner(message)) {
       log.warn("Bad request tracking message state of message owner user");
       return;
     }
@@ -87,19 +106,47 @@ public class MessageTrackingStateService {
         message.getConversationId());
     participantRepository.markLatestMessage(participant, message.getMessageId());
 
-    if (!message.getStatus().canTransitionTo(MessageState.SEEN)) {
+    if (!message.canMarkAsSeen()) {
       log.warn("Omit seen message {}", message);
       return;
     }
 
-    // if (!message.getStatus().canTransitionTo(MessageState.SEEN)) {
-    // throw new BadMessageStateException();
-    // }
+    // NOTE: can validate transtion is valid of not
 
     messageRepository.markAsSeen(message);
 
     UserSubcriberId senderForwardId = forwardIdTranslator.toPrivateSubscriberId(message.getSenderId());
     messageNotifier.forDirectConversation().notifyMessageSeen(senderForwardId, message);
+  }
+
+  @Transactional(readOnly = false)
+  public void markGroupMessageSeen(MarkMessageSeenRequest request) {
+    // TODO: validate user is in this conversation
+
+    User requestUser = userRepository.getByPrincipalThrow(principal);
+
+    Message message = messageRepository.getByPublicId(request.getMessagePublicId())
+        .orElseThrow(EntityNotFoundException::new);
+
+    if (requestUser.isOwner(message)) {
+      log.warn("Bad request tracking message state of message owner user");
+      return;
+    }
+
+    Participant participant = participantRepository.getParticipantForUserInConversation(requestUser.getDbId(),
+        message.getConversationId());
+    participantRepository.markLatestMessage(participant, message.getMessageId());
+
+    if (!message.canMarkAsSeen()) {
+      log.warn("Omit seen message {}", message);
+      return;
+    }
+    // NOTE: can validate transtion is valid of not
+
+    messageRepository.markAsSeen(message);
+
+    UserSubcriberId senderForwardId = forwardIdTranslator.toPrivateSubscriberId(message.getSenderId());
+    messageNotifier.forGroupConversation().notifyMessageSeen(senderForwardId, message);
   }
 
 }

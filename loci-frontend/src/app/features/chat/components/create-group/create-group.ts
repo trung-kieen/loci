@@ -15,7 +15,6 @@
  */
 
 import { Component, effect, inject, OnDestroy, OnInit } from '@angular/core';
-import { CreateGroupService } from '../../service/create-group-service';
 import { IFriend } from '../../models/chat.model';
 import {
   FormBuilder,
@@ -33,6 +32,7 @@ import {
 } from 'rxjs';
 import { LoggerService } from '../../../../core/services/logger.service';
 import { Router } from '@angular/router';
+import { CreateGroupStateService } from './create-group-state.service';
 
 @Component({
   selector: 'app-create-group',
@@ -44,7 +44,7 @@ export class CreateGroup implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
 
   private router = inject(Router);
-  private service = inject(CreateGroupService);
+  private service = inject(CreateGroupStateService);
   private loggerService = inject(LoggerService);
   private fb = inject(FormBuilder);
 

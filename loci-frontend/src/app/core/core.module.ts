@@ -33,6 +33,7 @@ import { KeycloakAuthenticationManager } from './auth/keycloak-auth-manager';
 import { WebApiService } from './api/web-api.service';
 import { LoggerService } from './services/logger.service';
 import { WebSocketService } from './socket/websocket.service';
+import { DateInterceptor } from './middleware/date.interceptor';
 
 @NgModule({
   imports: [],
@@ -62,6 +63,11 @@ export class CoreModule {
         {
           provide: HTTP_INTERCEPTORS,
           useClass: HttpErrorInterceptor,
+          multi: true,
+        },
+        {
+          provide: HTTP_INTERCEPTORS,
+          useClass: DateInterceptor,
           multi: true,
         },
         {

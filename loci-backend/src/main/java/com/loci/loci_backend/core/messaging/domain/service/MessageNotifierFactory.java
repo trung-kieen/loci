@@ -17,6 +17,7 @@
 package com.loci.loci_backend.core.messaging.domain.service;
 
 import com.loci.loci_backend.core.messaging.domain.repository.DirectMessageNotifier;
+import com.loci.loci_backend.core.messaging.domain.repository.GroupMessageNotifier;
 
 import org.springframework.stereotype.Service;
 
@@ -26,12 +27,13 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class MessageNotifierFactory {
   private final DirectMessageNotifier directMessageNotifier;
+  private final GroupMessageNotifier groupMessageNotifier;
 
-
-
-  public DirectMessageNotifier forDirectConversation(){
+  public DirectMessageNotifier forDirectConversation() {
     return directMessageNotifier;
   }
 
-
+  public GroupMessageNotifier forGroupConversation() {
+    return groupMessageNotifier;
+  }
 }

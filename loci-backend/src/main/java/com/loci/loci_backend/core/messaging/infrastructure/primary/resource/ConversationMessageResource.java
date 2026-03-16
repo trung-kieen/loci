@@ -75,11 +75,11 @@ public class ConversationMessageResource {
     return ResponseEntity.ok(restMessages);
   }
 
-  @PatchMapping("/{conversationId}/seen")
+  @PatchMapping("/{conversationId}/messages/seen")
   public ResponseEntity<?> markSeenMessage(@PathVariable("conversationId") UUID conversationId,
       @RequestBody RestMarkMessageSeenRequest restRequest) {
     MarkMessageSeenRequest request = conversationMessageMapper.toDomain(conversationId, restRequest);
-    messagingService.markSeenMessage(request);
+    messagingService.markDirectMessageSeen(request);
     log.debug("Receive request for message seen ", request);
     // MessagingApplicationService.markSeenMessage();
     return ResponseEntity.ok(null);

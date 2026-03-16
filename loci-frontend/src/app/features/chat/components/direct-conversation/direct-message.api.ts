@@ -1,3 +1,4 @@
+
 /**
  * Copyright 2026 trung-kieen
  *
@@ -18,45 +19,45 @@ import {
   inject,
   Injectable,
 } from '@angular/core';
-import { MessageObservableService } from './message-observable.service';
-import { IAttachment, IMarkMessageSeenRequest, IMarkMessageSeenResponse, IMessage, IMessageStatusEvent, ISendMessageRequest } from '../models/message.model';
-import { WebApiService } from '../../../core/api/web-api.service';
-import { delay, EMPTY, Observable, of, tap } from 'rxjs';
-import { ISingleChatInfo } from '../models/chat.model';
-import { IPersonalProfile } from '../../user/models/user.model';
-import { ChatListStateService } from './chat-list-state.service';
-import { UserPresenceObservableService } from '../../user/services/user-presence-observable.service';
-import { LoggerService } from '../../../core/services/logger.service';
+import { LoggerService } from '../../../../core/services/logger.service';
+import { UserPresenceObservableService } from '../../../user/services/user-presence-observable.service';
+import { WebApiService } from '../../../../core/api/web-api.service';
+import { ChatListState } from '../chat-list/chat-list.state';
+import { delay, Observable, of, tap } from 'rxjs';
+import { IPersonalProfile } from '../../../user/models/user.model';
+import { ISingleChatInfo } from '../../models/chat.model';
+import { IAttachment, IMarkMessageSeenRequest, IMarkMessageSeenResponse, IMessage, ISendMessageRequest } from '../../models/message.model';
+import { DirectMessageSubscriber } from './direct-message.subscriber';
 
 @Injectable({
   providedIn: 'root'
 })
-export class DirectChatApiService {
+export class DirectMessageApi {
 
   private loggerService = inject(LoggerService);
-  private logger = this.loggerService.getLogger("DirectChatApiService");
-  private messageObservable = inject(MessageObservableService);
+  private logger = this.loggerService.getLogger("DirectConversationApi");
+  private directMessageSubscriber = inject(DirectMessageSubscriber);
   private presenceObservable = inject(UserPresenceObservableService);
   private apiService = inject(WebApiService);
-  private chatListStateService = inject(ChatListStateService);
+  private chatListStateService = inject(ChatListState);
 
   onReceiveMessage(conversationId: string) {
-    return this.messageObservable.directMessageReceiveInConversation$(conversationId);
+    return this.directMessageSubscriber.messageReceiveInConversation$(conversationId);
   }
 
 
 
 
   onMessageSent(conversationId: string) {
-    return this.messageObservable.directMessageSentInConversation$(conversationId);
+    return this.directMessageSubscriber.messageSentInConversation$(conversationId);
   }
 
   onMessageDelivered(conversationId: string) {
-    return this.messageObservable.directMessageDeliveredInConversation$(conversationId);
+    return this.directMessageSubscriber.messageDeliveredInConversation$(conversationId);
   }
 
   onMessageSeen(conversationId: string) {
-    return this.messageObservable.directMessageSeenInConversation$(conversationId);
+    return this.directMessageSubscriber.messageSeenInConversation$(conversationId);
   }
 
   onUserStatusUpdate(userId: string) {
@@ -103,16 +104,7 @@ export class DirectChatApiService {
 
   markAsSeen(request: IMarkMessageSeenRequest) {
     this.logger.info("Tracking message seen stage to backend ", request);
-    // const request: IMessageStatusUpdate = {
-    // messageId,
-    // conversationId,
-    // status: 'seen'
-    // }
-    // this.apiService.patch("/messages/individual/seen", request)
-    // return EMPTY;
-
-    // TODO: implement the api
-    return this.apiService.patch<IMarkMessageSeenResponse>(`/conversations/${request.conversationId}/seen`, request);
+    return this.apiService.patch<IMarkMessageSeenResponse>(`/conversations/${request.conversationId}/messages/seen`, request);
   }
 
   uploadAttachment(

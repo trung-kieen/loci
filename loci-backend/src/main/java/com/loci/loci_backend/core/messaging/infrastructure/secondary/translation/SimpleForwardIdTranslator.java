@@ -21,7 +21,6 @@ import com.loci.loci_backend.common.user.domain.vo.UserDBId;
 import com.loci.loci_backend.common.user.infrastructure.secondary.entity.UserEntity;
 import com.loci.loci_backend.common.user.infrastructure.secondary.repository.JpaUserRepository;
 import com.loci.loci_backend.core.conversation.domain.aggregate.Conversation;
-import com.loci.loci_backend.core.groups.infrastructure.secondary.entity.GroupEntity;
 import com.loci.loci_backend.core.groups.infrastructure.secondary.repository.JpaGroupRepository;
 import com.loci.loci_backend.core.messaging.domain.repository.ForwardIdTranslator;
 import com.loci.loci_backend.core.messaging.domain.vo.GroupSubscriberId;
@@ -46,9 +45,10 @@ public class SimpleForwardIdTranslator implements ForwardIdTranslator {
 
   @Override
   public GroupSubscriberId toGroupSubscriberId(Conversation conversation) {
-    GroupEntity group = groupRepository.findByConversationId(conversation.getId().value())
-        .orElseThrow(EntityNotFoundException::new);
-    return new GroupSubscriberId(group.getPublicId());
+    return new GroupSubscriberId(conversation.getPublicId().value());
+    // GroupEntity group = groupRepository.findByConversationId(conversation.getId().value())
+    //     .orElseThrow(EntityNotFoundException::new);
+    // return new GroupSubscriberId(group.getPublicId());
   }
 
 }

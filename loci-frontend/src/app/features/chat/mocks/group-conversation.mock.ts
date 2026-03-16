@@ -119,7 +119,7 @@ export const MOCK_SYSTEM_EVENTS: ISystemEventMessage[] = [
     kind: 'member_joined',
     actorUserId: 'usr_004',
     actorDisplayName: 'Dave Park',
-    occurredAt: ago(45).toISOString(),
+    timestamp: ago(45).toISOString(),
   },
 ];
 

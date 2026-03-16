@@ -20,23 +20,13 @@ import java.io.IOException;
 
 import com.loci.loci_backend.common.store.domain.aggregate.File;
 import com.loci.loci_backend.common.store.infrastructure.primary.mapper.RestFileMapper;
-import com.loci.loci_backend.core.conversation.infrastructure.primary.payload.RestMessage;
 import com.loci.loci_backend.core.messaging.application.MessagingApplicationService;
 import com.loci.loci_backend.core.messaging.domain.aggregate.Attachment;
-import com.loci.loci_backend.core.messaging.domain.aggregate.Message;
-import com.loci.loci_backend.core.messaging.domain.aggregate.MessageReceiveAcknowledgement;
-import com.loci.loci_backend.core.messaging.domain.aggregate.SendMessageRequest;
-import com.loci.loci_backend.core.messaging.domain.repository.DirectMessagePublisher;
 import com.loci.loci_backend.core.messaging.infrastructure.primary.mapper.RestMessageMapper;
-import com.loci.loci_backend.core.messaging.infrastructure.primary.payload.RestAcknowledgeReceiveMessage;
 import com.loci.loci_backend.core.messaging.infrastructure.primary.payload.RestAttachment;
-import com.loci.loci_backend.core.messaging.infrastructure.primary.payload.RestSendMessageRequest;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -52,46 +42,6 @@ public class MessageResource {
   private final MessagingApplicationService messagingService;
   private final RestMessageMapper mapper;
   private final RestFileMapper restFileMapper;
-  private final DirectMessagePublisher messagePublisher;
-
-  @PostMapping("/individual/send")
-  public ResponseEntity<RestMessage> sendIndividualMessage(
-      @RequestBody RestSendMessageRequest restRequest) {
-
-    SendMessageRequest sendMessageRequest = mapper.toDomain(restRequest);
-
-    Message response = messagingService.sendMessage(sendMessageRequest);
-
-    RestMessage restResponse = mapper.from(response);
-
-    return ResponseEntity.status(HttpStatus.CREATED).body(restResponse);
-  }
-
-  @PatchMapping("/individual/receive")
-  public ResponseEntity<RestMessage> acknowledgeReceiveMessage(
-      @RequestBody RestAcknowledgeReceiveMessage restRequest) {
-
-    MessageReceiveAcknowledgement messageReceiveRequest = mapper.toDomain(restRequest);
-
-    Message response = messagingService.markMessageDelivered(messageReceiveRequest);
-
-    RestMessage restResponse = mapper.from(response);
-
-    return ResponseEntity.status(HttpStatus.OK).body(restResponse);
-  }
-
-  @PostMapping("/group/send")
-  public ResponseEntity<RestMessage> sendGroupMessage(
-      @RequestBody RestSendMessageRequest restRequest) {
-
-    SendMessageRequest sendMessageRequest = mapper.toDomain(restRequest);
-
-    Message response = messagingService.sendMessage(sendMessageRequest);
-
-    RestMessage restResponse = mapper.from(response);
-
-    return ResponseEntity.status(HttpStatus.CREATED).body(restResponse);
-  }
 
   @PostMapping("/attachment")
   public ResponseEntity<RestAttachment> sendFileAttachment(
@@ -103,7 +53,5 @@ public class MessageResource {
     return ResponseEntity.ok(restResponse);
 
   }
-
-  // TODO: handle get attachment metadata
 
 }

@@ -19,7 +19,6 @@ package com.loci.loci_backend.core.messaging.domain.aggregate;
 
 import com.loci.loci_backend.common.user.domain.vo.PublicId;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

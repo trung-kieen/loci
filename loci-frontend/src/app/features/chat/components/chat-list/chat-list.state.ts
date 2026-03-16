@@ -15,11 +15,11 @@
  */
 
 import { computed, inject, Injectable, signal } from "@angular/core";
-import { ChatFilter, ConversationAddedPayload, IChat, MessageStateChangedPayload, ArrvalMessage as ArrivalMessage, PresenceChangedPayload } from "../models/chat.model";
-import { ConversationService } from "./conversation-service";
-import { LoggerService } from "../../../core/services/logger.service";
+import { ChatFilter, ConversationAddedPayload, IChat, MessageStateChangedPayload, ArrvalMessage as ArrivalMessage, PresenceChangedPayload } from "../../models/chat.model";
+import { ConversationService } from "../../service/conversation-service";
+import { LoggerService } from "../../../../core/services/logger.service";
 
-interface ChatListState {
+interface IChatListState {
   conversations: IChat[];
   searchQuery: string;
   activeFilter: ChatFilter;
@@ -27,7 +27,7 @@ interface ChatListState {
   error: string | null;
 }
 
-const INITIAL_STATE: ChatListState = {
+const INITIAL_STATE: IChatListState = {
   conversations: [],
   searchQuery: '',
   activeFilter: 'inbox',
@@ -39,12 +39,12 @@ const INITIAL_STATE: ChatListState = {
 
 
 @Injectable({ providedIn: 'root' })
-export class ChatListStateService {
+export class ChatListState {
   private conversationService = inject(ConversationService);
   private logger = inject(LoggerService).getLogger('ChatListState');
 
   // raw state
-  private readonly state = signal<ChatListState>(INITIAL_STATE);
+  private readonly state = signal<IChatListState>(INITIAL_STATE);
 
   // public slices
   readonly isLoading = computed(() => this.state().isLoading);
@@ -243,7 +243,7 @@ export class ChatListStateService {
   // Private helpers
 
   // Shallow-merge into top-level state
-  private patch(partial: Partial<ChatListState>): void {
+  private patch(partial: Partial<IChatListState>): void {
     this.state.update((s) => ({ ...s, ...partial }));
   }
 

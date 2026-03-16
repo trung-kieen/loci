@@ -46,26 +46,25 @@ import {
 } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
-import { ChatApiService } from '../../service/chat-api.service';
+import { ConversationApi } from '../../service/conversation-api.service';
 import { ChatFeatures, ChatHeader } from '../shared/chat-header/chat-header';
 import { MessageBubble } from '../shared/message-bubble/message-bubble';
 import { ISendMessageData, MessageInput } from '../shared/message-input/message-input';
 import { ErrorAlert } from '../shared/error-alert/error-alert';
-import { GroupConversationStateService } from '../../service/group-conversation-state.service';
 import { IChatError, IGroupChatInfo } from '../../models/chat.model';
 import {
   IAttachment,
   IConversationMessage,
-  IMarkMessageSeenRequest,
   IMessage,
   IMessageStatusEvent,
   ISendMessageRequest,
 } from '../../models/message.model';
 import { LoggerService } from '../../../../core/services/logger.service';
-import { ChatListStateService } from '../../service/chat-list-state.service';
-import { IUserPresence } from '../../service/chat-api.service';
+import { IUserPresence } from '../../service/conversation-api.service';
 import { SystemEventBubble } from '../system-event-bubble/system-event-bubble';
 import { ConversationItem, IGroupMemberEvent, IGroupParticipant, IGroupUpdatedEvent, ISystemEventMessage } from '../../models/group-chat.models';
+import { ChatListState } from '../chat-list/chat-list.state';
+import { GroupConversationState } from './group-conversation.state';
 
 @Component({
   selector: 'app-group-conversation',
@@ -78,7 +77,7 @@ import { ConversationItem, IGroupMemberEvent, IGroupParticipant, IGroupUpdatedEv
     MessageInput,
     ErrorAlert,
   ],
-  providers: [GroupConversationStateService],
+  providers: [GroupConversationState],
   templateUrl: './group-conversation.html',
 })
 export class GroupConversation implements OnInit {
@@ -94,13 +93,13 @@ export class GroupConversation implements OnInit {
 
   // ── Injections ─────────────────────────────────────────────────────────────
 
-  readonly state = inject(GroupConversationStateService);
+  readonly state = inject(GroupConversationState);
 
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
-  private readonly chatApiService = inject(ChatApiService);
-  private readonly chatListState = inject(ChatListStateService);
+  private readonly chatApiService = inject(ConversationApi);
+  private readonly chatListState = inject(ChatListState);
   private readonly logger = inject(LoggerService).getLogger('GroupConversation');
 
   private readonly messageArea = viewChild.required<ElementRef<HTMLDivElement>>('messageArea');
@@ -192,29 +191,29 @@ export class GroupConversation implements OnInit {
 
   // ── Socket stream builders (Section 6.3) ──────────────────────────────────
 
-  private buildSocketStreams(groupId: string): Observable<never> {
+  private buildSocketStreams(conversationId: string): Observable<never> {
     return merge(
-      this.handleMessageEvents(groupId),
-      this.handleMemberEvents(groupId),
-      this.handleGroupMetaEvents(groupId),
+      this.handleMessageEvents(conversationId),
+      // this.handleMemberEvents(groupId, conversationId),
+      // this.handleGroupMetaEvents(groupId, conversationId),
     ).pipe(ignoreElements());
   }
 
-  private handleMessageEvents(groupId: string) {
+  private handleMessageEvents(conversationId: string) {
     return merge(
-      this.chatApiService.group.onReceiveNewMessage(groupId).pipe(
+      this.chatApiService.group.onReceiveNewMessage(conversationId).pipe(
         tap(m => this.onReceiveMessage(m))
       ),
-      this.chatApiService.group.onMessageSent(groupId).pipe(
+      this.chatApiService.group.onMessageSent(conversationId).pipe(
         tap(event => {
-          this.onMessageStatusUpdate(event);
-          this.chatListState.onMessageSent(groupId);
+          this.onMessageSentNotify(event);
+          this.chatListState.onMessageSent(conversationId);
         })
       ),
-      this.chatApiService.group.onMessageDelivered(groupId).pipe(
+      this.chatApiService.group.onMessageDelivered(conversationId).pipe(
         tap(event => {
-          this.onMessageStatusUpdate(event);
-          this.chatListState.onMessageDelivered(groupId);
+          this.onMessageDeliveredNotify(event);
+          this.chatListState.onMessageDelivered(conversationId);
         })
       ),
     );
@@ -303,7 +302,7 @@ export class GroupConversation implements OnInit {
         actorUserId: '',
         actorDisplayName: '',
         targetDisplayName: event.groupName,
-        occurredAt: new Date().toISOString(),
+        timestamp: new Date().toISOString(),
       });
     }
   }
@@ -632,6 +631,9 @@ export class GroupConversation implements OnInit {
       )
       .subscribe();
   }
+
+
+
   onMessageStatusUpdate(event: IMessageStatusEvent): void {
     this.logger.info('Message status update', event.messageId, event.status);
     this.state.updateMessage(event.messageId, { messageState: event.status });
@@ -648,7 +650,7 @@ export class GroupConversation implements OnInit {
       kind,
       actorUserId: event.userId,
       actorDisplayName: event.fullname,
-      occurredAt: event.occurredAt,
+      timestamp: event.occurredAt,
     };
   }
 }

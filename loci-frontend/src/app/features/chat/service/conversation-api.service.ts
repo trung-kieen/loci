@@ -23,9 +23,9 @@ import {
 } from '../models/message.model';
 import { IPaginationParams } from '../models/chat.model';
 import { WebApiService } from '../../../core/api/web-api.service';
-import { DirectChatApiService } from './direct-chat-api.service';
-import { MessageObservableService } from './message-observable.service';
-import { GroupChatApiService } from './group-chat-api.service';
+import { DirectMessageSubscriber } from '../components/direct-conversation/direct-message.subscriber';
+import { DirectMessageApi } from '../components/direct-conversation/direct-message.api';
+import { GroupMessageApi } from '../components/group-conversation/group-message.api';
 
 export interface IUserPresence {
   userId: string;
@@ -36,17 +36,17 @@ export interface IUserPresence {
 @Injectable({
   providedIn: 'root',
 })
-export class ChatApiService {
+export class ConversationApi {
 
   // facade
-  public readonly direct = inject(DirectChatApiService);
+  public readonly direct = inject(DirectMessageApi);
 
   // facade
-  readonly group = inject(GroupChatApiService);
+  readonly group = inject(GroupMessageApi);
 
   private apiService = inject(WebApiService);
 
-  private messageObservable = inject(MessageObservableService);
+  private directMessageSubscriber = inject(DirectMessageSubscriber);
 
 
 
@@ -60,7 +60,7 @@ export class ChatApiService {
 
 
   onReceiveNewMessage() {
-    return this.messageObservable.directMessageReceive$();
+    return this.directMessageSubscriber.messageReceive$();
   }
 
 }

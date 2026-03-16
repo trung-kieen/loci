@@ -1,30 +1,21 @@
-// service/group-chat-api.service.ts
-
 import { Injectable, inject } from '@angular/core';
-import { Observable, EMPTY, tap } from 'rxjs';
-
-import {
-  IConversationMessage,
-  IMarkMessageSeenRequest,
-  IMarkMessageSeenResponse,
-  IMessageStatusEvent,
-  ISendMessageRequest,
-  IAttachment,
-  IMessage,
-} from '../models/message.model';
-import { IUserPresence } from './chat-api.service';
-import { IGroupChatInfoMeta, IGroupParticipant, IGroupMemberEvent, IGroupParticipantsResponse, IGroupOnlineStatusResponse, IGroupUpdatedEvent } from '../models/group-chat.models';
-import { LoggerService } from '../../../core/services/logger.service';
-import { WebApiService } from '../../../core/api/web-api.service';
-import { ChatListStateService } from './chat-list-state.service';
+import { Observable, EMPTY, tap, of, delay } from 'rxjs';
+import { LoggerService } from '../../../../core/services/logger.service';
+import { WebApiService } from '../../../../core/api/web-api.service';
+import { ChatListState } from '../chat-list/chat-list.state';
+import { IGroupChatInfoMeta, IGroupMemberEvent, IGroupOnlineStatusResponse, IGroupParticipantsResponse, IGroupUpdatedEvent } from '../../models/group-chat.models';
+import { IAttachment, IConversationMessage, IMarkMessageSeenRequest, IMarkMessageSeenResponse, IMessage, IMessageStatusEvent, ISendMessageRequest } from '../../models/message.model';
+import { IUserPresence } from '../../service/conversation-api.service';
+import { GroupMessageSubscriber } from './group-message.subscriber';
 
 @Injectable({ providedIn: 'root' })
-export class GroupChatApiService {
+export class GroupMessageApi {
 
   private readonly loggerService = inject(LoggerService);
   private readonly logger = this.loggerService.getLogger("GroupChatApiService");
   private readonly apiService = inject(WebApiService);
-  private readonly chatListStateService = inject(ChatListStateService);
+  private readonly chatListStateService = inject(ChatListState);
+  private readonly messageSubscriber = inject(GroupMessageSubscriber);
 
   // ── REST ────────────────────────────────────────────────────────────────────
 
@@ -73,79 +64,49 @@ export class GroupChatApiService {
   }
 
   sendMessage(dto: ISendMessageRequest): Observable<IMessage> {
-    const newMessage = this.apiService.post<IMessage>("/messages/individual/send", dto) // TODO: change to group endpoint
-
-      /*
-       * If sending message success then update the message is sending in chat list
-       */
+    const newMessage = this.apiService.post<IMessage>("/messages/group/send", dto)
       .pipe(
         tap(message => {
           this.chatListStateService.onMessageSending(message);
         })
       )
-
     return newMessage;
   }
 
-  /**
-   * POST /api/v1/groups/:groupId/messages/seen
-   */
   markAsSeen(req: IMarkMessageSeenRequest): Observable<IMarkMessageSeenResponse> {
     return this.apiService.post<IMarkMessageSeenResponse>(
       `conversations/${req.conversationId}/messages/seen`,
-      { lastSeenMessageId: req.lastSeenMessageId }
+      req
     );
   }
 
-  /**
-   * POST /api/v1/groups/:groupId/attachments
-   */
-  uploadAttachment(groupId: string, file: File): Observable<IAttachment> {
-    const form = new FormData();
-    form.append('file', file);
-    return this.apiService.post<IAttachment>(
-      `/conversations/${groupId}/attachments`,
-      form
-    );
+  uploadAttachment(
+    conversationId: string,
+    file: File,
+  ): Observable<IAttachment> {
+
+    const formData = new FormData();
+    formData.set("attachmentFile", file)
+    return this.apiService.postForm<IAttachment>("/messages/attachment", formData);
   }
 
-  /**
-   * GET /api/v1/attachments/download?url=...
-   * Shared endpoint — same contract as direct.
-   */
-  downloadAttachment(url: string): Observable<Blob> {
-    return this.apiService.get('/attachments/download', {
-      params: { url },
-      // responseType: 'blob',
-    });
+  // TODO: real download
+  downloadAttachment(attachmentId: string): Observable<Blob> {
+    // Mock blob download
+    const blob = new Blob(['mock file content'], { type: 'application/pdf' });
+    return of(blob).pipe(delay(500));
   }
 
-  // ── Socket subscriptions ───────────────────────────────────────────────────
-  //
-  // These are stubs — replace the Subject-based pattern with your actual
-  // socket client (Socket.io / native WebSocket / SignalR / etc.).
-  // The Subject approach lets components subscribe identically to the real impl.
-
-  /**
-   * Emits when another member sends a message to the group.
-   */
-  onReceiveNewMessage(groupId: string): Observable<IConversationMessage> {
-    return this.socketEvent<IConversationMessage>(groupId, 'group:message:received');
+  onReceiveNewMessage(conversationId: string): Observable<IMessage> {
+    return this.messageSubscriber.messageReceiveInConversation$(conversationId);
   }
 
-  /**
-   * Emits when the server confirms a message this client sent has been accepted.
-   * Returns IMessageStatusEvent — not IMessage — consistent with your DTO.
-   */
-  onMessageSent(groupId: string): Observable<IMessageStatusEvent> {
-    return this.socketEvent<IMessageStatusEvent>(groupId, 'group:message:sent');
+  onMessageSent(conversationId: string): Observable<IMessage> {
+    return this.messageSubscriber.messageSentInConversation$(conversationId);
   }
 
-  /**
-   * Emits when the server confirms a message has been delivered to recipients.
-   */
-  onMessageDelivered(groupId: string): Observable<IMessageStatusEvent> {
-    return this.socketEvent<IMessageStatusEvent>(groupId, 'group:message:delivered');
+  onMessageDelivered(conversationId: string): Observable<IMessage> {
+    return this.messageSubscriber.messageDeliveredInConversation$(conversationId);
   }
 
   /**

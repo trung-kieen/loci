@@ -27,7 +27,7 @@ export class SystemEventBubble {
 
   readonly time = computed(() => {
     const e = this.event();
-    return new Date(e.occurredAt).toLocaleTimeString([], {
+    return new Date(e.timestamp).toLocaleTimeString([], {
       hour: '2-digit',
       minute: '2-digit',
     });

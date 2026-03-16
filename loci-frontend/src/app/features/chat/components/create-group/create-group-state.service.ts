@@ -15,12 +15,6 @@
  */
 
 import { signal, inject, computed, Injectable } from '@angular/core';
-import {
-  IChatReference,
-  ICreatedGroupResponse,
-  ICreateGroupRequest,
-  IFriend,
-} from '../models/chat.model';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import {
   debounceTime,
@@ -33,15 +27,16 @@ import {
   Observable,
   EMPTY,
 } from 'rxjs';
-import { FriendManagerService } from '../../contact/services/friend-manager.service';
-import { GroupManager } from './group-manager';
-import { LoggerService } from '../../../core/services/logger.service';
 import { HttpErrorResponse } from '@angular/common/http';
+import { ICreatedGroupResponse, ICreateGroupRequest, IFriend } from '../../models/chat.model';
+import { FriendManagerService } from '../../../contact/services/friend-manager.service';
+import { GroupManager } from '../../service/group-manager';
+import { LoggerService } from '../../../../core/services/logger.service';
 
 @Injectable({
   providedIn: 'root',
 })
-export class CreateGroupService {
+export class CreateGroupStateService {
   // State Signals
   groupName = signal<string>('');
   image = signal<File | null>(null);
@@ -103,7 +98,7 @@ export class CreateGroupService {
 
   //  Remove throwing errors, handle validation in component
   createGroup(): Observable<ICreatedGroupResponse> {
-    const groupData: ICreateGroupRequest = {
+    const groupData: ICreateGroupRequest= {
       groupName: this.groupName(),
       memberIds: this.selectedFriends().map((m) => m.userId),
     };

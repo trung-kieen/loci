@@ -42,17 +42,17 @@ import {
 } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
-import { ChatApiService, IUserPresence } from '../../service/chat-api.service';
+import { ConversationApi, IUserPresence } from '../../service/conversation-api.service';
 import { ChatFeatures, ChatHeader } from '../shared/chat-header/chat-header';
 import { MessageBubble } from '../shared/message-bubble/message-bubble';
 import { ISendMessageData, MessageInput } from '../shared/message-input/message-input';
 import { ErrorAlert } from '../shared/error-alert/error-alert';
-import { DirectConversationStateService } from '../../service/direct-conversation-state.service';
 import { ChatInfo, IChatError } from '../../models/chat.model';
-import { IAttachment, IConversationMessage, IMarkMessageSeenRequest, IMessage, IMessageSeenEvent, ISendMessageRequest } from '../../models/message.model';
+import { IAttachment, IConversationMessage, IMarkMessageSeenRequest, IMessage, IMessageSeenEvent } from '../../models/message.model';
 import { FriendshipStatus } from '../../../contact/models/contact.model';
 import { LoggerService } from '../../../../core/services/logger.service';
-import { ChatListStateService } from '../../service/chat-list-state.service';
+import { ChatListState } from '../chat-list/chat-list.state';
+import { DirectConversationState } from './direct-conversation.state';
 
 @Component({
   selector: 'app-direct-conversation',
@@ -69,13 +69,13 @@ export class DirectConversation implements OnInit {
     showVideo: true,
   };
 
-  readonly state = inject(DirectConversationStateService);
+  readonly state = inject(DirectConversationState);
 
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
-  private readonly chatApiService = inject(ChatApiService);
-  private readonly chatListStateService = inject(ChatListStateService);
+  private readonly chatApiService = inject(ConversationApi);
+  private readonly chatListStateService = inject(ChatListState);
   private readonly logger = inject(LoggerService).getLogger('DirectConversation');
 
   private readonly messageArea = viewChild.required<ElementRef<HTMLDivElement>>('messageArea');

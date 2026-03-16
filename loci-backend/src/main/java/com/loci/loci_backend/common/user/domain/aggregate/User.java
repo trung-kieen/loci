@@ -29,6 +29,7 @@ import com.loci.loci_backend.common.user.domain.vo.UserLastname;
 import com.loci.loci_backend.common.validation.domain.Assert;
 import com.loci.loci_backend.core.identity.domain.aggregate.UserFullname;
 import com.loci.loci_backend.core.identity.domain.vo.ProfileBio;
+import com.loci.loci_backend.core.messaging.domain.aggregate.Message;
 
 import org.jilt.Builder;
 import org.jilt.BuilderStyle;
@@ -170,6 +171,10 @@ public class User {
 
   public UserFullname getFullname() {
     return UserFullname.from(this.firstname, this.lastname);
+  }
+  public boolean isOwner(Message message){
+    return dbId.equals(message.getSenderId());
+
   }
 
   @Override

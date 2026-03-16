@@ -16,26 +16,6 @@
 
 package com.loci.loci_backend.core.messaging.domain.repository;
 
-import com.loci.loci_backend.core.messaging.domain.aggregate.Message;
-import com.loci.loci_backend.core.messaging.domain.vo.UserSubcriberId;
-
-public interface DirectMessageNotifier extends MessageNotifier {
-
-  /**
-   * Notify to sender of message when message send to sent success
-   */
-  public void notifyMessageSent(UserSubcriberId senderId, Message message);
-
-  /**
-   * Notify to sender of message when the target receiver device obtain the
-   * message
-   */
-  public void notifyMessageDelivered(UserSubcriberId senderId, Message message);
-
-  /**
-   * Notify to sender of message when the target receiver active clict to
-   * conversation and other explicit action
-   */
-  public void notifyMessageSeen(UserSubcriberId senderId, Message message);
+public interface DirectMessageNotifier extends SenderNotifyMessageStatusChange {
 
 }

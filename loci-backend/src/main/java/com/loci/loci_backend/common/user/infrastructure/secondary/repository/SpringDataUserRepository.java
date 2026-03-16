@@ -31,7 +31,6 @@ import com.loci.loci_backend.common.user.infrastructure.secondary.entity.UserEnt
 import com.loci.loci_backend.common.user.infrastructure.secondary.mapper.UserEntityMapper;
 import com.loci.loci_backend.common.validation.domain.ResourceNotFoundException;
 import com.loci.loci_backend.core.discovery.domain.vo.UserSearchCriteria;
-import com.loci.loci_backend.core.discovery.infrastructure.secondary.mapper.ContactProfileEntityMapper;
 import com.loci.loci_backend.core.identity.infrastructure.secondary.specification.UserSpecifications;
 
 import org.springframework.data.domain.Page;
@@ -45,7 +44,6 @@ import lombok.RequiredArgsConstructor;
 public class SpringDataUserRepository implements UserRepository {
   private final JpaUserRepository repository;
   private final UserEntityMapper userEntityMapper;
-  private final ContactProfileEntityMapper contactProfileMapper;
 
   @Override
   public boolean existByEmail(UserEmail email) {
@@ -76,13 +74,6 @@ public class SpringDataUserRepository implements UserRepository {
     return userEntityMapper.toDomain(entityPage);
   }
 
-  // @Override
-  // public Page<User> getUsersFromIds(List<UserDBId> ids, Pageable pageable) {
-  // List<Long> userIds = ids.stream().map(UserDBId::value).toList();
-  // Page<UserEntity> entities = repository.findAllById(userIds, pageable);
-  //
-  // return userEntityMapper.toDomain(entities);
-  // }
 
   @Override
   public List<User> getAllByIds(List<UserDBId> ids) {
@@ -91,12 +82,6 @@ public class SpringDataUserRepository implements UserRepository {
     return userEntityMapper.toDomain(entities);
   }
 
-  // @Override
-  // public Page<User> getPageByIds(List<UserDBId> ids, Pageable pageable) {
-  // List<Long> userIds = ids.stream().map(UserDBId::value).toList();
-  // Page<UserEntity> entities = repository.findByIdIn(userIds, pageable);
-  // return userEntityMapper.toDomain(entities);
-  // }
 
   @Override
   public User getByPrincipalThrow(CurrentUser principal) {

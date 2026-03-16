@@ -30,13 +30,13 @@ import lombok.RequiredArgsConstructor;
 @Loggable
 @SecondaryPort
 public class SpringWebSocketDirectMessagePublisher implements DirectMessagePublisher {
-  private final STOMPMessageSendingOperation messageOperations;
+  private final STOMPMessageSendingOperations messageOperations;
   private final STOMPMessageMapper primaryMapper;
 
   @Override
   public void forward(UserSubcriberId forwardId, Message message) {
     STOMPMessage restMessage = primaryMapper.from(message);
-    messageOperations.sendIndividualUser(forwardId.value(), restMessage);
+    messageOperations.sendDirectMessage(forwardId.value(), restMessage);
   }
 
 

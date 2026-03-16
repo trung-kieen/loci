@@ -39,4 +39,8 @@ public record MessageStatus(
     return new MessageStatus(MessageState.DELIVERED, Instant.now());
   }
 
+  public boolean isDelivered() {
+    return this.messageState().equals(MessageState.DELIVERED);
+  }
+
 }

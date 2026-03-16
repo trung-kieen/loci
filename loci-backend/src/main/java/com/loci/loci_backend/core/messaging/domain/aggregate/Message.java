@@ -72,14 +72,13 @@ public class Message {
 
   // private MediaName mediaName;
 
-
   @Builder(style = BuilderStyle.STAGED)
   public Message(MessageId messageId, PublicId publicId, ConversationId conversationId, PublicId conversationPublicId,
       UserDBId senderId, PublicId senderPublicId, MessageContent content, Instant sentAt, MessageStatus status,
       MessageId replyToMessageId, PublicId replyToMessagePublicId, boolean deleted, Instant deliveredAt, Instant readAt,
       Instant lastModifiedDate
-      // , MediaUrl mediaUrl, MediaName mediaName
-      ) {
+  // , MediaUrl mediaUrl, MediaName mediaName
+  ) {
     this.messageId = messageId;
     this.publicId = publicId;
     this.conversationId = conversationId;
@@ -152,6 +151,19 @@ public class Message {
       throw new IllegalStateException(
           String.format("Cannot transition from %s to %s", status.messageState(), newStatus));
     }
+  }
+
+  public boolean canMarkAsDelivered() {
+    return this.status.canTransitionTo(MessageState.DELIVERED);
+  }
+
+  public boolean canMarkAsSeen() {
+    return this.status.canTransitionTo(MessageState.DELIVERED);
+  }
+
+
+  public boolean isDelivered() {
+    return this.status.isDelivered();
   }
 
   public boolean isSenderUser(User user) {

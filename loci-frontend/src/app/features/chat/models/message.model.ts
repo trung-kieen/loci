@@ -82,6 +82,7 @@ export interface IMessageSeenEvent {
   conversationId: string
 }
 
+
 export interface IMessageStatusEvent {
   messageId: string;
   status: MessageState;

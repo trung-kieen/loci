@@ -15,15 +15,15 @@
  */
 
 import { inject, Injectable } from "@angular/core";
-import { WebSocketService } from "../../../core/socket/websocket.service";
-import { IMessage, IMessageStatusEvent } from "../models/message.model";
-import { filter, Observable, tap } from "rxjs";
-import { LoggerService } from "../../../core/services/logger.service";
-import { WebApiService } from "../../../core/api/web-api.service";
+import { filter, merge, tap } from "rxjs";
+import { LoggerService } from "../../../../core/services/logger.service";
+import { WebSocketService } from "../../../../core/socket/websocket.service";
+import { WebApiService } from "../../../../core/api/web-api.service";
+import { IMessage, IMessageStatusEvent } from "../../models/message.model";
 @Injectable({
   providedIn: 'root'
 })
-export class MessageObservableService {
+export class GroupMessageSubscriber {
 
   private loggerService = inject(LoggerService);
   private logger = this.loggerService.getLogger("MessageObservableService");
@@ -31,11 +31,30 @@ export class MessageObservableService {
   private apiService = inject(WebApiService);
 
 
-  /**
-   * Received message and send ack message to server
-   */
-  public directMessageReceive$() {
-    return this.wsService.subscribe<IMessage>("/user/queue/messages.receive").pipe(
+  public messageReceive$(conversationIds: string[]) {
+    const stream$ = conversationIds.map((convId) => {
+      return this.messageReceiveInConversation$(convId);
+    })
+
+    return merge(...stream$);
+
+  }
+
+  private ackReceiveMessage(messageId: string) {
+    const request = {
+      messageId,
+      // conversationId,
+      // status: 'delivered'
+    }
+    this.logger.debug("Ack receive message to server ", messageId);
+    // TODO: implment api and test
+    return this.apiService.patch("/messages/group/receive", request);
+  }
+
+
+  public messageReceiveInConversation$(targetConversationId: string) {
+    return this.wsService.subscribe<IMessage>(`/topic/messages.receive-${targetConversationId}`).pipe(
+      // TODO: filter message is not current user
       tap(message => {
         // sent acknowledgement user receive message
         this.ackReceiveMessage(message.messageId).subscribe({
@@ -48,30 +67,12 @@ export class MessageObservableService {
     )
   }
 
-  private ackReceiveMessage(messageId: string) {
-    const request = {
-      messageId,
-      // conversationId,
-      // status: 'delivered'
-    }
-    this.logger.debug("Ack receive message to server ", messageId);
-    // TODO: implment api and test
-    return this.apiService.patch("/messages/individual/receive", request);
-  }
-
-
-  public directMessageReceiveInConversation$(targetConversationId: string) {
-    return this.directMessageReceive$().pipe(
-      filter(m => m.conversationId === targetConversationId)
-    )
-  }
-
-  public directMessageSent() {
+  public messageSent() {
     return this.wsService.subscribe<IMessage>("/user/queue/messages.sent");
   }
 
-  public directMessageSentInConversation$(targetConversationId: string) {
-    return this.directMessageSent().pipe(
+  public messageSentInConversation$(targetConversationId: string) {
+    return this.messageSent().pipe(
       filter(m => m.conversationId === targetConversationId)
     )
   }
@@ -79,24 +80,23 @@ export class MessageObservableService {
   /**
    * The message user sent to other is received the target user
    */
-  public directMessageDelivered$() {
+  public messageDelivered$() {
     return this.wsService.subscribe<IMessage>("/user/queue/messages.delivered")
   }
 
-  public directMessageDeliveredInConversation$(targetConversationId: string) {
-    return this.directMessageDelivered$().pipe(
+  public messageDeliveredInConversation$(targetConversationId: string) {
+    return this.messageDelivered$().pipe(
       filter(u => u.conversationId === targetConversationId)
     )
   }
 
 
-  public directMessageSeen$() {
-    // TODO: create seprate dto
+  public messageSeen$() {
     return this.wsService.subscribe<IMessageStatusEvent>("/user/queue/messages.seen");
   }
 
-  public directMessageSeenInConversation$(targetConversationId: string) {
-    return this.directMessageSeen$().pipe(
+  public messageSeenInConversation$(targetConversationId: string) {
+    return this.messageSeen$().pipe(
       filter(u => u.conversationId === targetConversationId)
     )
   }

@@ -16,6 +16,7 @@
 
 package com.loci.loci_backend.core.messaging.domain.repository;
 
-public interface GroupMessageNotifier extends MessageNotifier {
+public interface GroupMessageNotifier extends SenderNotifyMessageStatusChange {
+
 
 }

@@ -31,7 +31,7 @@ import lombok.RequiredArgsConstructor;
 @SecondaryPort
 public class SpringWebSocketGroupMessagePublisher implements GroupMessagePublisher {
 
-  private final STOMPMessageSendingOperation messageOperations;
+  private final STOMPMessageSendingOperations messageOperations;
   private final STOMPMessageMapper primaryMapper;
 
   @Override

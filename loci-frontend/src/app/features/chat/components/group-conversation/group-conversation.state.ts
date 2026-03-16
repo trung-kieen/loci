@@ -1,13 +1,10 @@
-
-// service/group-conversation-state.service.ts
-
 import { Injectable, computed, inject, signal } from '@angular/core';
-import { BaseConversationStateService } from './base-conversation-state.service';
-import { ConversationItem, IGroupConversationInfo, IGroupParticipant, ISystemEventMessage } from '../models/group-chat.models';
-import { LoggerService } from '../../../core/services/logger.service';
+import { BaseConversationStateService } from '../../service/base-conversation-state.service';
+import { LoggerService } from '../../../../core/services/logger.service';
+import { ConversationItem, IGroupConversationInfo, IGroupParticipant, IGroupParticipantsResponse, ISystemEventMessage } from '../../models/group-chat.models';
 
 @Injectable()
-export class GroupConversationStateService extends BaseConversationStateService {
+export class GroupConversationState extends BaseConversationStateService {
   private loggerService = inject(LoggerService);
   private logger = this.loggerService.getLogger("GroupConversationStateService");
 
@@ -46,38 +43,51 @@ export class GroupConversationStateService extends BaseConversationStateService 
     const messages = this.messages();
     const events = this._systemEvents();
 
-    this.logger.debug("Messages ", messages);
-
-    // Merge messages and system events into a single chronological timeline
     const messageItems: ConversationItem[] = messages.map(m => ({
       kind: 'message' as const,
       data: m,
     }));
 
-    this.logger.debug("Messages Item ", messageItems);
     const systemItems: ConversationItem[] = events.map(e => ({
       kind: 'system' as const,
       data: e,
     }));
-    this.logger.debug("System Item ", systemItems);
 
     try {
-
       return [...messageItems, ...systemItems].sort((a, b) => {
-        const aTime = a.kind === 'message'
-          ? a.data.timestamp.getTime()
-          : new Date(a.data.occurredAt).getTime();
-        const bTime = b.kind === 'message'
-          ? b.data.timestamp.getTime()
-          : new Date(b.data.occurredAt).getTime();
-        // return aTime - bTime;
-        return new Date(aTime).getTime() - new Date(bTime).getTime();
+        const aTime = this.getConversationItemTime(a);
+        const bTime = this.getConversationItemTime(b);
+
+        // Defensive: catch NaN from invalid dates
+        if (isNaN(aTime) || isNaN(bTime)) {
+          throw new Error(`Invalid timestamp in sort: a=${aTime}, b=${bTime}`);
+        }
+
+        return aTime - bTime;
       });
     } catch (e) {
-      this.logger.error(JSON.stringify(e));
+      this.logger.error('Sort failed:', e);
+      // Return chronological-ish: messages first, then events (or vice versa)
+      return [...messageItems, ...systemItems];
     }
-    return [...messageItems, ...systemItems];
   });
+
+  private getConversationItemTime(item: ConversationItem): number {
+    if (item.kind === 'message') {
+      // IConversationMessage.timestamp is Date
+      return item.data.timestamp.getTime();
+    }
+
+    // ISystemEventMessage.timestamp is string
+    const ts = item.data.timestamp;
+    const parsed = new Date(ts).getTime();
+
+    if (isNaN(parsed)) {
+      this.logger.error(`Invalid timestamp string: "${ts}"`, item.data);
+    }
+
+    return parsed;
+  }
 
   // ── Mutators ───────────────────────────────────────────────────────────────
 

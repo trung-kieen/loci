@@ -16,7 +16,7 @@
 
 import { inject, Injectable } from "@angular/core";
 import { WebSocketService } from "../../../core/socket/websocket.service";
-import { IUserPresence } from "../../chat/service/chat-api.service";
+import { IUserPresence } from "../../chat/service/conversation-api.service";
 
 @Injectable({
   providedIn: 'root'

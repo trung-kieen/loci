@@ -43,7 +43,11 @@ public class MessagingApplicationService {
     return messageManager.getConversationMessages(query);
   }
 
-  public Message sendMessage(SendMessageRequest request) {
+  public Message sendDirectMessage(SendMessageRequest request) {
+    return messageSendingService.prepareSendingMessage(request);
+  }
+
+  public Message sendGroupMessage(SendMessageRequest request) {
     return messageSendingService.prepareSendingMessage(request);
   }
 
@@ -56,16 +60,24 @@ public class MessagingApplicationService {
   }
 
   public void handleDirectMessageDelivery(MessageSentEvent event) {
-    messageSendingService.sendPrivateMessage(event);
+    messageSendingService.sendDirectMessage(event);
   }
 
-  public Message markMessageDelivered(MessageReceiveAcknowledgement messageReceiveRequest) {
+  public Message markDirectMessageDelivered(MessageReceiveAcknowledgement messageReceiveRequest) {
 
-    return messageTrackingStateService.markMessageDelivered(messageReceiveRequest);
+    return messageTrackingStateService.markDirectMessageDelivered(messageReceiveRequest);
   }
 
-  public void markSeenMessage(MarkMessageSeenRequest request) {
-    messageTrackingStateService.markSeenMessage(request);
+  public Message markGroupMessageDelivered(MessageReceiveAcknowledgement messageReceiveRequest) {
+
+    return messageTrackingStateService.markGroupMessageDelivered(messageReceiveRequest);
   }
 
+  public void markDirectMessageSeen(MarkMessageSeenRequest request) {
+    messageTrackingStateService.markDirectMessageSeen(request);
+  }
+
+  public void markGroupMessageSeen(MarkMessageSeenRequest request) {
+    messageTrackingStateService.markGroupMessageSeen(request);
+  }
 }

@@ -19,10 +19,10 @@ import { Router, RouterModule } from '@angular/router';
 import { ChatFilter } from '../../models/chat.model';
 import { CommonModule, TitleCasePipe } from '@angular/common';
 import { MessageType } from '../../models/message.model';
-import { ChatListStateService } from '../../service/chat-list-state.service';
 import { MessageTimePipe } from '../../pipe/message-time.pipe';
 import { MessageStateIndicator } from '../shared/message-state-indicator/message-state-indicator';
-import { ChatApiService } from '../../service/chat-api.service';
+import { ConversationApi } from '../../service/conversation-api.service';
+import { ChatListState } from './chat-list.state';
 
 
 
@@ -35,8 +35,8 @@ import { ChatApiService } from '../../service/chat-api.service';
 export class ChatList implements OnInit {
   private router = inject(Router);
 
-  protected readonly chatListState = inject(ChatListStateService);
-  private readonly chatApi = inject(ChatApiService);
+  protected readonly chatListState = inject(ChatListState);
+  private readonly chatApi = inject(ConversationApi);
 
   // Expose computed signals as direct template bindings
   protected readonly isLoading = this.chatListState.isLoading;

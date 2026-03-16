@@ -61,6 +61,10 @@ public class MessageSendingService {
   private final ForwardIdTranslator forwardIdTranslator;
   private final MessageNotifierFactory messageNotifier;
 
+  /**
+   * Prepare message by storage the new message and the publish the message
+   * context as DomainEvent
+   */
   @Transactional(readOnly = false)
   public Message prepareSendingMessage(SendMessageRequest messageRequest) {
     PublicId conversationId = messageRequest.getConversationPublicId();
@@ -76,9 +80,6 @@ public class MessageSendingService {
     // validate user can message to conversation (direct message / group message)
     conversationAuthenticationProvider.validateUserCanMessage(sender, conversation);
 
-    // save message as this conversation
-    // Message newMessage = Message.createFrom(messageRequest, conversation,
-    // sender);
     Message newMessage = MessageFromSendMessageRequest.message()
         .request(messageRequest)
         .conversation(conversation)
@@ -90,18 +91,20 @@ public class MessageSendingService {
     conversation = conversationRepository.markLatestMessage(conversation, savedMessage.getMessageId());
 
     // mark message as latest for this sender (current user)
-    Participant senderAsParticipant = participantRepository.getParticipantForUserInConversation(sender.getDbId(), conversation.getId());
+    Participant senderAsParticipant = participantRepository.getParticipantForUserInConversation(sender.getDbId(),
+        conversation.getId());
     participantRepository.setLastReadMessage(senderAsParticipant, savedMessage.getMessageId());
-    // senderAsParticipant.setLastReadMessageId(message.getMessageId());
-    // participantRepository.save(senderAsParticipant);
 
     publisher.publish(new MessageSentEvent(savedMessage, conversation, sender));
 
     return savedMessage;
   }
 
+  /**
+   * Send message to target receiver user and mark message as sent stage
+   */
   @Transactional(readOnly = false)
-  public void sendPrivateMessage(MessageSentEvent event) {
+  public void sendDirectMessage(MessageSentEvent event) {
 
     User sender = event.sender();
     Conversation conversation = event.conversation();
@@ -110,9 +113,9 @@ public class MessageSendingService {
     Participant targetMessagingParticipant = participantRepository
         .getTargetMessagingParticipantInDirectConversation(sender, conversation);
 
+    // Send message with target receiver forward identify
     UserSubcriberId receiverForwardId = forwardIdTranslator
         .toPrivateSubscriberId(targetMessagingParticipant.getUserId());
-
     messagePublisher.forDirectConversation().forward(receiverForwardId, message);
     if (!message.getStatus().canTransitionTo(MessageState.SENT)) {
       throw new BadMessageStateException();
@@ -123,6 +126,9 @@ public class MessageSendingService {
     messageNotifier.forDirectConversation().notifyMessageSent(senderForwardId, sentMessage);
   }
 
+  /**
+   * Broad cast new message to group channel and mark message as sent
+   */
   @Transactional(readOnly = false)
   public void sendGroupMessage(MessageSentEvent event) {
     Conversation conversation = event.conversation();
@@ -141,8 +147,13 @@ public class MessageSendingService {
     // }
     // }
 
+    if (!message.getStatus().canTransitionTo(MessageState.SENT)) {
+      throw new BadMessageStateException();
+    }
+    Message sentMessage = messageRepository.markAsSent(message);
     GroupSubscriberId groupSubscriberId = forwardIdTranslator.toGroupSubscriberId(conversation);
-    messagePublisher.forGroupConversation().forward(groupSubscriberId, message);
+    // board cast message to group channel
+    messagePublisher.forGroupConversation().forward(groupSubscriberId, sentMessage);
 
   }
 

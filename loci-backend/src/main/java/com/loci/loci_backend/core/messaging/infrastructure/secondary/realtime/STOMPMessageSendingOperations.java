@@ -26,30 +26,44 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @SecondaryPort
-public class STOMPMessageSendingOperation {
+public class STOMPMessageSendingOperations {
   private final SimpMessageSendingOperations messageTemplate;
 
-  public void sendIndividualUser(String username, STOMPMessage message) {
+  public void sendDirectMessage(String username, STOMPMessage message) {
     // Translate to /user/{username}/individual/messages.receive
     messageTemplate.convertAndSendToUser(username, WsPaths.INDIVIDUAL_RECEIVE_MESSAGE, message);
 
   }
 
+  public void notifyDirectMessageSent(String senderUsername, STOMPMessage message) {
+    messageTemplate.convertAndSendToUser(senderUsername, WsPaths.INDIVIDUAL_NOTIFY_MESSAGE_SENT, message);
+  }
+
+  public void notifyDirectMessageDelivered(String senderUsername, STOMPMessage message) {
+    messageTemplate.convertAndSendToUser(senderUsername, WsPaths.INDIVIDUAL_NOTIFY_MESSAGE_DELIVERED, message);
+  }
+
+  public void notifyDirectMessageSeen(String senderUsername, STOMPMessage message) {
+    messageTemplate.convertAndSendToUser(senderUsername, WsPaths.INDIVIDUAL_NOTIFY_MESSAGE_SEEN, message);
+  }
+
   public void sendGroupMessage(String groupId, STOMPMessage message) {
-    // Translate to /group/messages.receive{groupId}
+    // Translate to /topic/messages.receive-{groupId}
+    // NOTE: only send group message need to boardcast
     messageTemplate.convertAndSend(WsPaths.GROUP_RECEIVE_MESSAGE + groupId, message);
 
   }
 
-  public void notifyMessageSent(String username, STOMPMessage message) {
-    messageTemplate.convertAndSendToUser(username, WsPaths.INDIVIDUAL_NOTIFY_MESSAGE_SENT, message);
+  public void notifyGroupMessageSent(String senderUsername, STOMPMessage message) {
+    messageTemplate.convertAndSendToUser(senderUsername, WsPaths.GROUP_NOTIFY_MESSAGE_SENT, message);
   }
 
-  public void notifyMessageDelivered(String username, STOMPMessage message) {
-    messageTemplate.convertAndSendToUser(username, WsPaths.INDIVIDUAL_NOTIFY_MESSAGE_DELIVERED , message);
+  public void notifyGroupMessageDelivered(String senderUsername, STOMPMessage message) {
+    messageTemplate.convertAndSendToUser(senderUsername, WsPaths.GROUP_NOTIFY_MESSAGE_DELIVERED, message);
   }
 
-  public void notifyMessageSeen(String username, STOMPMessage message) {
-    messageTemplate.convertAndSendToUser(username, WsPaths.INDIVIDUAL_NOTIFY_MESSAGE_SEEN , message);
+  public void notifyGroupMessageSeen(String senderUsername, STOMPMessage message) {
+    messageTemplate.convertAndSendToUser(senderUsername, WsPaths.GROUP_NOTIFY_MESSAGE_SEEN, message);
   }
+
 }

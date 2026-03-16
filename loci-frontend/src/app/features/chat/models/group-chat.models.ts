@@ -1,6 +1,6 @@
 
 import { PresenceStatus } from '../../user/models/user.model';
-import { IUserPresence } from '../service/chat-api.service';
+import { IUserPresence } from '../service/conversation-api.service';
 import { IConversationMessage, IMessage } from './message.model';
 
 export interface IGroupChatInfoMeta {
@@ -48,7 +48,7 @@ export interface ISystemEventMessage {
   actorUserId: string;
   actorDisplayName: string;
   targetDisplayName?: string;  // new group name when kind === 'group_renamed'
-  occurredAt: string;
+  timestamp: string;
 }
 
 export interface IGroupMessageSeenEvent {
@@ -74,5 +74,5 @@ export interface IGroupMemberEvent {
 
 // Discriminated union for the message timeline
 export type ConversationItem =
-  | { kind: 'message'; data: IMessage }
+  | { kind: 'message'; data: IConversationMessage }
   | { kind: 'system'; data: ISystemEventMessage };

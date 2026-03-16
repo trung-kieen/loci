@@ -23,11 +23,12 @@ import com.loci.loci_backend.common.ddd.domain.contract.ValueObject;
 /**
  *
  */
-public record GroupSubscriberId(UUID groupPublicId) implements ValueObject<String>, SubscriberId {
+
+public record GroupSubscriberId(UUID conversationPublicId) implements ValueObject<String>, SubscriberId {
 
   @Override
   public String value() {
-    return groupPublicId.toString();
+    return conversationPublicId.toString();
   }
 
 }

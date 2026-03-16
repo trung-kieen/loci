@@ -15,10 +15,10 @@
  */
 
 import { Injectable, computed, signal } from '@angular/core';
-import { IChatError, IDirectConversation } from '../models/chat.model';
-import { IConversationMessage as IConversationMessage, IMessage, ParticipantState } from '../models/message.model';
-import { IPersonalProfile } from '../../user/models/user.model';
-export interface DirectConversationState {
+import { IChatError, IDirectConversation } from '../../models/chat.model';
+import { IConversationMessage, IMessage, ParticipantState } from '../../models/message.model';
+import { IPersonalProfile } from '../../../user/models/user.model';
+export interface IDirectConversationState {
   // currentUser: IPersonalProfile | null;
   selectedConversation: IDirectConversation | null;
   messages: IConversationMessage[];
@@ -29,7 +29,7 @@ export interface DirectConversationState {
   selectedFile: File[];
 }
 
-const initialState: DirectConversationState = {
+const initialState: IDirectConversationState = {
   // currentUser: null,
   selectedConversation: null,
   messages: [],
@@ -43,9 +43,9 @@ const initialState: DirectConversationState = {
 @Injectable({
   providedIn: 'root'
 })
-export class DirectConversationStateService {
+export class DirectConversationState {
   // general state signals
-  private state = signal<DirectConversationState>(initialState);
+  private state = signal<IDirectConversationState>(initialState);
 
   // Computed selectors
   // readonly currentUser = computed(() => this.state().currentUser);
@@ -179,7 +179,7 @@ export class DirectConversationStateService {
   }
 
   // Debug helper
-  getState(): DirectConversationState {
+  getState(): IDirectConversationState {
     return this.state();
   }
 }
