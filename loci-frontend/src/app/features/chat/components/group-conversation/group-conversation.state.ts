@@ -74,8 +74,9 @@ export class GroupConversationState extends BaseConversationStateService {
 
   private getConversationItemTime(item: ConversationItem): number {
     if (item.kind === 'message') {
+      const date = new Date(item.data.timestamp);
       // IConversationMessage.timestamp is Date
-      return item.data.timestamp.getTime();
+      return date.getTime();
     }
 
     // ISystemEventMessage.timestamp is string

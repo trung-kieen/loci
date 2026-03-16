@@ -22,10 +22,12 @@ import {
   IUpdateProfileRequest,
   IUpdateSettingsRequest,
 } from '../models/user.model';
+import { ProfileApi } from './profile.api';
 
 @Injectable()
 export class PersonalProfileService {
   private apiService = inject(WebApiService);
+  private readonly profileApi = inject(ProfileApi);
 
   private _isLoading = signal<boolean>(true);
   private _error = signal<string | null>(null);
@@ -43,8 +45,7 @@ export class PersonalProfileService {
   settings = this.settingsSignal.asReadonly();
 
   updateSettings(newSettings: Partial<IUpdateSettingsRequest>) {
-    return this.apiService
-      .patch<IPersonalSettings>('/users/me/settings', newSettings)
+    return this.profileApi.updatePersonalProfileSetting(newSettings)
       .subscribe({
         next: (updated) => this.settingsSignal.set(updated),
       });
@@ -53,8 +54,7 @@ export class PersonalProfileService {
   loadMyProfileSettings() {
     this._isLoading.set(true);
     this._error.set(null);
-    return this.apiService
-      .get<IPersonalSettings>('/users/me/settings')
+    return this.profileApi.getPersonalSetting()
       .subscribe({
         next: (u) => {
           this.settingsSignal.set(u);
@@ -71,7 +71,7 @@ export class PersonalProfileService {
   loadMyProfile() {
     this._isLoading.set(true);
     this._error.set(null);
-    return this.apiService.get<IPersonalProfile>('/users/me').subscribe({
+    return this.profileApi.getPersonalProfile().subscribe({
       next: (u) => {
         this.profileSignal.set(u);
       },
@@ -87,8 +87,7 @@ export class PersonalProfileService {
   updateProfileAvatar(imageFile: File) {
     const formRequest = new FormData();
     formRequest.append('avatar', imageFile);
-    return this.apiService
-      .patchForm<IPersonalProfile>('/users/me/avatar', formRequest)
+    return this.profileApi.updateProfileAvatar(formRequest)
       .subscribe({
         next: (updated) => this.profileSignal.set(updated),
       });
@@ -96,8 +95,7 @@ export class PersonalProfileService {
 
   public updateMyProfile(data: Partial<IUpdateProfileRequest>) {
     // this._isLoading.set(true);
-    return this.apiService
-      .patch<IPersonalProfile>('/users/me', data)
+    return this.profileApi.updatePersonalProfile(data)
       .subscribe({
         next: (updated) => this.profileSignal.set(updated),
         // complete: () => this._isLoading.set(false),

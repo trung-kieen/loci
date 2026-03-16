@@ -15,17 +15,19 @@
  */
 
 import { inject, Injectable } from "@angular/core";
-import { filter, merge, tap } from "rxjs";
+import { filter, map, merge, switchMap, tap } from "rxjs";
 import { LoggerService } from "../../../../core/services/logger.service";
 import { WebSocketService } from "../../../../core/socket/websocket.service";
 import { WebApiService } from "../../../../core/api/web-api.service";
 import { IMessage, IMessageStatusEvent } from "../../models/message.model";
+import { ProfileApi } from "../../../user/services/profile.api";
 @Injectable({
   providedIn: 'root'
 })
 export class GroupMessageSubscriber {
 
   private loggerService = inject(LoggerService);
+  private profileApi = inject(ProfileApi);
   private logger = this.loggerService.getLogger("MessageObservableService");
   private wsService = inject(WebSocketService);
   private apiService = inject(WebApiService);
@@ -46,6 +48,7 @@ export class GroupMessageSubscriber {
       // conversationId,
       // status: 'delivered'
     }
+
     this.logger.debug("Ack receive message to server ", messageId);
     // TODO: implment api and test
     return this.apiService.patch("/messages/group/receive", request);
@@ -53,18 +56,26 @@ export class GroupMessageSubscriber {
 
 
   public messageReceiveInConversation$(targetConversationId: string) {
-    return this.wsService.subscribe<IMessage>(`/topic/messages.receive-${targetConversationId}`).pipe(
-      // TODO: filter message is not current user
-      tap(message => {
-        // sent acknowledgement user receive message
-        this.ackReceiveMessage(message.messageId).subscribe({
-          next: (d) => this.logger.debug("Ack receive message to server success ", d),
-          error: (e) => this.logger.debug("Unable to ack to server that browser is received the message ", e)
+    return this.wsService
+      .subscribe<IMessage>(`/topic/messages.receive-${targetConversationId}`)
+      .pipe(
+        switchMap(message =>
+          this.profileApi.getCurrentUserId().pipe(
+            map(currentUserId => ({ message, currentUserId }))
+          )
+        ),
+        filter(({ message, currentUserId }) => {
+          const isOwner = message.senderId === currentUserId;
+          return !isOwner;
+        }),
+        map(({ message }) => message), // unwrap back to IMessage
+        tap(message => {
+          this.ackReceiveMessage(message.messageId).subscribe({
+            next: (d) => this.logger.debug('Ack receive message to server success', d),
+            error: (e) => this.logger.debug('Unable to ack to server that browser received the message', e),
+          });
         })
-
-
-      })
-    )
+      );
   }
 
   public messageSent() {

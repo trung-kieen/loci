@@ -154,7 +154,8 @@ public class MessageSendingService {
     GroupSubscriberId groupSubscriberId = forwardIdTranslator.toGroupSubscriberId(conversation);
     // board cast message to group channel
     messagePublisher.forGroupConversation().forward(groupSubscriberId, sentMessage);
-
+    UserSubcriberId senderForwardId = forwardIdTranslator.toPrivateSubscriberId(event.sender().getDbId());
+    messageNotifier.forGroupConversation().notifyMessageSent(senderForwardId, sentMessage);
   }
 
 }

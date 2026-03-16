@@ -249,7 +249,6 @@ export class GroupConversation implements OnInit {
   }
 
   onMessageSentNotify(m: IMessage): void {
-    this.logger.info('Message sent', m);
     this.state.updateMessage(m.messageId, { messageState: 'sent' });
   }
 

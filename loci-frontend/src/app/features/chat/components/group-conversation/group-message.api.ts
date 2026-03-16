@@ -98,6 +98,8 @@ export class GroupMessageApi {
   }
 
   onReceiveNewMessage(conversationId: string): Observable<IMessage> {
+    this.logger.debug("Subscribe conversationId", conversationId);
+
     return this.messageSubscriber.messageReceiveInConversation$(conversationId);
   }
 

@@ -84,7 +84,7 @@ public class MessageTrackingStateService {
     Message deliveredMessage = messageRepository.markAsDelivered(message);
 
     UserSubcriberId senderForwardId = forwardIdTranslator.toPrivateSubscriberId(deliveredMessage.getSenderId());
-    messageNotifier.forDirectConversation().notifyMessageDelivered(senderForwardId, deliveredMessage);
+    messageNotifier.forGroupConversation().notifyMessageDelivered(senderForwardId, deliveredMessage);
     return message;
   }
 
