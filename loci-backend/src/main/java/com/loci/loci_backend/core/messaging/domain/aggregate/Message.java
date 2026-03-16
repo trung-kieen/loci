@@ -158,7 +158,7 @@ public class Message {
   }
 
   public boolean canMarkAsSeen() {
-    return this.status.canTransitionTo(MessageState.DELIVERED);
+    return this.status.canTransitionTo(MessageState.SEEN);
   }
 
 

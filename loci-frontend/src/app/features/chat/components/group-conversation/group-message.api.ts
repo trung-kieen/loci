@@ -63,6 +63,8 @@ export class GroupMessageApi {
     );
   }
 
+
+
   sendMessage(dto: ISendMessageRequest): Observable<IMessage> {
     const newMessage = this.apiService.post<IMessage>("/messages/group/send", dto)
       .pipe(
@@ -74,7 +76,7 @@ export class GroupMessageApi {
   }
 
   markAsSeen(req: IMarkMessageSeenRequest): Observable<IMarkMessageSeenResponse> {
-    return this.apiService.post<IMarkMessageSeenResponse>(
+    return this.apiService.patch<IMarkMessageSeenResponse>(
       `conversations/${req.conversationId}/messages/seen`,
       req
     );
@@ -106,6 +108,11 @@ export class GroupMessageApi {
   onMessageSent(conversationId: string): Observable<IMessage> {
     return this.messageSubscriber.messageSentInConversation$(conversationId);
   }
+
+  onMessageSeen(conversationId: string) {
+    return this.messageSubscriber.messageSeenInConversation$(conversationId);
+  }
+
 
   onMessageDelivered(conversationId: string): Observable<IMessage> {
     return this.messageSubscriber.messageDeliveredInConversation$(conversationId);

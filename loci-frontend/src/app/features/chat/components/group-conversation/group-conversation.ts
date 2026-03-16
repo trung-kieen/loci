@@ -15,7 +15,6 @@
  */
 
 
-// group-conversation/group-conversation.ts
 
 import {
   Component,
@@ -55,7 +54,9 @@ import { IChatError, IGroupChatInfo } from '../../models/chat.model';
 import {
   IAttachment,
   IConversationMessage,
+  IMarkMessageSeenRequest,
   IMessage,
+  IMessageSeenEvent,
   IMessageStatusEvent,
   ISendMessageRequest,
 } from '../../models/message.model';
@@ -140,31 +141,30 @@ export class GroupConversation implements OnInit {
   private readonly reportedSeenIds = new Set<string>();
   private pendingSeenIds: string[] = [];
 
-  // private readonly onVisibilityChange = () => this.flushPendingSeen();
-  // private readonly onWindowFocus = () => this.flushPendingSeen();
+  private readonly onVisibilityChange = () => this.flushPendingSeen();
+  private readonly onWindowFocus = () => this.flushPendingSeen();
 
   private conversationId: string | null = null;
 
   // ── Constructor ────────────────────────────────────────────────────────────
 
   constructor() {
-    // afterNextRender(() => {
-    //   this.initSeenObserver();
-    //   document.addEventListener('visibilitychange', this.onVisibilityChange);
-    //   window.addEventListener('focus', this.onWindowFocus);
-    // });
+    afterNextRender(() => {
+      this.initSeenObserver();
+      document.addEventListener('visibilitychange', this.onVisibilityChange);
+      window.addEventListener('focus', this.onWindowFocus);
+    });
 
-    // this.destroyRef.onDestroy(() => {
-    //   this.seenObserver?.disconnect();
-    //   document.removeEventListener('visibilitychange', this.onVisibilityChange);
-    //   window.removeEventListener('focus', this.onWindowFocus);
-    // });
+    this.destroyRef.onDestroy(() => {
+      this.seenObserver?.disconnect();
+      document.removeEventListener('visibilitychange', this.onVisibilityChange);
+      window.removeEventListener('focus', this.onWindowFocus);
+    });
 
     // // Re-observe incoming bubbles after each render cycle triggered by items change
-    // effect(() => {
-    //     Promise.resolve().then(() => this.observeIncomingMessages());
-    //   });
-    // });
+    effect(() => {
+      Promise.resolve().then(() => this.observeIncomingMessages());
+    });
   }
 
   // ── Lifecycle ──────────────────────────────────────────────────────────────
@@ -216,6 +216,12 @@ export class GroupConversation implements OnInit {
           this.chatListState.onMessageDelivered(conversationId);
         })
       ),
+      this.chatApiService.group.onMessageSeen(conversationId).pipe(
+        tap(event => {
+          this.onMessageSeenNotify(event);
+          this.chatListState.onMessageSeen(conversationId);
+        })
+      ),
     );
   }
 
@@ -251,6 +257,20 @@ export class GroupConversation implements OnInit {
   onMessageSentNotify(m: IMessage): void {
     this.state.updateMessage(m.messageId, { messageState: 'sent' });
   }
+
+  onMessageSeenNotify(event: IMessageSeenEvent): void {
+
+    const messages = this.state.messages();
+    const targetIndex = messages.findIndex(m => m.messageId === event.messageId);
+    if (targetIndex === -1) return;
+
+    for (let i = 0; i <= targetIndex; i++) {
+      const msg = messages[i]; if (msg.owner && msg.messageState !== 'seen') {
+        this.state.updateMessage(msg.messageId, { messageState: 'seen' });
+      }
+    }
+  }
+
 
   onMessageDeliveredNotify(m: IMessage): void {
     this.logger.info('Message delivered', m);
@@ -364,34 +384,34 @@ export class GroupConversation implements OnInit {
 
   // ── Seen observer (identical mechanism to DirectConversation — Section 5.4) ──
 
-  // private initSeenObserver(): void {
-  //   this.seenObserver = new IntersectionObserver(
-  //     (entries) => {
-  //       entries.forEach(entry => {
-  //         if (!entry.isIntersecting) return;
+  private initSeenObserver(): void {
+    this.seenObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach(entry => {
+          if (!entry.isIntersecting) return;
 
-  //         const el = entry.target as HTMLElement;
-  //         const messageId = el.dataset['messageId']!;
+          const el = entry.target as HTMLElement;
+          const messageId = el.dataset['messageId']!;
 
-  //         this.seenObserver?.unobserve(el);
-  //         if (this.reportedSeenIds.has(messageId)) return;
+          this.seenObserver?.unobserve(el);
+          if (this.reportedSeenIds.has(messageId)) return;
 
-  //         const windowActive =
-  //           document.visibilityState === 'visible' && document.hasFocus();
+          const windowActive =
+            document.visibilityState === 'visible' && document.hasFocus();
 
-  //         if (windowActive) {
-  //           this.markSeen(messageId);
-  //         } else {
-  //           this.pendingSeenIds.push(messageId);
-  //         }
-  //       });
-  //     },
-  //     {
-  //       root: this.messageArea().nativeElement,
-  //       threshold: 0.5,
-  //     }
-  //   );
-  // }
+          if (windowActive) {
+            this.markSeen(messageId);
+          } else {
+            this.pendingSeenIds.push(messageId);
+          }
+        });
+      },
+      {
+        root: this.messageArea().nativeElement,
+        threshold: 0.5,
+      }
+    );
+  }
 
   private observeIncomingMessages(): void {
     if (!this.seenObserver) return;
@@ -408,52 +428,52 @@ export class GroupConversation implements OnInit {
       });
   }
 
-  // private flushPendingSeen(): void {
-  //   if (!this.conversationId) return;
-  //   this.chatListState.onConversationRead(this.conversationId);
+  private flushPendingSeen(): void {
+    if (!this.conversationId) return;
+    this.chatListState.onConversationRead(this.conversationId);
 
-  //   if (document.visibilityState !== 'visible' || !document.hasFocus()) return;
-  //   if (!this.pendingSeenIds.length) return;
+    if (document.visibilityState !== 'visible' || !document.hasFocus()) return;
+    if (!this.pendingSeenIds.length) return;
 
-  //   const lastId = this.pendingSeenIds.at(-1)!;
-  //   this.pendingSeenIds = [];
-  //   this.markSeen(lastId);
-  // }
+    const lastId = this.pendingSeenIds.at(-1)!;
+    this.pendingSeenIds = [];
+    this.markSeen(lastId);
+  }
 
   /**
    * Fires the group markAsSeen endpoint.
    * onMessageSeen is NOT subscribed — outgoing messages stay at 'delivered'.
    * See design doc Section 5.3.
    */
-  // private markSeen(lastMessageId: string): void {
-  //   const conversationId = this.conversationId;
-  //   if (!conversationId) return;
+  private markSeen(lastMessageId: string): void {
+    const conversationId = this.conversationId;
+    if (!conversationId) return;
 
-  //   const messages = this.state.messages();
-  //   if (messages.some(m => m.messageId === lastMessageId && m.owner === true)) {
-  //     return;
-  //   }
+    const messages = this.state.messages();
+    if (messages.some(m => m.messageId === lastMessageId && m.owner === true)) {
+      return;
+    }
 
-  //   this.reportedSeenIds.add(lastMessageId);
+    this.reportedSeenIds.add(lastMessageId);
 
-  //   const request: IMarkMessageSeenRequest = {
-  //     conversationId,
-  //     lastSeenMessageId: lastMessageId,
-  //   };
+    const request: IMarkMessageSeenRequest = {
+      conversationId,
+      lastSeenMessageId: lastMessageId,
+    };
 
-  //   this.chatApiService.group
-  //     .markAsSeen(request)
-  //     .pipe(
-  //       tap(() => this.logger.info('Group markAsSeen up to', lastMessageId)),
-  //       catchError(err => {
-  //         this.reportedSeenIds.delete(lastMessageId);
-  //         this.logger.error('group markAsSeen failed', err);
-  //         return of(null);
-  //       }),
-  //       takeUntilDestroyed(this.destroyRef)
-  //     )
-  //     .subscribe();
-  // }
+    this.chatApiService.group
+      .markAsSeen(request)
+      .pipe(
+        tap(() => this.logger.info('Group markAsSeen up to', lastMessageId)),
+        catchError(err => {
+          this.reportedSeenIds.delete(lastMessageId);
+          this.logger.error('group markAsSeen failed', err);
+          return of(null);
+        }),
+        takeUntilDestroyed(this.destroyRef)
+      )
+      .subscribe();
+  }
 
   // ── Template event handlers ───────────────────────────────────────────────
 
