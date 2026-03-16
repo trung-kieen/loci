@@ -17,7 +17,6 @@
 package com.loci.loci_backend.common.authentication.infrastructure.primary.resolver;
 
 import com.loci.loci_backend.common.authentication.application.AuthenticatedUser;
-import com.loci.loci_backend.common.authentication.domain.KeycloakPrincipal;
 import com.loci.loci_backend.common.authentication.domain.CurrentUser;
 import com.loci.loci_backend.common.authentication.infrastructure.secondary.repository.RestIdentityProvider;
 

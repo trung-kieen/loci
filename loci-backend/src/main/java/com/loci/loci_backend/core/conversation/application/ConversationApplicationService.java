@@ -16,6 +16,7 @@
 
 package com.loci.loci_backend.core.conversation.application;
 
+
 import com.loci.loci_backend.common.ddd.infrastructure.stereotype.ApplicationService;
 import com.loci.loci_backend.common.user.domain.vo.PublicId;
 import com.loci.loci_backend.core.conversation.domain.aggregate.Conversation;

@@ -16,18 +16,7 @@
 
 package com.loci.loci_backend.core.messaging.infrastructure.secondary.mapper;
 
-import java.util.List;
-
 import com.loci.loci_backend.common.ddd.infrastructure.stereotype.SecondaryMapper;
-import com.loci.loci_backend.common.user.domain.aggregate.User;
-import com.loci.loci_backend.common.user.domain.vo.PublicId;
-import com.loci.loci_backend.core.conversation.domain.aggregate.Conversation;
-import com.loci.loci_backend.core.messaging.domain.aggregate.ConversationMessageList;
-import com.loci.loci_backend.core.messaging.domain.aggregate.ConversationMessageListBuilder;
-import com.loci.loci_backend.core.messaging.domain.aggregate.Message;
-import com.loci.loci_backend.core.messaging.infrastructure.secondary.entity.MessageEntity;
-
-import org.springframework.data.domain.Page;
 
 import lombok.RequiredArgsConstructor;
 

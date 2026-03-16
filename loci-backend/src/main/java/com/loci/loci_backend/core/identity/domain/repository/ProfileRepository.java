@@ -16,8 +16,6 @@
 
 package com.loci.loci_backend.core.identity.domain.repository;
 
-import java.util.Optional;
-
 import com.loci.loci_backend.common.authentication.domain.Username;
 import com.loci.loci_backend.common.user.domain.vo.PublicId;
 import com.loci.loci_backend.common.user.domain.vo.UserDBId;

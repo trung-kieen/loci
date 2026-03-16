@@ -30,13 +30,11 @@ import com.loci.loci_backend.common.user.domain.aggregate.Authority;
 import com.loci.loci_backend.common.user.domain.aggregate.User;
 import com.loci.loci_backend.common.user.domain.aggregate.UserBuilder;
 import com.loci.loci_backend.common.user.domain.vo.AuthorityName;
+import com.loci.loci_backend.common.user.domain.vo.PublicId;
 import com.loci.loci_backend.common.user.domain.vo.UserEmail;
 import com.loci.loci_backend.common.user.domain.vo.UserFirstname;
 import com.loci.loci_backend.common.user.domain.vo.UserImageUrl;
 import com.loci.loci_backend.common.user.domain.vo.UserLastname;
-import com.loci.loci_backend.common.user.domain.vo.PublicId;
-
-import org.springframework.stereotype.Service;
 
 @SecondaryPort
 public class FakerLegacyUserRepository implements LegacyUserRepository {

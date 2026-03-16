@@ -16,8 +16,6 @@
 
 package com.loci.loci_backend.core.messaging.domain.aggregate;
 
-import javax.swing.filechooser.FileNameExtensionFilter;
-
 import com.loci.loci_backend.common.store.domain.aggregate.File;
 import com.loci.loci_backend.common.store.domain.vo.FileContentType;
 import com.loci.loci_backend.common.store.domain.vo.FileName;
@@ -26,7 +24,6 @@ import com.loci.loci_backend.core.messaging.domain.vo.Media;
 import com.loci.loci_backend.core.messaging.domain.vo.MediaName;
 import com.loci.loci_backend.core.messaging.domain.vo.MediaUrl;
 
-import org.apache.commons.io.FilenameUtils;
 import org.jilt.Builder;
 import org.jilt.BuilderStyle;
 

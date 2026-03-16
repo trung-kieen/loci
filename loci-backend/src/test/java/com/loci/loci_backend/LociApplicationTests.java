@@ -18,7 +18,6 @@ package com.loci.loci_backend;
 
 import com.loci.loci_backend.common.authentication.infrastructure.primary.keycloak.KeycloakProperties;
 import com.loci.loci_backend.common.store.infrastructure.secondary.minio.MinioProperties;
-import com.loci.loci_backend.common.wire.store.secondary.StoreConfiguration;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

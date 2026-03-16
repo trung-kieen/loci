@@ -32,5 +32,4 @@ public class TimeFormatter {
     return prettyTime.format(date);
   }
 
-
 }

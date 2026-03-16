@@ -18,7 +18,6 @@ package com.loci.loci_backend.common.user.infrastructure.secondary.repository;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import com.loci.loci_backend.common.authentication.domain.CurrentUser;
 import com.loci.loci_backend.common.authentication.domain.Username;
@@ -34,11 +33,9 @@ import com.loci.loci_backend.common.validation.domain.ResourceNotFoundException;
 import com.loci.loci_backend.core.discovery.domain.vo.UserSearchCriteria;
 import com.loci.loci_backend.core.discovery.infrastructure.secondary.mapper.ContactProfileEntityMapper;
 import com.loci.loci_backend.core.identity.infrastructure.secondary.specification.UserSpecifications;
-import com.loci.loci_backend.core.social.infrastructure.secondary.mapper.ContactEntityMapper;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;

@@ -23,14 +23,12 @@ import com.loci.loci_backend.common.validation.domain.DuplicateResourceException
 import com.loci.loci_backend.common.validation.domain.ResourceNotFoundException;
 import com.loci.loci_backend.core.messaging.domain.exception.UserIsBlockedByOtherException;
 
-import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import jakarta.annotation.Priority;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.log4j.Log4j2;
 

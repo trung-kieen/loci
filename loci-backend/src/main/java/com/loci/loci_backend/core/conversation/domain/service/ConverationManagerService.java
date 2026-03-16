@@ -20,7 +20,6 @@ import java.util.Set;
 
 import com.loci.loci_backend.common.authentication.domain.CurrentUser;
 import com.loci.loci_backend.common.ddd.infrastructure.stereotype.DomainService;
-import com.loci.loci_backend.common.jpa.SortOrder;
 import com.loci.loci_backend.common.user.domain.aggregate.User;
 import com.loci.loci_backend.common.user.domain.repository.UserRepository;
 import com.loci.loci_backend.common.user.domain.vo.PublicId;
@@ -34,19 +33,16 @@ import com.loci.loci_backend.core.conversation.domain.aggregate.CreateGroupReque
 import com.loci.loci_backend.core.conversation.domain.aggregate.Participant;
 import com.loci.loci_backend.core.conversation.domain.aggregate.UserChatList;
 import com.loci.loci_backend.core.conversation.domain.aggregate.UserConversation;
-import com.loci.loci_backend.core.conversation.domain.exception.InvalidConversationTypeException;
 import com.loci.loci_backend.core.conversation.domain.exception.UserNotConnectedException;
 import com.loci.loci_backend.core.conversation.domain.repository.ConversationRepository;
 import com.loci.loci_backend.core.conversation.domain.repository.ParticipantRepository;
 import com.loci.loci_backend.core.conversation.domain.vo.ConversationQuery;
-import com.loci.loci_backend.core.conversation.domain.vo.ParticipantCount;
 import com.loci.loci_backend.core.discovery.domain.repository.UserConnectionResolver;
 import com.loci.loci_backend.core.groups.domain.aggregate.GroupProfile;
 import com.loci.loci_backend.core.groups.domain.repository.GroupRepository;
 import com.loci.loci_backend.core.identity.domain.repository.UserIdTranslator;
 import com.loci.loci_backend.core.messaging.domain.aggregate.DirectChatInfo;
 import com.loci.loci_backend.core.messaging.domain.aggregate.GroupChatInfo;
-import com.loci.loci_backend.core.messaging.domain.aggregate.GroupChatInfoBuilderForConversation;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

@@ -18,7 +18,6 @@ package com.loci.loci_backend.core.messaging.infrastructure.primary.payload;
 
 import java.util.UUID;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

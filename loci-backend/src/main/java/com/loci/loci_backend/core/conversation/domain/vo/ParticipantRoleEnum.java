@@ -17,7 +17,6 @@
 package com.loci.loci_backend.core.conversation.domain.vo;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 public enum ParticipantRoleEnum {

@@ -19,7 +19,6 @@ package com.loci.loci_backend.core.messaging.infrastructure.primary.payload;
 import java.util.Optional;
 import java.util.UUID;
 
-import com.loci.loci_backend.core.messaging.domain.aggregate.Attachment;
 import com.loci.loci_backend.core.messaging.domain.vo.Media;
 import com.loci.loci_backend.core.messaging.domain.vo.MessageType;
 

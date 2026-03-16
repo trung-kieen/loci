@@ -23,7 +23,6 @@ import com.loci.loci_backend.core.identity.domain.aggregate.PersonalProfileChang
 import com.loci.loci_backend.core.identity.domain.aggregate.ProfileSettingChanges;
 import com.loci.loci_backend.core.identity.domain.aggregate.UserSetting;
 
-import org.mapstruct.BeanMapping;
 import org.mapstruct.Condition;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

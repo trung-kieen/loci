@@ -18,12 +18,9 @@ package com.loci.loci_backend.core.conversation.infrastructure.secondary.mapper;
 
 import com.loci.loci_backend.common.ddd.infrastructure.contract.DomainEntityMapper;
 import com.loci.loci_backend.common.ddd.infrastructure.stereotype.SecondaryMapper;
-import com.loci.loci_backend.common.ddd.infrastructure.stereotype.SecondaryPort;
 import com.loci.loci_backend.core.conversation.domain.aggregate.Participant;
 import com.loci.loci_backend.core.conversation.infrastructure.secondary.entity.ConversationEntity;
 import com.loci.loci_backend.core.conversation.infrastructure.secondary.entity.ConversationParticipantEntity;
-
-import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 

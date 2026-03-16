@@ -85,24 +85,8 @@ public class UserEntity extends AbstractAuditingEntity<Long> {
 
   private String bio;
 
-  // @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch =
-  // FetchType.LAZY, optional = true, orphanRemoval = false)
-  // private UserSettingsEntity settings;
-
   @Column(name = "last_active")
   private Instant lastActive;
-  //
-  // // Profile settings
-  // @Column(name = "last_seen_setting")
-  // @Enumerated(EnumType.STRING)
-  // private LastSeenSettingEnum lastSeenSetting = LastSeenSettingEnum.EVERYONE;
-  //
-  // @Column(name = "friend_request_setting")
-  // private FriendRequestSettingEnum friendRequestSetting =
-  // FriendRequestSettingEnum.EVERYONE;
-
-  // @Column(name = "profile_visibility")
-  // private Boolean profileVisibility = true;
 
   @ManyToMany(cascade = { CascadeType.REMOVE, CascadeType.MERGE }, fetch = FetchType.LAZY)
   @JoinTable(name = "user_authority", joinColumns = {
@@ -164,9 +148,6 @@ public class UserEntity extends AbstractAuditingEntity<Long> {
     this.username = username;
     this.profilePicture = profilePicture;
     this.bio = bio;
-    // this.lastSeenSetting = lastSeenSetting;
-    // this.friendRequestSetting = friendRequestSetting;
-    // this.profileVisibility = profileVisibility;
     this.authorities = authorities;
   }
 

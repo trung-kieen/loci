@@ -5,7 +5,7 @@ import { IChatError } from '../models/chat.model';
 
 export abstract class BaseConversationStateService {
 
-  readonly messages = signal<IMessage[]>([]);
+  readonly messages = signal<IConversationMessage[]>([]);
   readonly loading = signal<boolean>(false);
   readonly sendingMessage = signal<boolean>(false);
   readonly uploadingFile = signal<boolean>(false);
@@ -14,15 +14,15 @@ export abstract class BaseConversationStateService {
 
   // ── Messages ───────────────────────────────────────────────────────────────
 
-  setMessages(messages: IMessage[]): void {
+  setMessages(messages: IConversationMessage[]): void {
     this.messages.set(messages);
   }
 
   addMessage(message: IMessage): void {
-    this.messages.update(prev => [...prev, message]);
+    this.messages.update(prev => [...prev, { ...message, owner: true }]);
   }
 
-  prependMessages(messages: IMessage[]): void {
+  prependMessages(messages: IConversationMessage[]): void {
     this.messages.update(prev => [...messages, ...prev]);
   }
 
@@ -32,8 +32,8 @@ export abstract class BaseConversationStateService {
     );
   }
 
-  receiveMessage(message: IConversationMessage): void {
-    this.addMessage(message);
+  receiveMessage(message: IMessage): void {
+    this.messages.update(prev => [...prev, { ...message, owner: false }]);
   }
 
   // ── Loading & UI state ─────────────────────────────────────────────────────

@@ -24,7 +24,6 @@ import java.lang.annotation.Target;
 import com.loci.loci_backend.common.log.Loggable;
 
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)

@@ -16,7 +16,6 @@
 
 package com.loci.loci_backend.common.validation.infrastructure.primary.handler;
 
-import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;

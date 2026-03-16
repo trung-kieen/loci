@@ -1,6 +1,7 @@
 spring:
   cache:
-    type: hybrid # hybrid | redis | caffeine
+    # type: hybrid # hybrid | redis | caffeine
+    type: caffeine
   application:
     name: loci
   # boot:
@@ -25,8 +26,8 @@ spring:
       max-request-size: 100MB
 
   security:
-    websocket:
-      same-origin-disabled: true
+    # websocket:
+    #   same-origin-disabled: true
     oauth2:
       resourceserver:
         jwt.issuer-uri: http://localhost:9090/realms/loci-realm
@@ -201,6 +202,7 @@ upload:
     metric-name: ""
     url-prefix: ${UPLOAD_MINIO_URL_PREFIX:http://localhost:9000}
     region: ${UPLOAD_MINIO_REGION:us-east-1}
+
 
 # logging:
 #   structured:

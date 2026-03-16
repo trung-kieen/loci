@@ -18,8 +18,6 @@ package com.loci.loci_backend.core.conversation.domain.aggregate;
 
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import com.loci.loci_backend.common.collection.Maps;
 import com.loci.loci_backend.common.collection.Pages;
@@ -28,7 +26,6 @@ import com.loci.loci_backend.core.conversation.domain.vo.ConversationUnreadMessa
 import com.loci.loci_backend.core.messaging.domain.aggregate.DirectChatInfo;
 import com.loci.loci_backend.core.messaging.domain.aggregate.GroupChatInfo;
 import com.loci.loci_backend.core.messaging.domain.aggregate.Message;
-import com.loci.loci_backend.core.messaging.domain.vo.MessageId;
 
 import org.springframework.data.domain.Page;
 

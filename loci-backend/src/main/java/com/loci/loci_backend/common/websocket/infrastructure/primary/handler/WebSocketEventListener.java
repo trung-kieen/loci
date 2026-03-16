@@ -18,15 +18,10 @@ package com.loci.loci_backend.common.websocket.infrastructure.primary.handler;
 
 import com.loci.loci_backend.common.ddd.infrastructure.stereotype.PrimaryPort;
 
-import org.springframework.context.event.EventListener;
-import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
-import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.WebSocketMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.AbstractWebSocketHandler;
-import org.springframework.web.socket.messaging.SessionConnectedEvent;
-import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;

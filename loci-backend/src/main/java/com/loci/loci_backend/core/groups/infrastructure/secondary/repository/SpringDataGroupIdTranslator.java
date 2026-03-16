@@ -21,8 +21,6 @@ import com.loci.loci_backend.common.user.domain.vo.PublicId;
 import com.loci.loci_backend.core.groups.domain.repository.GroupIdTranslator;
 import com.loci.loci_backend.core.groups.domain.vo.GroupId;
 
-import org.springframework.stereotype.Service;
-
 import lombok.RequiredArgsConstructor;
 
 @SecondaryPort

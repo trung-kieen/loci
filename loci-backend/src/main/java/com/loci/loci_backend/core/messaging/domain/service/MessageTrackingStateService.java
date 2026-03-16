@@ -20,7 +20,6 @@ import com.loci.loci_backend.common.authentication.domain.CurrentUser;
 import com.loci.loci_backend.common.ddd.infrastructure.stereotype.DomainService;
 import com.loci.loci_backend.common.user.domain.aggregate.User;
 import com.loci.loci_backend.common.user.domain.repository.UserRepository;
-import com.loci.loci_backend.common.user.domain.vo.UserDBId;
 import com.loci.loci_backend.core.conversation.domain.aggregate.Participant;
 import com.loci.loci_backend.core.conversation.domain.repository.ParticipantRepository;
 import com.loci.loci_backend.core.messaging.domain.aggregate.MarkMessageSeenRequest;

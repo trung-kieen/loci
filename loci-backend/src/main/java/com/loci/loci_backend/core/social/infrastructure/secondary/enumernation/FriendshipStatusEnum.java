@@ -19,9 +19,6 @@ package com.loci.loci_backend.core.social.infrastructure.secondary.enumernation;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
-import lombok.Getter;
-
-// @Getter
 public enum FriendshipStatusEnum {
   NOT_CONNECTED("not_connected"),
   PENDING_REQUEST("friend_request_sent"),

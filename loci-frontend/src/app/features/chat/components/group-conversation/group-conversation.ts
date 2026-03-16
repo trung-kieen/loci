@@ -243,7 +243,7 @@ export class GroupConversation implements OnInit {
   // ── Socket event handlers ─────────────────────────────────────────────────
 
   onReceiveMessage(message: IMessage): void {
-    this.state.receiveMessage({ ...message, owner: false });
+    this.state.receiveMessage(message);
     setTimeout(() => {
       Promise.resolve().then(() => this.scrollBottom());
     }, 300);

@@ -28,7 +28,6 @@ import com.loci.loci_backend.common.validation.domain.ResourceNotFoundException;
 import com.loci.loci_backend.core.conversation.domain.vo.ConversationId;
 import com.loci.loci_backend.core.conversation.domain.vo.ConversationType;
 import com.loci.loci_backend.core.conversation.domain.vo.ParticipantRole;
-import com.loci.loci_backend.core.conversation.domain.vo.ParticipantRoleEnum;
 import com.loci.loci_backend.core.conversation.infrastructure.secondary.enumeration.ConversationTypeEnum;
 import com.loci.loci_backend.core.groups.domain.factory.ConversationParticipantFactory;
 import com.loci.loci_backend.core.messaging.domain.aggregate.Message;

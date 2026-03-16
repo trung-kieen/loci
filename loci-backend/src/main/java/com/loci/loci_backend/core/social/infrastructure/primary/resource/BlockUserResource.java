@@ -23,7 +23,6 @@ import com.loci.loci_backend.core.social.application.SocialApplicationService;
 import com.loci.loci_backend.core.social.domain.aggregate.BlockedUserList;
 import com.loci.loci_backend.core.social.domain.vo.FriendshipStatus;
 import com.loci.loci_backend.core.social.infrastructure.primary.mapper.RestBlockedUserMapper;
-import com.loci.loci_backend.core.social.infrastructure.primary.mapper.RestContactMapper;
 import com.loci.loci_backend.core.social.infrastructure.primary.payload.RestBlockedUserList;
 import com.loci.loci_backend.core.social.infrastructure.primary.payload.RestFriendshipUpdatedResponse;
 

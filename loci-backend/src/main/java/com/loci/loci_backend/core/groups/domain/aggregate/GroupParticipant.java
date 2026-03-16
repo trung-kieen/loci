@@ -13,7 +13,6 @@ import com.loci.loci_backend.core.identity.domain.aggregate.UserFullname;
 import org.jilt.Builder;
 import org.jilt.BuilderStyle;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

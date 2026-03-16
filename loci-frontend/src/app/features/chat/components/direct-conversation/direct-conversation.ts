@@ -146,7 +146,7 @@ export class DirectConversation implements OnInit {
         this.initializeChat();
 
         return merge(
-          this.chatApiService.direct.onReceiveNewMessage(conversationId).pipe(
+          this.chatApiService.direct.onReceiveMessage(conversationId).pipe(
             tap(m => {
               this.onReceiveMessage(m)
               // NOTE: Global receiver will obtain this message

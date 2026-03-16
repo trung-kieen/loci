@@ -40,9 +40,8 @@ export class DirectChatApiService {
   private apiService = inject(WebApiService);
   private chatListStateService = inject(ChatListStateService);
 
-  onReceiveNewMessage(conversationId: string) {
+  onReceiveMessage(conversationId: string) {
     return this.messageObservable.directMessageReceiveInConversation$(conversationId);
-
   }
 
 

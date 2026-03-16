@@ -17,7 +17,6 @@
 package com.loci.loci_backend.core.messaging.domain.service;
 
 import com.loci.loci_backend.common.ddd.infrastructure.stereotype.DomainService;
-import com.loci.loci_backend.common.validation.domain.Assert;
 import com.loci.loci_backend.core.messaging.domain.vo.MessageContent;
 
 import lombok.RequiredArgsConstructor;
