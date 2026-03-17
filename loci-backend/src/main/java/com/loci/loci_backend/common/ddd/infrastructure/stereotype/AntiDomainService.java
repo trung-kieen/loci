@@ -14,17 +14,24 @@
  * limitations under the License.
  */
 
-package com.loci.loci_backend.core.groups.infrastructure.primary.payload;
+package com.loci.loci_backend.common.ddd.infrastructure.stereotype;
 
-import java.util.List;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.loci.loci_backend.common.log.Loggable;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-public class RestGroupParticipantList {
-  private List<RestGroupParticipant> participants;
+import org.springframework.stereotype.Component;
+
+/**
+ * For erich data purpose, not a domain service
+ */
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+@Component
+@Loggable
+public @interface AntiDomainService {
+
 }

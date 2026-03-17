@@ -1,3 +1,19 @@
+/**
+ * Copyright 2026 trung-kieen
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 import { Injectable, computed, inject, signal } from '@angular/core';
 import { BaseConversationStateService } from '../../service/base-conversation-state.service';
 import { LoggerService } from '../../../../core/services/logger.service';
@@ -93,6 +109,7 @@ export class GroupConversationState extends BaseConversationStateService {
   // ── Mutators ───────────────────────────────────────────────────────────────
 
   setGroupInfo(info: IGroupConversationInfo): void {
+    this.logger.debug("Group info is changed", info);
     this.groupInfo.set(info);
   }
 
@@ -127,6 +144,17 @@ export class GroupConversationState extends BaseConversationStateService {
       participantCount: info.participantCount + 1,
     });
   }
+  addGroupMembers(members: IGroupParticipant[]): void {
+    const info = this.groupInfo();
+    if (!info) return;
+    if (!members) return;
+
+    this.groupInfo.set({
+      ...info,
+      participants: [...info.participants, ...members],
+      participantCount: info.participantCount + members.length,
+    });
+  }
 
   /**
    * Removes a member from the group member list.
@@ -157,7 +185,6 @@ export class GroupConversationState extends BaseConversationStateService {
   addSystemEvent(event: ISystemEventMessage): void {
     this._systemEvents.update(prev => [...prev, event]);
   }
-
   /** Resets all state when navigating away from the conversation */
   reset(): void {
     this.groupInfo.set(null);

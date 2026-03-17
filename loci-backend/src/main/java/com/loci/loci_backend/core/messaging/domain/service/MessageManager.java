@@ -29,7 +29,6 @@ import com.loci.loci_backend.core.conversation.domain.aggregate.Conversation;
 import com.loci.loci_backend.core.conversation.domain.aggregate.Participant;
 import com.loci.loci_backend.core.conversation.domain.repository.ConversationRepository;
 import com.loci.loci_backend.core.conversation.domain.repository.ParticipantRepository;
-import com.loci.loci_backend.core.conversation.domain.service.ConversationAuthenticationProvider;
 import com.loci.loci_backend.core.messaging.domain.aggregate.Attachment;
 import com.loci.loci_backend.core.messaging.domain.aggregate.ConversationMessageList;
 import com.loci.loci_backend.core.messaging.domain.aggregate.ConversationMessageListBuilder;
@@ -48,12 +47,12 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class MessageManager {
   private final FileStorageService fileStorageService;
-  private final ConversationAuthenticationProvider authenticationProvider;
   private final CurrentUser principal;
   private final UserRepository userRepository;
   private final ConversationRepository conversationRepository;
   private final MessageRepository messageRepository;
   private final ParticipantRepository participantRepository;
+  private final MessageReader messageReader;
 
   void deleteMessage() {
     throw new NotImplementedError();
@@ -64,7 +63,7 @@ public class MessageManager {
   }
 
   @Transactional(readOnly = true)
-  public ConversationMessageList getConversationMessages(MessageCursorQuery query) {
+  public ConversationMessageList getDirectConversationMessages(MessageCursorQuery query) {
 
     // get conversation => determine the type of conversation
     Conversation conversation = conversationRepository.getByPublicId(query.getConversationId())
@@ -73,8 +72,10 @@ public class MessageManager {
     User user = userRepository.getByPrincipal(principal).orElseThrow(EntityNotFoundException::new);
 
     List<Participant> participants = participantRepository.getParticipantsByConversationId(conversation.getId());
+
     Participant targetParticipant = participants.stream().filter(p -> p.getUserId().equals(user.getDbId())).findFirst()
         .orElseThrow(EntityNotFoundException::new);
+
     User targetMessagingUser = userRepository.getByUserDBId(targetParticipant.getUserId())
         .orElseThrow(EntityNotFoundException::new);
     // check user is participant to conversation
@@ -93,14 +94,13 @@ public class MessageManager {
 
     MessageList messagePage = null;
     if (query.forLastestMessage()) {
-      messagePage = messageRepository.getLastestMessages(conversation.getId(), query.getLimit());
+      messagePage = messageReader.getLastestMessages(conversation.getId(), query.getLimit());
     } else {
       PublicId lastMessageId = query.getLastMessageId().orElseGet(null);
       Message lastMessage = messageRepository.getByPublicId(lastMessageId)
           .orElseThrow(EntityNotFoundException::new);
-      messagePage = messageRepository.getOlderMessages(conversation.getId(), lastMessage.getMessageId(),
+      messagePage = messageReader.getOlderMessages(conversation.getId(), lastMessage.getMessageId(),
           query.getLimit());
-
     }
 
     ConversationMessageList conversationMessages = ConversationMessageListBuilder.conversationMessageList()

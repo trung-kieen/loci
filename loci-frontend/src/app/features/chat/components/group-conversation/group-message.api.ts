@@ -1,3 +1,19 @@
+/**
+ * Copyright 2026 trung-kieen
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 import { Injectable, inject } from '@angular/core';
 import { Observable, EMPTY, tap, of, delay } from 'rxjs';
 import { LoggerService } from '../../../../core/services/logger.service';
@@ -17,11 +33,9 @@ export class GroupMessageApi {
   private readonly chatListStateService = inject(ChatListState);
   private readonly messageSubscriber = inject(GroupMessageSubscriber);
 
-  // ── REST ────────────────────────────────────────────────────────────────────
 
   /**
    * GET /api/v1/groups/:groupId
-   * Returns metadata only — no member list.
    */
   getChatInfo(conversationId: string): Observable<IGroupChatInfoMeta> {
     return this.apiService.get<IGroupChatInfoMeta>(`/conversations/group/${conversationId}`);
@@ -29,33 +43,17 @@ export class GroupMessageApi {
 
   /**
    * GET /api/v1/groups/:groupId/members
-   * Returns member list without isOnline — hydrated separately.
    */
   getParticipants(groupId: string): Observable<IGroupParticipantsResponse> {
     return this.apiService.get<IGroupParticipantsResponse>(
       `/groups/${groupId}/participants`
     );
-    // Unwrap the members array from the response envelope
-    // and default isOnline to false — will be patched by getOnlineMembers
-    // before writing to state
-    // NOTE: See implementation note below for the correct unwrap pattern
   }
 
-  // getMembers(groupId: string): Observable<IGroupMember[]> {
-  //   return this.http
-  //     .get<IGroupMembersResponse>(`${this.base}/${groupId}/members`)
-  //     .pipe(
-  //       map(res => res.members.map(m => ({
-  //         ...m,
-  //         isOnline: false,   // default — will be patched by getOnlineMembers before state write
-  //       })))
-  //     );
-  // }
 
 
   /**
    * GET /api/v1/groups/:groupId/members/online
-   * Returns snapshot of online user IDs — merged with member list client-side.
    */
   getOnlineMembers(groupId: string): Observable<IGroupOnlineStatusResponse> {
     return this.apiService.get<IGroupOnlineStatusResponse>(
@@ -119,8 +117,8 @@ export class GroupMessageApi {
   }
 
   /**
-   * Emits when any member's online/offline status changes.
-   * IUserPresence carries userId — required for patchMember().
+   * Emits when any member's online/offline status changes
+   * IUserPresence carries userId — required for patchMember()
    */
   onUserStatusUpdate(groupId: string): Observable<IUserPresence> {
     return this.socketEvent<IUserPresence>(groupId, 'group:member:status');
@@ -134,20 +132,19 @@ export class GroupMessageApi {
   }
 
   /**
-   * Emits when a member leaves or is removed from the group.
+   * Emits when a member leaves or is removed from the group
    */
   onMemberLeft(groupId: string): Observable<IGroupMemberEvent> {
     return this.socketEvent<IGroupMemberEvent>(groupId, 'group:member:left');
   }
 
   /**
-   * Emits when group metadata (name, avatar) changes.
+   * Emits when group metadata (name, avatar) changes
    */
   onGroupUpdated(groupId: string): Observable<IGroupUpdatedEvent> {
     return this.socketEvent<IGroupUpdatedEvent>(groupId, 'group:info:updated');
   }
 
-  // ── Private socket helper ─────────────────────────────────────────────────
 
   /**
    * Replace this stub with your actual socket client call.

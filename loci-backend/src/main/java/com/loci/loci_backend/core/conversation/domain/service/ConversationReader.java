@@ -19,6 +19,7 @@ package com.loci.loci_backend.core.conversation.domain.service;
 import java.util.List;
 import java.util.Optional;
 
+import com.loci.loci_backend.common.ddd.infrastructure.stereotype.AntiDomainService;
 import com.loci.loci_backend.common.user.domain.aggregate.User;
 import com.loci.loci_backend.common.validation.domain.ResourceNotFoundException;
 import com.loci.loci_backend.core.conversation.domain.aggregate.Chat;
@@ -50,13 +51,12 @@ import com.loci.loci_backend.core.messaging.domain.repository.MessageRepository;
 import com.loci.loci_backend.core.social.domain.vo.FriendshipStatus;
 
 import org.springframework.data.domain.Page;
-import org.springframework.stereotype.Service;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
-@Service
+@AntiDomainService
 @Log4j2
 @RequiredArgsConstructor
 public class ConversationReader {

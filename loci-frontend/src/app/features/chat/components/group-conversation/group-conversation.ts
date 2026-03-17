@@ -25,7 +25,6 @@ import {
   ElementRef,
   computed,
   effect,
-  untracked,
   afterNextRender,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -83,7 +82,6 @@ import { GroupConversationState } from './group-conversation.state';
 })
 export class GroupConversation implements OnInit {
 
-  // ── Chat header features ───────────────────────────────────────────────────
 
   readonly groupChatFeatures: ChatFeatures = {
     showMemberList: true,
@@ -92,7 +90,6 @@ export class GroupConversation implements OnInit {
     showVideo: false,
   };
 
-  // ── Injections ─────────────────────────────────────────────────────────────
 
   readonly state = inject(GroupConversationState);
 
@@ -105,9 +102,7 @@ export class GroupConversation implements OnInit {
 
   private readonly messageArea = viewChild.required<ElementRef<HTMLDivElement>>('messageArea');
 
-  // ── Signals exposed to template ────────────────────────────────────────────
 
-  /** Adapts IGroupChatInfo → ChatInfo shape expected by the shared ChatHeader */
   readonly groupChatInfo = computed<IGroupChatInfo | null>(() => {
     const g = this.state.groupInfo();
     if (!g) return null;
@@ -591,23 +586,12 @@ export class GroupConversation implements OnInit {
       .subscribe();
   }
 
-  // ── Template helpers ──────────────────────────────────────────────────────
-
-  /**
-   * Resolves sender avatar from memberMap — O(1).
-   * Returns empty string for own messages (bubble renders no avatar).
-   * Falls back to empty string if sender has left the group.
-   */
-  getMessageSenderAvatarUrl(message: IConversationMessage): string {
+  public getMessageSenderAvatarUrl(message: IConversationMessage): string {
     if (message.owner) return '';
     return this.state.memberMap().get(message.senderId)?.avatarUrl ?? '';
   }
 
-  /**
-   * Resolves sender display name from memberMap — O(1).
-   * Falls back to 'Unknown' if sender has left the group (Section 9.3).
-   */
-  getMessageSenderName(message: IConversationMessage): string {
+  public getMessageSenderName(message: IConversationMessage): string {
     if (message.owner) return '';
     return this.state.memberMap().get(message.senderId)?.fullname ?? 'Unknown';
   }
@@ -616,7 +600,6 @@ export class GroupConversation implements OnInit {
     return item.kind === 'message' ? item.data.messageId : item.data.eventId;
   }
 
-  // ── Private DOM helpers ───────────────────────────────────────────────────
 
   private scrollBottom(): void {
     this.messageArea().nativeElement.scroll({

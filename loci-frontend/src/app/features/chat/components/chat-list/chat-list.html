@@ -138,9 +138,9 @@
 
                   @if (conv.lastMessage) {
                     <!-- Group sender prefix -->
-                    @if (conv.isGroup && conv.lastMessage.senderId) {
-                      <span class="font-medium">{{ conv.lastMessage.senderId }}:</span>
-                    }
+                    <!-- @if (conv.isGroup && conv.lastMessage.senderId) { -->
+                    <!--   <span class="font-medium">{{ conv.lastMessage.senderId }}:</span> -->
+                    <!-- } -->
                     <!-- Media / non-text preview -->
                     @if (conv.lastMessage.type !== 'text') {
                       <span class="italic flex items-center gap-1">

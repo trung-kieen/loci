@@ -40,7 +40,7 @@ public class MessagingApplicationService {
   private final MessageTrackingStateService messageTrackingStateService;
 
   public ConversationMessageList getConversationMessages(MessageCursorQuery query) {
-    return messageManager.getConversationMessages(query);
+    return messageManager.getDirectConversationMessages(query);
   }
 
   public Message sendDirectMessage(SendMessageRequest request) {
