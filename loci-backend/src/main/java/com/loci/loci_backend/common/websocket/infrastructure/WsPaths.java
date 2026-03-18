@@ -32,16 +32,22 @@ public class WsPaths {
   public static final String NOTIFICATION_ENDPOINT = ENDPOINT + "/notifications";
   public static final String PRESENCE_ENDPOINT = ENDPOINT + "/presence";
 
-  // individual
+  // individual message
   public static final String INDIVIDUAL_RECEIVE_MESSAGE = QUEUE + "/messages.receive";
   public static final String INDIVIDUAL_NOTIFY_MESSAGE_SENT = QUEUE + "/messages.sent";
   public static final String INDIVIDUAL_NOTIFY_MESSAGE_DELIVERED = QUEUE + "/messages.delivered";
   public static final String INDIVIDUAL_NOTIFY_MESSAGE_SEEN = QUEUE + "/messages.seen";
 
-  public static final String GROUP_RECEIVE_MESSAGE = TOPIC + "/messages.receive-";
-
+  // group message
+  public static final String GROUP_RECEIVE_MESSAGE = TOPIC + "/messages.receive-"; // receive-{conversationId}
   public static final String GROUP_NOTIFY_MESSAGE_SENT = QUEUE + "/messages.sent";
   public static final String GROUP_NOTIFY_MESSAGE_DELIVERED = QUEUE + "/messages.delivered";
   public static final String GROUP_NOTIFY_MESSAGE_SEEN = QUEUE + "/messages.seen";
 
+  public static final String NOTIFY_USER_NEW_NOTIFICATION = QUEUE + "/notifications.new";
+
+  // rarely use for update the message is read in other device
+  public static final String NOTIFY_USER_UPDATE_NOTIFICATION = QUEUE + "/notifications.update";
+
+  // presence
 }

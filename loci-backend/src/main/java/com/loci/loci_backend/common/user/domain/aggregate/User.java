@@ -37,7 +37,6 @@ import org.jilt.BuilderStyle;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-// @AllArgsConstructor
 @Data
 @NoArgsConstructor
 public class User {

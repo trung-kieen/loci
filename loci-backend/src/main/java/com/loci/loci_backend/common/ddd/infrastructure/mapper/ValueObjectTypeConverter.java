@@ -28,6 +28,9 @@ import org.springframework.stereotype.Component;
 
 /**
  * Provide mapstruct type translator from ValueObject to infrastructure type
+ * Java not support to create custom autoboxing so any translate from domain to
+ * infrastructure require a explicit layer
+ *
  * @see ValueObject
  */
 @Component
@@ -36,7 +39,6 @@ public class ValueObjectTypeConverter {
   public <T extends Enum<T>> T wrap(@TargetType Class<T> clazz, T value) {
     return value;
   }
-
 
   @SuppressWarnings("unchecked")
   public <R, T extends ValueObject<R>> T wrap(@TargetType Class<T> clazz, Object value) {

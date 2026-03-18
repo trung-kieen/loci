@@ -31,7 +31,7 @@ import com.loci.loci_backend.common.validation.domain.ResourceNotFoundException;
 import com.loci.loci_backend.core.conversation.domain.aggregate.Participant;
 import com.loci.loci_backend.core.conversation.domain.repository.ConversationRepository;
 import com.loci.loci_backend.core.conversation.domain.repository.ParticipantRepository;
-import com.loci.loci_backend.core.groups.domain.aggregate.CreateGroupProfileRequest;
+import com.loci.loci_backend.core.groups.domain.aggregate.CreateGroupProfileEvent;
 import com.loci.loci_backend.core.groups.domain.aggregate.GroupParticipantList;
 import com.loci.loci_backend.core.groups.domain.aggregate.GroupProfile;
 import com.loci.loci_backend.core.groups.domain.aggregate.GroupProfileChanges;
@@ -65,7 +65,7 @@ public class GroupManager {
   }
 
   @Transactional(readOnly = false)
-  public GroupProfile createGroupProfile(CreateGroupProfileRequest request) {
+  public GroupProfile createGroupProfile(CreateGroupProfileEvent request) {
 
     // check conversation is valid group
     if (!conversationRepository.existsGroupConversation(request.conversationId())) {

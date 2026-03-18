@@ -18,6 +18,7 @@ package com.loci.loci_backend.core.groups.domain.aggregate;
 
 import java.time.Instant;
 
+import com.loci.loci_backend.common.ddd.domain.contract.DomainEvent;
 import com.loci.loci_backend.common.user.domain.vo.PublicId;
 import com.loci.loci_backend.core.conversation.domain.aggregate.Conversation;
 import com.loci.loci_backend.core.conversation.domain.aggregate.CreateGroupRequest;
@@ -29,16 +30,16 @@ import org.jilt.Builder;
 import org.jilt.BuilderStyle;
 
 @Builder(style = BuilderStyle.STAGED)
-public record CreateGroupProfileRequest(
+public record CreateGroupProfileEvent(
     ConversationId conversationId,
     GroupName groupName,
     GroupImageUrl groupProfilePicture,
     Instant lastActive,
-    PublicId publicId) {
-
-  public static CreateGroupProfileRequest fromConversation(Conversation conversation,
+    PublicId publicId)
+    implements DomainEvent {
+  public static CreateGroupProfileEvent fromConversation(Conversation conversation,
       CreateGroupRequest request) {
-    return CreateGroupProfileRequestBuilder.createGroupProfileRequest()
+    return CreateGroupProfileEventBuilder.createGroupProfileEvent()
         .conversationId(conversation.getId())
         .groupName(request.getGroupName())
         .groupProfilePicture(request.getProfileImage())

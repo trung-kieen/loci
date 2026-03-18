@@ -16,12 +16,43 @@
 
 package com.loci.loci_backend.core.notification.domain.service;
 
-public interface NotificationEngine {
+import com.loci.loci_backend.common.authentication.domain.CurrentUser;
+import com.loci.loci_backend.common.ddd.infrastructure.stereotype.DomainService;
+import com.loci.loci_backend.common.user.domain.aggregate.User;
+import com.loci.loci_backend.common.user.domain.repository.UserRepository;
+import com.loci.loci_backend.core.notification.domain.aggregate.Notification;
+import com.loci.loci_backend.core.notification.domain.aggregate.NotificationList;
+import com.loci.loci_backend.core.notification.domain.repository.NotificationRepository;
 
-  void sendPushNotification();
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
-  void groupNotify();
+import lombok.RequiredArgsConstructor;
 
-  void sendContactRequest();
+@RequiredArgsConstructor
+@DomainService
+public class NotificationEngine {
+  private final NotificationRepository notificationRepository;
+  private final UserRepository userRepository;
+  // external system need to publish the event of message
+
+  public NotificationList getAllByUser(CurrentUser principal, Pageable pageable) {
+    User user = userRepository.getByPrincipalThrow(principal);
+    Page<Notification> notifications = notificationRepository.getByUserId(user.getDbId(), pageable);
+    return new NotificationList(notifications);
+  }
+
+  // message
+  void sendPushNotification(Notification notification) {
+    Notification savedNotification = notificationRepository.create(notification);
+
+
+  }
+
+  void groupNotify() {
+  }
+
+  void sendContactRequest() {
+  }
 
 }

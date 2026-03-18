@@ -19,7 +19,7 @@ package com.loci.loci_backend.core.groups.application;
 import com.loci.loci_backend.common.ddd.infrastructure.stereotype.ApplicationService;
 import com.loci.loci_backend.common.store.domain.aggregate.File;
 import com.loci.loci_backend.common.user.domain.vo.PublicId;
-import com.loci.loci_backend.core.groups.domain.aggregate.CreateGroupProfileRequest;
+import com.loci.loci_backend.core.groups.domain.aggregate.CreateGroupProfileEvent;
 import com.loci.loci_backend.core.groups.domain.aggregate.GroupParticipantList;
 import com.loci.loci_backend.core.groups.domain.aggregate.GroupProfile;
 import com.loci.loci_backend.core.groups.domain.aggregate.GroupProfileChanges;
@@ -33,7 +33,7 @@ public class GroupApplicationService {
 
   private final GroupManager groupManager;
 
-  public GroupProfile createGroupProfile(CreateGroupProfileRequest createProfileRequest) {
+  public GroupProfile createGroupProfile(CreateGroupProfileEvent createProfileRequest) {
     return groupManager.createGroupProfile(createProfileRequest);
   }
 

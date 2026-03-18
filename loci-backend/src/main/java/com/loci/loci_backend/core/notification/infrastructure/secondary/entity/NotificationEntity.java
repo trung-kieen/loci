@@ -41,7 +41,7 @@ import lombok.Setter;
 @Table(name = "notification")
 @Getter
 @Setter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 public class NotificationEntity extends AbstractAuditingEntity<Long> {
 
   @Id
@@ -51,10 +51,13 @@ public class NotificationEntity extends AbstractAuditingEntity<Long> {
   private Long id;
 
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
-  @JoinColumn(name = "user_id", nullable = false)
+  @JoinColumn(name = "user_id", nullable = false, updatable = false, insertable = false)
   @Getter(AccessLevel.NONE)
   @Setter(AccessLevel.NONE)
   private UserEntity user;
+
+  @Column(name = "user_id", nullable = false, updatable = false, insertable = true)
+  private Long userId;
 
   @Column(name = "content", nullable = false, columnDefinition = "TEXT")
   private String content;
@@ -68,11 +71,6 @@ public class NotificationEntity extends AbstractAuditingEntity<Long> {
   @Column(name = "public_id", unique = true)
   private UUID publicId;
 
-  // public NotificationJpaEntity(UserJpaEntity user, String content) {
-  // this.notificationId = UUID.randomUUID();
-  // this.user = user;
-  // this.content = content;
-  // }
 
   public void markAsRead() {
     this.readAt = Instant.now();
