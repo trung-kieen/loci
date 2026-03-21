@@ -22,8 +22,8 @@ public class CacheKeys {
   public static final String USER_ID_TO_UUID = "user:id";
   public static final String USER_BATCH_UUID_TO_ID = "user:batch:uuid";
 
-
-  public static final String USER_PRESENCE= "presence:user";
+  public static final String USER_PRESENCE = "presence:user";
+  public static final String USER_LASTSEEN = "lastseen:user";
   // presence => cache for 5 minutes
 
   private CacheKeys() {

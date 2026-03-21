@@ -90,27 +90,6 @@ public class ConversationEntity extends AbstractAuditingEntity<Long> {
 
   private UUID publicId;
 
-  // Bi-directional relationships
-  // @OneToMany(mappedBy = "conversation", cascade = CascadeType.NONE, orphanRemoval = false)
-  // private Set<MessageEntity> messages = new HashSet<>();
-  //
-  // @OneToMany(mappedBy = "conversation", cascade = CascadeType.ALL,
-  // orphanRemoval = true)
-  // private Set<ConversationParticipantJpaEntity> participants = new HashSet<>();
-  //
-  // @OneToOne(mappedBy = "conversation", cascade = CascadeType.ALL, orphanRemoval
-  // = true)
-  // private GroupJpaEntity groupDetails;
-
-  // public ConversationJpaEntity(UserJpaEntity creator) {
-  // this.conversationId = UUID.randomUUID();
-  // this.creator = creator;
-  // }
-
-  // public boolean isGroup() {
-  // return groupName != null && !groupName.isEmpty();
-  // }
-
   @Override
   public Long getId() {
     return id;

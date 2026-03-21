@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -62,22 +63,22 @@ public class CacheConfiguration {
   @Bean
   public CacheManager caffeineCacheManager() {
     // CaffeineCacheManager mgr = new CaffeineCacheManager();
-    var userIdToUUIDCache = Caffeine.newBuilder()
+    Cache<Object, Object> userIdToUUIDCache = Caffeine.newBuilder()
         .expireAfterWrite(30, TimeUnit.MINUTES)
         .maximumSize(500)
         .build();
 
-    var userUUIDToIdCache = Caffeine.newBuilder()
+    Cache<Object, Object> userUUIDToIdCache = Caffeine.newBuilder()
         .expireAfterAccess(30, TimeUnit.MINUTES)
         .maximumSize(500)
         .build();
 
-    var batchUUIDToId = Caffeine.newBuilder()
+    Cache<Object, Object> batchUUIDToId = Caffeine.newBuilder()
         .expireAfterAccess(5, TimeUnit.MINUTES)
         .maximumSize(500)
         .build();
 
-    var userPresence = Caffeine.newBuilder()
+    Cache<Object, Object> userPresence = Caffeine.newBuilder()
         .expireAfterAccess(5, TimeUnit.MINUTES)
         .maximumSize(500)
         .build();
@@ -126,7 +127,10 @@ public class CacheConfiguration {
         defaultConfig.entryTtl(Duration.ofMinutes(5)));
 
     cacheConfigs.put(CacheKeys.USER_PRESENCE,
-        defaultConfig.entryTtl(Duration.ofMinutes(5)));
+        defaultConfig.entryTtl(Duration.ofMinutes(3)));
+
+    cacheConfigs.put(CacheKeys.USER_LASTSEEN,
+        defaultConfig.entryTtl(Duration.ofDays(30)));
 
     return RedisCacheManager.builder(connectionFactory)
         .cacheDefaults(defaultConfig)

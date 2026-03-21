@@ -26,6 +26,7 @@ import com.loci.loci_backend.common.user.domain.vo.PublicId;
 import com.loci.loci_backend.common.user.domain.vo.UserDBId;
 import com.loci.loci_backend.common.validation.domain.DuplicateResourceException;
 import com.loci.loci_backend.core.discovery.domain.repository.UserConnectionResolver;
+import com.loci.loci_backend.core.identity.domain.aggregate.UserSummary;
 import com.loci.loci_backend.core.identity.domain.repository.IdentityUserRepository;
 import com.loci.loci_backend.core.social.domain.aggregate.ContactConnection;
 import com.loci.loci_backend.core.social.domain.aggregate.ContactRequest;
@@ -185,7 +186,7 @@ public class FriendManager {
     ;
     Page<ContactRequest> requests = contactRequestRepository.getAllPendingByReceiver(user.getDbId(), pageable);
     List<UserDBId> userIds = requests.getContent().stream().map(ContactRequest::getRequestUserId).toList();
-    var userInfomations = identityUserRepository.getUserSummary(userIds);
+    List<UserSummary> userInfomations = identityUserRepository.getUserSummary(userIds);
 
     return ContactRequestListBuilder.contactRequestList()
         .contacts(requests)

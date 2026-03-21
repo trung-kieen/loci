@@ -17,6 +17,7 @@
 package com.loci.loci_backend.common.authentication.domain;
 
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.loci.loci_backend.common.user.domain.vo.UserEmail;
@@ -68,7 +69,7 @@ public class KeycloakPrincipal implements CurrentUser {
   }
 
   public static KeycloakPrincipal fromKeycloakAccessToken(AccessToken token) {
-    var roleSet = token.getRealmAccess().getRoles().stream().map(Role::fromKeycloak)
+    Set<Role> roleSet = token.getRealmAccess().getRoles().stream().map(Role::fromKeycloak)
         .collect(Collectors.toUnmodifiableSet());
     Roles roles = new Roles(roleSet);
     return KeycloakPrincipal.builder()

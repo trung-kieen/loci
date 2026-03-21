@@ -19,6 +19,7 @@ package com.loci.loci_backend.common.migration.infrastructure.mapper;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.loci.loci_backend.common.authentication.domain.Username;
+import com.loci.loci_backend.common.migration.domain.aggregate.KeycloakUser;
 import com.loci.loci_backend.common.user.domain.aggregate.User;
 import com.loci.loci_backend.common.user.domain.vo.UserEmail;
 import com.loci.loci_backend.common.user.domain.vo.UserFirstname;
@@ -42,17 +43,17 @@ public class MapStructMigrationMapperTest {
   @Test
   public void testMappingValidUser() throws Exception {
 
-    var user = new User();
-    var firstname = new UserFirstname("about");
-    var lastname = new UserLastname("company");
-    var email = new UserEmail("exampleemail@gmail.com");
-    var username = new Username("enjoy");
+    User user = new User();
+    UserFirstname firstname = new UserFirstname("about");
+    UserLastname lastname = new UserLastname("company");
+    UserEmail email = new UserEmail("exampleemail@gmail.com");
+    Username username = new Username("enjoy");
     user.setFirstname(firstname);
     user.setLastname(lastname);
     user.setEmail(email);
     user.setUsername(username);
 
-    var keycloakUser = mapper.toKeycloakUser(user);
+    KeycloakUser keycloakUser = mapper.toKeycloakUser(user);
     assertEquals(keycloakUser.getFirstName(), firstname);
     assertEquals(keycloakUser.getLastName(), lastname);
     assertEquals(keycloakUser.getEmail(), email);

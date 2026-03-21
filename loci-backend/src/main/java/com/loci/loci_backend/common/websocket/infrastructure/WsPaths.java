@@ -48,6 +48,7 @@ public class WsPaths {
 
   // rarely use for update the message is read in other device
   public static final String NOTIFY_USER_UPDATE_NOTIFICATION = QUEUE + "/notifications.update";
+  public static final String GROUP_PRESENCE_CHANGE = TOPIC + "/presence.change-";
 
   // presence
 }

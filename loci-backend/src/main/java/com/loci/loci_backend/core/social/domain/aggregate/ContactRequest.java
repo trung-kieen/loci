@@ -60,7 +60,7 @@ public class ContactRequest {
 
   public static ContactRequest builderRequest(User sender, User receiver) {
 
-    var contact = ContactRequestBuilder.contactRequest()
+    ContactRequest contact = ContactRequestBuilder.contactRequest()
         .receiverUserId(receiver.getDbId())
         .requestUserId(sender.getDbId())
         .publicId(null)

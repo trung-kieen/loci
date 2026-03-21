@@ -46,7 +46,7 @@ public class RestIdentityProvider {
   }
 
   public KeycloakPrincipal currentPrincipal() {
-    var attrributes = attributes();
+    Map<String, Object> attrributes = attributes();
     Roles authorities = roles();
     // Perform before authentication provider authenticate token
     // Action extract principal information

@@ -18,6 +18,7 @@ package com.loci.loci_backend.core.conversation.domain.repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import com.loci.loci_backend.common.user.domain.aggregate.User;
 import com.loci.loci_backend.common.user.domain.vo.PublicId;
@@ -25,6 +26,8 @@ import com.loci.loci_backend.common.user.domain.vo.UserDBId;
 import com.loci.loci_backend.core.conversation.domain.aggregate.Conversation;
 import com.loci.loci_backend.core.conversation.domain.aggregate.UserConversation;
 import com.loci.loci_backend.core.conversation.domain.vo.ConversationId;
+import com.loci.loci_backend.core.groups.domain.vo.GroupConversationPresenceId;
+import com.loci.loci_backend.core.identity.domain.vo.PresenceId;
 import com.loci.loci_backend.core.messaging.domain.aggregate.DirectChatInfo;
 import com.loci.loci_backend.core.messaging.domain.aggregate.GroupChatInfo;
 import com.loci.loci_backend.core.messaging.domain.vo.MessageId;
@@ -45,4 +48,11 @@ public interface ConversationRepository {
   public Optional<Conversation> getByPublicId(PublicId conversationId);
 
   public Conversation markLatestMessage(Conversation conversation, MessageId messageId);
+
+  Set<PresenceId> getMemberPresenceIds(ConversationId conversationId);
+
+  Set<GroupConversationPresenceId> getConversationOfPresence(PresenceId userPresenceId);
+
+  public Optional<PublicId> getPublicId(ConversationId conversationId);
+
 }

@@ -16,48 +16,109 @@
 
 package com.loci.loci_backend.core.identity.infrastructure.secondary.repository;
 
-import java.util.Collection;
-import java.util.List;
+import java.time.Instant;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Function;
+import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import com.loci.loci_backend.common.ddd.infrastructure.stereotype.SecondaryPort;
-import com.loci.loci_backend.common.user.domain.vo.UserDBId;
 import com.loci.loci_backend.core.identity.domain.aggregate.UserPresence;
 import com.loci.loci_backend.core.identity.domain.repository.UserPresenceRepository;
+import com.loci.loci_backend.core.identity.domain.vo.PresenceId;
+import com.loci.loci_backend.core.identity.domain.vo.PresenceStatus;
 import com.loci.loci_backend.core.identity.infrastructure.secondary.entity.UserPresenceEntity;
 import com.loci.loci_backend.core.identity.infrastructure.secondary.mapper.UserPresenceEntityMapper;
 
+import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
 
 @SecondaryPort
 @RequiredArgsConstructor
 public class SpringDataUserPresenceRepository implements UserPresenceRepository {
   private final CacheUserPresenceRepository cacheUserPresenceRepository;
+  private final CacheUserLastSeenRepository cacheUserLastSeenRepository;
   private final UserPresenceEntityMapper mapper;
 
-  @Override
-  public UserPresence findByUserId(UserDBId userId) {
+  private UUID getPresenceKey(PresenceId presenceId) {
 
-    // get user cache if exist of not
-    Optional<UserPresenceEntity> presenceOpt = cacheUserPresenceRepository.getByUserId(userId.value());
-    if (presenceOpt.isPresent()) {
-      return mapper.toDomain(presenceOpt.get());
+    UUID userPublicId = getPresenceKey(presenceId);
+    return userPublicId;
+  }
+
+  @Override
+  public void setOffline(PresenceId presenceId) {
+    Optional<UserPresenceEntity> exitsPresence = cacheUserPresenceRepository.getById(getPresenceKey(presenceId));
+    Instant lastSeen = UserPresenceEntity.getLastSeen(exitsPresence);
+    cacheUserLastSeenRepository.save(getPresenceKey(presenceId), lastSeen);
+
+    cacheUserPresenceRepository.remove(getPresenceKey(presenceId));
+
+  }
+
+  @Override
+  public void heatbeat(PresenceId presenceId, @Nullable PresenceStatus presenceStatus) {
+
+    Optional<UserPresenceEntity> exitsPresence = cacheUserPresenceRepository.getById(getPresenceKey(presenceId));
+    // set online if not exist the presence tracking
+    if (exitsPresence.isEmpty()) {
+      setOnline(presenceId, presenceStatus);
+      return;
     }
 
-    return mapper.toDomain(UserPresenceEntity.offline(userId.value()));
+    UserPresenceEntity updatedPresence = null;
+    if (presenceStatus == null) {
+      // update current last timestamp
+      updatedPresence = exitsPresence.get().refresh();
+    } else {
+      updatedPresence = exitsPresence.get().refreshWithStatus(presenceStatus.value());
+    }
+
+    cacheUserPresenceRepository.save(updatedPresence);
+  }
+
+  private UserPresenceEntity notFoundPresence(PresenceId presenceId) {
+    Optional<Instant> lastSeen = cacheUserLastSeenRepository.getById(getPresenceKey(presenceId));
+    return UserPresenceEntity.ofNotFound(presenceId, lastSeen);
   }
 
   @Override
-  public List<UserPresence> findAllByUserIds(Collection<UserDBId> ids) {
-    return ids.stream().map(this::findByUserId).toList();
+  public UserPresence getStatus(PresenceId presenceId) {
+
+    UserPresenceEntity presenceEntity = cacheUserPresenceRepository.getById(getPresenceKey(presenceId))
+        .orElse(notFoundPresence(presenceId));
+    return mapper.toDomain(presenceEntity);
   }
 
   @Override
-  public Map<UserDBId, UserPresence> lookupPresencesByUserIds(Collection<UserDBId> userIds) {
-    return userIds.stream().collect(Collectors.toMap(Function.identity(), this::findByUserId));
+  public Map<PresenceId, UserPresence> getMultipleStatus(Set<PresenceId> presenceIds) {
+    Map<PresenceId, UserPresence> result = new HashMap<>(presenceIds.size());
+
+    for (PresenceId id : presenceIds) {
+      result.put(id, getStatus(id));
+    }
+    return result;
+  }
+
+  @Override
+  public long getOnlineCount(Set<PresenceId> presenceIds) {
+    return cacheUserPresenceRepository
+        .countOnlinePresence(presenceIds.stream().map(this::getPresenceKey).collect(Collectors.toSet()));
+  }
+
+  // TODO:
+  @Override
+  public void setOnline(PresenceId presenceId, PresenceStatus presenceStatus) {
+    UserPresenceEntity userPrecence = UserPresenceEntity.forceStatus(presenceId, presenceStatus);
+    cacheUserPresenceRepository.save(userPrecence);
+  }
+
+  @Override
+  public Set<PresenceId> getStaleUsers(long threshold) {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'getStaleUsers'");
   }
 
 }

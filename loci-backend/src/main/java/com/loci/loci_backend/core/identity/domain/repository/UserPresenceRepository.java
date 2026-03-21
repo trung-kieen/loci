@@ -16,19 +16,50 @@
 
 package com.loci.loci_backend.core.identity.domain.repository;
 
-import java.util.Collection;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
-import com.loci.loci_backend.common.user.domain.vo.UserDBId;
 import com.loci.loci_backend.core.identity.domain.aggregate.UserPresence;
+import com.loci.loci_backend.core.identity.domain.vo.PresenceId;
+import com.loci.loci_backend.core.identity.domain.vo.PresenceStatus;
+
+import jakarta.annotation.Nullable;
 
 public interface UserPresenceRepository {
+  /**
+   * Mark a user as online with the given status.
+   * Creates or overwrites the presence entry and resets the TTL.
+   * Write offline state and archive lastSeen in cache
+   *
+   * @param userId the user to mark online
+   * @param status ONLINE or AWAY (OFFLINE is not a valid input — use setOffline
+   *               instead)
+   */
+  void setOffline(PresenceId presenceId);
 
-  UserPresence findByUserId(UserDBId userId);
+  /**
+   * explicitly offline
+   */
+  void heatbeat(PresenceId userId, @Nullable PresenceStatus presenceStatus);
 
-  List<UserPresence> findAllByUserIds(Collection<UserDBId> ids);
+  /**
+   * Retrieve the current presence state of a single user.
+   * Returns an OFFLINE UserPresence (with lastSeen if available) when the user
+   * has no active presence entry.
+   */
+  UserPresence getStatus(PresenceId presenceId);
 
-  Map<UserDBId, UserPresence> lookupPresencesByUserIds(Collection<UserDBId> userIds);
+  /**
+   * Missing entries default to OFFLINE
+   */
+  Map<PresenceId, UserPresence> getMultipleStatus(Set<PresenceId> presenceIds);
 
+  long getOnlineCount(Set<PresenceId> presenceIds);
+
+  /**
+   * Creates or overwrites the presence entry and resets the TTL.
+   */
+  void setOnline(PresenceId presenceId, PresenceStatus presenceStatus);
+
+  Set<PresenceId> getStaleUsers(long threshold);
 }

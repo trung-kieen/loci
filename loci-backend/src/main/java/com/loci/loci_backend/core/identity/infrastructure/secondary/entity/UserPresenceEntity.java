@@ -16,43 +16,106 @@
 
 package com.loci.loci_backend.core.identity.infrastructure.secondary.entity;
 
-import java.io.Serializable;
 import java.time.Instant;
+import java.util.Optional;
 import java.util.UUID;
 
+import com.loci.loci_backend.common.cache.CacheEntity;
 import com.loci.loci_backend.core.identity.domain.enumeration.PresenceStatusEnum;
+import com.loci.loci_backend.core.identity.domain.vo.PresenceId;
+import com.loci.loci_backend.core.identity.domain.vo.PresenceStatus;
 
 import org.jilt.Builder;
 import org.jilt.BuilderStyle;
 
+import jakarta.persistence.Cacheable;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
-public class UserPresenceEntity implements Serializable {
-  private Long userId;
+@Cacheable
+public final class UserPresenceEntity implements CacheEntity<UUID> {
+  public static final long serialVersionUID = 1L;
+
+  private final UUID userPublicId;
   private PresenceStatusEnum status;
   private Instant lastSeen;
-  private UUID publicId;
+  private Instant connectedAt;
 
-  @Builder(style = BuilderStyle.STAGED)
-  public UserPresenceEntity(Long userId, PresenceStatusEnum status, Instant lastSeen, UUID publicId) {
-    this.userId = userId;
-    this.status = status;
-    this.lastSeen = lastSeen;
-    this.publicId = publicId;
+  public boolean isOnline() {
+    return status == PresenceStatusEnum.ONLINE;
   }
 
-  public static UserPresenceEntity offline(Long userId) {
+  @Builder(style = BuilderStyle.STAGED)
+  public UserPresenceEntity(UUID userPublicId, PresenceStatusEnum status, Instant lastSeen, Instant connectedAt) {
+    this.userPublicId = userPublicId;
+    this.status = status;
+    this.lastSeen = lastSeen;
+    this.connectedAt = connectedAt;
+  }
+
+  public UserPresenceEntity refreshWithStatus(PresenceStatusEnum status) {
     return UserPresenceEntityBuilder
         .userPresenceEntity()
-        .userId(userId)
-        .status(PresenceStatusEnum.OFFLINE)
-        .lastSeen(null)
-        .publicId(null)
+        .userPublicId(this.getUserPublicId())
+        .status(status)
+        .lastSeen(Instant.now())
+        .connectedAt(this.connectedAt)
         .build();
+  }
 
+  /**
+   * Refresh the lastseen of current instance
+   */
+  public UserPresenceEntity refresh() {
+    return UserPresenceEntityBuilder
+        .userPresenceEntity()
+        .userPublicId(this.getUserPublicId())
+        .status(this.status)
+        .lastSeen(Instant.now())
+        .connectedAt(this.connectedAt)
+        .build();
+  }
+
+  public static UserPresenceEntity online(PresenceId presenceId) {
+    UUID userPublicId = presenceId.value().value();
+    return UserPresenceEntityBuilder.userPresenceEntity()
+        .userPublicId(userPublicId)
+        .status(PresenceStatusEnum.ONLINE)
+        .lastSeen(Instant.now())
+        .connectedAt(Instant.now())
+        .build();
+  }
+
+  public static UserPresenceEntity forceStatus(PresenceId presenceId, PresenceStatus status) {
+    UUID userPublicId = presenceId.value().value();
+    return UserPresenceEntityBuilder.userPresenceEntity()
+        .userPublicId(userPublicId)
+        .status(status.value())
+        .lastSeen(Instant.now())
+        .connectedAt(Instant.now())
+        .build();
+  }
+
+  public static Instant getLastSeen(Optional<UserPresenceEntity> presenceOpt) {
+    if (presenceOpt.isEmpty()) {
+      return Instant.now();
+    }
+
+    return presenceOpt.get().getLastSeen();
+  }
+
+  public static UserPresenceEntity ofNotFound(PresenceId presenceId, Optional<Instant> lastSeen) {
+    return UserPresenceEntityBuilder.userPresenceEntity()
+        .userPublicId(presenceId.value().value())
+        .status(PresenceStatusEnum.OFFLINE)
+        .lastSeen(lastSeen.orElse(null))
+        .connectedAt(null)
+        .build();
+  }
+
+  @Override
+  public UUID getId() {
+    return this.userPublicId;
   }
 
 }

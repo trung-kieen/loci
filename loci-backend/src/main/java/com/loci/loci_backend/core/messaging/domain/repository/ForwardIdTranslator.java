@@ -30,4 +30,5 @@ public interface ForwardIdTranslator {
 
   public GroupSubscriberId toGroupSubscriberId(Conversation conversation);
 
+
 }

@@ -42,6 +42,7 @@ import com.loci.loci_backend.core.identity.domain.aggregate.UserPresence;
 import com.loci.loci_backend.core.identity.domain.repository.ProfileRepository;
 import com.loci.loci_backend.core.identity.domain.repository.UserPresenceRepository;
 import com.loci.loci_backend.core.identity.domain.service.PresenceIndicator;
+import com.loci.loci_backend.core.identity.domain.vo.PresenceId;
 import com.loci.loci_backend.core.messaging.domain.aggregate.DirectChatInfo;
 import com.loci.loci_backend.core.messaging.domain.aggregate.DirectChatInfoBuilderForConversation;
 import com.loci.loci_backend.core.messaging.domain.aggregate.GroupChatInfo;
@@ -122,7 +123,7 @@ public class ConversationReader {
   }
 
   public DirectChatInfo getConversationInfo(Conversation conversation, User currentUser) {
-    UserPresence presence = userPresenceRepository.findByUserId(currentUser.getDbId());
+    UserPresence presence = userPresenceRepository.getStatus(new PresenceId(currentUser.getUserPublicId()));
 
     Participant recipient = participantRepository.getTargetMessagingParticipantInDirectConversation(currentUser,
         conversation);

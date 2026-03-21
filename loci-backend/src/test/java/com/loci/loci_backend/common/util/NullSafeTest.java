@@ -35,9 +35,10 @@ public class NullSafeTest {
   @Test
   @DisplayName("Should create value object record if value is present")
   public void testConstructAValidValueObject() throws Exception {
-    var instance = NullSafe.constructOrNull(UserFirstname.class, value);
+    UserFirstname instance = NullSafe.constructOrNull(UserFirstname.class, value);
 
-    var normalConstruct = new UserFirstname(value);
+    NullSafe.constructOrNull(UserFirstname.class, value);
+    UserFirstname normalConstruct = new UserFirstname(value);
 
     assertEquals(instance, normalConstruct);
   }
@@ -64,7 +65,7 @@ public class NullSafeTest {
   @Test
   public void testNullIfNotPresentValue() throws Exception {
 
-    var instance = NullSafe.constructOrNull(UserFirstname.class, null);
+    UserFirstname  instance = NullSafe.constructOrNull(UserFirstname.class, null);
     assertEquals(instance, null);
 
   }

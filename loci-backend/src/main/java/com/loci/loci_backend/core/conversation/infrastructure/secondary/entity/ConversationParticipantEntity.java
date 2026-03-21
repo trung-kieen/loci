@@ -18,7 +18,9 @@ package com.loci.loci_backend.core.conversation.infrastructure.secondary.entity;
 
 import com.loci.loci_backend.common.jpa.AbstractAuditingEntity;
 import com.loci.loci_backend.common.user.infrastructure.secondary.entity.UserEntity;
+import com.loci.loci_backend.core.conversation.domain.vo.ConversationId;
 import com.loci.loci_backend.core.conversation.domain.vo.ParticipantRoleEnum;
+import com.loci.loci_backend.core.groups.domain.vo.GroupConversationPresenceId;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -78,7 +80,9 @@ public class ConversationParticipantEntity extends AbstractAuditingEntity<Long> 
   @Column(name = "last_read_message_id")
   private Long lastReadMessageId;
 
-
+  public GroupConversationPresenceId getGroupPrenseceId() {
+    return new GroupConversationPresenceId(new ConversationId(conversationId));
+  }
 
   @Override
   public Long getId() {

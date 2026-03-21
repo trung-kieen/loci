@@ -104,4 +104,6 @@ public interface JpaParticipantRepository extends JpaRepository<ConversationPart
   """)
   public void markLatestReadMessage(@Param("participantId") Long participantId, @Param("messageId") Long messageId);
 
+  List<ConversationParticipantEntity> findAllByUserId(Long userId);
+
 }

@@ -24,6 +24,8 @@ import com.loci.loci_backend.core.social.domain.aggregate.BlockedUserList;
 import com.loci.loci_backend.core.social.infrastructure.primary.payload.RestBlockedUser;
 import com.loci.loci_backend.core.social.infrastructure.primary.payload.RestBlockedUserList;
 
+import org.springframework.data.domain.Page;
+
 import lombok.RequiredArgsConstructor;
 
 @PrimaryMapper
@@ -37,7 +39,7 @@ public class RestBlockedUserMapper implements Domain2RestMapper<User, RestBlocke
   }
 
   public RestBlockedUserList from(BlockedUserList blockedUserList) {
-    var rest = Pages.map(blockedUserList.getUsers(), this::from);
+    Page<RestBlockedUser> rest = Pages.map(blockedUserList.getUsers(), this::from);
     return new RestBlockedUserList(rest);
   }
 

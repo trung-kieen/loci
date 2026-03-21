@@ -14,10 +14,16 @@
  * limitations under the License.
  */
 
-package com.loci.loci_backend.core.identity.domain.vo;
+package com.loci.loci_backend.core.identity.infrastructure.secondary.entity;
 
-import com.loci.loci_backend.common.ddd.domain.contract.ValueObject;
-import com.loci.loci_backend.common.user.domain.vo.PublicId;
+import java.time.Instant;
+import java.util.UUID;
 
-public record UserPresenceId(PublicId value) implements ValueObject<PublicId>{
+import com.loci.loci_backend.core.identity.domain.enumeration.PresenceStatusEnum;
+
+public record STOMPUserPresence(
+    UUID presenceId,
+    PresenceStatusEnum status,
+    Instant lastSeen,
+    Instant connectedAt) {
 }

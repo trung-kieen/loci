@@ -17,6 +17,7 @@
 package com.loci.loci_backend;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -31,10 +32,10 @@ public class TestSecurityConfig {
   @Primary
   public JwtDecoder jwtDecoder() {
     return token -> {
-      var headers = new HashMap<String, Object>();
+      Map<String, Object> headers = new HashMap<String, Object>();
       headers.put("alg", "none");
 
-      var claims = new HashMap<String, Object>();
+      Map<String, Object> claims = new HashMap<String, Object>();
       claims.put("sub", "test-user");
       claims.put("scope", "openid profile");
 

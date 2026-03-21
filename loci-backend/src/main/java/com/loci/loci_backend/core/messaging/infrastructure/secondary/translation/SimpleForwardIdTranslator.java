@@ -21,7 +21,6 @@ import com.loci.loci_backend.common.user.domain.vo.UserDBId;
 import com.loci.loci_backend.common.user.infrastructure.secondary.entity.UserEntity;
 import com.loci.loci_backend.common.user.infrastructure.secondary.repository.JpaUserRepository;
 import com.loci.loci_backend.core.conversation.domain.aggregate.Conversation;
-import com.loci.loci_backend.core.groups.infrastructure.secondary.repository.JpaGroupRepository;
 import com.loci.loci_backend.core.messaging.domain.repository.ForwardIdTranslator;
 import com.loci.loci_backend.core.messaging.domain.vo.GroupSubscriberId;
 import com.loci.loci_backend.core.messaging.domain.vo.UserSubcriberId;
@@ -33,7 +32,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class SimpleForwardIdTranslator implements ForwardIdTranslator {
 
-  private final JpaGroupRepository groupRepository;
   private final JpaUserRepository userRepository;
 
   @Override

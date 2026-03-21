@@ -22,4 +22,5 @@ import com.loci.loci_backend.core.groups.domain.vo.GroupId;
 
 public interface GroupIdTranslator extends IdTranslator<PublicId, GroupId>  {
 
+
 }

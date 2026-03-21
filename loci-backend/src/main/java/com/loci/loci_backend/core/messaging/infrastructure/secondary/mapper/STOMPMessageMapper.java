@@ -17,7 +17,7 @@
 package com.loci.loci_backend.core.messaging.infrastructure.secondary.mapper;
 
 import com.loci.loci_backend.common.ddd.infrastructure.contract.Domain2RestMapper;
-import com.loci.loci_backend.common.ddd.infrastructure.stereotype.PrimaryMapper;
+import com.loci.loci_backend.common.ddd.infrastructure.stereotype.SecondaryMapper;
 import com.loci.loci_backend.core.conversation.domain.aggregate.Conversation;
 import com.loci.loci_backend.core.messaging.domain.aggregate.Attachment;
 import com.loci.loci_backend.core.messaging.domain.aggregate.Message;
@@ -28,7 +28,7 @@ import com.loci.loci_backend.core.messaging.infrastructure.secondary.entity.STOM
 
 import lombok.RequiredArgsConstructor;
 
-@PrimaryMapper
+@SecondaryMapper
 @RequiredArgsConstructor
 public class STOMPMessageMapper implements Domain2RestMapper<Message, STOMPMessage> {
 

@@ -36,6 +36,8 @@ import com.loci.loci_backend.core.social.infrastructure.primary.payload.RestCont
 import com.loci.loci_backend.core.social.infrastructure.primary.payload.RestContactRequestCreatedBuilder;
 import com.loci.loci_backend.core.social.infrastructure.primary.payload.RestContactRequestList;
 
+import org.springframework.data.domain.Page;
+
 import lombok.RequiredArgsConstructor;
 
 @PrimaryMapper
@@ -71,7 +73,7 @@ public class RestContactMapper {
 
   public RestContactRequestList from(ContactRequestList requests) {
     Map<UserDBId, UserSummary> userLookup = Maps.toLookupMap(requests.getUserSummaries(), UserSummary::getDbId);
-    var restRequestPage = Pages.map( requests.getContacts(), (contactRequest) -> {
+    Page<RestContactRequest> restRequestPage = Pages.map( requests.getContacts(), (contactRequest) -> {
       UserSummary user = userLookup.getOrDefault(contactRequest.getRequestUserId(), null);
       return from(contactRequest, user);
     });

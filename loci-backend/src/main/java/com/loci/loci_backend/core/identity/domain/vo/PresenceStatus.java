@@ -37,4 +37,17 @@ public record PresenceStatus(@JsonValue PresenceStatusEnum value) implements Val
   public static PresenceStatus offline() {
     return new PresenceStatus(PresenceStatusEnum.OFFLINE);
   }
+
+  public static PresenceStatus online() {
+    return new PresenceStatus(PresenceStatusEnum.ONLINE);
+  }
+
+  public static PresenceStatus fromValue(String value) {
+    return new PresenceStatus(PresenceStatusEnum.of(value));
+  }
+
+  public boolean isOnline() {
+    return this.value == PresenceStatusEnum.ONLINE || this.value == PresenceStatusEnum.AWAY;
+  }
+
 }

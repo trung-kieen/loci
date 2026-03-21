@@ -56,4 +56,5 @@ public interface ParticipantRepository {
   Participant setLastReadMessage(Participant senderAsParticipant, MessageId messageId);
 
   Participant markLatestMessage(Participant participant, MessageId messageId);
+
 }

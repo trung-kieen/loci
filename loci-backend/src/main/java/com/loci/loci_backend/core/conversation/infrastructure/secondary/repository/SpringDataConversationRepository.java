@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import com.loci.loci_backend.common.collection.Maps;
@@ -39,16 +40,18 @@ import com.loci.loci_backend.core.conversation.infrastructure.secondary.entity.C
 import com.loci.loci_backend.core.conversation.infrastructure.secondary.mapper.ConversationEntityMapper;
 import com.loci.loci_backend.core.conversation.infrastructure.secondary.mapper.ParticipantEntityMapper;
 import com.loci.loci_backend.core.conversation.infrastructure.secondary.vo.GroupConversationMetadataJpaVO;
+import com.loci.loci_backend.core.groups.domain.vo.GroupConversationPresenceId;
 import com.loci.loci_backend.core.identity.domain.aggregate.PublicProfile;
-import com.loci.loci_backend.core.identity.domain.vo.PresenceStatus;
-import com.loci.loci_backend.core.identity.infrastructure.secondary.entity.UserPresenceEntity;
+import com.loci.loci_backend.core.identity.domain.aggregate.UserPresence;
+import com.loci.loci_backend.core.identity.domain.repository.UserIdTranslator;
+import com.loci.loci_backend.core.identity.domain.repository.UserPresenceRepository;
+import com.loci.loci_backend.core.identity.domain.vo.PresenceId;
 import com.loci.loci_backend.core.identity.infrastructure.secondary.mapper.IdentityEntityMapper;
-import com.loci.loci_backend.core.identity.infrastructure.secondary.repository.CacheUserPresenceRepository;
+import com.loci.loci_backend.core.identity.infrastructure.secondary.repository.CacheUserIdRepository;
 import com.loci.loci_backend.core.messaging.domain.aggregate.DirectChatInfo;
 import com.loci.loci_backend.core.messaging.domain.aggregate.DirectChatInfoBuilder;
 import com.loci.loci_backend.core.messaging.domain.aggregate.DirectChatInfoBuilderForConversation;
 import com.loci.loci_backend.core.messaging.domain.aggregate.GroupChatInfo;
-import com.loci.loci_backend.core.messaging.domain.repository.MessageRepository;
 import com.loci.loci_backend.core.messaging.domain.vo.MessageId;
 import com.loci.loci_backend.core.social.domain.vo.FriendshipStatus;
 
@@ -62,11 +65,12 @@ import lombok.RequiredArgsConstructor;
 public class SpringDataConversationRepository implements ConversationRepository {
   private final JpaConversationRepository jpaConversationRepository;
   private final JpaParticipantRepository jpaParticipantRepository;
+  private final UserPresenceRepository userPresenceRepository;
   private final JpaUserRepository jpaUserRepository;
-  private final MessageRepository messageRepository;
-  private final CacheUserPresenceRepository cacheUserPresenceRepository;
+  private final CacheUserIdRepository cacheUserIdRepository;
   private final ConversationEntityMapper mapper;
   private final IdentityEntityMapper identityMapper;
+  private final UserIdTranslator userIdTranslator;
   private final ParticipantEntityMapper participantMapper;
 
   @Override
@@ -112,7 +116,6 @@ public class SpringDataConversationRepository implements ConversationRepository 
     return jpaConversationRepository.existsGroupConversation(conversationId.value());
   }
 
-  // TODO: Move to group manager boundcontext
   @Override
   public List<GroupChatInfo> getGroupConversationMetadataByIds(List<UserConversation> groupConversations) {
     Set<Long> conversationIds = groupConversations.stream().map(UserConversation::getConversationId)
@@ -151,15 +154,16 @@ public class SpringDataConversationRepository implements ConversationRepository 
 
     // convert to list of direct message data, order not matter
     return otherParticipants.stream().map(participant -> {
-      var presence = cacheUserPresenceRepository.getByUserId(participant.getUserId())
-          .orElse(UserPresenceEntity.offline(participant.getUserId()));
+
+      UUID participantPublicId = cacheUserIdRepository.getByDbId(participant.getUserId());
+      UserPresence presence = userPresenceRepository.getStatus(new PresenceId(new PublicId(participantPublicId)));
 
       DirectChatInfo info = DirectChatInfoBuilder.directChatInfo()
           .conversationId(new ConversationId(participant.getConversationId()))
           .conversationPublicId(
               conversationIdToPublicId.getOrDefault(new ConversationId(participant.getConversationId()), null))
           .messagingUser(userIdToPublicProfile.getOrDefault(new UserDBId(participant.getUserId()), null))
-          .status(new PresenceStatus(presence.getStatus()))
+          .status(presence.getStatus())
           .lastSeen(presence.getLastSeen())
           .build();
       return info;
@@ -173,10 +177,8 @@ public class SpringDataConversationRepository implements ConversationRepository 
   }
 
   private DirectChatInfo getDirectChatInfo(Conversation conversation, User currentUser) {
-    // var presence =
     // cacheUserPresenceRepository.findByUserId(currentUser.getDbId().value());
-    var presence = cacheUserPresenceRepository.getByUserId(currentUser.getDbId().value())
-        .orElse(UserPresenceEntity.offline(currentUser.getDbId().value()));
+    UserPresence presence = userPresenceRepository.getStatus(new PresenceId(currentUser.getUserPublicId()));
 
     ConversationParticipantEntity messagingParticipant = jpaParticipantRepository
         .getConnectedParticipant(conversation.getId().value(), currentUser.getDbId().value())
@@ -190,78 +192,10 @@ public class SpringDataConversationRepository implements ConversationRepository 
     return DirectChatInfoBuilderForConversation.directChatInfo()
         .conversation(conversation)
         .recipientProfile(messagingProfile)
-        .status(new PresenceStatus(presence.getStatus()))
+        .status(presence.getStatus())
         .lastSeen(presence.getLastSeen())
         .build();
   }
-
-  // private GroupChatInfo getGroupChatInfo(Conversation conversation, User
-  // currentUser) {
-
-  // // TODO:
-  // GroupProfile group = null;
-
-  // ParticipantCount participantCount = null;
-  // return GroupChatInfoBuilderForConversation.groupChatInfo()
-  // .conversation(conversation)
-  // .groupProfile(group)
-  // .participantCount(participantCount)
-  // .build();
-
-  // // TODO: redis
-  // // boolean isOnline = false;
-  // //
-  // // ConversationParticipantEntity messagingParticipant = participantRepository
-  // // .getConnectedParticipant(conversation.getId().value(),
-  // // currentUser.getDbId().value())
-  // // .orElseThrow(EntityNotFoundException::new);
-  // //
-  // // UserEntity messagingUser =
-  // // userRepository.findById(messagingParticipant.getUserId())
-  // // .orElseThrow(EntityNotFoundException::new);
-  // //
-  // // PublicProfile messagingProfile =
-  // // identityMapper.toPublicProfile(messagingUser,
-  // FriendshipStatus.connected());
-  // //
-  // // return DirectChatBuilderForConversation.directChatInfo()
-  // // .conversation(conversation)
-  // // .messagingUser(messagingProfile)
-  // // .isOnline(isOnline)
-  // // .build();
-  // }
-
-  // @Override
-  // public Optional<Chat> getChatInfo(Conversation conversation, User
-  // currentUser) {
-
-  // UnreadCount unreadCount =
-  // messageRepository.countUnreadForConversation(conversation.getId(),
-  // conversation.getLastMessageId());
-
-  // Message lastMessage =
-  // messageRepository.getById(conversation.getLastMessageId())
-  // .orElseThrow(EntityNotFoundException::new);
-
-  // if (conversation.isDirectMessaging()) {
-  // DirectChatInfo chatInfo = getDirectChatInfo(conversation, currentUser);
-
-  // // User messagingUser = identityMapper.toPublicProfile(currentUser);
-
-  // // DirectChatInfo directChatMetadata =
-  // //
-  // com.loci.loci_backend.core.messaging.domain.aggregate.ConversationToDirectChatBuilder.directChatInfo()
-  // // .conversation(conversation)
-  // // .messagingUser(currentUser)
-  // } else {
-
-  // GroupChatInfo groupInfo = getGroupChatInfo(conversation, currentUser);
-  // }
-
-  // // TODO Auto-generated method stub
-  // throw new UnsupportedOperationException("Unimplemented method
-  // 'getChatInfo'");
-  // }
 
   @Transactional(readOnly = false)
   @Override
@@ -269,14 +203,31 @@ public class SpringDataConversationRepository implements ConversationRepository 
 
     jpaConversationRepository.markAsLatestMessage(conversation.getId().value(), messageId.value());
     conversation.setLastMessageId(messageId);
-    // ConversationEntity entity = mapper.from(conversation);
-    // entity.setLastMessageId(messageId.value());
-    // ConversationEntity savedEntity = jpaConversationRepository.save(entity);
-    // return mapper.toDomain(savedEntity);
     return conversation;
 
   }
 
+  @Override
+  public Set<PresenceId> getMemberPresenceIds(ConversationId conversationId) {
+    List<Long> memberDbIds = jpaParticipantRepository.getUserIdInConversation(conversationId.value());
+    return memberDbIds.stream().map(UserDBId::new).map(userIdTranslator::toPublic).map(PresenceId::new)
+        .collect(Collectors.toUnmodifiableSet());
+  }
 
+  @Override
+  public Set<GroupConversationPresenceId> getConversationOfPresence(PresenceId userPresenceId) {
+    PublicId userPublicId = userPresenceId.value();
+    UserDBId userId = userIdTranslator.toInternal(userPublicId);
+    List<ConversationParticipantEntity> conversationParticipants = jpaParticipantRepository
+        .findAllByUserId(userId.value());
+    return conversationParticipants.stream()
+        .map(ConversationParticipantEntity::getGroupPrenseceId).collect(Collectors.toSet());
+  }
+
+  @Override
+  public Optional<PublicId> getPublicId(ConversationId conversationId) {
+    return jpaConversationRepository.findById(conversationId.value()).map(ConversationEntity::getPublicId)
+        .map(PublicId::new);
+  }
 
 }

@@ -34,7 +34,7 @@ public class RestGroupOnlineStatusResponse {
   private Instant fetchedAt;
 
   public static RestGroupOnlineStatusResponse EMPTY() {
-    var dto = new RestGroupOnlineStatusResponse();
+    RestGroupOnlineStatusResponse dto = new RestGroupOnlineStatusResponse();
     dto.onlineUserIds = new ArrayList<>();
     dto.fetchedAt = Instant.now();
     return dto;

@@ -47,10 +47,10 @@ public class STOMPMessageSendingOperations {
     messageTemplate.convertAndSendToUser(senderUsername, WsPaths.INDIVIDUAL_NOTIFY_MESSAGE_SEEN, message);
   }
 
-  public void sendGroupMessage(String groupId, STOMPMessage message) {
+  public void sendGroupMessage(String conversationId, STOMPMessage message) {
     // Translate to /topic/messages.receive-{groupId}
     // NOTE: only send group message need to boardcast
-    messageTemplate.convertAndSend(WsPaths.GROUP_RECEIVE_MESSAGE + groupId, message);
+    messageTemplate.convertAndSend(WsPaths.GROUP_RECEIVE_MESSAGE + conversationId, message); // only for group conversation
 
   }
 

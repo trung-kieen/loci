@@ -16,7 +16,9 @@
 
 package com.loci.loci_backend.common.ddd.domain.contract;
 
-public interface ValueObject<T> {
+import java.io.Serializable;
+
+public interface ValueObject<T> extends Serializable {
 
   T value();
 
