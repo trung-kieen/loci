@@ -44,7 +44,7 @@ public class SpringDataUserPresenceRepository implements UserPresenceRepository 
 
   private UUID getPresenceKey(PresenceId presenceId) {
 
-    UUID userPublicId = getPresenceKey(presenceId);
+    UUID userPublicId = presenceId.value().value();
     return userPublicId;
   }
 
@@ -64,7 +64,7 @@ public class SpringDataUserPresenceRepository implements UserPresenceRepository 
     Optional<UserPresenceEntity> exitsPresence = cacheUserPresenceRepository.getById(getPresenceKey(presenceId));
     // set online if not exist the presence tracking
     if (exitsPresence.isEmpty()) {
-      setOnline(presenceId, presenceStatus);
+      setOnline(presenceId, presenceStatus != null ? presenceStatus : PresenceStatus.online());
       return;
     }
 
@@ -88,7 +88,7 @@ public class SpringDataUserPresenceRepository implements UserPresenceRepository 
   public UserPresence getStatus(PresenceId presenceId) {
 
     UserPresenceEntity presenceEntity = cacheUserPresenceRepository.getById(getPresenceKey(presenceId))
-        .orElse(notFoundPresence(presenceId));
+        .orElseGet(() -> notFoundPresence(presenceId));
     return mapper.toDomain(presenceEntity);
   }
 
