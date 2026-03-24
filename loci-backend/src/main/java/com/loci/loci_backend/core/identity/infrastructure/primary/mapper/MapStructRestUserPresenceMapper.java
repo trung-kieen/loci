@@ -14,15 +14,27 @@
  * limitations under the License.
  */
 
-package com.loci.loci_backend.core.identity.infrastructure.secondary.mapper;
+package com.loci.loci_backend.core.identity.infrastructure.primary.mapper;
+
+import java.util.UUID;
 
 import com.loci.loci_backend.common.ddd.infrastructure.mapper.ValueObjectTypeConverter;
 import com.loci.loci_backend.core.identity.domain.aggregate.UserPresence;
-import com.loci.loci_backend.core.identity.infrastructure.secondary.entity.UserPresenceEntity;
+import com.loci.loci_backend.core.identity.domain.vo.PresenceId;
+import com.loci.loci_backend.core.identity.infrastructure.primary.payload.RestUserPresence;
+
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.Named;
 
 @Mapper(componentModel = "spring", uses = ValueObjectTypeConverter.class)
-public interface MapStructUserPresenceEntityMapper {
-    public UserPresence toDomain(UserPresenceEntity entity);
+public interface MapStructRestUserPresenceMapper {
+
+  @Mapping(source = "presenceId", target = "userId", qualifiedByName = "presenceIdQualify")
+  RestUserPresence from(UserPresence presence);
+
+  @Named("presenceIdQualify")
+  default UUID presenceIdQualified(PresenceId presenceId) {
+    return presenceId.value().value();
+  }
 }

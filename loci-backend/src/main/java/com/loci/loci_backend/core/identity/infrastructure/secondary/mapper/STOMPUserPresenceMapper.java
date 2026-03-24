@@ -16,32 +16,26 @@
 
 package com.loci.loci_backend.core.identity.infrastructure.secondary.mapper;
 
-import java.util.UUID;
-
 import com.loci.loci_backend.common.ddd.infrastructure.stereotype.SecondaryMapper;
 import com.loci.loci_backend.core.identity.domain.aggregate.UserPresence;
 import com.loci.loci_backend.core.identity.domain.vo.PresenceId;
 import com.loci.loci_backend.core.identity.infrastructure.secondary.entity.STOMPUserPresence;
-
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @SecondaryMapper
 public class STOMPUserPresenceMapper {
-  private final MapStructSTOMPUserPresenceMapper mapstruct;
 
-  public STOMPUserPresence from(UserPresence presence) {
-    return mapstruct.from(presence);
-  }
+    // implements Domain2RestMapper<UserPresence, STOMPUserPresence>
+    private final MapStructSTOMPUserPresenceMapper mapstruct;
 
-  public UUID from(PresenceId presenceId) {
-    return mapstruct.presenceIdQualified(presenceId);
-  }
+    // @Override
+    public STOMPUserPresence from(UserPresence presence) {
+        return mapstruct.from(presence);
+    }
 
-  // public Map<UUID, STOMPUserPresence> from(Map<PresenceId, UserPresence> domainMap) {
-  //
-  //   return domainMap.entrySet().stream()
-  //       .collect(Collectors.toMap(entry -> this.from(entry.getKey()), entry -> this.from(entry.getValue())));
-  //
-  // }
+    public UUID from(PresenceId presenceId) {
+        return mapstruct.presenceIdQualified(presenceId);
+    }
 }

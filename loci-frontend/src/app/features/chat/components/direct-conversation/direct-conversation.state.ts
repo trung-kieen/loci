@@ -18,6 +18,7 @@ import { Injectable, computed, signal } from '@angular/core';
 import { IChatError, IDirectConversation } from '../../models/chat.model';
 import { IConversationMessage, IMessage, ParticipantState } from '../../models/message.model';
 import { IPersonalProfile } from '../../../user/models/user.model';
+import { IUserPresence } from '../../service/conversation-api.service';
 export interface IDirectConversationState {
   // currentUser: IPersonalProfile | null;
   selectedConversation: IDirectConversation | null;
@@ -88,6 +89,11 @@ export class DirectConversationState {
     }));
   }
 
+
+  setUserPresence(presence: IUserPresence) {
+    const lastSeen = presence.lastSeen ? new Date(presence.lastSeen) : undefined;
+    this.updateParticipantStatus(presence.status, lastSeen);
+  }
 
   setSelectedFile(files: File[]) {
     this.state.update((state) => ({

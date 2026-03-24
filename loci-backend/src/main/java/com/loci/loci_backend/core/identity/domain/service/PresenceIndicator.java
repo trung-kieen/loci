@@ -27,10 +27,13 @@ import com.loci.loci_backend.core.groups.domain.repository.GroupPresenceNotifier
 import com.loci.loci_backend.core.groups.domain.vo.GroupConversationPresenceId;
 import com.loci.loci_backend.core.identity.domain.aggregate.UserPresence;
 import com.loci.loci_backend.core.identity.domain.repository.GroupPresenceIdTranslator;
+import com.loci.loci_backend.core.identity.domain.repository.UserPresenceNotifier;
 import com.loci.loci_backend.core.identity.domain.repository.UserPresenceRepository;
 import com.loci.loci_backend.core.identity.domain.vo.PresenceId;
 import com.loci.loci_backend.core.identity.domain.vo.PresenceStatus;
+import com.loci.loci_backend.core.messaging.domain.repository.ForwardIdTranslator;
 import com.loci.loci_backend.core.messaging.domain.vo.GroupSubscriberId;
+import com.loci.loci_backend.core.messaging.domain.vo.UserSubcriberId;
 
 import org.springframework.stereotype.Service;
 
@@ -42,7 +45,9 @@ public class PresenceIndicator {
   private final UserPresenceRepository userPresenceRepository;
   private final ConversationRepository conversationRepository;
   private final GroupPresenceNotifier groupNotifier;
-  private final GroupPresenceIdTranslator idTranslator;
+  private final UserPresenceNotifier userPresenceNotifier;
+  private final GroupPresenceIdTranslator groupPresenceIdTranslator;
+  private final ForwardIdTranslator forwardIdTranslator;
 
   public void setOnline(PresenceId presenceId, PresenceStatus status) {
 
@@ -51,19 +56,21 @@ public class PresenceIndicator {
       throw new IllegalArgumentException(String.format("Can not set online status for status {}", status));
     }
 
-    userPresenceRepository.setOnline(presenceId, status);
+    UserPresence presence = userPresenceRepository.setOnline(presenceId, status);
+    broadcastUserPresenceUpdate(presenceId, presence);
     broadcastPresenceToAllGroups(presenceId);
-
 
   }
 
-  public void setOffline(PresenceId presenceId) {
+  public UserPresence setOffline(PresenceId presenceId) {
 
     // get all gorup id user id participant and broadcast notification user offline
     Set<GroupConversationPresenceId> groups = conversationRepository.getConversationOfPresence(presenceId);
-    userPresenceRepository.setOffline(presenceId);
-    // broadcastPresenceToAllGroup(presenceId, rooms);
+    UserPresence presence = userPresenceRepository.setOffline(presenceId);
     broadcastPresenceToGroups(presenceId, groups);
+
+    broadcastUserPresenceUpdate(presenceId, presence);
+    return presence;
 
   }
 
@@ -79,16 +86,24 @@ public class PresenceIndicator {
     broadcastPresenceToGroups(presenceId, rooms);
   }
 
-  public void heatbeat(PresenceId presenceId, PresenceStatus targetStatus) {
+  public UserPresence heartbeat(PresenceId presenceId, PresenceStatus targetStatus) {
     Assert.notNull("status", targetStatus);
     UserPresence before = userPresenceRepository.getStatus(presenceId);
-    userPresenceRepository.heatbeat(presenceId, targetStatus);
+    UserPresence after = userPresenceRepository.heatbeat(presenceId, targetStatus);
 
     boolean isStatusChanged = before.isStatusDifference(targetStatus);
 
     if (isStatusChanged) {
       broadcastPresenceToAllGroups(presenceId);
+
+      broadcastUserPresenceUpdate(presenceId, after);
     }
+    return getStatus(presenceId);
+  }
+
+  private void broadcastUserPresenceUpdate(PresenceId presenceId, UserPresence userPresence) {
+    UserSubcriberId forwardId = forwardIdTranslator.toPrivateSubscriberId(presenceId);
+    userPresenceNotifier.notifyPresenceChange(forwardId, userPresence);
   }
 
   public UserPresence getStatus(PresenceId presenceId) {
@@ -118,7 +133,7 @@ public class PresenceIndicator {
    * Sweep for users whose presence has gone stale and trigger offline transitions
    * Called by PresenceCleanupJob
    */
-  public int sweepStaleUsers(long threshold) {
+  public int sweepStaleUsers(long threshold) { // TODO: change the threshold
     Set<PresenceId> stateUsers = userPresenceRepository.getStaleUsers(threshold);
 
     for (PresenceId presenceId : stateUsers) {
@@ -148,7 +163,8 @@ public class PresenceIndicator {
       Set<PresenceId> presenceIds = conversationRepository.getMemberPresenceIds(groupPresenceId.value());
       GroupPresence groupPresence = buildGroupConversationPresence(groupPresenceId, presenceIds);
 
-      GroupSubscriberId groupSubscriberId = idTranslator.toGroupSubscriberId(groupPresence.getGroupPresenceId());
+      GroupSubscriberId groupSubscriberId = groupPresenceIdTranslator
+          .toGroupSubscriberId(groupPresence.getGroupPresenceId());
       groupNotifier.boardcastPresenceChange(groupSubscriberId, groupPresence);
     }
   }

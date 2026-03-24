@@ -36,4 +36,5 @@ public record ProfileVisibility(@JsonProperty Boolean value) implements ValueObj
     return value;
   }
 
+
 }

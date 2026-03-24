@@ -35,12 +35,9 @@ public interface UserPresenceRepository {
    * @param status ONLINE or AWAY (OFFLINE is not a valid input — use setOffline
    *               instead)
    */
-  void setOffline(PresenceId presenceId);
+  UserPresence setOffline(PresenceId presenceId);
 
-  /**
-   * explicitly offline
-   */
-  void heatbeat(PresenceId userId, @Nullable PresenceStatus presenceStatus);
+  UserPresence heatbeat(PresenceId userId, @Nullable PresenceStatus presenceStatus);
 
   /**
    * Retrieve the current presence state of a single user.
@@ -49,9 +46,6 @@ public interface UserPresenceRepository {
    */
   UserPresence getStatus(PresenceId presenceId);
 
-  /**
-   * Missing entries default to OFFLINE
-   */
   Map<PresenceId, UserPresence> getMultipleStatus(Set<PresenceId> presenceIds);
 
   long getOnlineCount(Set<PresenceId> presenceIds);
@@ -59,7 +53,7 @@ public interface UserPresenceRepository {
   /**
    * Creates or overwrites the presence entry and resets the TTL.
    */
-  void setOnline(PresenceId presenceId, PresenceStatus presenceStatus);
+  UserPresence setOnline(PresenceId presenceId, PresenceStatus presenceStatus);
 
   Set<PresenceId> getStaleUsers(long threshold);
 }

@@ -23,6 +23,7 @@ import com.loci.loci_backend.common.user.domain.vo.UserDBId;
 import com.loci.loci_backend.core.identity.domain.repository.UserIdTranslator;
 import com.loci.loci_backend.core.identity.domain.vo.PresenceId;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 
 @AntiDomainService
@@ -31,7 +32,8 @@ public class UserPresenceIdTranslator {
   private final UserIdTranslator userIdTranslator;
 
   public PresenceId toPresenceId(UserDBId userDBId) {
-    PublicId userPublicId = userIdTranslator.toPublic(userDBId);
+    PublicId userPublicId = userIdTranslator.toPublic(userDBId)
+        .orElseThrow(() -> new EntityNotFoundException(String.format("Can not find user db with id {}", userDBId)));
     return toPresenceId(userPublicId);
   }
 

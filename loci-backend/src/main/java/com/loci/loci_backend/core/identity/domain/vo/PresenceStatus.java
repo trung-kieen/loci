@@ -50,4 +50,8 @@ public record PresenceStatus(@JsonValue PresenceStatusEnum value) implements Val
     return this.value == PresenceStatusEnum.ONLINE || this.value == PresenceStatusEnum.AWAY;
   }
 
+  public static PresenceStatus away() {
+    return new PresenceStatus(PresenceStatusEnum.AWAY);
+  }
+
 }

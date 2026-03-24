@@ -21,6 +21,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import com.loci.loci_backend.common.cache.CacheEntity;
+import com.loci.loci_backend.common.user.domain.vo.PublicId;
 import com.loci.loci_backend.core.identity.domain.enumeration.PresenceStatusEnum;
 import com.loci.loci_backend.core.identity.domain.vo.PresenceId;
 import com.loci.loci_backend.core.identity.domain.vo.PresenceStatus;
@@ -86,6 +87,16 @@ public final class UserPresenceEntity implements CacheEntity<UUID> {
         .build();
   }
 
+  public static UserPresenceEntity offline(Instant lastSeen, PresenceId presenceId) {
+    UUID userPublicId = presenceId.value().value();
+    return UserPresenceEntityBuilder.userPresenceEntity()
+        .userPublicId(userPublicId)
+        .status(PresenceStatusEnum.OFFLINE)
+        .lastSeen(lastSeen)
+        .connectedAt(null)
+        .build();
+  }
+
   public static UserPresenceEntity forceStatus(PresenceId presenceId, PresenceStatus status) {
     UUID userPublicId = presenceId.value().value();
     return UserPresenceEntityBuilder.userPresenceEntity()
@@ -104,11 +115,11 @@ public final class UserPresenceEntity implements CacheEntity<UUID> {
     return presenceOpt.get().getLastSeen();
   }
 
-  public static UserPresenceEntity ofNotFound(PresenceId presenceId, Optional<Instant> lastSeen) {
+  public static UserPresenceEntity ofNotFound(PresenceId presenceId, Instant lastSeen) {
     return UserPresenceEntityBuilder.userPresenceEntity()
         .userPublicId(presenceId.value().value())
         .status(PresenceStatusEnum.OFFLINE)
-        .lastSeen(lastSeen.orElse(null))
+        .lastSeen(lastSeen)
         .connectedAt(null)
         .build();
   }
@@ -116,6 +127,10 @@ public final class UserPresenceEntity implements CacheEntity<UUID> {
   @Override
   public UUID getId() {
     return this.userPublicId;
+  }
+
+  public PresenceId getPresenceId() {
+    return new PresenceId(new PublicId(userPublicId));
   }
 
 }

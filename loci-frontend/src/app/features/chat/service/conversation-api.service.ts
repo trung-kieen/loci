@@ -31,6 +31,7 @@ export interface IUserPresence {
   userId: string;
   status: ParticipantState;
   lastSeen: string | null;
+  connectedAt: string | null;
 }
 
 @Injectable({

@@ -16,8 +16,10 @@
 
 package com.loci.loci_backend.core.messaging.domain.repository;
 
+import com.loci.loci_backend.common.user.domain.vo.PublicId;
 import com.loci.loci_backend.common.user.domain.vo.UserDBId;
 import com.loci.loci_backend.core.conversation.domain.aggregate.Conversation;
+import com.loci.loci_backend.core.identity.domain.vo.PresenceId;
 import com.loci.loci_backend.core.messaging.domain.vo.GroupSubscriberId;
 import com.loci.loci_backend.core.messaging.domain.vo.UserSubcriberId;
 
@@ -28,7 +30,10 @@ public interface ForwardIdTranslator {
    */
   public UserSubcriberId toPrivateSubscriberId(UserDBId targetReceiver);
 
-  public GroupSubscriberId toGroupSubscriberId(Conversation conversation);
+  public UserSubcriberId toPrivateSubscriberId(PublicId targetReceiver);
 
+  public UserSubcriberId toPrivateSubscriberId(PresenceId targetReceiver);
+
+  public GroupSubscriberId toGroupSubscriberId(Conversation conversation);
 
 }

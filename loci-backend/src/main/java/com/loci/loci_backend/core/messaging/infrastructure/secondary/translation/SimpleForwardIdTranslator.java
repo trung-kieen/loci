@@ -17,10 +17,12 @@
 package com.loci.loci_backend.core.messaging.infrastructure.secondary.translation;
 
 import com.loci.loci_backend.common.ddd.infrastructure.stereotype.SecondaryPort;
+import com.loci.loci_backend.common.user.domain.vo.PublicId;
 import com.loci.loci_backend.common.user.domain.vo.UserDBId;
 import com.loci.loci_backend.common.user.infrastructure.secondary.entity.UserEntity;
 import com.loci.loci_backend.common.user.infrastructure.secondary.repository.JpaUserRepository;
 import com.loci.loci_backend.core.conversation.domain.aggregate.Conversation;
+import com.loci.loci_backend.core.identity.domain.vo.PresenceId;
 import com.loci.loci_backend.core.messaging.domain.repository.ForwardIdTranslator;
 import com.loci.loci_backend.core.messaging.domain.vo.GroupSubscriberId;
 import com.loci.loci_backend.core.messaging.domain.vo.UserSubcriberId;
@@ -44,9 +46,21 @@ public class SimpleForwardIdTranslator implements ForwardIdTranslator {
   @Override
   public GroupSubscriberId toGroupSubscriberId(Conversation conversation) {
     return new GroupSubscriberId(conversation.getPublicId().value());
-    // GroupEntity group = groupRepository.findByConversationId(conversation.getId().value())
-    //     .orElseThrow(EntityNotFoundException::new);
+    // GroupEntity group =
+    // groupRepository.findByConversationId(conversation.getId().value())
+    // .orElseThrow(EntityNotFoundException::new);
     // return new GroupSubscriberId(group.getPublicId());
+  }
+
+  @Override
+  public UserSubcriberId toPrivateSubscriberId(PublicId targetReceiver) {
+    return new UserSubcriberId(targetReceiver.value());
+  }
+
+  @Override
+  public UserSubcriberId toPrivateSubscriberId(PresenceId targetReceiverPresenceId) {
+    PublicId userPublicId = targetReceiverPresenceId.value();
+    return this.toPrivateSubscriberId(userPublicId);
   }
 
 }

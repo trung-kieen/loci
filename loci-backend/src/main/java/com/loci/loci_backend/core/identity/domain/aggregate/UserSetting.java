@@ -73,4 +73,8 @@ public class UserSetting {
         .build();
   }
 
+  public boolean isVisible() {
+    return profileVisibility.value();
+  }
+
 }

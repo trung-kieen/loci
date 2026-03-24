@@ -16,8 +16,11 @@
 
 package com.loci.loci_backend.core.identity.infrastructure.secondary.repository;
 
+import java.util.Optional;
+
 import com.loci.loci_backend.common.ddd.infrastructure.stereotype.SecondaryPort;
 import com.loci.loci_backend.common.user.domain.aggregate.User;
+import com.loci.loci_backend.common.user.domain.vo.UserDBId;
 import com.loci.loci_backend.common.user.infrastructure.secondary.entity.UserEntity;
 import com.loci.loci_backend.common.user.infrastructure.secondary.mapper.UserEntityMapper;
 import com.loci.loci_backend.core.identity.domain.aggregate.UserSetting;
@@ -57,6 +60,13 @@ public class SpringDataUserSettingRepository implements UserSettingRepository {
     entityManager.persist(settingsEntity);
     // UserSettingsEntity savedSettings = repository.save(settingsEntity);
     return mapper.toDomain(settingsEntity);
+  }
+
+  @Transactional(readOnly = false)
+  @Override
+  public Optional<UserSetting> getByUserId(UserDBId id) {
+    Optional<UserSettingEntity> entityOpt = repository.findById(id.value());
+    return entityOpt.map(mapper::toDomain);
   }
 
 }

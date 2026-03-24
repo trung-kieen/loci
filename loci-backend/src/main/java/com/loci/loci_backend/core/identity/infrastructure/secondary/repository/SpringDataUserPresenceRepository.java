@@ -21,7 +21,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 import com.loci.loci_backend.common.ddd.infrastructure.stereotype.SecondaryPort;
@@ -42,30 +41,25 @@ public class SpringDataUserPresenceRepository implements UserPresenceRepository 
   private final CacheUserLastSeenRepository cacheUserLastSeenRepository;
   private final UserPresenceEntityMapper mapper;
 
-  private UUID getPresenceKey(PresenceId presenceId) {
-
-    UUID userPublicId = presenceId.value().value();
-    return userPublicId;
-  }
-
   @Override
-  public void setOffline(PresenceId presenceId) {
-    Optional<UserPresenceEntity> exitsPresence = cacheUserPresenceRepository.getById(getPresenceKey(presenceId));
+  public UserPresence setOffline(PresenceId presenceId) {
+    Optional<UserPresenceEntity> exitsPresence = cacheUserPresenceRepository.getById(mapper.from(presenceId));
     Instant lastSeen = UserPresenceEntity.getLastSeen(exitsPresence);
-    cacheUserLastSeenRepository.save(getPresenceKey(presenceId), lastSeen);
+    cacheUserLastSeenRepository.save(mapper.from(presenceId), lastSeen);
 
-    cacheUserPresenceRepository.remove(getPresenceKey(presenceId));
+    cacheUserPresenceRepository.remove(mapper.from(presenceId));
+    return getStatus(presenceId);
 
   }
 
   @Override
-  public void heatbeat(PresenceId presenceId, @Nullable PresenceStatus presenceStatus) {
+  public UserPresence heatbeat(PresenceId presenceId, @Nullable PresenceStatus presenceStatus) {
 
-    Optional<UserPresenceEntity> exitsPresence = cacheUserPresenceRepository.getById(getPresenceKey(presenceId));
+    Optional<UserPresenceEntity> exitsPresence = cacheUserPresenceRepository.getById(mapper.from(presenceId));
     // set online if not exist the presence tracking
     if (exitsPresence.isEmpty()) {
       setOnline(presenceId, presenceStatus != null ? presenceStatus : PresenceStatus.online());
-      return;
+      return getStatus(presenceId);
     }
 
     UserPresenceEntity updatedPresence = null;
@@ -77,17 +71,19 @@ public class SpringDataUserPresenceRepository implements UserPresenceRepository 
     }
 
     cacheUserPresenceRepository.save(updatedPresence);
+    cacheUserLastSeenRepository.save(mapper.from(presenceId), Instant.now());
+    return getStatus(presenceId);
   }
 
   private UserPresenceEntity notFoundPresence(PresenceId presenceId) {
-    Optional<Instant> lastSeen = cacheUserLastSeenRepository.getById(getPresenceKey(presenceId));
+    Instant lastSeen = cacheUserLastSeenRepository.getById(mapper.from(presenceId)).orElse(null);
     return UserPresenceEntity.ofNotFound(presenceId, lastSeen);
   }
 
   @Override
   public UserPresence getStatus(PresenceId presenceId) {
 
-    UserPresenceEntity presenceEntity = cacheUserPresenceRepository.getById(getPresenceKey(presenceId))
+    UserPresenceEntity presenceEntity = cacheUserPresenceRepository.getById(mapper.from(presenceId))
         .orElseGet(() -> notFoundPresence(presenceId));
     return mapper.toDomain(presenceEntity);
   }
@@ -105,14 +101,14 @@ public class SpringDataUserPresenceRepository implements UserPresenceRepository 
   @Override
   public long getOnlineCount(Set<PresenceId> presenceIds) {
     return cacheUserPresenceRepository
-        .countOnlinePresence(presenceIds.stream().map(this::getPresenceKey).collect(Collectors.toSet()));
+        .countOnlinePresence(presenceIds.stream().map(mapper::from).collect(Collectors.toSet()));
   }
 
-  // TODO:
   @Override
-  public void setOnline(PresenceId presenceId, PresenceStatus presenceStatus) {
+  public UserPresence setOnline(PresenceId presenceId, PresenceStatus presenceStatus) {
     UserPresenceEntity userPrecence = UserPresenceEntity.forceStatus(presenceId, presenceStatus);
     cacheUserPresenceRepository.save(userPrecence);
+    return getStatus(presenceId);
   }
 
   @Override

@@ -79,7 +79,11 @@ public class CacheConfiguration {
         .build();
 
     Cache<Object, Object> userPresence = Caffeine.newBuilder()
-        .expireAfterAccess(5, TimeUnit.MINUTES)
+        .expireAfterAccess(1, TimeUnit.MINUTES)
+        .maximumSize(500)
+        .build();
+    Cache<Object, Object> userLastSeen = Caffeine.newBuilder()
+        .expireAfterAccess(30, TimeUnit.DAYS)
         .maximumSize(500)
         .build();
 
@@ -88,7 +92,8 @@ public class CacheConfiguration {
         new CaffeineCache(CacheKeys.USER_ID_TO_UUID, userIdToUUIDCache),
         new CaffeineCache(CacheKeys.USER_UUID_TO_ID, userUUIDToIdCache),
         new CaffeineCache(CacheKeys.USER_BATCH_UUID_TO_ID, batchUUIDToId),
-        new CaffeineCache(CacheKeys.USER_PRESENCE, userPresence)));
+        new CaffeineCache(CacheKeys.USER_PRESENCE, userPresence),
+        new CaffeineCache(CacheKeys.USER_LASTSEEN, userLastSeen)));
     return cacheManager;
   }
 
@@ -127,7 +132,7 @@ public class CacheConfiguration {
         defaultConfig.entryTtl(Duration.ofMinutes(5)));
 
     cacheConfigs.put(CacheKeys.USER_PRESENCE,
-        defaultConfig.entryTtl(Duration.ofMinutes(3)));
+        defaultConfig.entryTtl(Duration.ofMinutes(1)));
 
     cacheConfigs.put(CacheKeys.USER_LASTSEEN,
         defaultConfig.entryTtl(Duration.ofDays(30)));

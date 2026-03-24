@@ -29,7 +29,7 @@ import org.mapstruct.Named;
 
 @Mapper(componentModel = "spring", uses = ValueObjectTypeConverter.class)
 public interface MapStructSTOMPUserPresenceMapper {
-  @Mapping(source = "presenceId", target = "presenceId", qualifiedByName = "presenceIdQualify")
+  @Mapping(source = "presenceId", target = "userId", qualifiedByName = "presenceIdQualify")
   STOMPUserPresence from(UserPresence presence);
 
   @Named("presenceIdQualify")

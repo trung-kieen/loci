@@ -41,7 +41,7 @@ import com.loci.loci_backend.core.identity.domain.aggregate.PublicProfile;
 import com.loci.loci_backend.core.identity.domain.aggregate.UserPresence;
 import com.loci.loci_backend.core.identity.domain.repository.ProfileRepository;
 import com.loci.loci_backend.core.identity.domain.repository.UserPresenceRepository;
-import com.loci.loci_backend.core.identity.domain.service.PresenceIndicator;
+import com.loci.loci_backend.core.identity.domain.service.UserPresenceIdTranslator;
 import com.loci.loci_backend.core.identity.domain.vo.PresenceId;
 import com.loci.loci_backend.core.messaging.domain.aggregate.DirectChatInfo;
 import com.loci.loci_backend.core.messaging.domain.aggregate.DirectChatInfoBuilderForConversation;
@@ -68,7 +68,7 @@ public class ConversationReader {
   private final MessageRepository messageRepository;
   private final GroupRepository groupRepository;
   private final UserConnectionResolver connectionResolver;
-  private final PresenceIndicator userPresenceIndicator;
+  private final UserPresenceIdTranslator presenceIdTranslator;
   private final UserPresenceRepository userPresenceRepository;
 
   public Conversation getConversation(User currentUser, User targetUser) {
@@ -123,10 +123,11 @@ public class ConversationReader {
   }
 
   public DirectChatInfo getConversationInfo(Conversation conversation, User currentUser) {
-    UserPresence presence = userPresenceRepository.getStatus(new PresenceId(currentUser.getUserPublicId()));
 
     Participant recipient = participantRepository.getTargetMessagingParticipantInDirectConversation(currentUser,
         conversation);
+    UserPresence targetMessagingUserPresence = userPresenceRepository
+        .getStatus(presenceIdTranslator.toPresenceId(recipient.getUserId()));
 
     PublicProfile recipientProfile = profileRepository.findPublicProfileById(recipient.getUserId());
 
@@ -137,8 +138,8 @@ public class ConversationReader {
     return DirectChatInfoBuilderForConversation.directChatInfo()
         .conversation(conversation)
         .recipientProfile(recipientProfile)
-        .status(presence.getStatus())
-        .lastSeen(presence.getLastSeen())
+        .status(targetMessagingUserPresence.getStatus())
+        .lastSeen(targetMessagingUserPresence.getLastSeen())
         .build();
 
   }

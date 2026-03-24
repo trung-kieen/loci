@@ -34,8 +34,6 @@ import com.loci.loci_backend.core.messaging.infrastructure.primary.payload.RestS
 
 import lombok.RequiredArgsConstructor;
 
-
-
 @PrimaryMapper
 @RequiredArgsConstructor
 public class RestMessageMapper implements Domain2RestMapper<Message, RestMessage> {
@@ -51,7 +49,6 @@ public class RestMessageMapper implements Domain2RestMapper<Message, RestMessage
     rest.setConversationId(conversation.getPublicId().value());
     return rest;
   }
-
 
   public MessageContent from(RestMessageContent content) {
     return new MessageContent(content.getType(), content.getContent(), content.getMedia());
@@ -69,11 +66,11 @@ public class RestMessageMapper implements Domain2RestMapper<Message, RestMessage
         .build();
   }
 
-  public RestAttachment from(Attachment attachment){
+  public RestAttachment from(Attachment attachment) {
     return mapstruct.from(attachment);
   }
 
-  public Attachment toDomain(RestAttachment attachment){
+  public Attachment toDomain(RestAttachment attachment) {
     return mapstruct.toDomain(attachment);
   }
 

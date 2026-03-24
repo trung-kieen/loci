@@ -18,6 +18,9 @@ import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { Message } from '@stomp/stompjs';
 import { RxStomp } from '@stomp/rx-stomp';
 import { Subject, switchMap, takeUntil } from 'rxjs';
+import { IUserPresence } from '../../../features/chat/service/conversation-api.service';
+import { PresenceApi } from '../../../features/user/services/presence.api';
+import { LoggerService } from '../../../core/services/logger.service';
 
 interface ChatMessage {
   content: string;
@@ -32,13 +35,25 @@ interface ChatMessage {
 export class Demo implements OnInit, OnDestroy {
 
   receivesMessage = signal<ChatMessage[]>([]);
+
+  presence = signal<IUserPresence | null>(null);
+
+
   private destroy$ = new Subject<void>();
 
+  private loggerService = inject(LoggerService);
+  private logger = this.loggerService.getLogger("Demo")
   private rxStompService = inject(RxStomp);
+  private presenceApi = inject(PresenceApi);
 
   ngOnInit() {
     // Debug: how many times does this print?
     console.log('[STOMP INSTANCE]', this.rxStompService);
+    this.presenceApi.getUserPresence().subscribe({
+      next: (p) => {
+        this.presence.set(p);
+      }
+    })
 
     this.rxStompService.connected$
       .pipe(
@@ -57,6 +72,10 @@ export class Demo implements OnInit, OnDestroy {
           console.error('[STOMP] Parse error:', e);
         }
       });
+
+    this.presenceApi.onPresenceUpdate().subscribe({
+      next: (p) => this.presence.update(() => p)
+    })
   }
 
   onSendMessage() {
@@ -65,6 +84,21 @@ export class Demo implements OnInit, OnDestroy {
       destination: '/app/individual.send',
       body: JSON.stringify({ content: `Test at ${new Date()}` })
     });
+  }
+
+  onHeartbeat(): void {
+    this.presenceApi.heartbeat().subscribe({
+      error: (err) => {
+        this.logger.debug(err);
+      }
+    })
+  }
+  onOffline(): void {
+    this.presenceApi.explicitOffline().subscribe({
+      error: (err) => {
+        this.logger.debug(err);
+      }
+    })
   }
 
   ngOnDestroy() {

@@ -28,13 +28,13 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @SecondaryPort
 public class SpringWebSocketGroupPresenceNotifier implements GroupPresenceNotifier {
-  private final STOMPPresenceSendingOperations presenceOperations;
+  private final STOMPPresenceTrackingOperations presenceOperations;
   private final STOMPGroupPresenceMapper mapper;
 
   @Override
   public void boardcastPresenceChange(GroupSubscriberId subscriberId, GroupPresence presence) {
     STOMPGroupPresence groupPresence = mapper.from(presence);
-    presenceOperations.notifyPresenceChange(subscriberId.value(), groupPresence);
+    presenceOperations.notifyGroupPresenceChange(subscriberId.value(), groupPresence);
   }
 
 }

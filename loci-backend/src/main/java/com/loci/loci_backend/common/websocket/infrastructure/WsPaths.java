@@ -38,8 +38,10 @@ public class WsPaths {
   public static final String INDIVIDUAL_NOTIFY_MESSAGE_DELIVERED = QUEUE + "/messages.delivered";
   public static final String INDIVIDUAL_NOTIFY_MESSAGE_SEEN = QUEUE + "/messages.seen";
 
-  // group message
-  public static final String GROUP_RECEIVE_MESSAGE = TOPIC + "/messages.receive-"; // receive-{conversationId}
+  /**
+   * receive-{conversationId}
+   */
+  public static final String GROUP_RECEIVE_MESSAGE = TOPIC + "/messages.receive-";
   public static final String GROUP_NOTIFY_MESSAGE_SENT = QUEUE + "/messages.sent";
   public static final String GROUP_NOTIFY_MESSAGE_DELIVERED = QUEUE + "/messages.delivered";
   public static final String GROUP_NOTIFY_MESSAGE_SEEN = QUEUE + "/messages.seen";
@@ -48,7 +50,13 @@ public class WsPaths {
 
   // rarely use for update the message is read in other device
   public static final String NOTIFY_USER_UPDATE_NOTIFICATION = QUEUE + "/notifications.update";
-  public static final String GROUP_PRESENCE_CHANGE = TOPIC + "/presence.change-";
 
-  // presence
+  /**
+   * group-{conversationId}
+   */
+  public static final String GROUP_PRESENCE_CHANGE = TOPIC + "/presence.group-%s.update";
+  /**
+   * user-{userId}
+   */
+  public static final String USER_PRESENCE_CHANGE = TOPIC + "/presence.user-%s.update";
 }

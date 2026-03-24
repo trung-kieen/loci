@@ -53,6 +53,7 @@ import { FriendshipStatus } from '../../../contact/models/contact.model';
 import { LoggerService } from '../../../../core/services/logger.service';
 import { ChatListState } from '../chat-list/chat-list.state';
 import { DirectConversationState } from './direct-conversation.state';
+import { PresenceApi } from '../../../user/services/presence.api';
 
 @Component({
   selector: 'app-direct-conversation',
@@ -77,6 +78,7 @@ export class DirectConversation implements OnInit {
   private readonly chatApiService = inject(ConversationApi);
   private readonly chatListStateService = inject(ChatListState);
   private readonly logger = inject(LoggerService).getLogger('DirectConversation');
+  private readonly presenceNotify = inject(PresenceApi);
 
   private readonly messageArea = viewChild.required<ElementRef<HTMLDivElement>>('messageArea');
 
@@ -353,8 +355,17 @@ export class DirectConversation implements OnInit {
         this.state.setMessages(messages.messages);
 
         Promise.resolve().then(() => this.scrollBottom());
+
+        this.state.setLoading(false)
+
       }),
-      finalize(() => this.state.setLoading(false)),
+      switchMap(({ participant }) =>
+        this.presenceNotify.onUserPresenceUpdate(participant.messagingUser.userId).pipe(
+          tap(p => {
+            this.state.setUserPresence(p);
+          })
+        )
+      ),
       takeUntilDestroyed(this.destroyRef)
     ).subscribe();
   }

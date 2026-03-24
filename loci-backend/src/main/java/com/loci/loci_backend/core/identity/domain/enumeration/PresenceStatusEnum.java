@@ -23,16 +23,18 @@ import lombok.Getter;
 
 @Getter
 public enum PresenceStatusEnum {
-  ONLINE("User is actively connected and available"),
-  AWAY("User is connected but inactive"),
-  NOT_AVALIABLE("User not allow other user to know their active status"),
-  OFFLINE("User is not connected");
+  ONLINE("online", "User is actively connected and available"),
+  AWAY("away", "User is connected but inactive"),
+  NOT_AVALIABLE("not_avaliable", "User not allow other user to know their active status"),
+  OFFLINE("offline", "User is not connected");
 
   @JsonValue
   private String value;
+  private String description;
 
-  private PresenceStatusEnum(String value) {
+  private PresenceStatusEnum(String value, String description) {
     this.value = value;
+    this.description = description;
   }
 
   @JsonCreator
@@ -44,7 +46,6 @@ public enum PresenceStatusEnum {
     }
     return ofDefault();
   }
-
 
   public static PresenceStatusEnum ofDefault() {
     return AWAY;

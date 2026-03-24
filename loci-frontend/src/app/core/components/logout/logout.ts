@@ -19,6 +19,7 @@ import { KeycloakAuthenticationManager } from '../../auth/keycloak-auth-manager'
 import { LoggerService } from '../../services/logger.service';
 import { SharedModule } from '../../../shared/shared.module';
 import { CommonModule } from '@angular/common';
+import { PresenceApi } from '../../../features/user/services/presence.api';
 
 @Component({
   selector: 'app-logout',
@@ -29,11 +30,13 @@ import { CommonModule } from '@angular/common';
 })
 export class Logout implements OnInit {
   private auth = inject(KeycloakAuthenticationManager);
+  private presenceApi= inject(PresenceApi);
   private loggerService = inject(LoggerService);
   private logger = this.loggerService.getLogger("Logout");
   // private router = inject(Router);
   ngOnInit(): void {
     this.logger.info("On init the logout page");
+    this.presenceApi.explicitOffline();
     this.auth.logout();
   }
 

@@ -16,11 +16,11 @@
 
 package com.loci.loci_backend.core.conversation.infrastructure.secondary.repository;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 import com.loci.loci_backend.common.collection.Maps;
@@ -47,7 +47,6 @@ import com.loci.loci_backend.core.identity.domain.repository.UserIdTranslator;
 import com.loci.loci_backend.core.identity.domain.repository.UserPresenceRepository;
 import com.loci.loci_backend.core.identity.domain.vo.PresenceId;
 import com.loci.loci_backend.core.identity.infrastructure.secondary.mapper.IdentityEntityMapper;
-import com.loci.loci_backend.core.identity.infrastructure.secondary.repository.CacheUserIdRepository;
 import com.loci.loci_backend.core.messaging.domain.aggregate.DirectChatInfo;
 import com.loci.loci_backend.core.messaging.domain.aggregate.DirectChatInfoBuilder;
 import com.loci.loci_backend.core.messaging.domain.aggregate.DirectChatInfoBuilderForConversation;
@@ -59,15 +58,16 @@ import org.springframework.transaction.annotation.Transactional;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 
 @SecondaryPort
+@Log4j2
 @RequiredArgsConstructor
 public class SpringDataConversationRepository implements ConversationRepository {
   private final JpaConversationRepository jpaConversationRepository;
   private final JpaParticipantRepository jpaParticipantRepository;
   private final UserPresenceRepository userPresenceRepository;
   private final JpaUserRepository jpaUserRepository;
-  private final CacheUserIdRepository cacheUserIdRepository;
   private final ConversationEntityMapper mapper;
   private final IdentityEntityMapper identityMapper;
   private final UserIdTranslator userIdTranslator;
@@ -155,8 +155,9 @@ public class SpringDataConversationRepository implements ConversationRepository 
     // convert to list of direct message data, order not matter
     return otherParticipants.stream().map(participant -> {
 
-      UUID participantPublicId = cacheUserIdRepository.getByDbId(participant.getUserId());
-      UserPresence presence = userPresenceRepository.getStatus(new PresenceId(new PublicId(participantPublicId)));
+      PublicId participantPublicId = userIdTranslator.toPublic(new UserDBId(participant.getUserId()))
+          .orElseThrow(EntityNotFoundException::new);
+      UserPresence presence = userPresenceRepository.getStatus(new PresenceId(participantPublicId));
 
       DirectChatInfo info = DirectChatInfoBuilder.directChatInfo()
           .conversationId(new ConversationId(participant.getConversationId()))
@@ -210,14 +211,31 @@ public class SpringDataConversationRepository implements ConversationRepository 
   @Override
   public Set<PresenceId> getMemberPresenceIds(ConversationId conversationId) {
     List<Long> memberDbIds = jpaParticipantRepository.getUserIdInConversation(conversationId.value());
-    return memberDbIds.stream().map(UserDBId::new).map(userIdTranslator::toPublic).map(PresenceId::new)
+
+    if (memberDbIds == null || memberDbIds.isEmpty()) {
+      return Collections.emptySet();
+    }
+
+    Set<UserDBId> dbIds = memberDbIds.stream()
+        .map(UserDBId::new)
+        .collect(Collectors.toSet());
+
+    Map<UserDBId, PublicId> publicIds = userIdTranslator.toPublicLookup(dbIds);
+
+    if (publicIds.size() < dbIds.size()) {
+      log.warn("getMemberPresenceIds: resolved {}/{} member IDs for conversationId={}",
+          publicIds.size(), dbIds.size(), conversationId.value());
+    }
+
+    return publicIds.values().stream()
+        .map(PresenceId::new)
         .collect(Collectors.toUnmodifiableSet());
   }
 
   @Override
   public Set<GroupConversationPresenceId> getConversationOfPresence(PresenceId userPresenceId) {
     PublicId userPublicId = userPresenceId.value();
-    UserDBId userId = userIdTranslator.toInternal(userPublicId);
+    UserDBId userId = userIdTranslator.toInternal(userPublicId).orElseThrow(EntityNotFoundException::new);
     List<ConversationParticipantEntity> conversationParticipants = jpaParticipantRepository
         .findAllByUserId(userId.value());
     return conversationParticipants.stream()

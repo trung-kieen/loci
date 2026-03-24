@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package com.loci.loci_backend.core.identity.infrastructure.secondary.entity;
+package com.loci.loci_backend.core.identity.infrastructure.primary.payload;
 
 import java.time.Instant;
 import java.util.UUID;
 
 import com.loci.loci_backend.core.identity.domain.enumeration.PresenceStatusEnum;
 
-public record STOMPUserPresence(
+public record RestUserPresence(
     UUID userId,
     PresenceStatusEnum status,
     Instant lastSeen,

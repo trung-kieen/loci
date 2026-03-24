@@ -29,9 +29,9 @@ import lombok.Data;
 import lombok.Getter;
 
 @Data
+@Getter
 public class UserPresence implements Serializable {
 
-  @Getter()
   private final PresenceId presenceId;
   private final PresenceStatus status;
   private final Instant lastSeen;

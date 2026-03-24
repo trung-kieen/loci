@@ -16,14 +16,22 @@
 
 package com.loci.loci_backend.core.identity.domain.repository;
 
-import com.loci.loci_backend.common.translation.BatchIdTranslator;
-import com.loci.loci_backend.common.translation.IdTranslator;
+import java.util.Collection;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+
 import com.loci.loci_backend.common.user.domain.vo.PublicId;
 import com.loci.loci_backend.common.user.domain.vo.UserDBId;
 
-public interface UserIdTranslator extends IdTranslator<PublicId, UserDBId>, BatchIdTranslator<PublicId, UserDBId> {
+public interface UserIdTranslator {
+  Optional<PublicId> toPublic(UserDBId dbId);
 
+  Optional<UserDBId> toInternal(PublicId publicId);
 
+  Map<PublicId, UserDBId> toInternalLookup(Collection<PublicId> publicIds);
 
+  Set<UserDBId> toInternal(Collection<PublicId> publicIds);
 
+  Map<UserDBId, PublicId> toPublicLookup(Collection<UserDBId> dbIds);
 }

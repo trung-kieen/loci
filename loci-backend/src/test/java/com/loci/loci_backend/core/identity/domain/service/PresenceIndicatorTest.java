@@ -1,3 +1,19 @@
+/*
+ * Copyright 2026 trung-kieen
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.loci.loci_backend.core.identity.domain.service;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -12,12 +28,14 @@ import java.util.Set;
 import java.util.UUID;
 
 import com.loci.loci_backend.common.user.domain.vo.PublicId;
+import com.loci.loci_backend.core.messaging.domain.repository.ForwardIdTranslator;
 import com.loci.loci_backend.core.conversation.domain.repository.ConversationRepository;
 import com.loci.loci_backend.core.conversation.domain.vo.ConversationId;
 import com.loci.loci_backend.core.groups.domain.repository.GroupPresenceNotifier;
 import com.loci.loci_backend.core.groups.domain.vo.GroupConversationPresenceId;
 import com.loci.loci_backend.core.identity.domain.aggregate.UserPresence;
 import com.loci.loci_backend.core.identity.domain.repository.GroupPresenceIdTranslator;
+import com.loci.loci_backend.core.identity.domain.repository.UserPresenceNotifier;
 import com.loci.loci_backend.core.identity.domain.repository.UserPresenceRepository;
 import com.loci.loci_backend.core.identity.domain.vo.PresenceId;
 import com.loci.loci_backend.core.identity.domain.vo.PresenceStatus;
@@ -41,7 +59,14 @@ public class PresenceIndicatorTest {
   @Mock
   GroupPresenceNotifier groupPresenceNotifier;
   @Mock
-  GroupPresenceIdTranslator idTranslator;
+  UserPresenceNotifier userPresenceNotifier;
+
+  @Mock
+  GroupPresenceIdTranslator groupIdTranslator;
+
+  @Mock
+  ForwardIdTranslator forwardIdTranslator;
+
 
   PresenceIndicator presenceIndicator;
 
@@ -61,7 +86,7 @@ public class PresenceIndicatorTest {
   void setUp() {
     // inject mock port
     presenceIndicator = new PresenceIndicator(userPresenceRepository, conversationRepository, groupPresenceNotifier,
-        idTranslator);
+        userPresenceNotifier, groupIdTranslator, forwardIdTranslator);
 
     presenceId = new PresenceId(new PublicId(UUID.randomUUID()));
     groupA = new GroupConversationPresenceId(new ConversationId(10L));
@@ -100,7 +125,7 @@ public class PresenceIndicatorTest {
       stubGroupsForUser(twoGroups);
       stubMemberForGroup();
       subTranslator();
-      presenceIndicator.heatbeat(presenceId, PresenceStatus.online());
+      presenceIndicator.heartbeat(presenceId, PresenceStatus.online());
       verify(groupPresenceNotifier, times(2)).boardcastPresenceChange(any(), any());
 
     }
@@ -112,8 +137,8 @@ public class PresenceIndicatorTest {
   }
 
   public void subTranslator() {
-    when(idTranslator.toGroupSubscriberId(groupA)).thenReturn(subscriberA);
-    when(idTranslator.toGroupSubscriberId(groupB)).thenReturn(subscriberB);
+    when(groupIdTranslator.toGroupSubscriberId(groupA)).thenReturn(subscriberA);
+    when(groupIdTranslator.toGroupSubscriberId(groupB)).thenReturn(subscriberB);
   }
 
   public void stubMemberForGroup() {

@@ -19,18 +19,26 @@ package com.loci.loci_backend.core.groups.infrastructure.secondary.realtime;
 import com.loci.loci_backend.common.ddd.infrastructure.stereotype.SecondaryPort;
 import com.loci.loci_backend.common.websocket.infrastructure.WsPaths;
 import com.loci.loci_backend.core.groups.infrastructure.secondary.entity.STOMPGroupPresence;
+import com.loci.loci_backend.core.identity.infrastructure.secondary.entity.STOMPUserPresence;
 
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 
 @RequiredArgsConstructor
 @SecondaryPort
-public class STOMPPresenceSendingOperations {
+@Log4j2
+public class STOMPPresenceTrackingOperations {
   private final SimpMessageSendingOperations messageTemplate;
 
-  public void notifyPresenceChange(String conversationId, STOMPGroupPresence message) {
-    messageTemplate.convertAndSend(WsPaths.GROUP_PRESENCE_CHANGE + conversationId, message);
+  public void notifyGroupPresenceChange(String conversationId, STOMPGroupPresence message) {
+    messageTemplate.convertAndSend(String.format(WsPaths.GROUP_PRESENCE_CHANGE, conversationId), message);
   }
 
+  public void notifyUserPresenceChange(String userId, STOMPUserPresence message) {
+    String endpoint = String.format(WsPaths.USER_PRESENCE_CHANGE, userId);
+    log.error(endpoint);
+    messageTemplate.convertAndSend(endpoint, message);
+  }
 }
