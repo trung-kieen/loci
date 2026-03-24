@@ -32,6 +32,7 @@ export class HeartbeatService implements OnDestroy {
   private readonly INTERVAL_MS = 30_000; // 30 seconds
 
   start(): void {
+    this.presenceApi.heartbeat().subscribe();
     const visibility$ = merge(
       of(null),  // emit immediately on start
       fromEvent(document, 'visibilitychange')

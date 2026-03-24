@@ -17,6 +17,7 @@
 import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { KeycloakAuthenticationManager } from '../../../core/auth/keycloak-auth-manager';
+import { PresenceApi } from '../../../features/user/services/presence.api';
 
 // Updated interface to support positioning
 interface NavItem {
@@ -109,12 +110,14 @@ export class Sidebar {
   ];
 
 
+  private presenceApi = inject(PresenceApi);
   private router = inject(Router)
   private authenticationManager = inject(KeycloakAuthenticationManager);
 
   onLogout(): void {
-    // Implement logout logic
+    this.presenceApi.explicitOffline().subscribe();
     this.authenticationManager.logout();
+
     this.router.navigate(['/login']);
   }
 

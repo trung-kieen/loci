@@ -63,9 +63,8 @@ public class PresenceResource {
     return ResponseEntity.ok(presenceMapper.from(presence));
   }
 
-  // for testing
   @PostMapping("/offline")
-  public ResponseEntity<RestUserPresence> setOfflineCurrentUser() {
+  public ResponseEntity<RestUserPresence> explicitLogoutCurrentUser() {
     UserPresence presence = identityApplicationService.setOfflineCurrentUser();
     return ResponseEntity.ok(presenceMapper.from(presence));
   }

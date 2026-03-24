@@ -79,11 +79,11 @@ public class CacheConfiguration {
         .build();
 
     Cache<Object, Object> userPresence = Caffeine.newBuilder()
-        .expireAfterAccess(1, TimeUnit.MINUTES)
+        .expireAfterWrite(1, TimeUnit.MINUTES)
         .maximumSize(500)
         .build();
     Cache<Object, Object> userLastSeen = Caffeine.newBuilder()
-        .expireAfterAccess(30, TimeUnit.DAYS)
+        .expireAfterWrite(30, TimeUnit.DAYS)
         .maximumSize(500)
         .build();
 

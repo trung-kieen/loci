@@ -37,8 +37,6 @@ public class STOMPPresenceTrackingOperations {
   }
 
   public void notifyUserPresenceChange(String userId, STOMPUserPresence message) {
-    String endpoint = String.format(WsPaths.USER_PRESENCE_CHANGE, userId);
-    log.error(endpoint);
-    messageTemplate.convertAndSend(endpoint, message);
+    messageTemplate.convertAndSend(String.format(WsPaths.USER_PRESENCE_CHANGE, userId), message);
   }
 }

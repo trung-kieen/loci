@@ -41,7 +41,7 @@ public class CacheUserPresenceRepository extends AbstractCacheEntityRepository<U
   }
 
   public Optional<UserPresenceEntity> getById(UUID publicId) {
-    return Optional.ofNullable(cache(CacheKeys.USER_PRESENCE).get(publicId, UserPresenceEntity.class));
+  return Optional.ofNullable(cache(CacheKeys.USER_PRESENCE).get(publicId, UserPresenceEntity.class));
   }
 
   public long countOnlinePresence(Set<UUID> ids) {
