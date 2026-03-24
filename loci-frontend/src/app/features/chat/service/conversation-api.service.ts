@@ -16,12 +16,13 @@
 
 // src/app/core/services/mock-chat-api.service.ts
 import { inject, Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, EMPTY, merge, Observable, scan, share, shareReplay, switchMap } from 'rxjs';
 import {
   IConversationMessageList,
+  IMessage,
   ParticipantState,
 } from '../models/message.model';
-import { IPaginationParams } from '../models/chat.model';
+import { ArrivalMessage, IPaginationParams } from '../models/chat.model';
 import { WebApiService } from '../../../core/api/web-api.service';
 import { DirectMessageSubscriber } from '../components/direct-conversation/direct-message.subscriber';
 import { DirectMessageApi } from '../components/direct-conversation/direct-message.api';
@@ -49,6 +50,9 @@ export class ConversationApi {
 
   private directMessageSubscriber = inject(DirectMessageSubscriber);
 
+  private readonly groupRegistry = new Map<string, Observable<ArrivalMessage>>();
+  private readonly trackedGroupIds$ = new BehaviorSubject<string[]>([]);
+
 
 
   public getMessages(
@@ -61,7 +65,61 @@ export class ConversationApi {
 
 
   onReceiveNewMessage() {
-    return this.directMessageSubscriber.messageReceive$();
+    const direct$ = this.directMessageSubscriber.messageReceive$();
+
+
+    const groups$ = this.trackedGroupIds$.pipe(
+      scan((active: Set<string>, incoming: string[]) => {
+        const incomingSet = new Set(incoming);
+
+        // Register new IDs
+        incoming
+          .filter(id => !active.has(id))
+          .forEach(id => {
+            this.groupRegistry.set(
+              id,
+              this.group.onReceiveNewMessage(id)
+              // this.group.onReceiveMessag(id).pipe(share())
+            );
+            active.add(id);
+          });
+
+        // unregister
+        [...active]
+          .filter(id => !incomingSet.has(id))
+          .forEach(id => {
+            this.groupRegistry.delete(id);
+            active.delete(id);
+          });
+
+        return active;
+      }, new Set<string>()),
+
+      // Re-merge stream whenever the active set changes
+      switchMap(active => {
+        const streams = [...active]
+          .map(id => this.groupRegistry.get(id)!)
+          .filter(Boolean);
+
+        return streams.length > 0 ? merge(...streams) : EMPTY;
+      }),
+      share()
+    );
+
+    return merge(direct$, groups$);
   }
 
+
+  /**
+   * update resgiter group ids conversation
+   */
+  watchGroupConversations(ids: string[]): void {
+    this.trackedGroupIds$.next(ids);
+  }
+
+
+
 }
+
+
+

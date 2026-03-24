@@ -18,9 +18,8 @@ import { Injectable, inject } from '@angular/core';
 import { Observable, EMPTY, tap, of, delay } from 'rxjs';
 import { LoggerService } from '../../../../core/services/logger.service';
 import { WebApiService } from '../../../../core/api/web-api.service';
-import { ChatListState } from '../chat-list/chat-list.state';
 import { IGroupChatInfoMeta, IGroupMemberEvent, IGroupOnlineStatusResponse, IGroupParticipantsResponse, IGroupUpdatedEvent } from '../../models/group-chat.models';
-import { IAttachment, IConversationMessage, IMarkMessageSeenRequest, IMarkMessageSeenResponse, IMessage, IMessageStatusEvent, ISendMessageRequest } from '../../models/message.model';
+import { IAttachment,  IMarkMessageSeenRequest, IMarkMessageSeenResponse, IMessage, ISendMessageRequest } from '../../models/message.model';
 import { IUserPresence } from '../../service/conversation-api.service';
 import { GroupMessageSubscriber } from './group-message.subscriber';
 
@@ -30,7 +29,6 @@ export class GroupMessageApi {
   private readonly loggerService = inject(LoggerService);
   private readonly logger = this.loggerService.getLogger("GroupChatApiService");
   private readonly apiService = inject(WebApiService);
-  private readonly chatListStateService = inject(ChatListState);
   private readonly messageSubscriber = inject(GroupMessageSubscriber);
 
 
@@ -65,11 +63,11 @@ export class GroupMessageApi {
 
   sendMessage(dto: ISendMessageRequest): Observable<IMessage> {
     const newMessage = this.apiService.post<IMessage>("/messages/group/send", dto)
-      .pipe(
-        tap(message => {
-          this.chatListStateService.onMessageSending(message);
-        })
-      )
+      // .pipe(
+      //   tap(message => {
+      //     this.chatListStateService.onMessageSending(message);
+      //   })
+      // )
     return newMessage;
   }
 

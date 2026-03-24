@@ -24,7 +24,6 @@ import com.loci.loci_backend.common.validation.domain.Validatable;
 
 public record GroupImageUrl(String value) implements ValueObject<String>, Validatable {
 
-
   public static GroupImageUrl random() {
     // return randomPhotorealistic();
     return randomCartoonStyle();
@@ -35,7 +34,11 @@ public record GroupImageUrl(String value) implements ValueObject<String>, Valida
 
     Random random = new Random();
     int id = random.nextInt(1000);
-    String url = String.format("https://api.dicebear.com/7.x/notionists/svg?scale=200&seed=%d", id);
+    String url = "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse1.mm.bing.net%2Fth%2Fid%2FOIP.VQIsvREn5F2yJD_6EN2WRwHaHa%3Fpid%3DApi&f=1&ipt=47e7757126d0ddcbf716ebd0218d403ae12e008465b6129843d16d5db01edad5&ipo=images";
+
+    // String url =
+    // String.format("https://api.dicebear.com/7.x/notionists/svg?scale=200&seed=%d",
+    // id);
     return new GroupImageUrl(url);
   }
 

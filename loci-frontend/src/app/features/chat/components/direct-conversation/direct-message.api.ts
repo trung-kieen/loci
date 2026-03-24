@@ -22,7 +22,6 @@ import {
 import { LoggerService } from '../../../../core/services/logger.service';
 import { UserPresenceObservableService } from '../../../user/services/user-presence-observable.service';
 import { WebApiService } from '../../../../core/api/web-api.service';
-import { ChatListState } from '../chat-list/chat-list.state';
 import { delay, Observable, of, tap } from 'rxjs';
 import { IPersonalProfile } from '../../../user/models/user.model';
 import { ISingleChatInfo } from '../../models/chat.model';
@@ -39,7 +38,7 @@ export class DirectMessageApi {
   private directMessageSubscriber = inject(DirectMessageSubscriber);
   private presenceObservable = inject(UserPresenceObservableService);
   private apiService = inject(WebApiService);
-  private chatListStateService = inject(ChatListState);
+  // private chatListStateService = inject(ChatListState);
 
   onReceiveMessage(conversationId: string) {
     return this.directMessageSubscriber.messageReceiveInConversation$(conversationId);
@@ -93,11 +92,11 @@ export class DirectMessageApi {
       /*
        * If sending message success then update the message is sending in chat list
        */
-      .pipe(
-        tap(message => {
-          this.chatListStateService.onMessageSending(message);
-        })
-      )
+      // .pipe(
+      //   tap(message => {
+      //     this.chatListStateService.onMessageSending(message);
+      //   })
+      // )
 
     return newMessage;
   }

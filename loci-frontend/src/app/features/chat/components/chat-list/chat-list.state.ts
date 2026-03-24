@@ -15,9 +15,10 @@
  */
 
 import { computed, inject, Injectable, signal } from "@angular/core";
-import { ChatFilter, ConversationAddedPayload, IChat, MessageStateChangedPayload, ArrvalMessage as ArrivalMessage, PresenceChangedPayload } from "../../models/chat.model";
+import { ChatFilter, ConversationAddedPayload, IChat, MessageStateChangedPayload, ArrivalMessage, PresenceChangedPayload } from "../../models/chat.model";
 import { ConversationService } from "../../service/conversation-service";
 import { LoggerService } from "../../../../core/services/logger.service";
+import { ConversationApi } from "../../service/conversation-api.service";
 
 interface IChatListState {
   conversations: IChat[];
@@ -41,6 +42,7 @@ const INITIAL_STATE: IChatListState = {
 @Injectable({ providedIn: 'root' })
 export class ChatListState {
   private conversationService = inject(ConversationService);
+  private conversationApi = inject(ConversationApi);
   private logger = inject(LoggerService).getLogger('ChatListState');
 
   // raw state
@@ -90,12 +92,11 @@ export class ChatListState {
     this.patch({ isLoading: true, error: null });
 
     this.conversationService.getConversations().subscribe({
-
       next: (data) => {
-        this.patch({
-          conversations: data.conversations.content,
-          isLoading: false,
-        });
+        const conversations = data.conversations.content;
+        this.patch({ conversations, isLoading: false });
+
+        this.syncGroupRegistry();
       },
       error: (err) => {
         this.logger.error('Failed to load conversations', err);
@@ -218,6 +219,7 @@ export class ChatListState {
     this.patch({
       conversations: [payload.conversation, ...this.state().conversations],
     });
+    this.syncGroupRegistry();
   }
 
   /**
@@ -229,6 +231,7 @@ export class ChatListState {
         (c) => c.conversationId !== conversationId
       ),
     });
+    this.syncGroupRegistry();
   }
 
   /**
@@ -241,7 +244,6 @@ export class ChatListState {
     this.updateConversation(conversationId, meta);
   }
 
-  // Private helpers
 
   // Shallow-merge into top-level state
   private patch(partial: Partial<IChatListState>): void {
@@ -267,6 +269,15 @@ export class ChatListState {
       }),
     }));
   }
+
+  private syncGroupRegistry(): void {
+    const groupIds = this.state().conversations
+      .filter(c => c.isGroup)
+      .map(c => c.conversationId);
+
+    this.conversationApi.watchGroupConversations(groupIds);
+  }
+
 
   // Move a conversation to the top of the list
   private bringToTop(conversationId: string): void {

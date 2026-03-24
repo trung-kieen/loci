@@ -174,7 +174,7 @@ export interface IFriendList {
 
 
 
-export type ArrvalMessage = IMessage;
+export type ArrivalMessage = IMessage;
 
 // export interface ArrvalMessage {
 //   conversationId: string;

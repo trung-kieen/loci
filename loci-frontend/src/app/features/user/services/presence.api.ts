@@ -42,7 +42,6 @@ export class PresenceApi {
     return this.presenceSubscriber.presence$();
   }
   onUserPresenceUpdate(targetUserId: string) {
-    console.log("Tracking presence for ", targetUserId);
     return this.presenceSubscriber.userPresence$(targetUserId);
   }
 

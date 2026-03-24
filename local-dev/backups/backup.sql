@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
-\restrict 5FUkHhi3BeWTdgsOMJ5dzrppwCePfeVLYtdPkwSa1uBdsKc6uxQi4Twkr8wjVY8
+\restrict 5dieaXYuUgrAplz85rxto7DV2cv0Mbl7mJZXfschbB7CBkR3Nd8F4BU6VeOi0gM
 
 -- Dumped from database version 18.1 (Debian 18.1-1.pgdg13+2)
 -- Dumped by pg_dump version 18.1 (Debian 18.1-1.pgdg13+2)
@@ -363,7 +363,7 @@ CREATE TABLE public.contact_request (
     request_user_id bigint NOT NULL,
     public_id uuid,
     status character varying(255),
-    CONSTRAINT contact_request_status_check CHECK (((status)::text = ANY ((ARRAY['PENDING'::character varying, 'ACCEPTED'::character varying, 'DECLINED'::character varying, 'CANCELED'::character varying])::text[])))
+    CONSTRAINT contact_request_status_check CHECK (((status)::text = ANY (ARRAY[('PENDING'::character varying)::text, ('ACCEPTED'::character varying)::text, ('DECLINED'::character varying)::text, ('CANCELED'::character varying)::text])))
 );
 
 
@@ -411,7 +411,7 @@ CREATE TABLE public.conversation (
     last_modified_date timestamp(6) with time zone,
     public_id uuid,
     conversation_type character varying(255) NOT NULL,
-    CONSTRAINT conversation_conversation_type_check CHECK (((conversation_type)::text = ANY ((ARRAY['ONE_TO_ONE'::character varying, 'GROUP'::character varying])::text[])))
+    CONSTRAINT conversation_conversation_type_check CHECK (((conversation_type)::text = ANY (ARRAY[('ONE_TO_ONE'::character varying)::text, ('GROUP'::character varying)::text])))
 );
 
 
@@ -429,7 +429,7 @@ CREATE TABLE public.conversation_participant (
     last_read_message_id bigint,
     user_id bigint NOT NULL,
     role character varying(20) NOT NULL,
-    CONSTRAINT conversation_participant_role_check CHECK (((role)::text = ANY ((ARRAY['ADMIN'::character varying, 'MEMBER'::character varying])::text[])))
+    CONSTRAINT conversation_participant_role_check CHECK (((role)::text = ANY (ARRAY[('ADMIN'::character varying)::text, ('MEMBER'::character varying)::text])))
 );
 
 
@@ -894,8 +894,8 @@ CREATE TABLE public.message (
     media_name character varying(100),
     media_url character varying(500),
     content text,
-    CONSTRAINT message_status_check CHECK (((status)::text = ANY ((ARRAY['PREPARE'::character varying, 'SENT'::character varying, 'DELIVERED'::character varying, 'SEEN'::character varying])::text[]))),
-    CONSTRAINT message_type_check CHECK (((type)::text = ANY ((ARRAY['TEXT'::character varying, 'FILE'::character varying, 'IMAGE'::character varying, 'VIDEO'::character varying])::text[])))
+    CONSTRAINT message_status_check CHECK (((status)::text = ANY (ARRAY[('PREPARE'::character varying)::text, ('SENT'::character varying)::text, ('DELIVERED'::character varying)::text, ('SEEN'::character varying)::text]))),
+    CONSTRAINT message_type_check CHECK (((type)::text = ANY (ARRAY[('TEXT'::character varying)::text, ('FILE'::character varying)::text, ('IMAGE'::character varying)::text, ('VIDEO'::character varying)::text])))
 );
 
 
@@ -1686,8 +1686,8 @@ CREATE TABLE public.user_setting (
     user_id bigint NOT NULL,
     friend_request_setting character varying(255),
     last_seen_setting character varying(255),
-    CONSTRAINT user_setting_friend_request_setting_check CHECK (((friend_request_setting)::text = ANY ((ARRAY['EVERYONE'::character varying, 'FRIENDS_OF_FRIENDS'::character varying, 'NOBODY'::character varying])::text[]))),
-    CONSTRAINT user_setting_last_seen_setting_check CHECK (((last_seen_setting)::text = ANY ((ARRAY['EVERYONE'::character varying, 'CONTACT_ONLY'::character varying, 'NOBODY'::character varying])::text[])))
+    CONSTRAINT user_setting_friend_request_setting_check CHECK (((friend_request_setting)::text = ANY (ARRAY[('EVERYONE'::character varying)::text, ('FRIENDS_OF_FRIENDS'::character varying)::text, ('NOBODY'::character varying)::text]))),
+    CONSTRAINT user_setting_last_seen_setting_check CHECK (((last_seen_setting)::text = ANY (ARRAY[('EVERYONE'::character varying)::text, ('CONTACT_ONLY'::character varying)::text, ('NOBODY'::character varying)::text])))
 );
 
 
@@ -1742,97 +1742,97 @@ COPY public.associated_policy (policy_id, associated_policy_id) FROM stdin;
 --
 
 COPY public.authentication_execution (id, alias, authenticator, realm_id, flow_id, requirement, priority, authenticator_flow, auth_flow_id, auth_config) FROM stdin;
-4f8354de-39ab-41c2-9b1d-9bf194aa1681	\N	auth-cookie	be66634f-b27a-4e21-b03e-7d51f28d6003	a2cf13ed-cc0c-413f-b209-21a8c8a87df5	2	10	f	\N	\N
-ae551956-a8da-43fd-97b0-c5b1feaec920	\N	auth-spnego	be66634f-b27a-4e21-b03e-7d51f28d6003	a2cf13ed-cc0c-413f-b209-21a8c8a87df5	3	20	f	\N	\N
-70f49f19-45cd-44ab-8c68-0bd1c0d98cab	\N	identity-provider-redirector	be66634f-b27a-4e21-b03e-7d51f28d6003	a2cf13ed-cc0c-413f-b209-21a8c8a87df5	2	25	f	\N	\N
-9edd118f-25ab-4b7d-92a4-9db9f024597a	\N	\N	be66634f-b27a-4e21-b03e-7d51f28d6003	a2cf13ed-cc0c-413f-b209-21a8c8a87df5	2	30	t	551ef3ec-f0c0-448e-b42d-2c91de114802	\N
-6477af7a-4c96-4c3e-8627-8e610671d4fd	\N	auth-username-password-form	be66634f-b27a-4e21-b03e-7d51f28d6003	551ef3ec-f0c0-448e-b42d-2c91de114802	0	10	f	\N	\N
-9274b18e-8212-4e6d-8e29-142eedf4c1df	\N	\N	be66634f-b27a-4e21-b03e-7d51f28d6003	551ef3ec-f0c0-448e-b42d-2c91de114802	1	20	t	90d18907-0475-46b3-86b9-283ee4614ae3	\N
-9500aed3-65e4-4a90-afb8-aa9a337ecda4	\N	conditional-user-configured	be66634f-b27a-4e21-b03e-7d51f28d6003	90d18907-0475-46b3-86b9-283ee4614ae3	0	10	f	\N	\N
-2e044147-43c3-4826-8ff9-0368308a91cb	\N	auth-otp-form	be66634f-b27a-4e21-b03e-7d51f28d6003	90d18907-0475-46b3-86b9-283ee4614ae3	0	20	f	\N	\N
-d89e0ef7-a818-4754-bd7f-767d453414a8	\N	direct-grant-validate-username	be66634f-b27a-4e21-b03e-7d51f28d6003	f33c5374-9a64-4a7e-b141-16a1febc302f	0	10	f	\N	\N
-2c40ebb1-734a-434b-a283-23333513e278	\N	direct-grant-validate-password	be66634f-b27a-4e21-b03e-7d51f28d6003	f33c5374-9a64-4a7e-b141-16a1febc302f	0	20	f	\N	\N
-4f9e5dc1-f771-4894-ab95-3951b6024421	\N	\N	be66634f-b27a-4e21-b03e-7d51f28d6003	f33c5374-9a64-4a7e-b141-16a1febc302f	1	30	t	c32e8264-e487-4d33-b1fd-0b6bcb2abb67	\N
-1fb046a0-345f-47b3-b3f4-3a1b88f5df8b	\N	conditional-user-configured	be66634f-b27a-4e21-b03e-7d51f28d6003	c32e8264-e487-4d33-b1fd-0b6bcb2abb67	0	10	f	\N	\N
-f34197f9-e3a5-44bc-a081-43815455ec86	\N	direct-grant-validate-otp	be66634f-b27a-4e21-b03e-7d51f28d6003	c32e8264-e487-4d33-b1fd-0b6bcb2abb67	0	20	f	\N	\N
-b2d1400c-de96-4d11-afb4-7a7e7d0d539a	\N	registration-page-form	be66634f-b27a-4e21-b03e-7d51f28d6003	1625effa-abe8-4200-aa65-5459683dd456	0	10	t	5af1ae51-b19c-4500-93f6-1ff935b66166	\N
-a51ebaee-0694-4407-b3df-07f59f621aa0	\N	registration-user-creation	be66634f-b27a-4e21-b03e-7d51f28d6003	5af1ae51-b19c-4500-93f6-1ff935b66166	0	20	f	\N	\N
-86e1e771-f699-4959-998e-de82c264ca6b	\N	registration-password-action	be66634f-b27a-4e21-b03e-7d51f28d6003	5af1ae51-b19c-4500-93f6-1ff935b66166	0	50	f	\N	\N
-ca54864a-152a-4513-8f0d-61159c44b3a4	\N	registration-recaptcha-action	be66634f-b27a-4e21-b03e-7d51f28d6003	5af1ae51-b19c-4500-93f6-1ff935b66166	3	60	f	\N	\N
-0e080684-9bdf-4e04-b1a3-f4a2f51ef7f7	\N	registration-terms-and-conditions	be66634f-b27a-4e21-b03e-7d51f28d6003	5af1ae51-b19c-4500-93f6-1ff935b66166	3	70	f	\N	\N
-48f9a165-611a-458e-9757-f10fcbc315c1	\N	reset-credentials-choose-user	be66634f-b27a-4e21-b03e-7d51f28d6003	20ce111d-5838-461c-bbb9-cc30748743a3	0	10	f	\N	\N
-53d9218c-5826-4399-b226-698c571503ff	\N	reset-credential-email	be66634f-b27a-4e21-b03e-7d51f28d6003	20ce111d-5838-461c-bbb9-cc30748743a3	0	20	f	\N	\N
-659155dc-cf6a-4162-833e-cabd44407bc2	\N	reset-password	be66634f-b27a-4e21-b03e-7d51f28d6003	20ce111d-5838-461c-bbb9-cc30748743a3	0	30	f	\N	\N
-985bffa7-39a1-43f2-a31f-afa27ae385c8	\N	\N	be66634f-b27a-4e21-b03e-7d51f28d6003	20ce111d-5838-461c-bbb9-cc30748743a3	1	40	t	f8bb1c88-4eda-44de-97f7-ce42b35091dc	\N
-239f8a7d-ab08-4831-ab1e-e59b50c5fffc	\N	conditional-user-configured	be66634f-b27a-4e21-b03e-7d51f28d6003	f8bb1c88-4eda-44de-97f7-ce42b35091dc	0	10	f	\N	\N
-d194fc00-c3f2-4e59-8ece-73cbe19bac90	\N	reset-otp	be66634f-b27a-4e21-b03e-7d51f28d6003	f8bb1c88-4eda-44de-97f7-ce42b35091dc	0	20	f	\N	\N
-0930972d-bee6-47f3-be52-7a673cd88b3d	\N	client-secret	be66634f-b27a-4e21-b03e-7d51f28d6003	2b0e1adf-3f89-4051-96b9-26083951c3d0	2	10	f	\N	\N
-34023a2c-01da-4930-9127-f350b6b514ff	\N	client-jwt	be66634f-b27a-4e21-b03e-7d51f28d6003	2b0e1adf-3f89-4051-96b9-26083951c3d0	2	20	f	\N	\N
-5006129c-351c-449e-85b2-58423f7d27b0	\N	client-secret-jwt	be66634f-b27a-4e21-b03e-7d51f28d6003	2b0e1adf-3f89-4051-96b9-26083951c3d0	2	30	f	\N	\N
-feedfcc9-bf26-4753-a35a-9fadb7fa6976	\N	client-x509	be66634f-b27a-4e21-b03e-7d51f28d6003	2b0e1adf-3f89-4051-96b9-26083951c3d0	2	40	f	\N	\N
-8bfa3d11-82c0-496b-89fe-8a46bc9b8963	\N	idp-review-profile	be66634f-b27a-4e21-b03e-7d51f28d6003	38e7d14b-b4c0-49e9-95f8-f7d8be097883	0	10	f	\N	dd10ffbd-2a9b-4761-89aa-fd228331c0e8
-b5778dd1-7f5c-4a87-8da7-7df8dff9a90c	\N	\N	be66634f-b27a-4e21-b03e-7d51f28d6003	38e7d14b-b4c0-49e9-95f8-f7d8be097883	0	20	t	13732f26-a5d3-463f-ab9b-5611d031a8ea	\N
-7caa184b-18e9-4113-b927-a5721af3f071	\N	idp-create-user-if-unique	be66634f-b27a-4e21-b03e-7d51f28d6003	13732f26-a5d3-463f-ab9b-5611d031a8ea	2	10	f	\N	29058589-e55a-481a-a094-3dfbe5984fc2
-aac0d9c2-4313-4039-a478-852f15ccedd0	\N	\N	be66634f-b27a-4e21-b03e-7d51f28d6003	13732f26-a5d3-463f-ab9b-5611d031a8ea	2	20	t	47570581-4cbf-4b97-b9bf-fef2de6d0be5	\N
-7e4b07c3-c4dd-40b7-89aa-6cc33f1a1346	\N	idp-confirm-link	be66634f-b27a-4e21-b03e-7d51f28d6003	47570581-4cbf-4b97-b9bf-fef2de6d0be5	0	10	f	\N	\N
-8e397fc2-0e30-4d3a-ad17-bc737cdd5e4e	\N	\N	be66634f-b27a-4e21-b03e-7d51f28d6003	47570581-4cbf-4b97-b9bf-fef2de6d0be5	0	20	t	caa81b03-68ee-4e39-9700-38d5aaadae8d	\N
-d2969d6f-4eeb-4d50-a293-03d80729d006	\N	idp-email-verification	be66634f-b27a-4e21-b03e-7d51f28d6003	caa81b03-68ee-4e39-9700-38d5aaadae8d	2	10	f	\N	\N
-c8ee4042-7b98-48d0-84b3-5f97fcd4bd6a	\N	\N	be66634f-b27a-4e21-b03e-7d51f28d6003	caa81b03-68ee-4e39-9700-38d5aaadae8d	2	20	t	75f62645-3871-4f9a-bdf8-dd0c5169762d	\N
-f1ed6dea-d59a-4ce9-a0d6-42af5f433f9c	\N	idp-username-password-form	be66634f-b27a-4e21-b03e-7d51f28d6003	75f62645-3871-4f9a-bdf8-dd0c5169762d	0	10	f	\N	\N
-aed1f4ec-4353-4879-89c7-33ddd312eb5f	\N	\N	be66634f-b27a-4e21-b03e-7d51f28d6003	75f62645-3871-4f9a-bdf8-dd0c5169762d	1	20	t	8bc07f6f-f2cd-472b-8279-804c0896b370	\N
-0d5922f6-cb24-4c1f-91f2-477a0f7ae3c2	\N	conditional-user-configured	be66634f-b27a-4e21-b03e-7d51f28d6003	8bc07f6f-f2cd-472b-8279-804c0896b370	0	10	f	\N	\N
-5462fab7-063d-4c76-9363-77d060efd723	\N	auth-otp-form	be66634f-b27a-4e21-b03e-7d51f28d6003	8bc07f6f-f2cd-472b-8279-804c0896b370	0	20	f	\N	\N
-1afb94b1-adf9-4c98-997d-a3153fe3d1d9	\N	http-basic-authenticator	be66634f-b27a-4e21-b03e-7d51f28d6003	9a6b2e8c-d0d9-4f40-94a9-2d64e1277dcf	0	10	f	\N	\N
-2bafcbf6-9203-4266-93db-ed2d7799311e	\N	docker-http-basic-authenticator	be66634f-b27a-4e21-b03e-7d51f28d6003	063166ee-7d44-4327-90cc-a9c2f6aa3f4d	0	10	f	\N	\N
-1793b776-6c27-4ce4-ada9-e22af34ed34a	\N	idp-email-verification	83b6664d-539e-4bed-a376-685d50e40b98	10e5cbf9-6d70-4671-8b7c-25a13f3b30b6	2	10	f	\N	\N
-7c9f6a4d-55ec-4a3c-a222-4f617fad2abe	\N	\N	83b6664d-539e-4bed-a376-685d50e40b98	10e5cbf9-6d70-4671-8b7c-25a13f3b30b6	2	20	t	9072b1a2-a2d2-426d-9fe7-bfb40b87cfab	\N
-ed570cb5-0b31-485f-9da2-caa24c3cb5d6	\N	conditional-user-configured	83b6664d-539e-4bed-a376-685d50e40b98	936ccde4-b63d-4262-b8a6-af7d521dc3aa	0	10	f	\N	\N
-87963836-0214-4c4a-8a10-f295948ff3ed	\N	auth-otp-form	83b6664d-539e-4bed-a376-685d50e40b98	936ccde4-b63d-4262-b8a6-af7d521dc3aa	0	20	f	\N	\N
-4d1c6611-081f-4377-9167-f12e453e3a67	\N	conditional-user-configured	83b6664d-539e-4bed-a376-685d50e40b98	dc1e8d98-e26a-437c-91a3-f8ca8ed2dd59	0	10	f	\N	\N
-252f4ebf-e489-4aa6-a24c-1f160440a334	\N	organization	83b6664d-539e-4bed-a376-685d50e40b98	dc1e8d98-e26a-437c-91a3-f8ca8ed2dd59	2	20	f	\N	\N
-5a76aa67-d9ff-4efb-bb82-da7f45aaf701	\N	conditional-user-configured	83b6664d-539e-4bed-a376-685d50e40b98	5b2379d9-11fb-476f-8530-5a91ca18e364	0	10	f	\N	\N
-5b5417de-5312-4b67-bb66-f3d3e26cd53b	\N	direct-grant-validate-otp	83b6664d-539e-4bed-a376-685d50e40b98	5b2379d9-11fb-476f-8530-5a91ca18e364	0	20	f	\N	\N
-f521f5f3-a573-4271-97f3-b4ec2ba0cb20	\N	conditional-user-configured	83b6664d-539e-4bed-a376-685d50e40b98	fcaef89a-b301-4a9d-86b6-f570c43d07ad	0	10	f	\N	\N
-a6000126-7120-4b4d-b4e1-5136b0910fbf	\N	idp-add-organization-member	83b6664d-539e-4bed-a376-685d50e40b98	fcaef89a-b301-4a9d-86b6-f570c43d07ad	0	20	f	\N	\N
-ce62a2cc-de53-4723-89e6-82032c6e124b	\N	conditional-user-configured	83b6664d-539e-4bed-a376-685d50e40b98	ceed43c7-5d3f-4eb1-b878-2314aef46ebf	0	10	f	\N	\N
-e57f26fc-032b-400f-87b1-484160a677f6	\N	auth-otp-form	83b6664d-539e-4bed-a376-685d50e40b98	ceed43c7-5d3f-4eb1-b878-2314aef46ebf	0	20	f	\N	\N
-5208070d-6b0f-427c-9452-fd94babbcfb3	\N	idp-confirm-link	83b6664d-539e-4bed-a376-685d50e40b98	a9376912-6f72-4749-a4e3-6ce74c0ec76a	0	10	f	\N	\N
-22e3079b-b2d1-4714-be7d-50ad9d2cc649	\N	\N	83b6664d-539e-4bed-a376-685d50e40b98	a9376912-6f72-4749-a4e3-6ce74c0ec76a	0	20	t	10e5cbf9-6d70-4671-8b7c-25a13f3b30b6	\N
-cae3759c-edcc-4774-a0fc-2dec8fda9088	\N	\N	83b6664d-539e-4bed-a376-685d50e40b98	291b3c02-9178-4997-92a8-2c77b4a762da	1	10	t	dc1e8d98-e26a-437c-91a3-f8ca8ed2dd59	\N
-41cbcb59-19b4-4577-99ec-677dae534b77	\N	conditional-user-configured	83b6664d-539e-4bed-a376-685d50e40b98	510a55f8-b4a5-47e9-ac56-b60fc6ed8676	0	10	f	\N	\N
-c036d114-bfd6-45ea-9898-bbf64aaa82b0	\N	reset-otp	83b6664d-539e-4bed-a376-685d50e40b98	510a55f8-b4a5-47e9-ac56-b60fc6ed8676	0	20	f	\N	\N
-792905e3-65b9-4b5a-9589-6a71fd3bfe60	\N	idp-create-user-if-unique	83b6664d-539e-4bed-a376-685d50e40b98	677d2578-fe86-4de9-8a18-860f8d89d4f3	2	10	f	\N	7805e560-dd03-4e34-a6ff-1784f53fecad
-e4fbe33a-e600-49ed-9957-94798686e214	\N	\N	83b6664d-539e-4bed-a376-685d50e40b98	677d2578-fe86-4de9-8a18-860f8d89d4f3	2	20	t	a9376912-6f72-4749-a4e3-6ce74c0ec76a	\N
-205e2df5-151d-43fb-92c6-ae85b76213e4	\N	idp-username-password-form	83b6664d-539e-4bed-a376-685d50e40b98	9072b1a2-a2d2-426d-9fe7-bfb40b87cfab	0	10	f	\N	\N
-0efa4221-e510-4fd9-974f-35efb4291aec	\N	\N	83b6664d-539e-4bed-a376-685d50e40b98	9072b1a2-a2d2-426d-9fe7-bfb40b87cfab	1	20	t	ceed43c7-5d3f-4eb1-b878-2314aef46ebf	\N
-ffe3b05a-442e-4775-b599-a068080c4153	\N	auth-cookie	83b6664d-539e-4bed-a376-685d50e40b98	801e570d-bc15-45e3-9f8e-afe9f8f28dec	2	10	f	\N	\N
-e5ed9a72-d2a2-4514-b838-ef2d115b6909	\N	auth-spnego	83b6664d-539e-4bed-a376-685d50e40b98	801e570d-bc15-45e3-9f8e-afe9f8f28dec	3	20	f	\N	\N
-b3c413e2-19f7-47f0-bbc9-8f4463e50112	\N	identity-provider-redirector	83b6664d-539e-4bed-a376-685d50e40b98	801e570d-bc15-45e3-9f8e-afe9f8f28dec	2	25	f	\N	\N
-2949e66b-1ccc-4359-9ee7-b9e2ce7235a3	\N	\N	83b6664d-539e-4bed-a376-685d50e40b98	801e570d-bc15-45e3-9f8e-afe9f8f28dec	2	26	t	291b3c02-9178-4997-92a8-2c77b4a762da	\N
-53651618-f7b1-4aee-bd95-cd41bebe1efe	\N	\N	83b6664d-539e-4bed-a376-685d50e40b98	801e570d-bc15-45e3-9f8e-afe9f8f28dec	2	30	t	4c7e2a97-05a5-4499-99d5-b0fe14711095	\N
-21df3380-8452-4f35-8853-fb40b54d764b	\N	client-secret	83b6664d-539e-4bed-a376-685d50e40b98	05607ab5-8839-424c-b1e7-7f0ccad2063e	2	10	f	\N	\N
-f6515313-cff1-4e39-aacf-015ed4aa4d43	\N	client-jwt	83b6664d-539e-4bed-a376-685d50e40b98	05607ab5-8839-424c-b1e7-7f0ccad2063e	2	20	f	\N	\N
-88c505ba-635d-4ce1-b082-eedc9daa1fd2	\N	client-secret-jwt	83b6664d-539e-4bed-a376-685d50e40b98	05607ab5-8839-424c-b1e7-7f0ccad2063e	2	30	f	\N	\N
-814e9670-0878-4ae0-bda1-578285efe2da	\N	client-x509	83b6664d-539e-4bed-a376-685d50e40b98	05607ab5-8839-424c-b1e7-7f0ccad2063e	2	40	f	\N	\N
-0edc14aa-bc09-4fe9-a202-dbc7b7ae0d93	\N	direct-grant-validate-username	83b6664d-539e-4bed-a376-685d50e40b98	d7b8234b-3d04-4263-ac07-79794e3fb8c0	0	10	f	\N	\N
-8a715f4f-d734-45e3-8e1d-ac1bcabc272d	\N	direct-grant-validate-password	83b6664d-539e-4bed-a376-685d50e40b98	d7b8234b-3d04-4263-ac07-79794e3fb8c0	0	20	f	\N	\N
-0169caf3-83c3-411b-8a66-4a58ae9db67d	\N	\N	83b6664d-539e-4bed-a376-685d50e40b98	d7b8234b-3d04-4263-ac07-79794e3fb8c0	1	30	t	5b2379d9-11fb-476f-8530-5a91ca18e364	\N
-881189d2-e5fd-4ea6-a633-fdcc452bcea8	\N	docker-http-basic-authenticator	83b6664d-539e-4bed-a376-685d50e40b98	08caf47c-2dda-42d5-a33d-3df1271e703c	0	10	f	\N	\N
-11f54338-225d-4294-8f40-e1d816976976	\N	idp-review-profile	83b6664d-539e-4bed-a376-685d50e40b98	668883be-9b51-42f6-9e35-cb35d7961852	0	10	f	\N	135d8612-fdf4-4acf-abf8-e25c0565ebf6
-e454249b-0e65-4d03-bc82-d8e2b7f355bf	\N	\N	83b6664d-539e-4bed-a376-685d50e40b98	668883be-9b51-42f6-9e35-cb35d7961852	0	20	t	677d2578-fe86-4de9-8a18-860f8d89d4f3	\N
-a362fd64-a71d-4cfb-b118-309b4130bc08	\N	\N	83b6664d-539e-4bed-a376-685d50e40b98	668883be-9b51-42f6-9e35-cb35d7961852	1	50	t	fcaef89a-b301-4a9d-86b6-f570c43d07ad	\N
-14382972-0e38-475e-a660-96ff981a7ce9	\N	auth-username-password-form	83b6664d-539e-4bed-a376-685d50e40b98	4c7e2a97-05a5-4499-99d5-b0fe14711095	0	10	f	\N	\N
-ac14cbaa-7452-4397-ba5b-4aea704f16f3	\N	\N	83b6664d-539e-4bed-a376-685d50e40b98	4c7e2a97-05a5-4499-99d5-b0fe14711095	1	20	t	936ccde4-b63d-4262-b8a6-af7d521dc3aa	\N
-1d29ab13-e23a-4c64-8270-6bdabcfac994	\N	registration-page-form	83b6664d-539e-4bed-a376-685d50e40b98	8c356fe3-6843-440d-ac93-b4cc6352781f	0	10	t	aa3e186d-9e97-41c0-a7f5-956fb754bdea	\N
-1cf89a65-c81f-4ea1-93f6-912d59905a4e	\N	registration-user-creation	83b6664d-539e-4bed-a376-685d50e40b98	aa3e186d-9e97-41c0-a7f5-956fb754bdea	0	20	f	\N	\N
-e49745c1-4e20-4eb4-a2a3-595507532378	\N	registration-password-action	83b6664d-539e-4bed-a376-685d50e40b98	aa3e186d-9e97-41c0-a7f5-956fb754bdea	0	50	f	\N	\N
-1315ff23-d26a-471e-80a8-49dec9ebcba7	\N	registration-recaptcha-action	83b6664d-539e-4bed-a376-685d50e40b98	aa3e186d-9e97-41c0-a7f5-956fb754bdea	3	60	f	\N	\N
-fe6b87be-f777-4c47-86aa-c244164d927d	\N	registration-terms-and-conditions	83b6664d-539e-4bed-a376-685d50e40b98	aa3e186d-9e97-41c0-a7f5-956fb754bdea	3	70	f	\N	\N
-53810823-4487-4e17-9714-4adc34655095	\N	reset-credentials-choose-user	83b6664d-539e-4bed-a376-685d50e40b98	2ec9ca75-4f99-43e9-816d-708c9a550838	0	10	f	\N	\N
-03178163-a41c-4303-9213-a01fd95ebf33	\N	reset-credential-email	83b6664d-539e-4bed-a376-685d50e40b98	2ec9ca75-4f99-43e9-816d-708c9a550838	0	20	f	\N	\N
-81ecf18d-07ce-4418-862a-9b9edac7338f	\N	reset-password	83b6664d-539e-4bed-a376-685d50e40b98	2ec9ca75-4f99-43e9-816d-708c9a550838	0	30	f	\N	\N
-efe5430e-81e1-4d0c-be69-56f8d65913b6	\N	\N	83b6664d-539e-4bed-a376-685d50e40b98	2ec9ca75-4f99-43e9-816d-708c9a550838	1	40	t	510a55f8-b4a5-47e9-ac56-b60fc6ed8676	\N
-ef5d3af0-ac7a-41a2-adea-9aab229823fb	\N	http-basic-authenticator	83b6664d-539e-4bed-a376-685d50e40b98	626d5f6d-04d2-4f35-8cfc-da5e65715166	0	10	f	\N	\N
+42466529-2c06-4c41-9576-9942146771b1	\N	auth-cookie	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	07907b9f-74ca-4f75-ba91-91a33b29c614	2	10	f	\N	\N
+67229225-bbbc-4e0a-b237-311e5d3b1060	\N	auth-spnego	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	07907b9f-74ca-4f75-ba91-91a33b29c614	3	20	f	\N	\N
+67db39c4-392c-45bf-9878-d2f1db1f9c88	\N	identity-provider-redirector	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	07907b9f-74ca-4f75-ba91-91a33b29c614	2	25	f	\N	\N
+e8a2ee0a-0804-4b6e-a9de-694bb1a4bd56	\N	\N	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	07907b9f-74ca-4f75-ba91-91a33b29c614	2	30	t	f05ad1bb-082e-4af8-9348-48e217a87eae	\N
+95fa9a8b-0713-4275-a710-28cafb60b87f	\N	auth-username-password-form	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	f05ad1bb-082e-4af8-9348-48e217a87eae	0	10	f	\N	\N
+44a44f24-ef96-447f-9974-79e7b2e5c041	\N	\N	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	f05ad1bb-082e-4af8-9348-48e217a87eae	1	20	t	58e6d4d7-3dda-4ef6-8515-11b11cc0c85a	\N
+27f0d51b-3b42-4c98-bd1b-a0ff3c41685e	\N	conditional-user-configured	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	58e6d4d7-3dda-4ef6-8515-11b11cc0c85a	0	10	f	\N	\N
+c6247f74-46ee-4ea9-909e-25a9c076bdc6	\N	auth-otp-form	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	58e6d4d7-3dda-4ef6-8515-11b11cc0c85a	0	20	f	\N	\N
+3efde0be-3e35-46c3-9647-a20a55c0596f	\N	direct-grant-validate-username	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	d68fc02f-44bf-42f4-b8fe-8f87aaea2a49	0	10	f	\N	\N
+9efa490c-a346-45eb-9674-3062e6bf99d6	\N	direct-grant-validate-password	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	d68fc02f-44bf-42f4-b8fe-8f87aaea2a49	0	20	f	\N	\N
+53d51ec5-5064-497c-b01e-7e5d6f022c5a	\N	\N	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	d68fc02f-44bf-42f4-b8fe-8f87aaea2a49	1	30	t	2a1b0517-adcf-4e1e-890b-b5723661ccb7	\N
+91f8a3b0-6175-4c5c-bb79-76c8f58f93b0	\N	conditional-user-configured	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	2a1b0517-adcf-4e1e-890b-b5723661ccb7	0	10	f	\N	\N
+2cb86b32-fe26-4f2f-aa36-b74c02ec54f4	\N	direct-grant-validate-otp	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	2a1b0517-adcf-4e1e-890b-b5723661ccb7	0	20	f	\N	\N
+00bfea33-5086-44d5-9966-42dfb2fe7b41	\N	registration-page-form	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	c1d0978d-9ddc-4feb-8656-b1acd99fcb9b	0	10	t	a30313f6-d2b6-4f20-a082-ea18d1204254	\N
+fced0ebd-33e9-42b7-b14e-983b46761b28	\N	registration-user-creation	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	a30313f6-d2b6-4f20-a082-ea18d1204254	0	20	f	\N	\N
+ec595a28-f819-4a22-9ca9-d493005f473c	\N	registration-password-action	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	a30313f6-d2b6-4f20-a082-ea18d1204254	0	50	f	\N	\N
+f4b4bcaf-da6b-4bcf-9a5b-37db7236ecc7	\N	registration-recaptcha-action	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	a30313f6-d2b6-4f20-a082-ea18d1204254	3	60	f	\N	\N
+f9771150-7048-4074-b576-a62763b0f2d5	\N	registration-terms-and-conditions	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	a30313f6-d2b6-4f20-a082-ea18d1204254	3	70	f	\N	\N
+f291fb44-7b23-47d0-bcb1-22167c0f9594	\N	reset-credentials-choose-user	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	0904b0d2-38b7-4bf6-85f8-5652eda9a3a1	0	10	f	\N	\N
+8338bbef-15aa-4e0a-a007-0d19570a23e4	\N	reset-credential-email	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	0904b0d2-38b7-4bf6-85f8-5652eda9a3a1	0	20	f	\N	\N
+700dfffa-3fc1-4da2-8f81-3316699f0921	\N	reset-password	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	0904b0d2-38b7-4bf6-85f8-5652eda9a3a1	0	30	f	\N	\N
+9e4b1df6-0450-4fc1-a359-d8f09079168a	\N	\N	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	0904b0d2-38b7-4bf6-85f8-5652eda9a3a1	1	40	t	df222f33-6069-45a4-a6e3-fbf85f799b58	\N
+b2696e1c-ccb9-4c22-b5dc-0ad46b3449cf	\N	conditional-user-configured	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	df222f33-6069-45a4-a6e3-fbf85f799b58	0	10	f	\N	\N
+0c00cd34-7ebf-4649-8480-d1edf94c98c7	\N	reset-otp	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	df222f33-6069-45a4-a6e3-fbf85f799b58	0	20	f	\N	\N
+d625b2ca-05bd-4873-a57a-4059c86df7ca	\N	client-secret	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	d61fde5a-21c2-4f8a-b403-d3aa1a7c3900	2	10	f	\N	\N
+7629ae60-cf2a-472d-983f-9ac649dd33ed	\N	client-jwt	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	d61fde5a-21c2-4f8a-b403-d3aa1a7c3900	2	20	f	\N	\N
+12ac8d27-f006-4411-8f4f-e258882b82e7	\N	client-secret-jwt	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	d61fde5a-21c2-4f8a-b403-d3aa1a7c3900	2	30	f	\N	\N
+09ee593e-7627-4b74-8060-d924d814aa5f	\N	client-x509	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	d61fde5a-21c2-4f8a-b403-d3aa1a7c3900	2	40	f	\N	\N
+b0e2794a-b396-4bf4-bc8d-56e995bf7711	\N	idp-review-profile	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	c6d5c95a-02df-435f-a91f-0e84f0837d41	0	10	f	\N	60fe5223-fa0a-4cd2-98e4-5703d563ab9f
+2cf18a5b-ed05-4ddf-aae1-db5333a83267	\N	\N	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	c6d5c95a-02df-435f-a91f-0e84f0837d41	0	20	t	a85932bc-c05b-4e68-b102-a563b32c6212	\N
+b97b8a93-4c09-46a3-9a85-c01e8ed79bb5	\N	idp-create-user-if-unique	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	a85932bc-c05b-4e68-b102-a563b32c6212	2	10	f	\N	ae9243f0-2594-48d5-ac9f-42fb609a379d
+800348f8-e9d9-4d2c-93d5-cd7173ef47b9	\N	\N	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	a85932bc-c05b-4e68-b102-a563b32c6212	2	20	t	fea87987-98eb-4c17-bb25-9e432db30990	\N
+c0e8d9c4-1ee8-4f8b-bcbf-6ad2c8d13ae5	\N	idp-confirm-link	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	fea87987-98eb-4c17-bb25-9e432db30990	0	10	f	\N	\N
+40a4ebdd-21aa-4d1b-8f63-b9d69ab3354f	\N	\N	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	fea87987-98eb-4c17-bb25-9e432db30990	0	20	t	19e778b0-295e-44dc-a1fa-62990925bc81	\N
+0cc7c9e6-36a0-46c4-9dc1-fe70e5955955	\N	idp-email-verification	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	19e778b0-295e-44dc-a1fa-62990925bc81	2	10	f	\N	\N
+ab4f0499-cfcf-4a2b-9da3-a9a96c1f80bc	\N	\N	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	19e778b0-295e-44dc-a1fa-62990925bc81	2	20	t	36a05b86-e26e-4dca-b21d-807c8ee352b6	\N
+16b00cd3-169d-48ac-b6c6-6a6cb7255c73	\N	idp-username-password-form	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	36a05b86-e26e-4dca-b21d-807c8ee352b6	0	10	f	\N	\N
+7fba708e-464d-4c48-9fb7-723e581b2203	\N	\N	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	36a05b86-e26e-4dca-b21d-807c8ee352b6	1	20	t	02bf02e0-1579-4ccf-9c05-341e05c79ad3	\N
+ea73b4ab-1874-431f-893e-f806e73f3228	\N	conditional-user-configured	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	02bf02e0-1579-4ccf-9c05-341e05c79ad3	0	10	f	\N	\N
+ed2e0165-29a0-464b-8ac3-a3dc6f7f2c12	\N	auth-otp-form	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	02bf02e0-1579-4ccf-9c05-341e05c79ad3	0	20	f	\N	\N
+99335d93-bc35-4cdf-9f67-9619f18e5041	\N	http-basic-authenticator	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	059bf527-7b45-49c4-aeb1-f4097068c367	0	10	f	\N	\N
+5ffdded3-d496-4e44-b146-02a4d95e2c29	\N	docker-http-basic-authenticator	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	3c097cb6-b0e4-4bf5-9381-83c3e1e41f95	0	10	f	\N	\N
+a7b1e071-89b3-482e-9fc3-286b1d34bfca	\N	idp-email-verification	83b6664d-539e-4bed-a376-685d50e40b98	10e5cbf9-6d70-4671-8b7c-25a13f3b30b6	2	10	f	\N	\N
+3df6b777-e7a5-4e1a-b1f2-1a1ed1e61243	\N	\N	83b6664d-539e-4bed-a376-685d50e40b98	10e5cbf9-6d70-4671-8b7c-25a13f3b30b6	2	20	t	9072b1a2-a2d2-426d-9fe7-bfb40b87cfab	\N
+baafc090-7c37-4565-88d8-a4132d3a4f46	\N	conditional-user-configured	83b6664d-539e-4bed-a376-685d50e40b98	936ccde4-b63d-4262-b8a6-af7d521dc3aa	0	10	f	\N	\N
+f09573f8-eedd-447b-b44d-2d00ca40d667	\N	auth-otp-form	83b6664d-539e-4bed-a376-685d50e40b98	936ccde4-b63d-4262-b8a6-af7d521dc3aa	0	20	f	\N	\N
+454b55dd-95ad-4e36-a05e-a67f0cd6a5c3	\N	conditional-user-configured	83b6664d-539e-4bed-a376-685d50e40b98	dc1e8d98-e26a-437c-91a3-f8ca8ed2dd59	0	10	f	\N	\N
+9e66d695-ad3e-4bd4-af93-aec0038a742d	\N	organization	83b6664d-539e-4bed-a376-685d50e40b98	dc1e8d98-e26a-437c-91a3-f8ca8ed2dd59	2	20	f	\N	\N
+fa652e04-d22a-495e-8d91-612d0d49ee22	\N	conditional-user-configured	83b6664d-539e-4bed-a376-685d50e40b98	5b2379d9-11fb-476f-8530-5a91ca18e364	0	10	f	\N	\N
+63eda2ae-cf74-4140-9a83-c5c099ab99d9	\N	direct-grant-validate-otp	83b6664d-539e-4bed-a376-685d50e40b98	5b2379d9-11fb-476f-8530-5a91ca18e364	0	20	f	\N	\N
+db424116-1700-4f13-a31a-8fe0df436f93	\N	conditional-user-configured	83b6664d-539e-4bed-a376-685d50e40b98	fcaef89a-b301-4a9d-86b6-f570c43d07ad	0	10	f	\N	\N
+5dcf3ae1-6fff-4eaa-9267-865e17a804f8	\N	idp-add-organization-member	83b6664d-539e-4bed-a376-685d50e40b98	fcaef89a-b301-4a9d-86b6-f570c43d07ad	0	20	f	\N	\N
+77504b75-5df2-40b5-a315-a219851fb5dd	\N	conditional-user-configured	83b6664d-539e-4bed-a376-685d50e40b98	ceed43c7-5d3f-4eb1-b878-2314aef46ebf	0	10	f	\N	\N
+c35ebde4-f22e-4755-9ec3-aec9d410ef7c	\N	auth-otp-form	83b6664d-539e-4bed-a376-685d50e40b98	ceed43c7-5d3f-4eb1-b878-2314aef46ebf	0	20	f	\N	\N
+7a3a2def-fe54-41cf-9569-dbcee50bd50d	\N	idp-confirm-link	83b6664d-539e-4bed-a376-685d50e40b98	a9376912-6f72-4749-a4e3-6ce74c0ec76a	0	10	f	\N	\N
+245a8e4b-1f71-4323-9017-7556b0f75493	\N	\N	83b6664d-539e-4bed-a376-685d50e40b98	a9376912-6f72-4749-a4e3-6ce74c0ec76a	0	20	t	10e5cbf9-6d70-4671-8b7c-25a13f3b30b6	\N
+8849873a-be22-4f30-8db6-ba9375ea2919	\N	\N	83b6664d-539e-4bed-a376-685d50e40b98	291b3c02-9178-4997-92a8-2c77b4a762da	1	10	t	dc1e8d98-e26a-437c-91a3-f8ca8ed2dd59	\N
+f99a4207-91df-4b22-95c6-f3d6d6ee76f5	\N	conditional-user-configured	83b6664d-539e-4bed-a376-685d50e40b98	510a55f8-b4a5-47e9-ac56-b60fc6ed8676	0	10	f	\N	\N
+8dda8cc4-7dc0-4303-bfca-af20ed4461e3	\N	reset-otp	83b6664d-539e-4bed-a376-685d50e40b98	510a55f8-b4a5-47e9-ac56-b60fc6ed8676	0	20	f	\N	\N
+f085f838-d335-4309-ac9b-8b8ffa2ef8bd	\N	idp-create-user-if-unique	83b6664d-539e-4bed-a376-685d50e40b98	677d2578-fe86-4de9-8a18-860f8d89d4f3	2	10	f	\N	7805e560-dd03-4e34-a6ff-1784f53fecad
+49974dd8-0bef-4e15-9d5f-d60a42fe9272	\N	\N	83b6664d-539e-4bed-a376-685d50e40b98	677d2578-fe86-4de9-8a18-860f8d89d4f3	2	20	t	a9376912-6f72-4749-a4e3-6ce74c0ec76a	\N
+0a3776d0-3227-4dc7-ba2f-4ff5627dd213	\N	idp-username-password-form	83b6664d-539e-4bed-a376-685d50e40b98	9072b1a2-a2d2-426d-9fe7-bfb40b87cfab	0	10	f	\N	\N
+8a82d51b-a891-405b-950f-3fca963f07c5	\N	\N	83b6664d-539e-4bed-a376-685d50e40b98	9072b1a2-a2d2-426d-9fe7-bfb40b87cfab	1	20	t	ceed43c7-5d3f-4eb1-b878-2314aef46ebf	\N
+fedf5375-9a34-4951-94b0-7ffa6c5dd7bd	\N	auth-cookie	83b6664d-539e-4bed-a376-685d50e40b98	801e570d-bc15-45e3-9f8e-afe9f8f28dec	2	10	f	\N	\N
+f2147149-511e-4051-9861-fafc73821257	\N	auth-spnego	83b6664d-539e-4bed-a376-685d50e40b98	801e570d-bc15-45e3-9f8e-afe9f8f28dec	3	20	f	\N	\N
+37a13c78-8405-4e2a-a723-eb4125b44b37	\N	identity-provider-redirector	83b6664d-539e-4bed-a376-685d50e40b98	801e570d-bc15-45e3-9f8e-afe9f8f28dec	2	25	f	\N	\N
+bd27f6d2-248f-469b-813d-9332cdc5db67	\N	\N	83b6664d-539e-4bed-a376-685d50e40b98	801e570d-bc15-45e3-9f8e-afe9f8f28dec	2	26	t	291b3c02-9178-4997-92a8-2c77b4a762da	\N
+f23f4fdf-ec61-49ec-b837-7f770e397867	\N	\N	83b6664d-539e-4bed-a376-685d50e40b98	801e570d-bc15-45e3-9f8e-afe9f8f28dec	2	30	t	4c7e2a97-05a5-4499-99d5-b0fe14711095	\N
+bf314296-08ad-4d71-bce4-017f5c5c803c	\N	client-secret	83b6664d-539e-4bed-a376-685d50e40b98	05607ab5-8839-424c-b1e7-7f0ccad2063e	2	10	f	\N	\N
+691e0f3d-d89f-4c22-9781-d32a4b3af8f7	\N	client-jwt	83b6664d-539e-4bed-a376-685d50e40b98	05607ab5-8839-424c-b1e7-7f0ccad2063e	2	20	f	\N	\N
+dd9860a0-a53f-4266-8856-02316e729b62	\N	client-secret-jwt	83b6664d-539e-4bed-a376-685d50e40b98	05607ab5-8839-424c-b1e7-7f0ccad2063e	2	30	f	\N	\N
+303fba7b-2486-42a2-826e-48e47420e050	\N	client-x509	83b6664d-539e-4bed-a376-685d50e40b98	05607ab5-8839-424c-b1e7-7f0ccad2063e	2	40	f	\N	\N
+8a574017-5e65-45d8-933f-eeecfb94ad43	\N	direct-grant-validate-username	83b6664d-539e-4bed-a376-685d50e40b98	d7b8234b-3d04-4263-ac07-79794e3fb8c0	0	10	f	\N	\N
+591d21e8-11b0-409f-ae37-3a076bfc6ae0	\N	direct-grant-validate-password	83b6664d-539e-4bed-a376-685d50e40b98	d7b8234b-3d04-4263-ac07-79794e3fb8c0	0	20	f	\N	\N
+2cffa6bf-e7ea-40ef-9f71-63efd3e14889	\N	\N	83b6664d-539e-4bed-a376-685d50e40b98	d7b8234b-3d04-4263-ac07-79794e3fb8c0	1	30	t	5b2379d9-11fb-476f-8530-5a91ca18e364	\N
+269d85ce-4463-4cc2-89a0-45d0156d9c25	\N	docker-http-basic-authenticator	83b6664d-539e-4bed-a376-685d50e40b98	08caf47c-2dda-42d5-a33d-3df1271e703c	0	10	f	\N	\N
+b73164a9-0bb7-4891-b8da-c3d0c1070659	\N	idp-review-profile	83b6664d-539e-4bed-a376-685d50e40b98	668883be-9b51-42f6-9e35-cb35d7961852	0	10	f	\N	135d8612-fdf4-4acf-abf8-e25c0565ebf6
+1b66038b-e2d4-4e0b-bca6-e42932289f3f	\N	\N	83b6664d-539e-4bed-a376-685d50e40b98	668883be-9b51-42f6-9e35-cb35d7961852	0	20	t	677d2578-fe86-4de9-8a18-860f8d89d4f3	\N
+c5e0947c-156d-4718-b816-aa9f0690b77f	\N	\N	83b6664d-539e-4bed-a376-685d50e40b98	668883be-9b51-42f6-9e35-cb35d7961852	1	50	t	fcaef89a-b301-4a9d-86b6-f570c43d07ad	\N
+fd4a97f2-e506-4983-baec-b0786c4b963d	\N	auth-username-password-form	83b6664d-539e-4bed-a376-685d50e40b98	4c7e2a97-05a5-4499-99d5-b0fe14711095	0	10	f	\N	\N
+735a3147-21f3-4cab-b20d-5dc031f85793	\N	\N	83b6664d-539e-4bed-a376-685d50e40b98	4c7e2a97-05a5-4499-99d5-b0fe14711095	1	20	t	936ccde4-b63d-4262-b8a6-af7d521dc3aa	\N
+866fbcc8-468e-4bcf-b39d-55bb6afb26c0	\N	registration-page-form	83b6664d-539e-4bed-a376-685d50e40b98	8c356fe3-6843-440d-ac93-b4cc6352781f	0	10	t	aa3e186d-9e97-41c0-a7f5-956fb754bdea	\N
+ce4cae43-a901-4af0-8c22-11aecfe4a90b	\N	registration-user-creation	83b6664d-539e-4bed-a376-685d50e40b98	aa3e186d-9e97-41c0-a7f5-956fb754bdea	0	20	f	\N	\N
+4195592b-8282-4044-8c6f-ff44f7f49f07	\N	registration-password-action	83b6664d-539e-4bed-a376-685d50e40b98	aa3e186d-9e97-41c0-a7f5-956fb754bdea	0	50	f	\N	\N
+65958491-c4a9-4c3e-a29b-1734771da7f2	\N	registration-recaptcha-action	83b6664d-539e-4bed-a376-685d50e40b98	aa3e186d-9e97-41c0-a7f5-956fb754bdea	3	60	f	\N	\N
+21b7ca8d-47aa-4793-b648-3d11f63b6215	\N	registration-terms-and-conditions	83b6664d-539e-4bed-a376-685d50e40b98	aa3e186d-9e97-41c0-a7f5-956fb754bdea	3	70	f	\N	\N
+2e9c7df3-a330-46bf-b7e3-b6e83091068e	\N	reset-credentials-choose-user	83b6664d-539e-4bed-a376-685d50e40b98	2ec9ca75-4f99-43e9-816d-708c9a550838	0	10	f	\N	\N
+05dfad6a-8cfb-458f-99cf-5b0f352a3503	\N	reset-credential-email	83b6664d-539e-4bed-a376-685d50e40b98	2ec9ca75-4f99-43e9-816d-708c9a550838	0	20	f	\N	\N
+6b8eea7e-ccb7-4fdd-ac38-54a7e7df2650	\N	reset-password	83b6664d-539e-4bed-a376-685d50e40b98	2ec9ca75-4f99-43e9-816d-708c9a550838	0	30	f	\N	\N
+a6a56325-e06c-48ee-8f46-ced343d53075	\N	\N	83b6664d-539e-4bed-a376-685d50e40b98	2ec9ca75-4f99-43e9-816d-708c9a550838	1	40	t	510a55f8-b4a5-47e9-ac56-b60fc6ed8676	\N
+a79f8d87-2e2b-4e57-8143-e86e4ba984cd	\N	http-basic-authenticator	83b6664d-539e-4bed-a376-685d50e40b98	626d5f6d-04d2-4f35-8cfc-da5e65715166	0	10	f	\N	\N
 \.
 
 
@@ -1841,24 +1841,24 @@ ef5d3af0-ac7a-41a2-adea-9aab229823fb	\N	http-basic-authenticator	83b6664d-539e-4
 --
 
 COPY public.authentication_flow (id, alias, description, realm_id, provider_id, top_level, built_in) FROM stdin;
-a2cf13ed-cc0c-413f-b209-21a8c8a87df5	browser	Browser based authentication	be66634f-b27a-4e21-b03e-7d51f28d6003	basic-flow	t	t
-551ef3ec-f0c0-448e-b42d-2c91de114802	forms	Username, password, otp and other auth forms.	be66634f-b27a-4e21-b03e-7d51f28d6003	basic-flow	f	t
-90d18907-0475-46b3-86b9-283ee4614ae3	Browser - Conditional OTP	Flow to determine if the OTP is required for the authentication	be66634f-b27a-4e21-b03e-7d51f28d6003	basic-flow	f	t
-f33c5374-9a64-4a7e-b141-16a1febc302f	direct grant	OpenID Connect Resource Owner Grant	be66634f-b27a-4e21-b03e-7d51f28d6003	basic-flow	t	t
-c32e8264-e487-4d33-b1fd-0b6bcb2abb67	Direct Grant - Conditional OTP	Flow to determine if the OTP is required for the authentication	be66634f-b27a-4e21-b03e-7d51f28d6003	basic-flow	f	t
-1625effa-abe8-4200-aa65-5459683dd456	registration	Registration flow	be66634f-b27a-4e21-b03e-7d51f28d6003	basic-flow	t	t
-5af1ae51-b19c-4500-93f6-1ff935b66166	registration form	Registration form	be66634f-b27a-4e21-b03e-7d51f28d6003	form-flow	f	t
-20ce111d-5838-461c-bbb9-cc30748743a3	reset credentials	Reset credentials for a user if they forgot their password or something	be66634f-b27a-4e21-b03e-7d51f28d6003	basic-flow	t	t
-f8bb1c88-4eda-44de-97f7-ce42b35091dc	Reset - Conditional OTP	Flow to determine if the OTP should be reset or not. Set to REQUIRED to force.	be66634f-b27a-4e21-b03e-7d51f28d6003	basic-flow	f	t
-2b0e1adf-3f89-4051-96b9-26083951c3d0	clients	Base authentication for clients	be66634f-b27a-4e21-b03e-7d51f28d6003	client-flow	t	t
-38e7d14b-b4c0-49e9-95f8-f7d8be097883	first broker login	Actions taken after first broker login with identity provider account, which is not yet linked to any Keycloak account	be66634f-b27a-4e21-b03e-7d51f28d6003	basic-flow	t	t
-13732f26-a5d3-463f-ab9b-5611d031a8ea	User creation or linking	Flow for the existing/non-existing user alternatives	be66634f-b27a-4e21-b03e-7d51f28d6003	basic-flow	f	t
-47570581-4cbf-4b97-b9bf-fef2de6d0be5	Handle Existing Account	Handle what to do if there is existing account with same email/username like authenticated identity provider	be66634f-b27a-4e21-b03e-7d51f28d6003	basic-flow	f	t
-caa81b03-68ee-4e39-9700-38d5aaadae8d	Account verification options	Method with which to verity the existing account	be66634f-b27a-4e21-b03e-7d51f28d6003	basic-flow	f	t
-75f62645-3871-4f9a-bdf8-dd0c5169762d	Verify Existing Account by Re-authentication	Reauthentication of existing account	be66634f-b27a-4e21-b03e-7d51f28d6003	basic-flow	f	t
-8bc07f6f-f2cd-472b-8279-804c0896b370	First broker login - Conditional OTP	Flow to determine if the OTP is required for the authentication	be66634f-b27a-4e21-b03e-7d51f28d6003	basic-flow	f	t
-9a6b2e8c-d0d9-4f40-94a9-2d64e1277dcf	saml ecp	SAML ECP Profile Authentication Flow	be66634f-b27a-4e21-b03e-7d51f28d6003	basic-flow	t	t
-063166ee-7d44-4327-90cc-a9c2f6aa3f4d	docker auth	Used by Docker clients to authenticate against the IDP	be66634f-b27a-4e21-b03e-7d51f28d6003	basic-flow	t	t
+07907b9f-74ca-4f75-ba91-91a33b29c614	browser	Browser based authentication	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	basic-flow	t	t
+f05ad1bb-082e-4af8-9348-48e217a87eae	forms	Username, password, otp and other auth forms.	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	basic-flow	f	t
+58e6d4d7-3dda-4ef6-8515-11b11cc0c85a	Browser - Conditional OTP	Flow to determine if the OTP is required for the authentication	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	basic-flow	f	t
+d68fc02f-44bf-42f4-b8fe-8f87aaea2a49	direct grant	OpenID Connect Resource Owner Grant	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	basic-flow	t	t
+2a1b0517-adcf-4e1e-890b-b5723661ccb7	Direct Grant - Conditional OTP	Flow to determine if the OTP is required for the authentication	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	basic-flow	f	t
+c1d0978d-9ddc-4feb-8656-b1acd99fcb9b	registration	Registration flow	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	basic-flow	t	t
+a30313f6-d2b6-4f20-a082-ea18d1204254	registration form	Registration form	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	form-flow	f	t
+0904b0d2-38b7-4bf6-85f8-5652eda9a3a1	reset credentials	Reset credentials for a user if they forgot their password or something	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	basic-flow	t	t
+df222f33-6069-45a4-a6e3-fbf85f799b58	Reset - Conditional OTP	Flow to determine if the OTP should be reset or not. Set to REQUIRED to force.	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	basic-flow	f	t
+d61fde5a-21c2-4f8a-b403-d3aa1a7c3900	clients	Base authentication for clients	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	client-flow	t	t
+c6d5c95a-02df-435f-a91f-0e84f0837d41	first broker login	Actions taken after first broker login with identity provider account, which is not yet linked to any Keycloak account	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	basic-flow	t	t
+a85932bc-c05b-4e68-b102-a563b32c6212	User creation or linking	Flow for the existing/non-existing user alternatives	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	basic-flow	f	t
+fea87987-98eb-4c17-bb25-9e432db30990	Handle Existing Account	Handle what to do if there is existing account with same email/username like authenticated identity provider	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	basic-flow	f	t
+19e778b0-295e-44dc-a1fa-62990925bc81	Account verification options	Method with which to verity the existing account	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	basic-flow	f	t
+36a05b86-e26e-4dca-b21d-807c8ee352b6	Verify Existing Account by Re-authentication	Reauthentication of existing account	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	basic-flow	f	t
+02bf02e0-1579-4ccf-9c05-341e05c79ad3	First broker login - Conditional OTP	Flow to determine if the OTP is required for the authentication	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	basic-flow	f	t
+059bf527-7b45-49c4-aeb1-f4097068c367	saml ecp	SAML ECP Profile Authentication Flow	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	basic-flow	t	t
+3c097cb6-b0e4-4bf5-9381-83c3e1e41f95	docker auth	Used by Docker clients to authenticate against the IDP	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	basic-flow	t	t
 10e5cbf9-6d70-4671-8b7c-25a13f3b30b6	Account verification options	Method with which to verity the existing account	83b6664d-539e-4bed-a376-685d50e40b98	basic-flow	f	t
 936ccde4-b63d-4262-b8a6-af7d521dc3aa	Browser - Conditional OTP	Flow to determine if the OTP is required for the authentication	83b6664d-539e-4bed-a376-685d50e40b98	basic-flow	f	t
 dc1e8d98-e26a-437c-91a3-f8ca8ed2dd59	Browser - Conditional Organization	Flow to determine if the organization identity-first login is to be used	83b6664d-539e-4bed-a376-685d50e40b98	basic-flow	f	t
@@ -1888,8 +1888,8 @@ aa3e186d-9e97-41c0-a7f5-956fb754bdea	registration form	Registration form	83b6664
 --
 
 COPY public.authenticator_config (id, alias, realm_id) FROM stdin;
-dd10ffbd-2a9b-4761-89aa-fd228331c0e8	review profile config	be66634f-b27a-4e21-b03e-7d51f28d6003
-29058589-e55a-481a-a094-3dfbe5984fc2	create unique user config	be66634f-b27a-4e21-b03e-7d51f28d6003
+60fe5223-fa0a-4cd2-98e4-5703d563ab9f	review profile config	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9
+ae9243f0-2594-48d5-ac9f-42fb609a379d	create unique user config	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9
 7805e560-dd03-4e34-a6ff-1784f53fecad	create unique user config	83b6664d-539e-4bed-a376-685d50e40b98
 135d8612-fdf4-4acf-abf8-e25c0565ebf6	review profile config	83b6664d-539e-4bed-a376-685d50e40b98
 \.
@@ -1900,8 +1900,8 @@ dd10ffbd-2a9b-4761-89aa-fd228331c0e8	review profile config	be66634f-b27a-4e21-b0
 --
 
 COPY public.authenticator_config_entry (authenticator_id, value, name) FROM stdin;
-29058589-e55a-481a-a094-3dfbe5984fc2	false	require.password.update.after.registration
-dd10ffbd-2a9b-4761-89aa-fd228331c0e8	missing	update.profile.on.first.login
+60fe5223-fa0a-4cd2-98e4-5703d563ab9f	missing	update.profile.on.first.login
+ae9243f0-2594-48d5-ac9f-42fb609a379d	false	require.password.update.after.registration
 135d8612-fdf4-4acf-abf8-e25c0565ebf6	missing	update.profile.on.first.login
 7805e560-dd03-4e34-a6ff-1784f53fecad	false	require.password.update.after.registration
 \.
@@ -1934,13 +1934,13 @@ COPY public.broker_link (identity_provider, storage_provider_id, realm_id, broke
 --
 
 COPY public.client (id, enabled, full_scope_allowed, client_id, not_before, public_client, secret, base_url, bearer_only, management_url, surrogate_auth_required, realm_id, protocol, node_rereg_timeout, frontchannel_logout, consent_required, name, service_accounts_enabled, client_authenticator_type, root_url, description, registration_token, standard_flow_enabled, implicit_flow_enabled, direct_access_grants_enabled, always_display_in_console) FROM stdin;
-180fcf63-6d87-43c6-b197-dd94f05c8729	t	f	master-realm	0	f	\N	\N	t	\N	f	be66634f-b27a-4e21-b03e-7d51f28d6003	\N	0	f	f	master Realm	f	client-secret	\N	\N	\N	t	f	f	f
-1738a449-92cf-4611-9eca-58023f662849	t	f	account	0	t	\N	/realms/master/account/	f	\N	f	be66634f-b27a-4e21-b03e-7d51f28d6003	openid-connect	0	f	f	${client_account}	f	client-secret	${authBaseUrl}	\N	\N	t	f	f	f
-cecdd714-967c-4e15-8875-b88d9b8fba0c	t	f	account-console	0	t	\N	/realms/master/account/	f	\N	f	be66634f-b27a-4e21-b03e-7d51f28d6003	openid-connect	0	f	f	${client_account-console}	f	client-secret	${authBaseUrl}	\N	\N	t	f	f	f
-86566afb-29ed-4a51-be41-6bbc6445b6fa	t	f	broker	0	f	\N	\N	t	\N	f	be66634f-b27a-4e21-b03e-7d51f28d6003	openid-connect	0	f	f	${client_broker}	f	client-secret	\N	\N	\N	t	f	f	f
-990d6270-c329-4d6b-a770-51394bfee084	t	t	security-admin-console	0	t	\N	/admin/master/console/	f	\N	f	be66634f-b27a-4e21-b03e-7d51f28d6003	openid-connect	0	f	f	${client_security-admin-console}	f	client-secret	${authAdminUrl}	\N	\N	t	f	f	f
-aea43925-6bdb-428c-bb0d-9d6cce93cb6c	t	t	admin-cli	0	t	\N	\N	f	\N	f	be66634f-b27a-4e21-b03e-7d51f28d6003	openid-connect	0	f	f	${client_admin-cli}	f	client-secret	\N	\N	\N	f	f	t	f
-79444884-c5b7-42b8-a725-66aad65ac358	t	f	loci-realm-realm	0	f	\N	\N	t	\N	f	be66634f-b27a-4e21-b03e-7d51f28d6003	\N	0	f	f	loci-realm Realm	f	client-secret	\N	\N	\N	t	f	f	f
+3716fee0-d082-40bc-9e2e-d67302c5c042	t	f	master-realm	0	f	\N	\N	t	\N	f	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	\N	0	f	f	master Realm	f	client-secret	\N	\N	\N	t	f	f	f
+1ff3074f-d7a0-43b7-b75c-523be33369ce	t	f	account	0	t	\N	/realms/master/account/	f	\N	f	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	openid-connect	0	f	f	${client_account}	f	client-secret	${authBaseUrl}	\N	\N	t	f	f	f
+0a647cec-fab1-4ccb-8b29-f3a76fd51749	t	f	account-console	0	t	\N	/realms/master/account/	f	\N	f	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	openid-connect	0	f	f	${client_account-console}	f	client-secret	${authBaseUrl}	\N	\N	t	f	f	f
+56fd5161-9828-4e15-a832-08a0a3926d6d	t	f	broker	0	f	\N	\N	t	\N	f	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	openid-connect	0	f	f	${client_broker}	f	client-secret	\N	\N	\N	t	f	f	f
+09dc476f-68fc-4768-a31f-85a3d4f9ff84	t	t	security-admin-console	0	t	\N	/admin/master/console/	f	\N	f	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	openid-connect	0	f	f	${client_security-admin-console}	f	client-secret	${authAdminUrl}	\N	\N	t	f	f	f
+773fa922-dd6c-4bef-b59e-72d8f9ea4d49	t	t	admin-cli	0	t	\N	\N	f	\N	f	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	openid-connect	0	f	f	${client_admin-cli}	f	client-secret	\N	\N	\N	f	f	t	f
+d63e6c56-ea5d-4d57-b860-86482a42e25f	t	f	loci-realm-realm	0	f	\N	\N	t	\N	f	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	\N	0	f	f	loci-realm Realm	f	client-secret	\N	\N	\N	t	f	f	f
 cb847cf7-5d97-441b-b7dd-a6f1a47689a2	t	f	account	0	t	\N	/realms/loci-realm/account/	f	\N	f	83b6664d-539e-4bed-a376-685d50e40b98	openid-connect	0	f	f	${client_account}	f	client-secret	${authBaseUrl}	\N	\N	t	f	f	f
 1512bb33-3ef4-4dad-af1f-47081a2a75dc	t	f	account-console	0	t	\N	/realms/loci-realm/account/	f	\N	f	83b6664d-539e-4bed-a376-685d50e40b98	openid-connect	0	f	f	${client_account-console}	f	client-secret	${authBaseUrl}	\N	\N	t	f	f	f
 85f5e1a2-8c1d-42ae-97dc-b1c02c6f3188	t	t	admin-cli	0	t	\N	\N	f	\N	f	83b6664d-539e-4bed-a376-685d50e40b98	openid-connect	0	f	f	${client_admin-cli}	f	client-secret	\N	\N	\N	f	f	t	f
@@ -1958,13 +1958,13 @@ e85deedd-b2fb-47d3-acef-508423a77f22	t	t	spring	0	t	\N		f		f	83b6664d-539e-4bed-
 --
 
 COPY public.client_attributes (client_id, name, value) FROM stdin;
-1738a449-92cf-4611-9eca-58023f662849	post.logout.redirect.uris	+
-cecdd714-967c-4e15-8875-b88d9b8fba0c	post.logout.redirect.uris	+
-cecdd714-967c-4e15-8875-b88d9b8fba0c	pkce.code.challenge.method	S256
-990d6270-c329-4d6b-a770-51394bfee084	post.logout.redirect.uris	+
-990d6270-c329-4d6b-a770-51394bfee084	pkce.code.challenge.method	S256
-990d6270-c329-4d6b-a770-51394bfee084	client.use.lightweight.access.token.enabled	true
-aea43925-6bdb-428c-bb0d-9d6cce93cb6c	client.use.lightweight.access.token.enabled	true
+1ff3074f-d7a0-43b7-b75c-523be33369ce	post.logout.redirect.uris	+
+0a647cec-fab1-4ccb-8b29-f3a76fd51749	post.logout.redirect.uris	+
+0a647cec-fab1-4ccb-8b29-f3a76fd51749	pkce.code.challenge.method	S256
+09dc476f-68fc-4768-a31f-85a3d4f9ff84	post.logout.redirect.uris	+
+09dc476f-68fc-4768-a31f-85a3d4f9ff84	pkce.code.challenge.method	S256
+09dc476f-68fc-4768-a31f-85a3d4f9ff84	client.use.lightweight.access.token.enabled	true
+773fa922-dd6c-4bef-b59e-72d8f9ea4d49	client.use.lightweight.access.token.enabled	true
 cb847cf7-5d97-441b-b7dd-a6f1a47689a2	realm_client	false
 cb847cf7-5d97-441b-b7dd-a6f1a47689a2	post.logout.redirect.uris	+
 1512bb33-3ef4-4dad-af1f-47081a2a75dc	realm_client	false
@@ -2031,19 +2031,19 @@ COPY public.client_node_registrations (client_id, value, name) FROM stdin;
 --
 
 COPY public.client_scope (id, name, realm_id, description, protocol) FROM stdin;
-32118b74-1b1d-4e6e-a7e8-5a1a9dc0ab54	offline_access	be66634f-b27a-4e21-b03e-7d51f28d6003	OpenID Connect built-in scope: offline_access	openid-connect
-d501607c-9d9c-4658-99be-4174d8e72dd7	role_list	be66634f-b27a-4e21-b03e-7d51f28d6003	SAML role list	saml
-f2fa0658-e363-4601-8449-20ec03d7a4da	saml_organization	be66634f-b27a-4e21-b03e-7d51f28d6003	Organization Membership	saml
-7b5fd5f9-e7d7-4dd4-b723-5b2581adb26f	profile	be66634f-b27a-4e21-b03e-7d51f28d6003	OpenID Connect built-in scope: profile	openid-connect
-1db87056-8e91-45bf-94d5-83db7a4741b8	email	be66634f-b27a-4e21-b03e-7d51f28d6003	OpenID Connect built-in scope: email	openid-connect
-a13756c8-71f2-4e3a-bfa2-e11fa0f500e5	address	be66634f-b27a-4e21-b03e-7d51f28d6003	OpenID Connect built-in scope: address	openid-connect
-765ebfcf-be15-4d68-a301-cb637fbc4f45	phone	be66634f-b27a-4e21-b03e-7d51f28d6003	OpenID Connect built-in scope: phone	openid-connect
-6655fa57-075f-4290-a4fb-c7b0ccbcc419	roles	be66634f-b27a-4e21-b03e-7d51f28d6003	OpenID Connect scope for add user roles to the access token	openid-connect
-fe13d2b5-c08b-4b6e-bf58-f2d2e97553cc	web-origins	be66634f-b27a-4e21-b03e-7d51f28d6003	OpenID Connect scope for add allowed web origins to the access token	openid-connect
-191aee24-0234-4b99-bfa2-de5171fe1fa0	microprofile-jwt	be66634f-b27a-4e21-b03e-7d51f28d6003	Microprofile - JWT built-in scope	openid-connect
-b2b993cf-09b3-4a73-b472-7252d8b8f62b	acr	be66634f-b27a-4e21-b03e-7d51f28d6003	OpenID Connect scope for add acr (authentication context class reference) to the token	openid-connect
-86582f7f-d214-4da0-9fea-3c46f7e9c40a	basic	be66634f-b27a-4e21-b03e-7d51f28d6003	OpenID Connect scope for add all basic claims to the token	openid-connect
-4e77fd07-9de1-4105-bddf-fc8ccb5b09f2	organization	be66634f-b27a-4e21-b03e-7d51f28d6003	Additional claims about the organization a subject belongs to	openid-connect
+78288688-5478-43f4-a536-e621ca0a123f	offline_access	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	OpenID Connect built-in scope: offline_access	openid-connect
+00bb3269-c9e7-4feb-ada6-78138f8de442	role_list	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	SAML role list	saml
+64293740-8869-48e9-8bc0-ec1816ed724c	saml_organization	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	Organization Membership	saml
+83de2a22-63e4-4dd3-b0fa-bbf946a4886d	profile	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	OpenID Connect built-in scope: profile	openid-connect
+d09b8c28-c12b-439b-95a5-1a99f3287d70	email	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	OpenID Connect built-in scope: email	openid-connect
+320ad60b-580d-430b-8217-cc5c4f1a57fe	address	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	OpenID Connect built-in scope: address	openid-connect
+849258fc-9eec-4dba-b85c-e300d05f9129	phone	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	OpenID Connect built-in scope: phone	openid-connect
+17095d46-d030-492d-892c-a8252b29bfbc	roles	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	OpenID Connect scope for add user roles to the access token	openid-connect
+45121ad7-8871-4ded-b37b-4decb41f0bd6	web-origins	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	OpenID Connect scope for add allowed web origins to the access token	openid-connect
+06acf73a-7701-47d6-82c9-4245f80696cb	microprofile-jwt	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	Microprofile - JWT built-in scope	openid-connect
+a6443962-58c8-4b16-af9a-b867f16e105f	acr	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	OpenID Connect scope for add acr (authentication context class reference) to the token	openid-connect
+2310b041-955e-4fac-9a66-df3bf3dff5e2	basic	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	OpenID Connect scope for add all basic claims to the token	openid-connect
+d76e2c83-c2e4-4182-9b6b-31e3905cd3ff	organization	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	Additional claims about the organization a subject belongs to	openid-connect
 2753e1d9-77a7-4059-8465-fa23a6b418c4	microprofile-jwt	83b6664d-539e-4bed-a376-685d50e40b98	Microprofile - JWT built-in scope	openid-connect
 ac70839b-f142-47ab-93cf-f21d06d1f546	basic	83b6664d-539e-4bed-a376-685d50e40b98	OpenID Connect scope for add all basic claims to the token	openid-connect
 1e15434a-7f6c-415b-bb60-f84f0edb53d7	email	83b6664d-539e-4bed-a376-685d50e40b98	OpenID Connect built-in scope: email	openid-connect
@@ -2065,38 +2065,38 @@ b1cd614d-0091-4d4e-a2fa-28b3d76ae2bc	acr	83b6664d-539e-4bed-a376-685d50e40b98	Op
 --
 
 COPY public.client_scope_attributes (scope_id, value, name) FROM stdin;
-32118b74-1b1d-4e6e-a7e8-5a1a9dc0ab54	true	display.on.consent.screen
-32118b74-1b1d-4e6e-a7e8-5a1a9dc0ab54	${offlineAccessScopeConsentText}	consent.screen.text
-d501607c-9d9c-4658-99be-4174d8e72dd7	true	display.on.consent.screen
-d501607c-9d9c-4658-99be-4174d8e72dd7	${samlRoleListScopeConsentText}	consent.screen.text
-f2fa0658-e363-4601-8449-20ec03d7a4da	false	display.on.consent.screen
-7b5fd5f9-e7d7-4dd4-b723-5b2581adb26f	true	display.on.consent.screen
-7b5fd5f9-e7d7-4dd4-b723-5b2581adb26f	${profileScopeConsentText}	consent.screen.text
-7b5fd5f9-e7d7-4dd4-b723-5b2581adb26f	true	include.in.token.scope
-1db87056-8e91-45bf-94d5-83db7a4741b8	true	display.on.consent.screen
-1db87056-8e91-45bf-94d5-83db7a4741b8	${emailScopeConsentText}	consent.screen.text
-1db87056-8e91-45bf-94d5-83db7a4741b8	true	include.in.token.scope
-a13756c8-71f2-4e3a-bfa2-e11fa0f500e5	true	display.on.consent.screen
-a13756c8-71f2-4e3a-bfa2-e11fa0f500e5	${addressScopeConsentText}	consent.screen.text
-a13756c8-71f2-4e3a-bfa2-e11fa0f500e5	true	include.in.token.scope
-765ebfcf-be15-4d68-a301-cb637fbc4f45	true	display.on.consent.screen
-765ebfcf-be15-4d68-a301-cb637fbc4f45	${phoneScopeConsentText}	consent.screen.text
-765ebfcf-be15-4d68-a301-cb637fbc4f45	true	include.in.token.scope
-6655fa57-075f-4290-a4fb-c7b0ccbcc419	true	display.on.consent.screen
-6655fa57-075f-4290-a4fb-c7b0ccbcc419	${rolesScopeConsentText}	consent.screen.text
-6655fa57-075f-4290-a4fb-c7b0ccbcc419	false	include.in.token.scope
-fe13d2b5-c08b-4b6e-bf58-f2d2e97553cc	false	display.on.consent.screen
-fe13d2b5-c08b-4b6e-bf58-f2d2e97553cc		consent.screen.text
-fe13d2b5-c08b-4b6e-bf58-f2d2e97553cc	false	include.in.token.scope
-191aee24-0234-4b99-bfa2-de5171fe1fa0	false	display.on.consent.screen
-191aee24-0234-4b99-bfa2-de5171fe1fa0	true	include.in.token.scope
-b2b993cf-09b3-4a73-b472-7252d8b8f62b	false	display.on.consent.screen
-b2b993cf-09b3-4a73-b472-7252d8b8f62b	false	include.in.token.scope
-86582f7f-d214-4da0-9fea-3c46f7e9c40a	false	display.on.consent.screen
-86582f7f-d214-4da0-9fea-3c46f7e9c40a	false	include.in.token.scope
-4e77fd07-9de1-4105-bddf-fc8ccb5b09f2	true	display.on.consent.screen
-4e77fd07-9de1-4105-bddf-fc8ccb5b09f2	${organizationScopeConsentText}	consent.screen.text
-4e77fd07-9de1-4105-bddf-fc8ccb5b09f2	true	include.in.token.scope
+78288688-5478-43f4-a536-e621ca0a123f	true	display.on.consent.screen
+78288688-5478-43f4-a536-e621ca0a123f	${offlineAccessScopeConsentText}	consent.screen.text
+00bb3269-c9e7-4feb-ada6-78138f8de442	true	display.on.consent.screen
+00bb3269-c9e7-4feb-ada6-78138f8de442	${samlRoleListScopeConsentText}	consent.screen.text
+64293740-8869-48e9-8bc0-ec1816ed724c	false	display.on.consent.screen
+83de2a22-63e4-4dd3-b0fa-bbf946a4886d	true	display.on.consent.screen
+83de2a22-63e4-4dd3-b0fa-bbf946a4886d	${profileScopeConsentText}	consent.screen.text
+83de2a22-63e4-4dd3-b0fa-bbf946a4886d	true	include.in.token.scope
+d09b8c28-c12b-439b-95a5-1a99f3287d70	true	display.on.consent.screen
+d09b8c28-c12b-439b-95a5-1a99f3287d70	${emailScopeConsentText}	consent.screen.text
+d09b8c28-c12b-439b-95a5-1a99f3287d70	true	include.in.token.scope
+320ad60b-580d-430b-8217-cc5c4f1a57fe	true	display.on.consent.screen
+320ad60b-580d-430b-8217-cc5c4f1a57fe	${addressScopeConsentText}	consent.screen.text
+320ad60b-580d-430b-8217-cc5c4f1a57fe	true	include.in.token.scope
+849258fc-9eec-4dba-b85c-e300d05f9129	true	display.on.consent.screen
+849258fc-9eec-4dba-b85c-e300d05f9129	${phoneScopeConsentText}	consent.screen.text
+849258fc-9eec-4dba-b85c-e300d05f9129	true	include.in.token.scope
+17095d46-d030-492d-892c-a8252b29bfbc	true	display.on.consent.screen
+17095d46-d030-492d-892c-a8252b29bfbc	${rolesScopeConsentText}	consent.screen.text
+17095d46-d030-492d-892c-a8252b29bfbc	false	include.in.token.scope
+45121ad7-8871-4ded-b37b-4decb41f0bd6	false	display.on.consent.screen
+45121ad7-8871-4ded-b37b-4decb41f0bd6		consent.screen.text
+45121ad7-8871-4ded-b37b-4decb41f0bd6	false	include.in.token.scope
+06acf73a-7701-47d6-82c9-4245f80696cb	false	display.on.consent.screen
+06acf73a-7701-47d6-82c9-4245f80696cb	true	include.in.token.scope
+a6443962-58c8-4b16-af9a-b867f16e105f	false	display.on.consent.screen
+a6443962-58c8-4b16-af9a-b867f16e105f	false	include.in.token.scope
+2310b041-955e-4fac-9a66-df3bf3dff5e2	false	display.on.consent.screen
+2310b041-955e-4fac-9a66-df3bf3dff5e2	false	include.in.token.scope
+d76e2c83-c2e4-4182-9b6b-31e3905cd3ff	true	display.on.consent.screen
+d76e2c83-c2e4-4182-9b6b-31e3905cd3ff	${organizationScopeConsentText}	consent.screen.text
+d76e2c83-c2e4-4182-9b6b-31e3905cd3ff	true	include.in.token.scope
 2753e1d9-77a7-4059-8465-fa23a6b418c4	true	include.in.token.scope
 2753e1d9-77a7-4059-8465-fa23a6b418c4	false	display.on.consent.screen
 ac70839b-f142-47ab-93cf-f21d06d1f546	false	include.in.token.scope
@@ -2137,72 +2137,72 @@ b1cd614d-0091-4d4e-a2fa-28b3d76ae2bc	false	display.on.consent.screen
 --
 
 COPY public.client_scope_client (client_id, scope_id, default_scope) FROM stdin;
-1738a449-92cf-4611-9eca-58023f662849	fe13d2b5-c08b-4b6e-bf58-f2d2e97553cc	t
-1738a449-92cf-4611-9eca-58023f662849	6655fa57-075f-4290-a4fb-c7b0ccbcc419	t
-1738a449-92cf-4611-9eca-58023f662849	1db87056-8e91-45bf-94d5-83db7a4741b8	t
-1738a449-92cf-4611-9eca-58023f662849	7b5fd5f9-e7d7-4dd4-b723-5b2581adb26f	t
-1738a449-92cf-4611-9eca-58023f662849	b2b993cf-09b3-4a73-b472-7252d8b8f62b	t
-1738a449-92cf-4611-9eca-58023f662849	86582f7f-d214-4da0-9fea-3c46f7e9c40a	t
-1738a449-92cf-4611-9eca-58023f662849	191aee24-0234-4b99-bfa2-de5171fe1fa0	f
-1738a449-92cf-4611-9eca-58023f662849	a13756c8-71f2-4e3a-bfa2-e11fa0f500e5	f
-1738a449-92cf-4611-9eca-58023f662849	4e77fd07-9de1-4105-bddf-fc8ccb5b09f2	f
-1738a449-92cf-4611-9eca-58023f662849	32118b74-1b1d-4e6e-a7e8-5a1a9dc0ab54	f
-1738a449-92cf-4611-9eca-58023f662849	765ebfcf-be15-4d68-a301-cb637fbc4f45	f
-cecdd714-967c-4e15-8875-b88d9b8fba0c	fe13d2b5-c08b-4b6e-bf58-f2d2e97553cc	t
-cecdd714-967c-4e15-8875-b88d9b8fba0c	6655fa57-075f-4290-a4fb-c7b0ccbcc419	t
-cecdd714-967c-4e15-8875-b88d9b8fba0c	1db87056-8e91-45bf-94d5-83db7a4741b8	t
-cecdd714-967c-4e15-8875-b88d9b8fba0c	7b5fd5f9-e7d7-4dd4-b723-5b2581adb26f	t
-cecdd714-967c-4e15-8875-b88d9b8fba0c	b2b993cf-09b3-4a73-b472-7252d8b8f62b	t
-cecdd714-967c-4e15-8875-b88d9b8fba0c	86582f7f-d214-4da0-9fea-3c46f7e9c40a	t
-cecdd714-967c-4e15-8875-b88d9b8fba0c	191aee24-0234-4b99-bfa2-de5171fe1fa0	f
-cecdd714-967c-4e15-8875-b88d9b8fba0c	a13756c8-71f2-4e3a-bfa2-e11fa0f500e5	f
-cecdd714-967c-4e15-8875-b88d9b8fba0c	4e77fd07-9de1-4105-bddf-fc8ccb5b09f2	f
-cecdd714-967c-4e15-8875-b88d9b8fba0c	32118b74-1b1d-4e6e-a7e8-5a1a9dc0ab54	f
-cecdd714-967c-4e15-8875-b88d9b8fba0c	765ebfcf-be15-4d68-a301-cb637fbc4f45	f
-aea43925-6bdb-428c-bb0d-9d6cce93cb6c	fe13d2b5-c08b-4b6e-bf58-f2d2e97553cc	t
-aea43925-6bdb-428c-bb0d-9d6cce93cb6c	6655fa57-075f-4290-a4fb-c7b0ccbcc419	t
-aea43925-6bdb-428c-bb0d-9d6cce93cb6c	1db87056-8e91-45bf-94d5-83db7a4741b8	t
-aea43925-6bdb-428c-bb0d-9d6cce93cb6c	7b5fd5f9-e7d7-4dd4-b723-5b2581adb26f	t
-aea43925-6bdb-428c-bb0d-9d6cce93cb6c	b2b993cf-09b3-4a73-b472-7252d8b8f62b	t
-aea43925-6bdb-428c-bb0d-9d6cce93cb6c	86582f7f-d214-4da0-9fea-3c46f7e9c40a	t
-aea43925-6bdb-428c-bb0d-9d6cce93cb6c	191aee24-0234-4b99-bfa2-de5171fe1fa0	f
-aea43925-6bdb-428c-bb0d-9d6cce93cb6c	a13756c8-71f2-4e3a-bfa2-e11fa0f500e5	f
-aea43925-6bdb-428c-bb0d-9d6cce93cb6c	4e77fd07-9de1-4105-bddf-fc8ccb5b09f2	f
-aea43925-6bdb-428c-bb0d-9d6cce93cb6c	32118b74-1b1d-4e6e-a7e8-5a1a9dc0ab54	f
-aea43925-6bdb-428c-bb0d-9d6cce93cb6c	765ebfcf-be15-4d68-a301-cb637fbc4f45	f
-86566afb-29ed-4a51-be41-6bbc6445b6fa	fe13d2b5-c08b-4b6e-bf58-f2d2e97553cc	t
-86566afb-29ed-4a51-be41-6bbc6445b6fa	6655fa57-075f-4290-a4fb-c7b0ccbcc419	t
-86566afb-29ed-4a51-be41-6bbc6445b6fa	1db87056-8e91-45bf-94d5-83db7a4741b8	t
-86566afb-29ed-4a51-be41-6bbc6445b6fa	7b5fd5f9-e7d7-4dd4-b723-5b2581adb26f	t
-86566afb-29ed-4a51-be41-6bbc6445b6fa	b2b993cf-09b3-4a73-b472-7252d8b8f62b	t
-86566afb-29ed-4a51-be41-6bbc6445b6fa	86582f7f-d214-4da0-9fea-3c46f7e9c40a	t
-86566afb-29ed-4a51-be41-6bbc6445b6fa	191aee24-0234-4b99-bfa2-de5171fe1fa0	f
-86566afb-29ed-4a51-be41-6bbc6445b6fa	a13756c8-71f2-4e3a-bfa2-e11fa0f500e5	f
-86566afb-29ed-4a51-be41-6bbc6445b6fa	4e77fd07-9de1-4105-bddf-fc8ccb5b09f2	f
-86566afb-29ed-4a51-be41-6bbc6445b6fa	32118b74-1b1d-4e6e-a7e8-5a1a9dc0ab54	f
-86566afb-29ed-4a51-be41-6bbc6445b6fa	765ebfcf-be15-4d68-a301-cb637fbc4f45	f
-180fcf63-6d87-43c6-b197-dd94f05c8729	fe13d2b5-c08b-4b6e-bf58-f2d2e97553cc	t
-180fcf63-6d87-43c6-b197-dd94f05c8729	6655fa57-075f-4290-a4fb-c7b0ccbcc419	t
-180fcf63-6d87-43c6-b197-dd94f05c8729	1db87056-8e91-45bf-94d5-83db7a4741b8	t
-180fcf63-6d87-43c6-b197-dd94f05c8729	7b5fd5f9-e7d7-4dd4-b723-5b2581adb26f	t
-180fcf63-6d87-43c6-b197-dd94f05c8729	b2b993cf-09b3-4a73-b472-7252d8b8f62b	t
-180fcf63-6d87-43c6-b197-dd94f05c8729	86582f7f-d214-4da0-9fea-3c46f7e9c40a	t
-180fcf63-6d87-43c6-b197-dd94f05c8729	191aee24-0234-4b99-bfa2-de5171fe1fa0	f
-180fcf63-6d87-43c6-b197-dd94f05c8729	a13756c8-71f2-4e3a-bfa2-e11fa0f500e5	f
-180fcf63-6d87-43c6-b197-dd94f05c8729	4e77fd07-9de1-4105-bddf-fc8ccb5b09f2	f
-180fcf63-6d87-43c6-b197-dd94f05c8729	32118b74-1b1d-4e6e-a7e8-5a1a9dc0ab54	f
-180fcf63-6d87-43c6-b197-dd94f05c8729	765ebfcf-be15-4d68-a301-cb637fbc4f45	f
-990d6270-c329-4d6b-a770-51394bfee084	fe13d2b5-c08b-4b6e-bf58-f2d2e97553cc	t
-990d6270-c329-4d6b-a770-51394bfee084	6655fa57-075f-4290-a4fb-c7b0ccbcc419	t
-990d6270-c329-4d6b-a770-51394bfee084	1db87056-8e91-45bf-94d5-83db7a4741b8	t
-990d6270-c329-4d6b-a770-51394bfee084	7b5fd5f9-e7d7-4dd4-b723-5b2581adb26f	t
-990d6270-c329-4d6b-a770-51394bfee084	b2b993cf-09b3-4a73-b472-7252d8b8f62b	t
-990d6270-c329-4d6b-a770-51394bfee084	86582f7f-d214-4da0-9fea-3c46f7e9c40a	t
-990d6270-c329-4d6b-a770-51394bfee084	191aee24-0234-4b99-bfa2-de5171fe1fa0	f
-990d6270-c329-4d6b-a770-51394bfee084	a13756c8-71f2-4e3a-bfa2-e11fa0f500e5	f
-990d6270-c329-4d6b-a770-51394bfee084	4e77fd07-9de1-4105-bddf-fc8ccb5b09f2	f
-990d6270-c329-4d6b-a770-51394bfee084	32118b74-1b1d-4e6e-a7e8-5a1a9dc0ab54	f
-990d6270-c329-4d6b-a770-51394bfee084	765ebfcf-be15-4d68-a301-cb637fbc4f45	f
+1ff3074f-d7a0-43b7-b75c-523be33369ce	a6443962-58c8-4b16-af9a-b867f16e105f	t
+1ff3074f-d7a0-43b7-b75c-523be33369ce	2310b041-955e-4fac-9a66-df3bf3dff5e2	t
+1ff3074f-d7a0-43b7-b75c-523be33369ce	17095d46-d030-492d-892c-a8252b29bfbc	t
+1ff3074f-d7a0-43b7-b75c-523be33369ce	d09b8c28-c12b-439b-95a5-1a99f3287d70	t
+1ff3074f-d7a0-43b7-b75c-523be33369ce	83de2a22-63e4-4dd3-b0fa-bbf946a4886d	t
+1ff3074f-d7a0-43b7-b75c-523be33369ce	45121ad7-8871-4ded-b37b-4decb41f0bd6	t
+1ff3074f-d7a0-43b7-b75c-523be33369ce	320ad60b-580d-430b-8217-cc5c4f1a57fe	f
+1ff3074f-d7a0-43b7-b75c-523be33369ce	d76e2c83-c2e4-4182-9b6b-31e3905cd3ff	f
+1ff3074f-d7a0-43b7-b75c-523be33369ce	78288688-5478-43f4-a536-e621ca0a123f	f
+1ff3074f-d7a0-43b7-b75c-523be33369ce	849258fc-9eec-4dba-b85c-e300d05f9129	f
+1ff3074f-d7a0-43b7-b75c-523be33369ce	06acf73a-7701-47d6-82c9-4245f80696cb	f
+0a647cec-fab1-4ccb-8b29-f3a76fd51749	a6443962-58c8-4b16-af9a-b867f16e105f	t
+0a647cec-fab1-4ccb-8b29-f3a76fd51749	2310b041-955e-4fac-9a66-df3bf3dff5e2	t
+0a647cec-fab1-4ccb-8b29-f3a76fd51749	17095d46-d030-492d-892c-a8252b29bfbc	t
+0a647cec-fab1-4ccb-8b29-f3a76fd51749	d09b8c28-c12b-439b-95a5-1a99f3287d70	t
+0a647cec-fab1-4ccb-8b29-f3a76fd51749	83de2a22-63e4-4dd3-b0fa-bbf946a4886d	t
+0a647cec-fab1-4ccb-8b29-f3a76fd51749	45121ad7-8871-4ded-b37b-4decb41f0bd6	t
+0a647cec-fab1-4ccb-8b29-f3a76fd51749	320ad60b-580d-430b-8217-cc5c4f1a57fe	f
+0a647cec-fab1-4ccb-8b29-f3a76fd51749	d76e2c83-c2e4-4182-9b6b-31e3905cd3ff	f
+0a647cec-fab1-4ccb-8b29-f3a76fd51749	78288688-5478-43f4-a536-e621ca0a123f	f
+0a647cec-fab1-4ccb-8b29-f3a76fd51749	849258fc-9eec-4dba-b85c-e300d05f9129	f
+0a647cec-fab1-4ccb-8b29-f3a76fd51749	06acf73a-7701-47d6-82c9-4245f80696cb	f
+773fa922-dd6c-4bef-b59e-72d8f9ea4d49	a6443962-58c8-4b16-af9a-b867f16e105f	t
+773fa922-dd6c-4bef-b59e-72d8f9ea4d49	2310b041-955e-4fac-9a66-df3bf3dff5e2	t
+773fa922-dd6c-4bef-b59e-72d8f9ea4d49	17095d46-d030-492d-892c-a8252b29bfbc	t
+773fa922-dd6c-4bef-b59e-72d8f9ea4d49	d09b8c28-c12b-439b-95a5-1a99f3287d70	t
+773fa922-dd6c-4bef-b59e-72d8f9ea4d49	83de2a22-63e4-4dd3-b0fa-bbf946a4886d	t
+773fa922-dd6c-4bef-b59e-72d8f9ea4d49	45121ad7-8871-4ded-b37b-4decb41f0bd6	t
+773fa922-dd6c-4bef-b59e-72d8f9ea4d49	320ad60b-580d-430b-8217-cc5c4f1a57fe	f
+773fa922-dd6c-4bef-b59e-72d8f9ea4d49	d76e2c83-c2e4-4182-9b6b-31e3905cd3ff	f
+773fa922-dd6c-4bef-b59e-72d8f9ea4d49	78288688-5478-43f4-a536-e621ca0a123f	f
+773fa922-dd6c-4bef-b59e-72d8f9ea4d49	849258fc-9eec-4dba-b85c-e300d05f9129	f
+773fa922-dd6c-4bef-b59e-72d8f9ea4d49	06acf73a-7701-47d6-82c9-4245f80696cb	f
+56fd5161-9828-4e15-a832-08a0a3926d6d	a6443962-58c8-4b16-af9a-b867f16e105f	t
+56fd5161-9828-4e15-a832-08a0a3926d6d	2310b041-955e-4fac-9a66-df3bf3dff5e2	t
+56fd5161-9828-4e15-a832-08a0a3926d6d	17095d46-d030-492d-892c-a8252b29bfbc	t
+56fd5161-9828-4e15-a832-08a0a3926d6d	d09b8c28-c12b-439b-95a5-1a99f3287d70	t
+56fd5161-9828-4e15-a832-08a0a3926d6d	83de2a22-63e4-4dd3-b0fa-bbf946a4886d	t
+56fd5161-9828-4e15-a832-08a0a3926d6d	45121ad7-8871-4ded-b37b-4decb41f0bd6	t
+56fd5161-9828-4e15-a832-08a0a3926d6d	320ad60b-580d-430b-8217-cc5c4f1a57fe	f
+56fd5161-9828-4e15-a832-08a0a3926d6d	d76e2c83-c2e4-4182-9b6b-31e3905cd3ff	f
+56fd5161-9828-4e15-a832-08a0a3926d6d	78288688-5478-43f4-a536-e621ca0a123f	f
+56fd5161-9828-4e15-a832-08a0a3926d6d	849258fc-9eec-4dba-b85c-e300d05f9129	f
+56fd5161-9828-4e15-a832-08a0a3926d6d	06acf73a-7701-47d6-82c9-4245f80696cb	f
+3716fee0-d082-40bc-9e2e-d67302c5c042	a6443962-58c8-4b16-af9a-b867f16e105f	t
+3716fee0-d082-40bc-9e2e-d67302c5c042	2310b041-955e-4fac-9a66-df3bf3dff5e2	t
+3716fee0-d082-40bc-9e2e-d67302c5c042	17095d46-d030-492d-892c-a8252b29bfbc	t
+3716fee0-d082-40bc-9e2e-d67302c5c042	d09b8c28-c12b-439b-95a5-1a99f3287d70	t
+3716fee0-d082-40bc-9e2e-d67302c5c042	83de2a22-63e4-4dd3-b0fa-bbf946a4886d	t
+3716fee0-d082-40bc-9e2e-d67302c5c042	45121ad7-8871-4ded-b37b-4decb41f0bd6	t
+3716fee0-d082-40bc-9e2e-d67302c5c042	320ad60b-580d-430b-8217-cc5c4f1a57fe	f
+3716fee0-d082-40bc-9e2e-d67302c5c042	d76e2c83-c2e4-4182-9b6b-31e3905cd3ff	f
+3716fee0-d082-40bc-9e2e-d67302c5c042	78288688-5478-43f4-a536-e621ca0a123f	f
+3716fee0-d082-40bc-9e2e-d67302c5c042	849258fc-9eec-4dba-b85c-e300d05f9129	f
+3716fee0-d082-40bc-9e2e-d67302c5c042	06acf73a-7701-47d6-82c9-4245f80696cb	f
+09dc476f-68fc-4768-a31f-85a3d4f9ff84	a6443962-58c8-4b16-af9a-b867f16e105f	t
+09dc476f-68fc-4768-a31f-85a3d4f9ff84	2310b041-955e-4fac-9a66-df3bf3dff5e2	t
+09dc476f-68fc-4768-a31f-85a3d4f9ff84	17095d46-d030-492d-892c-a8252b29bfbc	t
+09dc476f-68fc-4768-a31f-85a3d4f9ff84	d09b8c28-c12b-439b-95a5-1a99f3287d70	t
+09dc476f-68fc-4768-a31f-85a3d4f9ff84	83de2a22-63e4-4dd3-b0fa-bbf946a4886d	t
+09dc476f-68fc-4768-a31f-85a3d4f9ff84	45121ad7-8871-4ded-b37b-4decb41f0bd6	t
+09dc476f-68fc-4768-a31f-85a3d4f9ff84	320ad60b-580d-430b-8217-cc5c4f1a57fe	f
+09dc476f-68fc-4768-a31f-85a3d4f9ff84	d76e2c83-c2e4-4182-9b6b-31e3905cd3ff	f
+09dc476f-68fc-4768-a31f-85a3d4f9ff84	78288688-5478-43f4-a536-e621ca0a123f	f
+09dc476f-68fc-4768-a31f-85a3d4f9ff84	849258fc-9eec-4dba-b85c-e300d05f9129	f
+09dc476f-68fc-4768-a31f-85a3d4f9ff84	06acf73a-7701-47d6-82c9-4245f80696cb	f
 cb847cf7-5d97-441b-b7dd-a6f1a47689a2	ea76ec75-71a8-42a6-bdfd-dfcca0fc7aee	t
 cb847cf7-5d97-441b-b7dd-a6f1a47689a2	b1cd614d-0091-4d4e-a2fa-28b3d76ae2bc	t
 cb847cf7-5d97-441b-b7dd-a6f1a47689a2	1343b2a3-ff3c-4588-a0e3-7372006e3cf9	t
@@ -2310,7 +2310,7 @@ e85deedd-b2fb-47d3-acef-508423a77f22	2753e1d9-77a7-4059-8465-fa23a6b418c4	f
 --
 
 COPY public.client_scope_role_mapping (scope_id, role_id) FROM stdin;
-32118b74-1b1d-4e6e-a7e8-5a1a9dc0ab54	ece8840c-9a8d-4b57-8f15-0f989d6b80fe
+78288688-5478-43f4-a536-e621ca0a123f	5670c91c-8594-4a71-9009-20ad77fc9ba4
 b7f3f02b-6bcb-4ed0-8d23-9fcf556e2243	6d7b0d9a-0ac1-481e-aebb-8acd9d5c3e39
 \.
 
@@ -2320,19 +2320,19 @@ b7f3f02b-6bcb-4ed0-8d23-9fcf556e2243	6d7b0d9a-0ac1-481e-aebb-8acd9d5c3e39
 --
 
 COPY public.component (id, name, parent_id, provider_id, provider_type, realm_id, sub_type) FROM stdin;
-b968c2cf-70ec-47df-8c9e-26e15c6806d0	Trusted Hosts	be66634f-b27a-4e21-b03e-7d51f28d6003	trusted-hosts	org.keycloak.services.clientregistration.policy.ClientRegistrationPolicy	be66634f-b27a-4e21-b03e-7d51f28d6003	anonymous
-0ca9fd2b-447a-45ea-ab36-16c4510d6bd3	Consent Required	be66634f-b27a-4e21-b03e-7d51f28d6003	consent-required	org.keycloak.services.clientregistration.policy.ClientRegistrationPolicy	be66634f-b27a-4e21-b03e-7d51f28d6003	anonymous
-b4d3f816-92e3-4021-b9e1-d35ee6bd634d	Full Scope Disabled	be66634f-b27a-4e21-b03e-7d51f28d6003	scope	org.keycloak.services.clientregistration.policy.ClientRegistrationPolicy	be66634f-b27a-4e21-b03e-7d51f28d6003	anonymous
-748b4503-e3bd-4491-895d-cd25630d9254	Max Clients Limit	be66634f-b27a-4e21-b03e-7d51f28d6003	max-clients	org.keycloak.services.clientregistration.policy.ClientRegistrationPolicy	be66634f-b27a-4e21-b03e-7d51f28d6003	anonymous
-48dba5c3-6656-4e8c-92cc-fb53927eb029	Allowed Protocol Mapper Types	be66634f-b27a-4e21-b03e-7d51f28d6003	allowed-protocol-mappers	org.keycloak.services.clientregistration.policy.ClientRegistrationPolicy	be66634f-b27a-4e21-b03e-7d51f28d6003	anonymous
-9161e51a-2218-4990-969e-55a60d82c012	Allowed Client Scopes	be66634f-b27a-4e21-b03e-7d51f28d6003	allowed-client-templates	org.keycloak.services.clientregistration.policy.ClientRegistrationPolicy	be66634f-b27a-4e21-b03e-7d51f28d6003	anonymous
-3af2f15e-01ea-4b6d-b225-d54f5d9ebac5	Allowed Protocol Mapper Types	be66634f-b27a-4e21-b03e-7d51f28d6003	allowed-protocol-mappers	org.keycloak.services.clientregistration.policy.ClientRegistrationPolicy	be66634f-b27a-4e21-b03e-7d51f28d6003	authenticated
-c0cf9ea9-0860-453f-9b4c-7cb72329dfcf	Allowed Client Scopes	be66634f-b27a-4e21-b03e-7d51f28d6003	allowed-client-templates	org.keycloak.services.clientregistration.policy.ClientRegistrationPolicy	be66634f-b27a-4e21-b03e-7d51f28d6003	authenticated
-c10fb3a1-1209-4ffc-a86b-c22b0212b857	rsa-generated	be66634f-b27a-4e21-b03e-7d51f28d6003	rsa-generated	org.keycloak.keys.KeyProvider	be66634f-b27a-4e21-b03e-7d51f28d6003	\N
-a8a01887-cec8-4753-b689-32de7eaf5b1e	rsa-enc-generated	be66634f-b27a-4e21-b03e-7d51f28d6003	rsa-enc-generated	org.keycloak.keys.KeyProvider	be66634f-b27a-4e21-b03e-7d51f28d6003	\N
-993f142d-f846-448c-99a9-3714cd835f77	hmac-generated-hs512	be66634f-b27a-4e21-b03e-7d51f28d6003	hmac-generated	org.keycloak.keys.KeyProvider	be66634f-b27a-4e21-b03e-7d51f28d6003	\N
-49d1deb9-e3af-475c-99b2-db3865b0f88f	aes-generated	be66634f-b27a-4e21-b03e-7d51f28d6003	aes-generated	org.keycloak.keys.KeyProvider	be66634f-b27a-4e21-b03e-7d51f28d6003	\N
-1bc1ba63-20ea-4fa2-877e-556231a196f1	\N	be66634f-b27a-4e21-b03e-7d51f28d6003	declarative-user-profile	org.keycloak.userprofile.UserProfileProvider	be66634f-b27a-4e21-b03e-7d51f28d6003	\N
+b80d6151-4ec3-48ff-b09c-c21b9466cb51	Trusted Hosts	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	trusted-hosts	org.keycloak.services.clientregistration.policy.ClientRegistrationPolicy	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	anonymous
+85a6ba8b-24c9-44b8-9d83-72e102767f34	Consent Required	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	consent-required	org.keycloak.services.clientregistration.policy.ClientRegistrationPolicy	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	anonymous
+a5b6868e-8fca-4fa9-beb8-eabe8ec3fce2	Full Scope Disabled	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	scope	org.keycloak.services.clientregistration.policy.ClientRegistrationPolicy	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	anonymous
+de9b0df1-d550-4895-a002-21032404284a	Max Clients Limit	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	max-clients	org.keycloak.services.clientregistration.policy.ClientRegistrationPolicy	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	anonymous
+3621ce9f-92cf-4d16-a9b5-b4b8f0a3495f	Allowed Protocol Mapper Types	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	allowed-protocol-mappers	org.keycloak.services.clientregistration.policy.ClientRegistrationPolicy	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	anonymous
+fdc5f54d-45d6-4c86-88aa-0de2efe15986	Allowed Client Scopes	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	allowed-client-templates	org.keycloak.services.clientregistration.policy.ClientRegistrationPolicy	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	anonymous
+a30c4cbb-8a1f-4e9c-9488-d81f33547100	Allowed Protocol Mapper Types	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	allowed-protocol-mappers	org.keycloak.services.clientregistration.policy.ClientRegistrationPolicy	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	authenticated
+666625a3-0302-4415-9914-eb6697a67389	Allowed Client Scopes	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	allowed-client-templates	org.keycloak.services.clientregistration.policy.ClientRegistrationPolicy	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	authenticated
+8a2aaea1-cba5-419a-9765-3e05efd824c2	rsa-generated	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	rsa-generated	org.keycloak.keys.KeyProvider	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	\N
+db1e4b3f-b7bb-4433-bd41-c819e2f741a8	rsa-enc-generated	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	rsa-enc-generated	org.keycloak.keys.KeyProvider	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	\N
+3ad83c1e-2a3b-4762-8574-52330b0d6074	hmac-generated-hs512	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	hmac-generated	org.keycloak.keys.KeyProvider	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	\N
+4cf30a51-ad50-4519-a0c9-5281e5091481	aes-generated	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	aes-generated	org.keycloak.keys.KeyProvider	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	\N
+22c42495-f2a5-4e0b-8b31-0eb8a81772b9	\N	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	declarative-user-profile	org.keycloak.userprofile.UserProfileProvider	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	\N
 bf7bc4cc-455f-4d74-ac97-b854b8f126e8	Allowed Client Scopes	83b6664d-539e-4bed-a376-685d50e40b98	allowed-client-templates	org.keycloak.services.clientregistration.policy.ClientRegistrationPolicy	83b6664d-539e-4bed-a376-685d50e40b98	anonymous
 4dfd41fa-a9eb-4922-a0cf-d4f7a8ae24c1	Max Clients Limit	83b6664d-539e-4bed-a376-685d50e40b98	max-clients	org.keycloak.services.clientregistration.policy.ClientRegistrationPolicy	83b6664d-539e-4bed-a376-685d50e40b98	anonymous
 2feec9eb-9647-4299-86f6-bf7d63fe6ff0	Allowed Client Scopes	83b6664d-539e-4bed-a376-685d50e40b98	allowed-client-templates	org.keycloak.services.clientregistration.policy.ClientRegistrationPolicy	83b6664d-539e-4bed-a376-685d50e40b98	authenticated
@@ -2353,81 +2353,81 @@ aa39d65d-762c-4690-9154-219710f831f1	Trusted Hosts	83b6664d-539e-4bed-a376-685d5
 --
 
 COPY public.component_config (id, component_id, name, value) FROM stdin;
-afb6ae46-1d71-4d70-9927-4dd4ed353cf8	b968c2cf-70ec-47df-8c9e-26e15c6806d0	client-uris-must-match	true
-e2fade4b-f7d8-46f1-92a9-785f200a00bf	b968c2cf-70ec-47df-8c9e-26e15c6806d0	host-sending-registration-request-must-match	true
-d60b3004-ba2b-449d-9a6e-33d15b7a458e	748b4503-e3bd-4491-895d-cd25630d9254	max-clients	200
-fafe031b-fd38-4675-9042-1d1db052ea37	3af2f15e-01ea-4b6d-b225-d54f5d9ebac5	allowed-protocol-mapper-types	oidc-full-name-mapper
-30fcc267-c859-4576-a2f6-b788e39f7ed5	3af2f15e-01ea-4b6d-b225-d54f5d9ebac5	allowed-protocol-mapper-types	saml-user-property-mapper
-e5729b3a-0168-4c17-bdb2-0a2fc720da08	3af2f15e-01ea-4b6d-b225-d54f5d9ebac5	allowed-protocol-mapper-types	oidc-usermodel-property-mapper
-5a3f70af-4237-4d98-9376-1ac175539757	3af2f15e-01ea-4b6d-b225-d54f5d9ebac5	allowed-protocol-mapper-types	saml-role-list-mapper
-dadea527-497d-4be9-943a-4b5ad4279c29	3af2f15e-01ea-4b6d-b225-d54f5d9ebac5	allowed-protocol-mapper-types	saml-user-attribute-mapper
-ef4f38cd-3842-416e-8d5b-e91316e9dadb	3af2f15e-01ea-4b6d-b225-d54f5d9ebac5	allowed-protocol-mapper-types	oidc-usermodel-attribute-mapper
-85da8fa5-41cd-4f88-8b89-ef1cafb585c6	3af2f15e-01ea-4b6d-b225-d54f5d9ebac5	allowed-protocol-mapper-types	oidc-address-mapper
-3e9e67e0-ef17-4ce4-909f-e90ef46b6179	3af2f15e-01ea-4b6d-b225-d54f5d9ebac5	allowed-protocol-mapper-types	oidc-sha256-pairwise-sub-mapper
-69b439d0-7f00-4ca2-b7f7-631010285d06	48dba5c3-6656-4e8c-92cc-fb53927eb029	allowed-protocol-mapper-types	saml-user-attribute-mapper
-d2805b64-3e34-4bee-a388-01609c4d6a1d	48dba5c3-6656-4e8c-92cc-fb53927eb029	allowed-protocol-mapper-types	oidc-usermodel-attribute-mapper
-6b0f1080-a756-432c-b63e-77b9e8228077	48dba5c3-6656-4e8c-92cc-fb53927eb029	allowed-protocol-mapper-types	oidc-address-mapper
-3b0836ec-01a9-4b21-b879-d54bc2686af8	48dba5c3-6656-4e8c-92cc-fb53927eb029	allowed-protocol-mapper-types	saml-user-property-mapper
-6c3d4c4e-9c8d-43b3-abe8-40181a137167	48dba5c3-6656-4e8c-92cc-fb53927eb029	allowed-protocol-mapper-types	oidc-sha256-pairwise-sub-mapper
-dc5cb0bc-ef30-42ca-b609-aa4c7ad28018	48dba5c3-6656-4e8c-92cc-fb53927eb029	allowed-protocol-mapper-types	saml-role-list-mapper
-a9c3c6e6-ea10-4a1c-83e7-d3202ed9cce3	48dba5c3-6656-4e8c-92cc-fb53927eb029	allowed-protocol-mapper-types	oidc-usermodel-property-mapper
-d02cd326-5037-48b6-9ff3-f944ef19463a	48dba5c3-6656-4e8c-92cc-fb53927eb029	allowed-protocol-mapper-types	oidc-full-name-mapper
-58646b4c-2db3-4f6e-b4b5-78ac73e4857f	c0cf9ea9-0860-453f-9b4c-7cb72329dfcf	allow-default-scopes	true
-9d24a90d-fd4d-4a9c-8270-88b1097a2d2c	9161e51a-2218-4990-969e-55a60d82c012	allow-default-scopes	true
-9458b86f-321d-4ed0-ad10-1512cd437071	993f142d-f846-448c-99a9-3714cd835f77	priority	100
-03475c9b-9e53-490a-b7fa-a847a0ccd70e	993f142d-f846-448c-99a9-3714cd835f77	secret	VfbandBM-lojF-GZV2IogwItYwo9CB4o0SCSNJ06a8cyTEScPquumyyUJBuDnKs1zEYdYPbPFrlb1EvKxsV5X5_Z22pdjDkHkdKA0l4ToM-nxmbJN5K6OeAFLJYZA9oBgLi_SiZAGRtXnmv89oEeG9TEHH93IXXA0HIvMo8XfyY
-a5181eb8-d3cd-4ae7-a0a1-cae59d17d6b3	993f142d-f846-448c-99a9-3714cd835f77	kid	490855e1-e2e2-4375-a456-02a96209292d
-9ab2c70d-8c6d-4f2d-bace-8d16475d4148	993f142d-f846-448c-99a9-3714cd835f77	algorithm	HS512
-2db86d47-781c-4bfa-b44c-f02ae1b36490	49d1deb9-e3af-475c-99b2-db3865b0f88f	kid	8b1b4606-f673-4673-830f-450ef0a15841
-164325cf-91b4-4297-9f80-d04aa9ff28d6	49d1deb9-e3af-475c-99b2-db3865b0f88f	priority	100
-11e94b96-5d44-4256-81c1-1dd83197aeda	49d1deb9-e3af-475c-99b2-db3865b0f88f	secret	XxlS09bnhqGUK61smwJ-XA
-2b267d76-3690-44bf-88ff-1762ae650339	1bc1ba63-20ea-4fa2-877e-556231a196f1	kc.user.profile.config	{"attributes":[{"name":"username","displayName":"${username}","validations":{"length":{"min":3,"max":255},"username-prohibited-characters":{},"up-username-not-idn-homograph":{}},"permissions":{"view":["admin","user"],"edit":["admin","user"]},"multivalued":false},{"name":"email","displayName":"${email}","validations":{"email":{},"length":{"max":255}},"permissions":{"view":["admin","user"],"edit":["admin","user"]},"multivalued":false},{"name":"firstName","displayName":"${firstName}","validations":{"length":{"max":255},"person-name-prohibited-characters":{}},"permissions":{"view":["admin","user"],"edit":["admin","user"]},"multivalued":false},{"name":"lastName","displayName":"${lastName}","validations":{"length":{"max":255},"person-name-prohibited-characters":{}},"permissions":{"view":["admin","user"],"edit":["admin","user"]},"multivalued":false}],"groups":[{"name":"user-metadata","displayHeader":"User metadata","displayDescription":"Attributes, which refer to user metadata"}]}
-59811674-95c3-4cf0-9f9e-a1f6e4703646	c10fb3a1-1209-4ffc-a86b-c22b0212b857	keyUse	SIG
-d5169a63-2221-4598-ac5d-1376a77ee9b0	c10fb3a1-1209-4ffc-a86b-c22b0212b857	privateKey	MIIEpAIBAAKCAQEAzgfiaeFUod5T54i19sSOIA2+9yZg06aGWXCOLuVkKcCpZRDQ+GT1hxFLFgAlAASfo1SQu3c/o0buapu/jIwkVv9vE7l34zg/suf8dbmS6Fa0BtGDevf5Rlmowzi9sQaPK42KllJ3zDU65fIW6F/0ZfwhGlUfvr5ObW6OMHP6BKb0BdnxhR1VJOa91a7QeI0qiFtsGCVlNeR7hfXEu7PGc/MaunEWMsI/7h057JZXXgi9tSxF3wCB2iEmvUKGqG6NapwEvLpVvCK9vZcKYvzkZBke6e7/NkdlnqEay5sc4nW960aIzpkkm0sS7bGVPMyJpW07vHEFRC3Ru182yPNziQIDAQABAoIBACn3aqvJAXFwRTR4ASKY8l8+lYuntljeRmbw+ZE9Wfv0ObzzojE6dVW0FNCQKnk4t+Cv0MRSu7RxNg6il2+UOzG6WYCRyoUOt9DkFqVPLcikIoryAb9aQ90L1cegJulobeC/9b79YNgIbq0YdQiTxQdCBmcj+DGk93osZwuhEAgCsOHMD8S+qr/hUefSA41uFHi4VY5Mt4sDRISTF5xXM7ArA85ghlFtAsNHGAisGGsCUBj65kQstSQewdkSJ68hME1BXvSSn9IpUp4W+3qK16x38jC9a4daMyr6YASVHTtHlGyJiy6VV0Hvoo54bJsODZlViOhShxlThAKIAnkMtEUCgYEA/BrHWjNmpxz6buB9618Y/3vpa2BugIMm7vVL1joar9590SZ8SMFB/xAeM++h20VRUoMomQNZNWuD39Dm8m2vnUCWUYJx5wJjAdrzp4cDNwRlp8AW7CVvIMRGcaf2Jg3teL7X/vbJi3+Jfw7v34Ao5oglhitW2hUPGf0zcrG2LWUCgYEA0TbbWaUAQfeQTP+/4cJG41qiVVptTKckVAUGCSd0bj11yVj2DNHiNNjg7u6fWKQQACNqdHsPFXRiQpZ2og41nyzt2DPEF+VP0hC4CeG/CgH3QOX0eHqMpzpkbANVTljTDCS1dfVt9fzIS2cSnd3XYPv5/A4UpuhwyNad2bsjTVUCgYEAjeMwcebeDo3zsPWuSQuD0T7XN7TVXIT0I6dxIEghfvwVCeLELlp+n2Rd61MiYHuZ8nuZHM1Spws09IHpiWYMYc/ZClUFcEPan0+wtIf7WjqiUBB/ljbXXbS6BPvIQNCz57JZdMlG07lbFGS+wqap3l2f6Ox5fFI/5puoGhRE+TUCgYEAugQKV9RLPFv/Y1bpprL0EGWffEBgeg0KUeH9kdoQvYvL1HBSpOdgNxi2NfrYlxmYWGck2dgoeyz1yLq7VC9KIfLyro6oRY7Pv7i5yZ98GkvRKVTMXuqncHCMpTT5fiWf0GY7KVxEnrhY5iII/XAndcXUaPWkCxsUXJ3lz5eCNdkCgYAAnh7/zeQWI8V1b+CSw/7MEiQyP9ygaRBmAFJaxmTfnsnCv5k40jolUEAubYgfgt+PTX+OhHVIfPJGecVoD4kWEcHHyKfBpOiohJS8ocfjVUSgAMthE799hjGy3gyg+YgaOaH4oZsKIeR08lQq2sjNemN5gqgrtxXDTl6ABcsy1g==
-38a0b5e6-8fe4-47d8-a0a4-1bf63e668a26	c10fb3a1-1209-4ffc-a86b-c22b0212b857	certificate	MIICmzCCAYMCBgGcK+HWhTANBgkqhkiG9w0BAQsFADARMQ8wDQYDVQQDDAZtYXN0ZXIwHhcNMjYwMjA1MDMzNzI2WhcNMzYwMjA1MDMzOTA2WjARMQ8wDQYDVQQDDAZtYXN0ZXIwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDOB+Jp4VSh3lPniLX2xI4gDb73JmDTpoZZcI4u5WQpwKllEND4ZPWHEUsWACUABJ+jVJC7dz+jRu5qm7+MjCRW/28TuXfjOD+y5/x1uZLoVrQG0YN69/lGWajDOL2xBo8rjYqWUnfMNTrl8hboX/Rl/CEaVR++vk5tbo4wc/oEpvQF2fGFHVUk5r3VrtB4jSqIW2wYJWU15HuF9cS7s8Zz8xq6cRYywj/uHTnslldeCL21LEXfAIHaISa9Qoaobo1qnAS8ulW8Ir29lwpi/ORkGR7p7v82R2WeoRrLmxzidb3rRojOmSSbSxLtsZU8zImlbTu8cQVELdG7XzbI83OJAgMBAAEwDQYJKoZIhvcNAQELBQADggEBALRBZ9ILT1g68ef4D/sdrTNfL3JSfx5V8jGjMdiU2lYVDg1VhjFF3XLfVcJy2te+kHQvHlZ6SllNJVlt0VGdd/1bULdEErL8i8PH3oZ9aEQdlXeUAVzznXmS5VJ51RJMhdDsCuFTyLqrkX7DkDwZK7gSNQNhHEGmnHHq/IvLH7CZRn1R9rtnx42s6dQNfJfuQdf/bPjLvAH/gsc8Buy/w8En6PMs39RBQ1LJj+si9YcSo01v8ErXguyZC9rNuPHfaeKucnpW6JsUg7IA4DL2nfPnK7b+zGoBqQwA2eG8zUo+VGeB2Z0yaTkdLbcdE6yixk5xJOZiKhpu+3npT+3l3SY=
-48c198e9-4a7c-4384-b020-7cd0467f3137	c10fb3a1-1209-4ffc-a86b-c22b0212b857	priority	100
-d3c190ca-d987-435a-925e-37159ff695e0	a8a01887-cec8-4753-b689-32de7eaf5b1e	priority	100
-6deb0ae7-e70c-4d18-bea4-780ee718fdec	a8a01887-cec8-4753-b689-32de7eaf5b1e	certificate	MIICmzCCAYMCBgGcK+HYbTANBgkqhkiG9w0BAQsFADARMQ8wDQYDVQQDDAZtYXN0ZXIwHhcNMjYwMjA1MDMzNzI3WhcNMzYwMjA1MDMzOTA3WjARMQ8wDQYDVQQDDAZtYXN0ZXIwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQC0QoowC7jbNkvjriwynmjBES7Rg01qH5umNnQoHn1yzB70S8l46lFiuDmSt2orjXdfT09XfJCPo9yJh9qtOijWMz503W0RpER0kpGno/u0+hLMdPvBLbVzRoZZFK/B738LxR7eAlaAddVZrEI9AQ4hBVi8NZXUSu66oPIdnT857DJULueLPFWqqgvgAnMzEXS3IlfPCNb36QcCZS3HsLkLsl6nJxoKk1wMmEgInKXLKRTw7pcs+Kghhw3xGsuAC2PisPaMmjo2fkGbvA/QT2ay4GteaOpyE528cqcqLhMH8eYst4nmRhH8sYaApQ/F3aFLprW9HaHFDo8OiRhue3F/AgMBAAEwDQYJKoZIhvcNAQELBQADggEBAFPf1y+pdDSPb4SRL7UyPrphJTIKQYTcQuPCERrzKqtZ+UAMTpXRgZD3sKwZCL1YlwalnWuu0KL2VEvHsPXn9WF3sHGx2qpeSw+e1JOANxQjjcjvPrMrGZq2j/VpyBSG5bRtsmgX2ocpZ5oRntqcgZEG/X1aot4o9X+d574FUWBeLsCDfhRFC6RmCv9ZrPpw0Afsk+mGcDUnY/RtAN1Rmpq7WQdSQrZjSnFN5YadRhj2NGxrjXAQDvZ49b/hTC/3ASRMSVz9a2fts/ZKlaualOkZVdCX2XlAubGC9AiyQzDpDaBSZA7+5ldXzsScFI7SBldRY3d30E2f7SA6PNjl4mM=
-8f7adf50-2abf-4dcf-90b6-efc9829189b6	a8a01887-cec8-4753-b689-32de7eaf5b1e	keyUse	ENC
-5329f031-8ac9-4ef4-bc4e-da08c1d5c535	a8a01887-cec8-4753-b689-32de7eaf5b1e	privateKey	MIIEogIBAAKCAQEAtEKKMAu42zZL464sMp5owREu0YNNah+bpjZ0KB59cswe9EvJeOpRYrg5krdqK413X09PV3yQj6PciYfarToo1jM+dN1tEaREdJKRp6P7tPoSzHT7wS21c0aGWRSvwe9/C8Ue3gJWgHXVWaxCPQEOIQVYvDWV1EruuqDyHZ0/OewyVC7nizxVqqoL4AJzMxF0tyJXzwjW9+kHAmUtx7C5C7JepycaCpNcDJhICJylyykU8O6XLPioIYcN8RrLgAtj4rD2jJo6Nn5Bm7wP0E9msuBrXmjqchOdvHKnKi4TB/HmLLeJ5kYR/LGGgKUPxd2hS6a1vR2hxQ6PDokYbntxfwIDAQABAoIBABiCB3m6zkT3n9/HxCM/CFe04gcC8W6L95nkmMGvoOIPwJGkZYhhYJ6pv3d5enTgxKnFBbDhCGKPJnfdwayAViGxUTzgXL449ZmyfR0sHW0gpuz8vBHVXhswgSmcDL1dtjSVILo8hSLtYmF7xdG3fVfzUHozquL0gSVcpoPCPQtpx6LWo5Bq4deUDhD3aTHx0qjYD69px+lV8C/vF3lUVmwyiLL9emXAbogw+EdPXzFpI2rZ8DIbZYRtiffa76cZIkiQrWfpuQHWFmjgGf26mkfuYXC7QlXys8z84/6vm4TxKTxv2E8cTKJN6tKOdGF2mpxJY2xh+B2hgpmmeuwV3fECgYEA97LmDmTcRAGPNHUmz8tzZDcR+zcJOq2G8cpUY9IkTqtihz0K+o+w2jek0PCYOOUMHwG3a2p01M+DX4SdYCQIE+gFBtM1I7KjXaLRjedtKFes9CMsUZO/jONdOMr5gibrKiqogQ9BQU1Pdmu2ypz13nrf5Q75IwmnPePJlPlCYqcCgYEAuk0OtHWNxaUkmdjQ1LcuiKIAvHRUjs2NeGkcRPtAjfLW8hmNsZ3pk4pwHTnLo5u9L+TkFwsvwrz8l7cYwGktf0w134+C7BoiCi9pvYffNRll+SOF+6N8oZU7DyuqEYxHq5N41AZNNtpsyQlL4tiB+cLmVNuJDDaj50e8LIMdjWkCgYBo+umGMDkqmX6YPQ62AwRk9PIqBqlitSj8UURzCh1ZOkoIB1cf2saZtfukklPxySHaAmA6pmPdzhVf5lTM6niB91QqEFn1R0D17oviGLOq5X3n+wBNktEcZUCdUWluQBBrTqkcCdseUiXbistuFBggsvMxoab1sqGvGVvWR85bAQKBgAqKaZaUQB06psN9nPMsGhno8Jm5Cz+5KZPyfoL4pEJjxv2TrIysHpcWchl1N6xeF2oqTS1wmJcwEiqTVXctfEGDkli/yeyJ3fsti5IJqftbIIXkGKSQL3EE/H5zPgAYK8XtZhy47o139ke5mu2OymvTNyz97tceEE/5ow/xqy5hAoGAEh+KttgfDX/pbkGJz9z2JzB8x3FxImqS9d372gnW3r5xkh7M8pSwKOFNIZIZnOoGCZvi7jpesa9oSzP/yedp5eBDh5Pys2ehS+IYEi9d895kY3ylR/asNyHY+d9jsycSOYx4+TGiTf8IVjwYCZy9GgSuPtj3lwD29ITEAbo53YU=
-e5f22e80-c15a-4f00-820e-0a60e4a53e0a	a8a01887-cec8-4753-b689-32de7eaf5b1e	algorithm	RSA-OAEP
-4d426d57-3d22-4aab-abbb-c49c0f444bc3	1f601b2d-3f3c-4ee1-93f5-cd33a0c3c6cc	secret	jGKBzJa7FSua3xfWVN9caQ
-fbbbdbf8-85f0-4ee3-aaf3-30a048fa0535	1f601b2d-3f3c-4ee1-93f5-cd33a0c3c6cc	kid	3ed0052c-1007-4708-82c0-3497b75085c8
-395aa7a0-98a1-4d9d-bfca-00e484d756a7	1f601b2d-3f3c-4ee1-93f5-cd33a0c3c6cc	priority	100
-a34af748-d193-4e43-983e-d8ac5bb7607c	bf7bc4cc-455f-4d74-ac97-b854b8f126e8	allow-default-scopes	true
-8dc29132-393a-42cb-9564-111d98e8d8a1	82d74645-ff8e-460e-ab07-a44369c80932	kid	ebb575e0-6a98-447c-97e1-37c876a2e327
-947779d9-5ccc-461b-a679-546a286edc60	82d74645-ff8e-460e-ab07-a44369c80932	algorithm	HS512
-23557723-64a2-4d53-8c71-bab7da2d8eff	82d74645-ff8e-460e-ab07-a44369c80932	secret	mKtc1ZS1Zure5wtquXmZDQJiuhiDEWLpBWY2phgKVV27UO-Oga5WRLy8sRhbO_zKE7UHVZDOwZRroPWvhZD2lsJ1YSaSrZb0yf_9hRKthz4JcGYdOqDVI7w76zdxtHhq9dkkCqgAmOdj7iYiYu7oBBcwd6eWuaHtnIi_q_3j8fw
-6d5cde04-ce1b-44f9-a5f0-287de70a735f	82d74645-ff8e-460e-ab07-a44369c80932	priority	100
-1765feb5-89c6-46c2-ae44-97245ec8b119	4dfd41fa-a9eb-4922-a0cf-d4f7a8ae24c1	max-clients	200
-39c05d1b-98b1-4a5b-a639-46b73c3ae2d0	2feec9eb-9647-4299-86f6-bf7d63fe6ff0	allow-default-scopes	true
-e9221e10-8a6d-457a-9374-d427cdcdc2e6	1d42272d-82a4-4f7b-aa8a-02e0a91d8c71	algorithm	RSA-OAEP
-b0f37e9e-2c8c-4c61-be36-44d5d99dda32	1d42272d-82a4-4f7b-aa8a-02e0a91d8c71	privateKey	MIIEpAIBAAKCAQEA1AoIizYWkAYXg2/eJllPeeS2mBypw2cx1LrPukbrAFrMHvKl+AsKKHr55oPP4n9ZHWMi0NZm9pIdBX6jm6OYsm76cB1HPUjYyxU9iwf2rj5kHOAVRon/1BBAX+v3agXQoMQM4Sski+tmFzhYZUyMJL44nZb9Vo6t2/prOh9uQuJSsaNMRpgmCcV8PwNjKv5G8pm9dvW4KSC/sDLx9VYYe+gqTDhLzu+Dh3gMoD8fMVnIw5c4ZSyWKcbkwwh8wcUVRfZJ9GsC+Zdw44o1yNgHQSFOIvIjkwyW1yLFObOJf5g55c3p9lqu4nlTwcupHkdGimV1WgX2XPnMxuK4LO/2UwIDAQABAoIBAGAzOyQZwovOT72ws9u3OmElnJgPrQ+70nZe2R78zOLIzwIdeaI7M/0gqh9k3xy2RVKZZzLTizxEF0mmZokW5JDT2+igx/Dsi3s75EOfNdJg+R/GpLBvrLNkOiiq0IH4KGq/983yum6Gurc/N4+h9pU2/k21MrQiIIwEpcBlgStzWd3TMlWmSy965bHkF/wET9RrIMR/SWIfgg7nm7lK+VGxVyJay15639EHd7x/rdp6LiBG2uIipZD+NA6WLuOZG86toDUcPas9Di9mkGm2EW3GAxaSz9T47CdJr5hcX7F5CqBn6tnbY5ssJnwi0HUF203Bc/6Z3wh7NGAyGxzMXxECgYEA/3WJ+vIU9K4JWgNFzfbz46rtCOlRgepCeYtoopfHBfkO/cxyK3/SBB1SUt5yWzp/sr6sADXl67932wuxtZozFBC+UKEUCDPK/Qs1TctG/KjS7mdgQvxXt6TpT9C+kTvyo8L9g+rdMrQ8Cs5qtajWaVv/ohMhqfWFk6Apn1p9kTECgYEA1Hz13YrVwyrkBGb0fjW2b09qS9FuLX6WDaR9WZ3GA9APTz4K+zYWtNFfUHwufhO4Z0zxxSlyaiwClRSuJFhFk4DgxB1mUv0wHtPppY8f0jKcnwS3JDL7K4DQ9T5suA21Zt9zUemrMwA+WM/TghTvXplHHtuUhv/fHYglx8QIvsMCgYEApwrOzN8bQNvEla1qKcH/vLF6Cce3WoI6MYwtQZSJuaggW2kihrswMyyRNkrq8CiSc+kmQ4T68WrkDsHY1G0eVVKVf9e0Z6CmbUy08EeqBXDHbMkAMw0atqUJQv22fvV6Ngc9CtO7DHq6gD51nI/olEBqKirkamR3kg666M6dKSECgYEAybvJgQeqYpx51mQYgypjhdITzN+MhszDkTg1ebt8n2oM3uK8cjur2wdcQoFjcncuf4RhlRoAciROX1M+8WqMw7l7qzVuTCPsZ5gxHul/AITkhWRoq4lrRKYLvIoDlcoOCxjh10bNLqJwjsjguYM+rsU+7GDz5idOoC7+D2ZiFxkCgYAns+C2iIbw4M1w3NSFeeVwVDzwSW0c45CNq8BqA1fKqjzS11zmrI5162e+zJI91uF32k1hbWAgrxZV0KuBS+NIhX0hf2nmiTMm3KrGSvx0MLwxX41qPHD9OMW35rzXdXV8scMHkFanJnqDzfTijvCRO3CTqxhnxr36ZEIsdJ7uAg==
-5b7453f4-2422-434e-9bfa-5902b78d676a	1d42272d-82a4-4f7b-aa8a-02e0a91d8c71	priority	100
-2d6c1c52-336d-4ad4-b453-57954f00c61d	1d42272d-82a4-4f7b-aa8a-02e0a91d8c71	certificate	MIICozCCAYsCBgGaaGXlZzANBgkqhkiG9w0BAQsFADAVMRMwEQYDVQQDDApsb2NpLXJlYWxtMB4XDTI1MTEwOTExMzMxOVoXDTM1MTEwOTExMzQ1OVowFTETMBEGA1UEAwwKbG9jaS1yZWFsbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANQKCIs2FpAGF4Nv3iZZT3nktpgcqcNnMdS6z7pG6wBazB7ypfgLCih6+eaDz+J/WR1jItDWZvaSHQV+o5ujmLJu+nAdRz1I2MsVPYsH9q4+ZBzgFUaJ/9QQQF/r92oF0KDEDOErJIvrZhc4WGVMjCS+OJ2W/VaOrdv6azofbkLiUrGjTEaYJgnFfD8DYyr+RvKZvXb1uCkgv7Ay8fVWGHvoKkw4S87vg4d4DKA/HzFZyMOXOGUslinG5MMIfMHFFUX2SfRrAvmXcOOKNcjYB0EhTiLyI5MMltcixTmziX+YOeXN6fZaruJ5U8HLqR5HRopldVoF9lz5zMbiuCzv9lMCAwEAATANBgkqhkiG9w0BAQsFAAOCAQEAkYztEr6baQvXYMCHk+ERJKvcAcPC+vJem/CbgAPvkVafToIUxnGOJbLU/MjZMqt2qLxwwfYtcucylE8PoqfjKhW7rImCJPQjezrPtoWoDPzEJ7JCxWoWTlpjSvlprf6zBTt+0YQ1by8OpMK+6WRvJtoNOqzzodpQ9DaqXWYxJegfU5F7bK9pVTyT3J46SIydmnX8Lfwsu+4j5W0kl91DuN1kxLb1294TogP0ERfTtCI+r8KFHGc+1SbizF1bCbpeT9VBWcfSBhyGh1UhgCsSPl9R+9xIRKPoIMmaGZ77pjJ/P7AFvu4LXa5DKgMcAsE0K84fIvC2Xa9phDjNN3zXiQ==
-7aa2f3d1-f6ca-4936-bc87-256744d878cd	1d42272d-82a4-4f7b-aa8a-02e0a91d8c71	keyUse	ENC
-317960a8-3c51-46c2-ab4c-a1537b88871b	501abdae-a433-4e54-985a-a9fdf84bf3b8	certificate	MIICozCCAYsCBgGaaGXjJjANBgkqhkiG9w0BAQsFADAVMRMwEQYDVQQDDApsb2NpLXJlYWxtMB4XDTI1MTEwOTExMzMxOVoXDTM1MTEwOTExMzQ1OVowFTETMBEGA1UEAwwKbG9jaS1yZWFsbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALq0+UKen6c2JObNK+a77JbagYsjCNXyOWoNlzulJ+oJ27oSTLfOMpShFNEJU/OOFpqdvolsMJJRh8+o9TUrKhWF1Mkwy17pKbC3xUeX83HrVidxTYsEBkbqHUURxYfab4fOYD5BUkb0iOokqkq2DUowwpRKRIx+UvTJ/FIBExZbB66rAUAixRjsVM7lDRHu7cQE+3ZEhhsWSnfqssWRhS8Z5+D0+j3PNqjfH+WUus5Ch4wpPs3muiHHS26ZpzZ6E4UazHZg32Qxy4kSq1/8B24cvnZviuWfqo/v/nevhtvT4F2+8/ItOmBBcmJZQ5c1LfKVtvngps2Y8sCXJgC8GyUCAwEAATANBgkqhkiG9w0BAQsFAAOCAQEAjNmlykEGuC6D4Gd90FsdRSFnxyKHMfRv7mjBXhjm6uH3RnVx0IiXlb80n2mWJBfXaEV+z6OcmOii1dlSR3+QvsfxnmKUTu6OMD8hqKmAvcBrK87XWPU3VrU+1clnG/AvuhzTMfx+SyptkeyH9nGfbxec2Pk86dc4qJTr6y5qkv6kP9K5wHZPSo0qVxhnk81N+dLl+h9sxgZSY2LkH+WwcQXN36YUWxG7RUZYm9JCxw5utJCPILspDxqKLI4R6gxJ9uV/UBhhqAkaEP0qR2oKmOwxJVwCr4O2WPbU15P2L9h/69za69ipgxRDiSerDoNOvLq4C3O4hJ607ktYIHLzIw==
-55b409f5-a8b1-464c-9866-b7b2cd91ca53	501abdae-a433-4e54-985a-a9fdf84bf3b8	privateKey	MIIEoAIBAAKCAQEAurT5Qp6fpzYk5s0r5rvsltqBiyMI1fI5ag2XO6Un6gnbuhJMt84ylKEU0QlT844Wmp2+iWwwklGHz6j1NSsqFYXUyTDLXukpsLfFR5fzcetWJ3FNiwQGRuodRRHFh9pvh85gPkFSRvSI6iSqSrYNSjDClEpEjH5S9Mn8UgETFlsHrqsBQCLFGOxUzuUNEe7txAT7dkSGGxZKd+qyxZGFLxnn4PT6Pc82qN8f5ZS6zkKHjCk+zea6IcdLbpmnNnoThRrMdmDfZDHLiRKrX/wHbhy+dm+K5Z+qj+/+d6+G29PgXb7z8i06YEFyYllDlzUt8pW2+eCmzZjywJcmALwbJQIDAQABAoH/MTI09Wqj60VjL2N9sbFtbgt+FuwVI3/sradl2WC/kKw9jSzVtpFcrkvnACD45KjQZ9Pzp8OEC29R04v9nos6yu/EvvKdxMxm3rov0eA/pcJLOsW+ioodA/Vn5HykSOhkLuh7x0l0EPI1tG/be+2JI2jMiPzvbk1hR39jl5rjkqxWbxwtZw0W9zY37rR2GXwmHdFbYQgDXf73MeE6/K6bbQa6sxvSftyf/W0nTDpVPWtLtdbWb2R1zLWbwslz3rhgdkWGJ/1HakIqunHW6O5eoiG/x345aqp9zo7HuJVG5+tsLfG0zQcxvRxgWSuiMZ5MLz6gdqMBga9wQPDL9WWNAoGBAO8qyXzb136/Elncs8knoIQgdMREoAw0YIZWvQB3m3swN2G9WE2oZJm/ObEAlLlIuu/ngPna/N6MYcePqt5jL4I2sMts5SGF2nP68Ta0TQ+Lldk8jklqnO5OEKNmoQklRWcIa9yBrgWn0lE6y8cYm5fMqXN8P2+/Y5HoKUPtGL5DAoGBAMfY+wpH4mAZ9OYu53BIOQdjqVw/YxKFxNky+YGfuAB+Jy+qoivGVgPnwq+YBsfVmpoB+HEl+Chyj0DHwFueXkJ+8Wcoo39/1DZ2zhnSIRNQfDNOfcfamuz2wsmlChoy+TfqHvUftCrvHOQ7Hu7+fUTBt/X9xoy/KEj9xKQVnA53AoGAMYhWBHLvdYOTBGNuJLn9R4AFTuS7lOuAFjJ+oEslO2UoAykY0bSPaTwucZciNiF2/dqfXp/ZASpn0dHSXI6EN16mTOs3pTK4pI6TSHYdA5wwI7aj7VaUO9KVJZJKxb8fWZBn7lo5NVileUdJDunsx4qOialw5e7oaz5+1V+UYUsCgYBAnEHtPPhPIZUvphJlFrR5Uxs6G7QoFN9jaTuJUN3oKuD4ZC4yANlmQdOLeZcXnFNzXxe3XRMx4He39dyWwkivLuNU+qqBWg593UMczfari+XboJDBwEc+PTkUgCsX9UrlbOe9UBarmsq4bvS9R8GwLQEQoo9Cibq4fnLIqcPeWQKBgAfVN/KUA2Fmh3Sjv8T1vdbkVo5Qsgbe9TeLbduBNqL3GunExhuLVg5tgsIkDDbSA8RuWoHrSqbIsYiRcIH9yPn5X13NM/uir0UrLu963opWpN0b9lftUbeByyY2gAUq6l9bGWb0RWSCXIPeB6F4HAa8vM2h5WadRv+SWQ2Gu/YR
-ae42d0f1-efe6-4cf0-9eab-c3748d191971	501abdae-a433-4e54-985a-a9fdf84bf3b8	keyUse	SIG
-358dfb6d-634d-451a-9e7c-4bff97b3448b	501abdae-a433-4e54-985a-a9fdf84bf3b8	priority	100
-71dfbadf-e0cf-4082-96a8-d579c8abd31e	f76d02eb-db36-4cc1-860e-363ac63254ab	allowed-protocol-mapper-types	saml-user-attribute-mapper
-81eb7e37-8445-4e1c-8850-be746b5b44dc	f76d02eb-db36-4cc1-860e-363ac63254ab	allowed-protocol-mapper-types	oidc-sha256-pairwise-sub-mapper
-88f65fc7-32a6-45fb-b2ab-4570b2ef9c76	f76d02eb-db36-4cc1-860e-363ac63254ab	allowed-protocol-mapper-types	oidc-full-name-mapper
-3b8195df-3898-4e51-8add-12e4ae19f70e	f76d02eb-db36-4cc1-860e-363ac63254ab	allowed-protocol-mapper-types	saml-role-list-mapper
-3a69b2b3-f2bb-4549-9e44-4223951e81ec	f76d02eb-db36-4cc1-860e-363ac63254ab	allowed-protocol-mapper-types	oidc-usermodel-attribute-mapper
-2091a8a8-a7db-48e5-b203-30fb5f65b57b	f76d02eb-db36-4cc1-860e-363ac63254ab	allowed-protocol-mapper-types	oidc-address-mapper
-7562d2f4-088e-4696-a024-af8953bcc445	f76d02eb-db36-4cc1-860e-363ac63254ab	allowed-protocol-mapper-types	saml-user-property-mapper
-26644e1f-6e99-4262-a2b8-1b7339fcbd5a	f76d02eb-db36-4cc1-860e-363ac63254ab	allowed-protocol-mapper-types	oidc-usermodel-property-mapper
-e1bec48e-45c1-4bbb-95f3-4fe96d922b78	6957a15d-2473-4793-90cf-bf7923e35fe2	allowed-protocol-mapper-types	oidc-address-mapper
-3abd1594-306b-4ad1-9904-196a44ebcad2	6957a15d-2473-4793-90cf-bf7923e35fe2	allowed-protocol-mapper-types	oidc-usermodel-property-mapper
-b60c9a40-b851-45e2-a93b-fbcc178c8090	6957a15d-2473-4793-90cf-bf7923e35fe2	allowed-protocol-mapper-types	saml-user-attribute-mapper
-b9c118e0-784d-41d8-8853-d0517d475d1b	6957a15d-2473-4793-90cf-bf7923e35fe2	allowed-protocol-mapper-types	oidc-usermodel-attribute-mapper
-2fad84c1-68ec-4591-8e37-08dbc0596904	6957a15d-2473-4793-90cf-bf7923e35fe2	allowed-protocol-mapper-types	oidc-sha256-pairwise-sub-mapper
-2076f08f-fd5e-4f14-b296-4d46065600c5	6957a15d-2473-4793-90cf-bf7923e35fe2	allowed-protocol-mapper-types	saml-role-list-mapper
-57dca0ca-ccba-4de1-9181-d5f857c7dbb8	6957a15d-2473-4793-90cf-bf7923e35fe2	allowed-protocol-mapper-types	saml-user-property-mapper
-15090af6-6bea-4419-84e7-0970fd09835d	6957a15d-2473-4793-90cf-bf7923e35fe2	allowed-protocol-mapper-types	oidc-full-name-mapper
-d2c256c4-65bf-458c-98f8-01e99a61c183	aa39d65d-762c-4690-9154-219710f831f1	host-sending-registration-request-must-match	true
-bd98060b-c674-4b66-af33-ea4f6470f578	aa39d65d-762c-4690-9154-219710f831f1	client-uris-must-match	true
+e6137aa9-7985-4ecc-80b6-044ada805e0c	666625a3-0302-4415-9914-eb6697a67389	allow-default-scopes	true
+f137b1ed-63fd-417a-a04a-34aa8c73af34	b80d6151-4ec3-48ff-b09c-c21b9466cb51	host-sending-registration-request-must-match	true
+a7d6d9dc-6e5d-48cf-9a15-8d6d1e6866e4	b80d6151-4ec3-48ff-b09c-c21b9466cb51	client-uris-must-match	true
+39cd9585-4409-4954-adfa-0b368462f468	a30c4cbb-8a1f-4e9c-9488-d81f33547100	allowed-protocol-mapper-types	oidc-usermodel-attribute-mapper
+c554dd2b-38a6-4c9a-90ec-282a10f35efd	a30c4cbb-8a1f-4e9c-9488-d81f33547100	allowed-protocol-mapper-types	oidc-sha256-pairwise-sub-mapper
+c83dc28e-5c23-44e6-b2f7-95a6ddff5aa1	a30c4cbb-8a1f-4e9c-9488-d81f33547100	allowed-protocol-mapper-types	oidc-full-name-mapper
+c75623cc-5161-4094-86b1-095cddcc4198	a30c4cbb-8a1f-4e9c-9488-d81f33547100	allowed-protocol-mapper-types	saml-role-list-mapper
+7100c61a-83f6-4c26-b3b8-19317664667c	a30c4cbb-8a1f-4e9c-9488-d81f33547100	allowed-protocol-mapper-types	oidc-usermodel-property-mapper
+b9fea1e2-0774-48a8-a633-57666c6f798f	a30c4cbb-8a1f-4e9c-9488-d81f33547100	allowed-protocol-mapper-types	oidc-address-mapper
+e84a0084-8b29-46a9-8c50-4102253283a4	a30c4cbb-8a1f-4e9c-9488-d81f33547100	allowed-protocol-mapper-types	saml-user-property-mapper
+4ebc6659-c188-450a-90c7-51d9159ea944	a30c4cbb-8a1f-4e9c-9488-d81f33547100	allowed-protocol-mapper-types	saml-user-attribute-mapper
+3eb05fa5-2d21-473e-94bd-32d3aae2a819	de9b0df1-d550-4895-a002-21032404284a	max-clients	200
+82057710-6c07-4d56-9ae3-5a2e0f3058ef	fdc5f54d-45d6-4c86-88aa-0de2efe15986	allow-default-scopes	true
+60d16aeb-9335-400c-99e0-2ca9e3d5b472	3621ce9f-92cf-4d16-a9b5-b4b8f0a3495f	allowed-protocol-mapper-types	saml-user-attribute-mapper
+b5942f1c-5564-41e9-9007-b9c6db6432fb	3621ce9f-92cf-4d16-a9b5-b4b8f0a3495f	allowed-protocol-mapper-types	oidc-sha256-pairwise-sub-mapper
+757bc036-76bc-4a8d-a768-7962124ba15f	3621ce9f-92cf-4d16-a9b5-b4b8f0a3495f	allowed-protocol-mapper-types	oidc-full-name-mapper
+c28e8c9c-ccc8-41ce-8ee2-c83f51f2b974	3621ce9f-92cf-4d16-a9b5-b4b8f0a3495f	allowed-protocol-mapper-types	oidc-usermodel-attribute-mapper
+9405d467-dfe5-441c-81b4-9c308ff084b7	3621ce9f-92cf-4d16-a9b5-b4b8f0a3495f	allowed-protocol-mapper-types	oidc-usermodel-property-mapper
+61e796cd-6c3f-42a6-a038-4c239fec9826	3621ce9f-92cf-4d16-a9b5-b4b8f0a3495f	allowed-protocol-mapper-types	oidc-address-mapper
+5d8f1a16-136c-45d7-9f40-f51d381369f7	3621ce9f-92cf-4d16-a9b5-b4b8f0a3495f	allowed-protocol-mapper-types	saml-user-property-mapper
+e7da75bd-9ba9-4db4-a549-2211a7b649bd	3621ce9f-92cf-4d16-a9b5-b4b8f0a3495f	allowed-protocol-mapper-types	saml-role-list-mapper
+eb704663-982b-496b-9992-16c175ee62c5	22c42495-f2a5-4e0b-8b31-0eb8a81772b9	kc.user.profile.config	{"attributes":[{"name":"username","displayName":"${username}","validations":{"length":{"min":3,"max":255},"username-prohibited-characters":{},"up-username-not-idn-homograph":{}},"permissions":{"view":["admin","user"],"edit":["admin","user"]},"multivalued":false},{"name":"email","displayName":"${email}","validations":{"email":{},"length":{"max":255}},"permissions":{"view":["admin","user"],"edit":["admin","user"]},"multivalued":false},{"name":"firstName","displayName":"${firstName}","validations":{"length":{"max":255},"person-name-prohibited-characters":{}},"permissions":{"view":["admin","user"],"edit":["admin","user"]},"multivalued":false},{"name":"lastName","displayName":"${lastName}","validations":{"length":{"max":255},"person-name-prohibited-characters":{}},"permissions":{"view":["admin","user"],"edit":["admin","user"]},"multivalued":false}],"groups":[{"name":"user-metadata","displayHeader":"User metadata","displayDescription":"Attributes, which refer to user metadata"}]}
+614c98ce-98c2-48fa-a9fe-3c5407979796	3ad83c1e-2a3b-4762-8574-52330b0d6074	algorithm	HS512
+bc71649b-c3ef-4be6-925b-2329746da6fe	3ad83c1e-2a3b-4762-8574-52330b0d6074	kid	cd8eca6e-4437-48df-b1ad-4ce7da19435d
+46ace7af-d9ec-4cfb-97ce-c44db322b8cb	3ad83c1e-2a3b-4762-8574-52330b0d6074	secret	ib4kccDbNydLZ6Z2XaLSm3emPPj9PggWH5O78LJdsyEhxjw0PE-fPZFZyo712xTUBQVapfQ6nwhCuKZ8Nxn6m--c9HjC0B9kuYhxw2EHQkzWk_oNKdm9vCq2U3GUw9cQK7utyF7nEyQomlPLL_IWCtEPMMEe8hNnaP4cW6H1c-Y
+c6574fce-039b-49a3-bac6-61413c0f0c75	3ad83c1e-2a3b-4762-8574-52330b0d6074	priority	100
+d0ea0b8d-4ce6-4727-8666-652e9a14dfb5	db1e4b3f-b7bb-4433-bd41-c819e2f741a8	certificate	MIICmzCCAYMCBgGc9PZqmTANBgkqhkiG9w0BAQsFADARMQ8wDQYDVQQDDAZtYXN0ZXIwHhcNMjYwMzE2MDQ0MzM1WhcNMzYwMzE2MDQ0NTE1WjARMQ8wDQYDVQQDDAZtYXN0ZXIwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDDIpRpLb80bOyy6qDRCM/hbCdI95DDItD42njYsPszYi5p5dJpBDDxN0Up/2XhvgJfFN95SDIEGsltaTQcapE+w9XCDmIcM/Exjn0Kbx+AMKMl6YXOPfhGIjnjIV+XvpKtOVHzIYCrcwaADZ+oO5u/46kThyiqC0DeFS7A8XDIdcg+ZyS2BBF1GuxjR+b0c69SX5ssCVBHYJXO/PLPn4AqCss4PnHpqQvmalo0V0r+xj3p2TllDS7Q+URFnA7hnSWtaJ7DkJAw3GO0RKlgNYS08EUNpg0d0djQF5RZu5GqSXHVClq1bP7Hcln8UKHjCMIxXHCc2ziH/j10nZbJncztAgMBAAEwDQYJKoZIhvcNAQELBQADggEBALq6RQic+5/iAPAn+6PV5NN4NyobHMl2FEWcfF/PNJLtUve2yb8UAYBx+0HP+SMKRp6OBC1bFF0VsHA/8VibgAJMTT6VEtaouj0ZpAFE1NGgQYEV4uwR4jwXMbAUcYbtnPQx2mveWqDmBJ8yg/3QjRi8BsIN1RdkABp7i4Ep6/dhpPe2HUCi2PL9nPvOxHEquNga6B5u6il7QsIGIfBv1DdrEc/oOkUdj0N5hd2osHPRcQ7BIy6TefWn4SQo3KGm41WTogWhNM3xDLo0evOysVGPj57r8R9AARb13hCAtYOrGHRe8EDpZyxgQeMMdIWDXY5rTePonhZxVn6Bv29iGek=
+1e675f7b-8f52-459a-8876-8cf6fa0a4bb3	db1e4b3f-b7bb-4433-bd41-c819e2f741a8	privateKey	MIIEowIBAAKCAQEAwyKUaS2/NGzssuqg0QjP4WwnSPeQwyLQ+Np42LD7M2IuaeXSaQQw8TdFKf9l4b4CXxTfeUgyBBrJbWk0HGqRPsPVwg5iHDPxMY59Cm8fgDCjJemFzj34RiI54yFfl76SrTlR8yGAq3MGgA2fqDubv+OpE4coqgtA3hUuwPFwyHXIPmcktgQRdRrsY0fm9HOvUl+bLAlQR2CVzvzyz5+AKgrLOD5x6akL5mpaNFdK/sY96dk5ZQ0u0PlERZwO4Z0lrWiew5CQMNxjtESpYDWEtPBFDaYNHdHY0BeUWbuRqklx1QpatWz+x3JZ/FCh4wjCMVxwnNs4h/49dJ2WyZ3M7QIDAQABAoIBACHB1i3Z4aWGoG4VQ+vVm+zR4nvvhAYV/FPIq7ZE67gIaKIeRYewV20rVBY/Xhcu4Uckm8Jl+G0YWzdHx2GRF/5lL5IKHfPmEngxv7Tx41+wSlERNHoo403yttPxnpFoQQShkWk/pvxCAmJduPyID1ojXskHjUPZfYfN31A2lH3BASTqr2A6pv4gq9LpNjxQISvLuOGoe4+i/5jAoHuO11Q4xP5FNzrlbw/6zn5vFrkapnh5nnU4mZuP+ELWun1Z1dAQLQZBZZIaP5uMtGP1fG0sWtF5MdALXPqw9MBjFauREBRvEcqXluvsqcOaY++m/xFYdsD44l/BgJrHXBoltXsCgYEA4cJaWYbUhJrR+WryT8cUSnNyUIEDpTy5TGr+haKIXRRXZE4VMV1nzzEwLug26KtP2CdcwuSQ5CeH/HkyySxpjm+ghkHQ1fumzqhUSUxiv22sdMiV4nqpt4ZNLI03HGX//jkxfATVLu2n8/Y2sBjYLqisjREm/Cj8dfpjuN6oi3cCgYEA3UYTlWmCUr+JCxhIvT8W8ljZhNkTtTjzyEATTr7ZC3b5EUpqKHyGMnstWwmGbjim1GvPozmd+TZfl9N6nhhdgbmWcMMV8+kvzuxu0wRTMlMXJpAYkjTCbfIl6XTX3fdraJQcMrqKy1Wd9992rezC2v3gTyymlBRn1/oenZZgu7sCgYEAjc92z4vZTN6vjPv379L+1PGF2jngX1gwkWcYMDtzavyPFMvTlim1ProIKT7m1updgkrfgvDubtLCIf7Dvwit2bIW5J7NHs0v79pe75gS42pyDP2+4P/qQgUTzyt5ddZAoqGsitnCS/MvMBj2K1G/4jdEBGzEz1qzkyxQnd0HhGsCgYBSGvSdVl8zUTsK0OH8xvI+ztU3xEzZy945if0gFRT4ehcFYXVuvHYXOTmlNC2brI3K+I49ZN3HYXOrJJ+1FhlsT28RPHJi5T4GLBkbV9l/LPHEL2fOqKEUpuuGawLGrE5AqeSkti9WL9jD5zlkZBwRom6fMlRFUiUOMRM3KluOjQKBgCBzpkl3cF+bU0LNUU+wWxho8YN0Bv83wKBpq9B+j+Yx5Zgr5yNZ/4HZ299a5RdJGR3Ut7/1QK+GZwPa5GbuYxWE/fwVenBWSwoIAWw2PQhsMnQEC5HB8540kTrdJ+LyPF2Bz/U8cTE8t1gCw7WAl1TxquDc9LtDXnq3ixZ6b8pc
+77ce7ea1-ce4e-455e-9127-50107e89cf50	db1e4b3f-b7bb-4433-bd41-c819e2f741a8	keyUse	ENC
+2667f344-cca6-489c-b708-9d739bf10821	db1e4b3f-b7bb-4433-bd41-c819e2f741a8	algorithm	RSA-OAEP
+6cb3ae31-7d21-4873-b8b4-f5b91db735fa	db1e4b3f-b7bb-4433-bd41-c819e2f741a8	priority	100
+7bb8e362-4590-4e00-8d99-0edd232e890a	4cf30a51-ad50-4519-a0c9-5281e5091481	kid	39594274-6102-40fb-81ca-249ee5487c13
+b3bb6b11-a5ec-4301-bdb0-afdfa49c0959	4cf30a51-ad50-4519-a0c9-5281e5091481	secret	9DSCuXSQk1EPoLXQqBlb3Q
+6be2f2a9-795d-446f-9a26-625dab471227	4cf30a51-ad50-4519-a0c9-5281e5091481	priority	100
+b88058e1-9976-408e-950a-440838656fb0	8a2aaea1-cba5-419a-9765-3e05efd824c2	certificate	MIICmzCCAYMCBgGc9PZpEzANBgkqhkiG9w0BAQsFADARMQ8wDQYDVQQDDAZtYXN0ZXIwHhcNMjYwMzE2MDQ0MzM1WhcNMzYwMzE2MDQ0NTE1WjARMQ8wDQYDVQQDDAZtYXN0ZXIwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDCXgDYCDvsbIT7KiD6NKRm3M4BUp9ZpBFvRmRpAlyYi+PeVdt9Aa/xagnLGs9gIDSH0D7UYQt0bLHKN4ioMN6886wFRXmuapDq8Ytvv2rX/nJVPVFiN73eI+Fbj669x4+tL+jiC/TYjbWviv/r1ATQDOqXzm2el7uELKvyM6xrEpcX0aXZ6ac1TQyDURT8SgRc9H4ODdbYvHQkUsFhLNK/TUeHeTE4g5ifD8S6Wp7w4XyC7r41sYv5bv1FOR2eTvgqK3+C7vFaenXR6z2nY3boKm8IzIcfbzls6U94/NOXyNK+oGv555fbFLYmbY1Vqqg+uiCbQri167bO7W+FKh43AgMBAAEwDQYJKoZIhvcNAQELBQADggEBAFHYcT9MBlU7ecbfEMvEiAqoegCswac7EMxkE96bBBWrxWlvKNB33d2HgtfHwMwyxQuhA7XPt8dtDulecxL+K+u+z5zVpsGotm2lVwIbl3BYSG+RhU4uVIFcI4Dss4ijUwDZuAOA+Tnj9mnVXyDfwbPygIJh4tATEC/JvYYOoSYtK/dXO0g+1eOyy7nIFQo/TnuLGHiWy46Djapeuk59JlqDpeRr1mgVmT6eT1atWwg5l8aWpRUxY7TLWrIOrve6biq+U2Tg0JQT3gGk+ZFFrFAKPDHiUi0kYzYvZSCYUs0zwsM20JPHDRy4Keqs+1VDzFcJX36jPhQ33smVvdWhE68=
+42215ef7-bbc5-4292-a7f5-81ac8b922601	8a2aaea1-cba5-419a-9765-3e05efd824c2	priority	100
+aa1ffea5-82d9-4d0d-8ba7-bde79b23f741	8a2aaea1-cba5-419a-9765-3e05efd824c2	privateKey	MIIEpAIBAAKCAQEAwl4A2Ag77GyE+yog+jSkZtzOAVKfWaQRb0ZkaQJcmIvj3lXbfQGv8WoJyxrPYCA0h9A+1GELdGyxyjeIqDDevPOsBUV5rmqQ6vGLb79q1/5yVT1RYje93iPhW4+uvcePrS/o4gv02I21r4r/69QE0Azql85tnpe7hCyr8jOsaxKXF9Gl2emnNU0Mg1EU/EoEXPR+Dg3W2Lx0JFLBYSzSv01Hh3kxOIOYnw/Eulqe8OF8gu6+NbGL+W79RTkdnk74Kit/gu7xWnp10es9p2N26CpvCMyHH285bOlPePzTl8jSvqBr+eeX2xS2Jm2NVaqoProgm0K4teu2zu1vhSoeNwIDAQABAoIBAEsS5w2KZKblpZmjxJgP9D485B8TrDQCEK/jxw3eWSicw9eRXxVSLQS4ue6mvNm6pr+cmmAK2dNO1n8uYwzfz3C5R8TDeIP7al0tDfgMPfcOs1ekNwaSVDZ0smtcvJhV9/NjcXa6OojYd4hFzqLmwjMgAg6/r4yVu9qKLKIA/oRePff2HqfCdXb7i5gwMg2/OpAMhflf3WOANrE9omHckFK7dgqCsQXbt+zdxrb7JNZI07cCojLBqTS9Qqr65EJn66CtKZYkupo3FErp0msPfuu+mf60+BcErEnvpO3QMKfXX2Z9Mc4K8NtMLXFVsWW6JbBF35aYjJ5UZ5EnermvvM0CgYEA5QPL6lwCRMmj5cBALHuNwqLb/g/WzrZpVgsw0/0z3wypYR1Ee1TVPwZenTJmz/58yFqtIuSvZzKD54mlkRRLd8QOIki9GF9zAQiiQRkrfzRPtDUf+9PiVGYQCsKChTjYJ8P7Tk4pYSuTy7ehMKZvSJD0JiNMDvOQoTTZOQmIo9sCgYEA2UUQu/5e1DbzZDjz1JNPeJ+foxoai5tWhMmx+7dD4jlrt/SIGTCww6CSvPsl4rlRZxn89NG3Fs02zur0vUGgc+XkTY3JfgNZtjAzYvFMXwGatLSLxkACMb6GZGsFqTjowcaNEFRFigK9YUmvxQ2nN2yRaAuURRLXYFzrRVUcK9UCgYEAxEaEtc81go7ukTI7zeP2kyHROeWJTJC5pqzgpE8V7cyEPl8/GhSSzvk+jatswkZx26UbThSA4AlDU2V9KOIj6/lzw55jskfb4L7tkK1pwhOrW99MEiB+kacHiLE7+8HEQBCPiYUjocwfVzGCTJfYOHFDToxh206UXhVVNrUdDpECgYAmv5KEdJEk98fgj+esebkqog0uYXFqhIGhnPcJFV4d8m+rlwjOtUhRG0oQOho/nR1PbesXHm+wuViU/oI3XoTnJpDY4/iTaLWPMHl5o98i8n5MzAZBjRjXFkuRjSStUWDxbh+qUd01B9gOib23PwAbellUXPxMdVfD785lxxAHIQKBgQCKzXMqub2D1KyLE6NI+EfdMZpge9Z+sn2/mzUSbtTDXqpHrCwlIsWQyb2vwGQs76kkMwkhtlTv7jVw1xEF7mXVnX4YRbe2WQ9f3FMEN3xm5OeaAHRSO4DPEbtdVDj4daUSRFetIKr7nG/LeSu01KXcTsRzsIB6DYJJtR2rk2js9Q==
+3a78d691-6a7d-4fd0-9576-bf65aca7982c	8a2aaea1-cba5-419a-9765-3e05efd824c2	keyUse	SIG
+1cc83708-582d-4f9f-953c-cc8458e00c81	1f601b2d-3f3c-4ee1-93f5-cd33a0c3c6cc	kid	3ed0052c-1007-4708-82c0-3497b75085c8
+246cb5ea-cf2a-4aeb-98b1-b55330ae386b	1f601b2d-3f3c-4ee1-93f5-cd33a0c3c6cc	secret	jGKBzJa7FSua3xfWVN9caQ
+39538ce5-445f-47f5-b020-1e7d663b9df3	1f601b2d-3f3c-4ee1-93f5-cd33a0c3c6cc	priority	100
+c294932e-8a13-4bb5-8ffa-f12484d7235d	bf7bc4cc-455f-4d74-ac97-b854b8f126e8	allow-default-scopes	true
+17a57553-9515-4dec-ba6f-3ab3d951ea49	82d74645-ff8e-460e-ab07-a44369c80932	kid	ebb575e0-6a98-447c-97e1-37c876a2e327
+c2a8b2bb-b4f7-406b-b2a4-ced632a300df	82d74645-ff8e-460e-ab07-a44369c80932	priority	100
+c9a72983-eead-455d-bfd3-5c05e41e3c37	82d74645-ff8e-460e-ab07-a44369c80932	secret	mKtc1ZS1Zure5wtquXmZDQJiuhiDEWLpBWY2phgKVV27UO-Oga5WRLy8sRhbO_zKE7UHVZDOwZRroPWvhZD2lsJ1YSaSrZb0yf_9hRKthz4JcGYdOqDVI7w76zdxtHhq9dkkCqgAmOdj7iYiYu7oBBcwd6eWuaHtnIi_q_3j8fw
+43c7d83a-437a-46cc-88e8-79665191c8cc	82d74645-ff8e-460e-ab07-a44369c80932	algorithm	HS512
+af524c88-957a-4876-bd1a-80b2df629be8	4dfd41fa-a9eb-4922-a0cf-d4f7a8ae24c1	max-clients	200
+d04d0acc-b9fe-4e00-a521-6907e65e6777	2feec9eb-9647-4299-86f6-bf7d63fe6ff0	allow-default-scopes	true
+7031d987-ec56-4705-baa3-48b3e9823499	1d42272d-82a4-4f7b-aa8a-02e0a91d8c71	privateKey	MIIEpAIBAAKCAQEA1AoIizYWkAYXg2/eJllPeeS2mBypw2cx1LrPukbrAFrMHvKl+AsKKHr55oPP4n9ZHWMi0NZm9pIdBX6jm6OYsm76cB1HPUjYyxU9iwf2rj5kHOAVRon/1BBAX+v3agXQoMQM4Sski+tmFzhYZUyMJL44nZb9Vo6t2/prOh9uQuJSsaNMRpgmCcV8PwNjKv5G8pm9dvW4KSC/sDLx9VYYe+gqTDhLzu+Dh3gMoD8fMVnIw5c4ZSyWKcbkwwh8wcUVRfZJ9GsC+Zdw44o1yNgHQSFOIvIjkwyW1yLFObOJf5g55c3p9lqu4nlTwcupHkdGimV1WgX2XPnMxuK4LO/2UwIDAQABAoIBAGAzOyQZwovOT72ws9u3OmElnJgPrQ+70nZe2R78zOLIzwIdeaI7M/0gqh9k3xy2RVKZZzLTizxEF0mmZokW5JDT2+igx/Dsi3s75EOfNdJg+R/GpLBvrLNkOiiq0IH4KGq/983yum6Gurc/N4+h9pU2/k21MrQiIIwEpcBlgStzWd3TMlWmSy965bHkF/wET9RrIMR/SWIfgg7nm7lK+VGxVyJay15639EHd7x/rdp6LiBG2uIipZD+NA6WLuOZG86toDUcPas9Di9mkGm2EW3GAxaSz9T47CdJr5hcX7F5CqBn6tnbY5ssJnwi0HUF203Bc/6Z3wh7NGAyGxzMXxECgYEA/3WJ+vIU9K4JWgNFzfbz46rtCOlRgepCeYtoopfHBfkO/cxyK3/SBB1SUt5yWzp/sr6sADXl67932wuxtZozFBC+UKEUCDPK/Qs1TctG/KjS7mdgQvxXt6TpT9C+kTvyo8L9g+rdMrQ8Cs5qtajWaVv/ohMhqfWFk6Apn1p9kTECgYEA1Hz13YrVwyrkBGb0fjW2b09qS9FuLX6WDaR9WZ3GA9APTz4K+zYWtNFfUHwufhO4Z0zxxSlyaiwClRSuJFhFk4DgxB1mUv0wHtPppY8f0jKcnwS3JDL7K4DQ9T5suA21Zt9zUemrMwA+WM/TghTvXplHHtuUhv/fHYglx8QIvsMCgYEApwrOzN8bQNvEla1qKcH/vLF6Cce3WoI6MYwtQZSJuaggW2kihrswMyyRNkrq8CiSc+kmQ4T68WrkDsHY1G0eVVKVf9e0Z6CmbUy08EeqBXDHbMkAMw0atqUJQv22fvV6Ngc9CtO7DHq6gD51nI/olEBqKirkamR3kg666M6dKSECgYEAybvJgQeqYpx51mQYgypjhdITzN+MhszDkTg1ebt8n2oM3uK8cjur2wdcQoFjcncuf4RhlRoAciROX1M+8WqMw7l7qzVuTCPsZ5gxHul/AITkhWRoq4lrRKYLvIoDlcoOCxjh10bNLqJwjsjguYM+rsU+7GDz5idOoC7+D2ZiFxkCgYAns+C2iIbw4M1w3NSFeeVwVDzwSW0c45CNq8BqA1fKqjzS11zmrI5162e+zJI91uF32k1hbWAgrxZV0KuBS+NIhX0hf2nmiTMm3KrGSvx0MLwxX41qPHD9OMW35rzXdXV8scMHkFanJnqDzfTijvCRO3CTqxhnxr36ZEIsdJ7uAg==
+ceda9a58-84e5-422c-9c58-aa32ee095947	1d42272d-82a4-4f7b-aa8a-02e0a91d8c71	keyUse	ENC
+fb4dd185-182e-4905-93af-05babfbe40f8	1d42272d-82a4-4f7b-aa8a-02e0a91d8c71	priority	100
+1f4a9ecb-c2f0-4366-94f6-ff601057cc6b	1d42272d-82a4-4f7b-aa8a-02e0a91d8c71	algorithm	RSA-OAEP
+bda6643d-f6b7-4580-93b2-6230e8688a6d	1d42272d-82a4-4f7b-aa8a-02e0a91d8c71	certificate	MIICozCCAYsCBgGaaGXlZzANBgkqhkiG9w0BAQsFADAVMRMwEQYDVQQDDApsb2NpLXJlYWxtMB4XDTI1MTEwOTExMzMxOVoXDTM1MTEwOTExMzQ1OVowFTETMBEGA1UEAwwKbG9jaS1yZWFsbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANQKCIs2FpAGF4Nv3iZZT3nktpgcqcNnMdS6z7pG6wBazB7ypfgLCih6+eaDz+J/WR1jItDWZvaSHQV+o5ujmLJu+nAdRz1I2MsVPYsH9q4+ZBzgFUaJ/9QQQF/r92oF0KDEDOErJIvrZhc4WGVMjCS+OJ2W/VaOrdv6azofbkLiUrGjTEaYJgnFfD8DYyr+RvKZvXb1uCkgv7Ay8fVWGHvoKkw4S87vg4d4DKA/HzFZyMOXOGUslinG5MMIfMHFFUX2SfRrAvmXcOOKNcjYB0EhTiLyI5MMltcixTmziX+YOeXN6fZaruJ5U8HLqR5HRopldVoF9lz5zMbiuCzv9lMCAwEAATANBgkqhkiG9w0BAQsFAAOCAQEAkYztEr6baQvXYMCHk+ERJKvcAcPC+vJem/CbgAPvkVafToIUxnGOJbLU/MjZMqt2qLxwwfYtcucylE8PoqfjKhW7rImCJPQjezrPtoWoDPzEJ7JCxWoWTlpjSvlprf6zBTt+0YQ1by8OpMK+6WRvJtoNOqzzodpQ9DaqXWYxJegfU5F7bK9pVTyT3J46SIydmnX8Lfwsu+4j5W0kl91DuN1kxLb1294TogP0ERfTtCI+r8KFHGc+1SbizF1bCbpeT9VBWcfSBhyGh1UhgCsSPl9R+9xIRKPoIMmaGZ77pjJ/P7AFvu4LXa5DKgMcAsE0K84fIvC2Xa9phDjNN3zXiQ==
+48affc1f-690c-4ba3-ba5a-acb6d2011425	501abdae-a433-4e54-985a-a9fdf84bf3b8	certificate	MIICozCCAYsCBgGaaGXjJjANBgkqhkiG9w0BAQsFADAVMRMwEQYDVQQDDApsb2NpLXJlYWxtMB4XDTI1MTEwOTExMzMxOVoXDTM1MTEwOTExMzQ1OVowFTETMBEGA1UEAwwKbG9jaS1yZWFsbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALq0+UKen6c2JObNK+a77JbagYsjCNXyOWoNlzulJ+oJ27oSTLfOMpShFNEJU/OOFpqdvolsMJJRh8+o9TUrKhWF1Mkwy17pKbC3xUeX83HrVidxTYsEBkbqHUURxYfab4fOYD5BUkb0iOokqkq2DUowwpRKRIx+UvTJ/FIBExZbB66rAUAixRjsVM7lDRHu7cQE+3ZEhhsWSnfqssWRhS8Z5+D0+j3PNqjfH+WUus5Ch4wpPs3muiHHS26ZpzZ6E4UazHZg32Qxy4kSq1/8B24cvnZviuWfqo/v/nevhtvT4F2+8/ItOmBBcmJZQ5c1LfKVtvngps2Y8sCXJgC8GyUCAwEAATANBgkqhkiG9w0BAQsFAAOCAQEAjNmlykEGuC6D4Gd90FsdRSFnxyKHMfRv7mjBXhjm6uH3RnVx0IiXlb80n2mWJBfXaEV+z6OcmOii1dlSR3+QvsfxnmKUTu6OMD8hqKmAvcBrK87XWPU3VrU+1clnG/AvuhzTMfx+SyptkeyH9nGfbxec2Pk86dc4qJTr6y5qkv6kP9K5wHZPSo0qVxhnk81N+dLl+h9sxgZSY2LkH+WwcQXN36YUWxG7RUZYm9JCxw5utJCPILspDxqKLI4R6gxJ9uV/UBhhqAkaEP0qR2oKmOwxJVwCr4O2WPbU15P2L9h/69za69ipgxRDiSerDoNOvLq4C3O4hJ607ktYIHLzIw==
+8256c90a-3d6a-49e9-a8dd-bde827df6912	501abdae-a433-4e54-985a-a9fdf84bf3b8	privateKey	MIIEoAIBAAKCAQEAurT5Qp6fpzYk5s0r5rvsltqBiyMI1fI5ag2XO6Un6gnbuhJMt84ylKEU0QlT844Wmp2+iWwwklGHz6j1NSsqFYXUyTDLXukpsLfFR5fzcetWJ3FNiwQGRuodRRHFh9pvh85gPkFSRvSI6iSqSrYNSjDClEpEjH5S9Mn8UgETFlsHrqsBQCLFGOxUzuUNEe7txAT7dkSGGxZKd+qyxZGFLxnn4PT6Pc82qN8f5ZS6zkKHjCk+zea6IcdLbpmnNnoThRrMdmDfZDHLiRKrX/wHbhy+dm+K5Z+qj+/+d6+G29PgXb7z8i06YEFyYllDlzUt8pW2+eCmzZjywJcmALwbJQIDAQABAoH/MTI09Wqj60VjL2N9sbFtbgt+FuwVI3/sradl2WC/kKw9jSzVtpFcrkvnACD45KjQZ9Pzp8OEC29R04v9nos6yu/EvvKdxMxm3rov0eA/pcJLOsW+ioodA/Vn5HykSOhkLuh7x0l0EPI1tG/be+2JI2jMiPzvbk1hR39jl5rjkqxWbxwtZw0W9zY37rR2GXwmHdFbYQgDXf73MeE6/K6bbQa6sxvSftyf/W0nTDpVPWtLtdbWb2R1zLWbwslz3rhgdkWGJ/1HakIqunHW6O5eoiG/x345aqp9zo7HuJVG5+tsLfG0zQcxvRxgWSuiMZ5MLz6gdqMBga9wQPDL9WWNAoGBAO8qyXzb136/Elncs8knoIQgdMREoAw0YIZWvQB3m3swN2G9WE2oZJm/ObEAlLlIuu/ngPna/N6MYcePqt5jL4I2sMts5SGF2nP68Ta0TQ+Lldk8jklqnO5OEKNmoQklRWcIa9yBrgWn0lE6y8cYm5fMqXN8P2+/Y5HoKUPtGL5DAoGBAMfY+wpH4mAZ9OYu53BIOQdjqVw/YxKFxNky+YGfuAB+Jy+qoivGVgPnwq+YBsfVmpoB+HEl+Chyj0DHwFueXkJ+8Wcoo39/1DZ2zhnSIRNQfDNOfcfamuz2wsmlChoy+TfqHvUftCrvHOQ7Hu7+fUTBt/X9xoy/KEj9xKQVnA53AoGAMYhWBHLvdYOTBGNuJLn9R4AFTuS7lOuAFjJ+oEslO2UoAykY0bSPaTwucZciNiF2/dqfXp/ZASpn0dHSXI6EN16mTOs3pTK4pI6TSHYdA5wwI7aj7VaUO9KVJZJKxb8fWZBn7lo5NVileUdJDunsx4qOialw5e7oaz5+1V+UYUsCgYBAnEHtPPhPIZUvphJlFrR5Uxs6G7QoFN9jaTuJUN3oKuD4ZC4yANlmQdOLeZcXnFNzXxe3XRMx4He39dyWwkivLuNU+qqBWg593UMczfari+XboJDBwEc+PTkUgCsX9UrlbOe9UBarmsq4bvS9R8GwLQEQoo9Cibq4fnLIqcPeWQKBgAfVN/KUA2Fmh3Sjv8T1vdbkVo5Qsgbe9TeLbduBNqL3GunExhuLVg5tgsIkDDbSA8RuWoHrSqbIsYiRcIH9yPn5X13NM/uir0UrLu963opWpN0b9lftUbeByyY2gAUq6l9bGWb0RWSCXIPeB6F4HAa8vM2h5WadRv+SWQ2Gu/YR
+3c4198d2-9ff5-4aa6-ac40-28b98dc790c5	501abdae-a433-4e54-985a-a9fdf84bf3b8	keyUse	SIG
+6303ceb4-5a3c-45d4-a6dc-3daedcefa173	501abdae-a433-4e54-985a-a9fdf84bf3b8	priority	100
+38dacfa5-6699-4fb1-8bd3-4da1ff6f952f	f76d02eb-db36-4cc1-860e-363ac63254ab	allowed-protocol-mapper-types	saml-user-property-mapper
+139679a0-3bb4-4366-9990-d9f08610d95e	f76d02eb-db36-4cc1-860e-363ac63254ab	allowed-protocol-mapper-types	saml-user-attribute-mapper
+360172e0-7e88-4e28-b2f6-7523c4b1a841	f76d02eb-db36-4cc1-860e-363ac63254ab	allowed-protocol-mapper-types	oidc-sha256-pairwise-sub-mapper
+a4282a40-a515-4938-b7ae-a5e9fbd93841	f76d02eb-db36-4cc1-860e-363ac63254ab	allowed-protocol-mapper-types	saml-role-list-mapper
+0a48892e-da6d-4eb7-b5db-c2cadb6a541d	f76d02eb-db36-4cc1-860e-363ac63254ab	allowed-protocol-mapper-types	oidc-usermodel-property-mapper
+a5923ec8-a6fa-4331-b802-0ecd696be9b4	f76d02eb-db36-4cc1-860e-363ac63254ab	allowed-protocol-mapper-types	oidc-usermodel-attribute-mapper
+29aedeff-8d5c-4f67-80f9-d4dc675a4a95	f76d02eb-db36-4cc1-860e-363ac63254ab	allowed-protocol-mapper-types	oidc-address-mapper
+3aea0624-db75-4816-9ab8-b991a26a1e4d	f76d02eb-db36-4cc1-860e-363ac63254ab	allowed-protocol-mapper-types	oidc-full-name-mapper
+07f73635-1b2e-4839-babc-5fdc7b35cca9	6957a15d-2473-4793-90cf-bf7923e35fe2	allowed-protocol-mapper-types	oidc-address-mapper
+41dda619-7a0b-491b-b2ae-6d7a13c28c87	6957a15d-2473-4793-90cf-bf7923e35fe2	allowed-protocol-mapper-types	oidc-usermodel-attribute-mapper
+5af27740-4fef-4e45-a8ef-363567f4121b	6957a15d-2473-4793-90cf-bf7923e35fe2	allowed-protocol-mapper-types	saml-user-property-mapper
+9ce3af93-a441-4991-af4f-cdaee12e3f77	6957a15d-2473-4793-90cf-bf7923e35fe2	allowed-protocol-mapper-types	saml-user-attribute-mapper
+520efb88-6431-4ef1-9ea3-827190435151	6957a15d-2473-4793-90cf-bf7923e35fe2	allowed-protocol-mapper-types	oidc-full-name-mapper
+adef9f31-a181-4d43-a46c-387241894052	6957a15d-2473-4793-90cf-bf7923e35fe2	allowed-protocol-mapper-types	oidc-sha256-pairwise-sub-mapper
+9aef061d-4dcc-41f4-9c47-a92b6645db17	6957a15d-2473-4793-90cf-bf7923e35fe2	allowed-protocol-mapper-types	saml-role-list-mapper
+b28a94a6-98fe-4a88-9cd6-1d4dff9c440d	6957a15d-2473-4793-90cf-bf7923e35fe2	allowed-protocol-mapper-types	oidc-usermodel-property-mapper
+73934b36-5449-44b8-92c3-760aded33201	aa39d65d-762c-4690-9154-219710f831f1	host-sending-registration-request-must-match	true
+96c81887-b2b5-4bff-8124-5c2d51cb97d9	aa39d65d-762c-4690-9154-219710f831f1	client-uris-must-match	true
 \.
 
 
@@ -2436,54 +2436,54 @@ bd98060b-c674-4b66-af33-ea4f6470f578	aa39d65d-762c-4690-9154-219710f831f1	client
 --
 
 COPY public.composite_role (composite, child_role) FROM stdin;
-43d6e07f-425c-4e22-a520-fec4553c67f7	45fc1a0e-400a-4762-80d7-ca64fdf9685e
-43d6e07f-425c-4e22-a520-fec4553c67f7	e2450599-fb0d-4261-a65d-1fe3529e336f
-43d6e07f-425c-4e22-a520-fec4553c67f7	9b3e9dee-5ab0-462c-a5b2-a1d3c4542a19
-43d6e07f-425c-4e22-a520-fec4553c67f7	c7a4926a-4c81-46f6-a12f-bf932fcc4bdf
-43d6e07f-425c-4e22-a520-fec4553c67f7	2e07ef14-56c2-48fc-b4b4-ba315329a029
-43d6e07f-425c-4e22-a520-fec4553c67f7	6938546d-2770-438d-87d9-23f8f7e45d8e
-43d6e07f-425c-4e22-a520-fec4553c67f7	b49e50b2-dde1-46bd-9d47-e148f855b76d
-43d6e07f-425c-4e22-a520-fec4553c67f7	2cf01fa9-1cea-4717-ae0e-58142d5613cb
-43d6e07f-425c-4e22-a520-fec4553c67f7	b74ecc58-6f10-4bb7-9bcd-c179d93d3bfc
-43d6e07f-425c-4e22-a520-fec4553c67f7	cd83381b-8d04-4097-8de8-9271586a039a
-43d6e07f-425c-4e22-a520-fec4553c67f7	00f15235-26c4-4a6c-9367-a41a0b75853f
-43d6e07f-425c-4e22-a520-fec4553c67f7	8a33bea0-bcdf-4650-85aa-a3ce2f21d6ed
-43d6e07f-425c-4e22-a520-fec4553c67f7	8d0d258b-9906-4302-b009-cb7746389269
-43d6e07f-425c-4e22-a520-fec4553c67f7	20e3b031-9da2-408d-b75d-f29c93e1751d
-43d6e07f-425c-4e22-a520-fec4553c67f7	409c8218-5b23-4bb4-9daf-32d87e3efafd
-43d6e07f-425c-4e22-a520-fec4553c67f7	ad7f1d57-c22f-43d1-8b84-f027d2b2a0f1
-43d6e07f-425c-4e22-a520-fec4553c67f7	7e4017e7-ba9a-4e37-ae08-4d053cf86df3
-43d6e07f-425c-4e22-a520-fec4553c67f7	fed6fb93-fd41-42c0-8eb5-1d049c4c3ad0
-2e07ef14-56c2-48fc-b4b4-ba315329a029	ad7f1d57-c22f-43d1-8b84-f027d2b2a0f1
-5ea353d2-033e-4026-88ca-d70ae17157cc	fb5d0b9b-afb8-427c-9ad4-cbd2b2c64409
-c7a4926a-4c81-46f6-a12f-bf932fcc4bdf	fed6fb93-fd41-42c0-8eb5-1d049c4c3ad0
-c7a4926a-4c81-46f6-a12f-bf932fcc4bdf	409c8218-5b23-4bb4-9daf-32d87e3efafd
-5ea353d2-033e-4026-88ca-d70ae17157cc	9cbb4c10-20d6-42a4-b09c-7132659c9039
-9cbb4c10-20d6-42a4-b09c-7132659c9039	c3c5a69f-7b8a-4492-a703-94380bc144b1
-26b931bb-3b09-43da-b6c6-bdcb5750481c	481e97b7-5ccc-42fe-ac29-ff722cf7076e
-43d6e07f-425c-4e22-a520-fec4553c67f7	c5116b05-9db1-4773-8756-1d368d3f2ebf
-5ea353d2-033e-4026-88ca-d70ae17157cc	ece8840c-9a8d-4b57-8f15-0f989d6b80fe
-5ea353d2-033e-4026-88ca-d70ae17157cc	35ef1bbd-79a5-406e-bf0d-a74de55047b5
-43d6e07f-425c-4e22-a520-fec4553c67f7	58322d83-6ad4-43ff-818d-2ffdfa163267
-43d6e07f-425c-4e22-a520-fec4553c67f7	0de19735-b65f-43e6-84d0-b2ce0e7b38c5
-43d6e07f-425c-4e22-a520-fec4553c67f7	78f47948-fe72-4715-ab7f-8f379328edf8
-43d6e07f-425c-4e22-a520-fec4553c67f7	8cacdf8e-47b2-46f8-a13b-e46c3e1b3d54
-43d6e07f-425c-4e22-a520-fec4553c67f7	cf3911cf-6de6-4014-a06f-771819352d09
-43d6e07f-425c-4e22-a520-fec4553c67f7	6fa77ccc-2898-4154-a72f-2463cbde0cfc
-43d6e07f-425c-4e22-a520-fec4553c67f7	92eaf1e9-ae71-4f6b-969e-9b4f50ad0d1f
-43d6e07f-425c-4e22-a520-fec4553c67f7	9b90f0e5-a693-4a7f-967e-6e91b3c53eb3
-43d6e07f-425c-4e22-a520-fec4553c67f7	b6ecb822-7fa1-4a35-92c5-617a79e5bf8d
-43d6e07f-425c-4e22-a520-fec4553c67f7	15748f75-0a0d-4c5f-ab39-f7817b7ce68b
-43d6e07f-425c-4e22-a520-fec4553c67f7	b8e897ef-5bd5-4e4c-96df-c58c4f997e74
-43d6e07f-425c-4e22-a520-fec4553c67f7	84e6d154-dee3-4200-9cf7-2a9b47872418
-43d6e07f-425c-4e22-a520-fec4553c67f7	9be58f3d-4c48-436e-a3c9-86aa2fcdfcbd
-43d6e07f-425c-4e22-a520-fec4553c67f7	6746b5d7-b7ab-4f65-bc3e-794ac6f1a0cb
-43d6e07f-425c-4e22-a520-fec4553c67f7	a1cbbd07-01d8-4b56-b936-03851c96f0d7
-43d6e07f-425c-4e22-a520-fec4553c67f7	818a00f7-4126-4319-a351-137e2f9948e2
-43d6e07f-425c-4e22-a520-fec4553c67f7	ac1615dd-9436-4eaa-8274-81b125397d1d
-78f47948-fe72-4715-ab7f-8f379328edf8	ac1615dd-9436-4eaa-8274-81b125397d1d
-78f47948-fe72-4715-ab7f-8f379328edf8	6746b5d7-b7ab-4f65-bc3e-794ac6f1a0cb
-8cacdf8e-47b2-46f8-a13b-e46c3e1b3d54	a1cbbd07-01d8-4b56-b936-03851c96f0d7
+c6db3fe2-addb-424c-94bf-964ce7aea7a1	12cbfeda-8508-4c50-b57d-0f3d35a57c2f
+c6db3fe2-addb-424c-94bf-964ce7aea7a1	f02d87bc-cc93-4c05-be79-9a48841f0dcf
+c6db3fe2-addb-424c-94bf-964ce7aea7a1	d0671755-37b9-4d57-b6c3-7d6414dd7866
+c6db3fe2-addb-424c-94bf-964ce7aea7a1	52f8bcac-12ab-4f6c-8c9b-675c664f1139
+c6db3fe2-addb-424c-94bf-964ce7aea7a1	dc2369ea-5050-498b-94ce-5350c71bb9ca
+c6db3fe2-addb-424c-94bf-964ce7aea7a1	d7bac925-a702-4088-87f2-754f9c21a4b4
+c6db3fe2-addb-424c-94bf-964ce7aea7a1	1321934a-8d77-4fae-9c9e-faba2b28d7f6
+c6db3fe2-addb-424c-94bf-964ce7aea7a1	172bc481-97d2-4e6b-9a49-de1ea665671f
+c6db3fe2-addb-424c-94bf-964ce7aea7a1	8faae7cd-20db-4edb-b1b0-6edb34f0caf1
+c6db3fe2-addb-424c-94bf-964ce7aea7a1	e04d0dac-4270-4cae-951b-ec312be93b32
+c6db3fe2-addb-424c-94bf-964ce7aea7a1	709b32fd-28e8-4cc3-91de-4d039752c537
+c6db3fe2-addb-424c-94bf-964ce7aea7a1	bf903b0f-6a33-421d-a7e7-e43388ae8b46
+c6db3fe2-addb-424c-94bf-964ce7aea7a1	e327197a-3124-42b8-9a09-2e2d04eea168
+c6db3fe2-addb-424c-94bf-964ce7aea7a1	469ad077-4fc3-4e85-8c7d-a89b63fa08a4
+c6db3fe2-addb-424c-94bf-964ce7aea7a1	6c19d6fe-7dfe-48e5-88e0-7803c038447f
+c6db3fe2-addb-424c-94bf-964ce7aea7a1	6b7b7f41-9036-4ed9-9608-84eebd91375d
+c6db3fe2-addb-424c-94bf-964ce7aea7a1	af554b21-806b-4b7a-a902-c50e70ee72c2
+c6db3fe2-addb-424c-94bf-964ce7aea7a1	d8bcea2d-84a6-4a71-9690-fb4692aa0963
+52f8bcac-12ab-4f6c-8c9b-675c664f1139	6c19d6fe-7dfe-48e5-88e0-7803c038447f
+52f8bcac-12ab-4f6c-8c9b-675c664f1139	d8bcea2d-84a6-4a71-9690-fb4692aa0963
+69545a87-078a-4282-91ee-802c3c1c746a	0980f492-0a4b-4cbe-8579-07ad2dcf4a94
+dc2369ea-5050-498b-94ce-5350c71bb9ca	6b7b7f41-9036-4ed9-9608-84eebd91375d
+69545a87-078a-4282-91ee-802c3c1c746a	f5f5d47e-8316-47bf-b479-3cfea07ea5c2
+f5f5d47e-8316-47bf-b479-3cfea07ea5c2	6f359d5e-8561-45dc-a78a-9a8e5af1c71f
+900ec742-e2b3-461b-b8be-00e3fe7fddb7	4435ecf7-761c-416f-b23e-d38bbe1edc23
+c6db3fe2-addb-424c-94bf-964ce7aea7a1	44c81794-d083-4b6c-8dcf-76e091d85b70
+69545a87-078a-4282-91ee-802c3c1c746a	5670c91c-8594-4a71-9009-20ad77fc9ba4
+69545a87-078a-4282-91ee-802c3c1c746a	ca95e2c4-340a-4fd2-855c-402686b9f31a
+c6db3fe2-addb-424c-94bf-964ce7aea7a1	b86ae6a8-96ee-4c61-972c-249298a95e40
+c6db3fe2-addb-424c-94bf-964ce7aea7a1	05f1b1ca-6768-415c-b3ab-6ea73b22b7a4
+c6db3fe2-addb-424c-94bf-964ce7aea7a1	9b842559-782d-442d-9754-ebdbca01c7d0
+c6db3fe2-addb-424c-94bf-964ce7aea7a1	42546ad0-93fd-4600-901f-fed6688bb0fb
+c6db3fe2-addb-424c-94bf-964ce7aea7a1	ade59042-6b46-4f35-bae4-b588e0a841c4
+c6db3fe2-addb-424c-94bf-964ce7aea7a1	a498cd5f-88fe-4a83-86bf-eea96ac8e9da
+c6db3fe2-addb-424c-94bf-964ce7aea7a1	f7b3375e-bdd8-4c24-9485-87b647a0c457
+c6db3fe2-addb-424c-94bf-964ce7aea7a1	a5d4a4b9-a680-47aa-a060-59edd7fb4cd4
+c6db3fe2-addb-424c-94bf-964ce7aea7a1	50bd2a41-ca19-439b-9283-4d7d4ef39548
+c6db3fe2-addb-424c-94bf-964ce7aea7a1	16029c9c-59cb-4097-8f34-29772f620ed1
+c6db3fe2-addb-424c-94bf-964ce7aea7a1	0e532c26-0e90-4471-9f34-ebdf918de860
+c6db3fe2-addb-424c-94bf-964ce7aea7a1	b8452691-a5a6-4a14-b47c-204e865209bd
+c6db3fe2-addb-424c-94bf-964ce7aea7a1	4eaccf71-decf-4642-a51e-523b45e86d77
+c6db3fe2-addb-424c-94bf-964ce7aea7a1	3ee16c4d-21dc-488f-8596-02969887b138
+c6db3fe2-addb-424c-94bf-964ce7aea7a1	ac41bbd1-1870-4060-9113-2be836ef19b7
+c6db3fe2-addb-424c-94bf-964ce7aea7a1	fe7e1331-9cb7-48c7-b4a4-0b1796050a8a
+c6db3fe2-addb-424c-94bf-964ce7aea7a1	c900338a-858e-4840-b099-cd3f9e6fb793
+42546ad0-93fd-4600-901f-fed6688bb0fb	ac41bbd1-1870-4060-9113-2be836ef19b7
+9b842559-782d-442d-9754-ebdbca01c7d0	c900338a-858e-4840-b099-cd3f9e6fb793
+9b842559-782d-442d-9754-ebdbca01c7d0	3ee16c4d-21dc-488f-8596-02969887b138
 221f3b69-a59e-4a34-a95a-71f10cef4e0a	0cf5be44-ba63-47c2-b752-662ef0a5885b
 2e0714ed-6fbf-47eb-ae88-59ce44d6ed3b	b39c73a7-84b1-40ff-9fd9-6f314c9ede7a
 4009714e-eefe-46d4-9b37-639a6edfa501	7d52ab89-86c3-4b57-bab0-02bbe460212e
@@ -2512,7 +2512,7 @@ fd6368e9-9e26-469e-8d79-707f3c20354a	38244948-f337-4b8b-9c15-fdc672bc80f9
 fd6368e9-9e26-469e-8d79-707f3c20354a	abfd79ad-9ca7-4f0b-b54b-78a9c1e9f28e
 fd6368e9-9e26-469e-8d79-707f3c20354a	6bf59d64-e73b-44b6-93cc-75d66c644214
 fd6368e9-9e26-469e-8d79-707f3c20354a	0cf5be44-ba63-47c2-b752-662ef0a5885b
-43d6e07f-425c-4e22-a520-fec4553c67f7	e5be2e9e-d1ff-4cb8-af27-44722544242e
+c6db3fe2-addb-424c-94bf-964ce7aea7a1	5033caf4-d01b-42ce-8c46-fd095c600868
 \.
 
 
@@ -2718,6 +2718,8 @@ COPY public.contact (blocked_by, contact_user_id, created_date, id, last_modifie
 \N	40	2025-03-15 02:44:46.551261+00	196	2025-03-15 02:44:46.551261+00	27
 4	40	2025-06-19 14:32:28.443939+00	197	2025-06-19 14:32:28.443939+00	4
 40	40	2025-05-25 16:10:39.005264+00	198	2025-05-25 16:10:39.005264+00	14
+\N	10	2026-03-16 10:15:34.346909+00	203	2026-03-16 10:15:34.346909+00	43
+\N	43	2026-03-17 08:19:15.073418+00	204	2026-03-17 08:19:15.073418+00	46
 \.
 
 
@@ -2726,8 +2728,10 @@ COPY public.contact (blocked_by, contact_user_id, created_date, id, last_modifie
 --
 
 COPY public.contact_request (created_date, id, last_modified_date, receiver_user_id, request_user_id, public_id, status) FROM stdin;
-2026-02-05 06:47:30.860281+00	2	2026-02-05 06:47:30.860281+00	1	10	840f0242-feb4-407b-8063-a09a75370a87	PENDING
 2026-02-05 06:57:54.863406+00	3	2026-02-05 06:57:54.863406+00	2	10	4d9a498d-7f30-400e-a97c-24112dafff89	PENDING
+2026-03-16 10:15:28.37759+00	4	2026-03-16 10:15:34.360949+00	43	10	2afe82f0-dbdb-4f41-8fe5-b2f6d0176c29	ACCEPTED
+2026-03-17 08:19:05.890574+00	5	2026-03-17 08:19:15.075582+00	46	43	c71fd114-0802-40e3-a4bb-cdd3e2131824	ACCEPTED
+2026-03-23 07:57:51.860793+00	7	2026-03-23 07:57:51.860793+00	1	10	3cf16eeb-eaed-4500-8d78-1c6769f9a67f	PENDING
 \.
 
 
@@ -2934,6 +2938,11 @@ f	2025-08-08 22:14:52.961113+00	24	195	5623	2025-10-28 23:49:21.218449+00	2025-0
 f	2025-09-26 00:42:36.685511+00	35	196	5649	2025-02-25 23:56:40.809905+00	2025-09-26 00:42:36.685511+00	e18658f6-43df-466e-a332-bc051fbe55ea	ONE_TO_ONE
 f	2025-06-29 09:13:05.257277+00	37	197	5676	2025-02-14 22:24:56.261033+00	2025-06-29 09:13:05.257277+00	fc39256f-af86-4840-8a89-cc065934fd1e	ONE_TO_ONE
 f	2025-09-09 11:42:27.792573+00	30	198	5693	2025-11-24 11:08:03.144587+00	2025-09-09 11:42:27.792573+00	23e893db-6dc3-4459-9178-004c785ab47c	ONE_TO_ONE
+f	2026-03-16 10:16:42.367732+00	10	201	5788	\N	2026-03-16 10:16:42.367732+00	0a012345-4a80-463f-b3d7-3cdbf6601630	GROUP
+f	2026-03-16 05:15:08.9116+00	10	199	5697	\N	2026-03-16 05:15:08.9116+00	37c025e9-4726-4b9b-9db0-a5f8b7c8da0f	GROUP
+f	2026-03-17 08:20:38.998409+00	43	203	5813	\N	2026-03-17 08:20:38.998409+00	4f7690b6-eb6c-4f56-942d-ff64da63beb6	GROUP
+f	2026-03-16 10:15:41.985513+00	10	200	5810	\N	2026-03-16 10:15:41.985513+00	41c77e99-d227-421d-828f-e6e49d66c0d0	ONE_TO_ONE
+f	2026-03-17 08:19:19.726088+00	43	202	5800	\N	2026-03-17 08:19:19.726088+00	cd263281-fff6-4f4e-b98a-dea32d8ea155	ONE_TO_ONE
 \.
 
 
@@ -3338,6 +3347,23 @@ COPY public.conversation_participant (conversation_id, created_date, id, last_mo
 197	2025-06-29 09:13:05.257277+00	394	2025-06-29 09:13:05.257277+00	5676	37	MEMBER
 198	2025-09-09 11:42:27.792573+00	395	2025-09-09 11:42:27.792573+00	5693	11	MEMBER
 198	2025-09-09 11:42:27.792573+00	396	2025-09-09 11:42:27.792573+00	5693	30	MEMBER
+199	2026-03-16 05:15:08.942977+00	397	2026-03-16 05:15:08.942977+00	\N	17	MEMBER
+199	2026-03-16 05:15:08.949225+00	398	2026-03-16 05:15:08.949225+00	\N	24	MEMBER
+199	2026-03-16 05:15:08.952718+00	400	2026-03-16 05:15:08.952718+00	\N	25	MEMBER
+199	2026-03-16 05:15:08.954989+00	401	2026-03-16 05:15:08.954989+00	\N	27	MEMBER
+199	2026-03-16 05:15:08.950884+00	399	2026-03-16 10:11:05.616142+00	5697	10	ADMIN
+201	2026-03-16 10:16:42.372754+00	404	2026-03-16 10:16:42.372754+00	\N	25	MEMBER
+201	2026-03-16 10:16:42.378075+00	406	2026-03-16 10:16:42.378075+00	\N	24	MEMBER
+201	2026-03-16 10:16:42.38013+00	407	2026-03-16 10:16:42.38013+00	\N	17	MEMBER
+202	2026-03-17 08:19:19.734132+00	410	2026-03-17 08:22:52.896927+00	5800	46	MEMBER
+203	2026-03-17 08:20:39.000648+00	412	2026-03-24 09:39:55.547246+00	5812	10	MEMBER
+201	2026-03-16 10:16:42.381901+00	408	2026-03-17 08:17:40.885438+00	5758	43	MEMBER
+200	2026-03-16 10:15:41.998806+00	402	2026-03-24 09:29:06.907419+00	5807	10	MEMBER
+201	2026-03-16 10:16:42.375317+00	405	2026-03-17 08:17:25.920874+00	5788	10	ADMIN
+203	2026-03-17 08:20:38.99996+00	411	2026-03-24 09:29:38.881779+00	5802	46	MEMBER
+202	2026-03-17 08:19:19.73333+00	409	2026-03-17 08:19:46.160332+00	5800	43	MEMBER
+203	2026-03-17 08:20:39.001627+00	413	2026-03-24 09:43:23.028753+00	5813	43	ADMIN
+200	2026-03-16 10:15:42.00054+00	403	2026-03-24 09:30:22.135345+00	5810	43	MEMBER
 \.
 
 
@@ -3349,6 +3375,7 @@ COPY public.credential (id, salt, type, user_id, created_date, user_label, secre
 84251835-7dc3-4b30-95db-345a3da58d94	\N	password	8a98e8b9-37ff-4a89-b8d8-a7e4d45d4f1e	1764321071664	\N	{"value":"HSBCnNrDksQosQ9OSswzK1ihQ5+YsYwW+RXbRD6i6E4=","salt":"nEc2eDIJ1SDA2KsKs4sxuw==","additionalParameters":{}}	{"hashIterations":5,"algorithm":"argon2","additionalParameters":{"hashLength":["32"],"memory":["7168"],"type":["id"],"version":["1.3"],"parallelism":["1"]}}	10
 ca42242d-7a5b-49fb-a726-94cc3ebbad5e	\N	password	09ef75b6-5d8f-443f-ab88-1e6e4fdd09a0	1764321071175	\N	{"value":"xELDHXIMz2SB3rXkQ9aRP0ky2HavG5+lGfuLk8vB8q4=","salt":"7Ak1Kjz9Vh5UlzpakgGGvw==","additionalParameters":{}}	{"hashIterations":5,"algorithm":"argon2","additionalParameters":{"hashLength":["32"],"memory":["7168"],"type":["id"],"version":["1.3"],"parallelism":["1"]}}	10
 1a698437-2d1c-4633-aa48-7824fb01bffd	\N	password	e0f4cddc-281e-48f7-8ca7-6dbbd0c0a96a	1764321074286	\N	{"value":"1AiInpBNiM8kVffXZWKn5FxFbaJt1jZYVBa3rZ+Hjuw=","salt":"jqXSLrwVYr3qS5pjRREuxg==","additionalParameters":{}}	{"hashIterations":5,"algorithm":"argon2","additionalParameters":{"hashLength":["32"],"memory":["7168"],"type":["id"],"version":["1.3"],"parallelism":["1"]}}	10
+3854734b-0a37-490b-a131-3fc780277d32	\N	password	2aa6f4d9-a114-4da6-9399-85faf256854e	1770263007631	\N	{"value":"XRyl5gRXv0JurMkd64A8VNTGbki9ERAE2Kb6mJWDkP8=","salt":"3xF2AXE641JN0j1y0GKfjA==","additionalParameters":{}}	{"hashIterations":5,"algorithm":"argon2","additionalParameters":{"hashLength":["32"],"memory":["7168"],"type":["id"],"version":["1.3"],"parallelism":["1"]}}	10
 e6fb331b-3839-4365-aeb7-49463902c2e0	\N	password	a03e7f08-f0c7-4c40-97d6-e3bff7d00057	1764321071424	\N	{"value":"23lKH6jBKcSgS9ngaONFjmCN1AtRUsYPawB+y0btWDc=","salt":"5hcE9Xn4MCo3O6HLcXc5uQ==","additionalParameters":{}}	{"hashIterations":5,"algorithm":"argon2","additionalParameters":{"hashLength":["32"],"memory":["7168"],"type":["id"],"version":["1.3"],"parallelism":["1"]}}	10
 2bce277c-62c4-4a90-a0a3-3c7eba2df287	\N	password	8c2bd715-2950-4ad6-a43b-7d75874ed33d	1764321071894	\N	{"value":"O1/tL0gpgjuBrndqc3NhzmsKVoeZ9LWMMcqx+7a/NqE=","salt":"sH32CKT3qFstawP5ljgOMw==","additionalParameters":{}}	{"hashIterations":5,"algorithm":"argon2","additionalParameters":{"hashLength":["32"],"memory":["7168"],"type":["id"],"version":["1.3"],"parallelism":["1"]}}	10
 dd9c6a0f-5989-458b-947a-b00d67e40935	\N	password	9d478593-8658-473d-9f6a-cfb8530385b3	1764321070942	\N	{"value":"GL2Jf7f+Qsy8jUAqzsXVzKVyUn8+Ov4eHfO5qhokPlA=","salt":"qAH6H0f0uYLE8mgsA35MSA==","additionalParameters":{}}	{"hashIterations":5,"algorithm":"argon2","additionalParameters":{"hashLength":["32"],"memory":["7168"],"type":["id"],"version":["1.3"],"parallelism":["1"]}}	10
@@ -3357,6 +3384,7 @@ ecffde03-f274-463d-aeb9-0cbbdf6237b1	\N	password	b1e6055e-734d-4367-8330-975869b
 60014adf-0511-4848-91dd-9c0dc54b445a	\N	password	a8973d47-25d6-4904-ab93-4b30aac43dba	1764321072122	\N	{"value":"SpuRAjEWVzSgVnfyPK7/LAfFhaNCZlKxVS2uvlE2NV0=","salt":"hnvmAplYDuS31+1bx6EeDw==","additionalParameters":{}}	{"hashIterations":5,"algorithm":"argon2","additionalParameters":{"hashLength":["32"],"memory":["7168"],"type":["id"],"version":["1.3"],"parallelism":["1"]}}	10
 a12c2a7c-cc6a-49cd-93dd-37face8619d8	\N	password	a50fc325-a397-4f18-bb31-75cc1191ffa8	1764321074037	\N	{"value":"mPShEwnhZHUzjX4hnT2EH06FPhj5tDVyOl8ICiNzvvE=","salt":"ubVxJlMg1hOGPrX7H51RpQ==","additionalParameters":{}}	{"hashIterations":5,"algorithm":"argon2","additionalParameters":{"hashLength":["32"],"memory":["7168"],"type":["id"],"version":["1.3"],"parallelism":["1"]}}	10
 af521363-eeb7-44c5-b0df-c7f06bd3063b	\N	password	32ca4097-7490-4a9a-aecf-8c948a2a0e41	1764321074733	\N	{"value":"WytbL6FbgPljOJ3Z88KJGsShNNc9U1Ds54f4GKXwOhY=","salt":"lacJGokwOTTeu6gz/zA4Vg==","additionalParameters":{}}	{"hashIterations":5,"algorithm":"argon2","additionalParameters":{"hashLength":["32"],"memory":["7168"],"type":["id"],"version":["1.3"],"parallelism":["1"]}}	10
+d40f1ed9-f784-4f8a-a7de-e0abc5686c74	\N	password	1639b859-d3af-4555-b69e-796c1b1c34e3	1770273951114	\N	{"value":"jmiA8LCxkK6zpqX8FuEsN0mpL23FLc/gYyewI2+KT18=","salt":"WZDpZrkzgxR2UvKsjJ7V4g==","additionalParameters":{}}	{"hashIterations":5,"algorithm":"argon2","additionalParameters":{"hashLength":["32"],"memory":["7168"],"type":["id"],"version":["1.3"],"parallelism":["1"]}}	10
 1abd804d-e12f-44fa-9073-05248bbb9428	\N	password	cf8665b4-ef04-45b5-9b90-b3864e58e0ff	1764321072838	\N	{"value":"/V37bwJtBFGQI2a8nv11KasC+3gLe0HJOGItVZw8mus=","salt":"9ZgIncL3z2ahYC7CNDe0Tw==","additionalParameters":{}}	{"hashIterations":5,"algorithm":"argon2","additionalParameters":{"hashLength":["32"],"memory":["7168"],"type":["id"],"version":["1.3"],"parallelism":["1"]}}	10
 5bc3ff1a-0c3f-4e0c-9312-1334199de184	\N	password	8ad53006-5ab5-45fb-84c0-497a6424d782	1764321073783	\N	{"value":"SjGHGunTShrJuxLdLbXRmnqyW3rZkKKOePQ/t6t+72c=","salt":"mxaMInqv4IlSCExB5NHsdQ==","additionalParameters":{}}	{"hashIterations":5,"algorithm":"argon2","additionalParameters":{"hashLength":["32"],"memory":["7168"],"type":["id"],"version":["1.3"],"parallelism":["1"]}}	10
 147a4356-bb0f-4fca-8293-8d39531077c4	\N	password	7b0afce6-4207-467a-9e67-e013d8f70566	1764321073106	\N	{"value":"Z2E58jlq1BK34atKpw0BtDsH6oMaXOsGre38c/KXlDI=","salt":"tymRwj1+PeBUDnliL6Zq4Q==","additionalParameters":{}}	{"hashIterations":5,"algorithm":"argon2","additionalParameters":{"hashLength":["32"],"memory":["7168"],"type":["id"],"version":["1.3"],"parallelism":["1"]}}	10
@@ -3367,9 +3395,7 @@ a6225f6e-0efc-4d1e-a00b-52929d810950	\N	password	4eb678c6-f977-46ba-baaf-c9bf4be
 a2d7b307-c5be-43ea-bca2-a1035251e98f	\N	password	27e24793-eb80-4ba8-9ace-95f432ca5199	1764321072576	\N	{"value":"T8o5lVvOctKiCgpnaSyGfcoOGq4TGwv1p1m3uNSg7m8=","salt":"mmTZOXP7m0bQTM2dOIYSjA==","additionalParameters":{}}	{"hashIterations":5,"algorithm":"argon2","additionalParameters":{"hashLength":["32"],"memory":["7168"],"type":["id"],"version":["1.3"],"parallelism":["1"]}}	10
 5a47f8f5-1782-46cd-bfa8-b87c75719c52	\N	password	cd2e474a-f099-4cce-ac9f-4d047fd00a01	1764321439165	\N	{"value":"IKJRKUvzKfSkDymzwH+Wb6k2vbmM/4N6sryVOeZZg9k=","salt":"mv6VCQF/bx8mg9Fa23XrHA==","additionalParameters":{}}	{"hashIterations":5,"algorithm":"argon2","additionalParameters":{"hashLength":["32"],"memory":["7168"],"type":["id"],"version":["1.3"],"parallelism":["1"]}}	10
 0c6686be-24f0-4813-97bd-7bb0c89ec71d	\N	password	4c8aa205-60a4-4caf-8b62-34777a9784dc	1764321072346	\N	{"value":"hqExNklwPtrhWNdYn5nCL/oQtOzOG57r8TKjRsQhpkg=","salt":"F0M3feF5WSzYGB3tvU5r+A==","additionalParameters":{}}	{"hashIterations":5,"algorithm":"argon2","additionalParameters":{"hashLength":["32"],"memory":["7168"],"type":["id"],"version":["1.3"],"parallelism":["1"]}}	10
-d11be3ac-0062-4d8e-a61b-951df95ca02a	\N	password	a94e5bd9-0766-48c7-aa6d-0b4a5010da14	1770262752627	\N	{"value":"S9YCCityUCDOu7WjQ0/I9qHllbjs9q5E1AwMWStE4EY=","salt":"MsJ1JquqbMmgfyR+hHZkhg==","additionalParameters":{}}	{"hashIterations":5,"algorithm":"argon2","additionalParameters":{"hashLength":["32"],"memory":["7168"],"type":["id"],"version":["1.3"],"parallelism":["1"]}}	10
-3854734b-0a37-490b-a131-3fc780277d32	\N	password	2aa6f4d9-a114-4da6-9399-85faf256854e	1770263007631	\N	{"value":"XRyl5gRXv0JurMkd64A8VNTGbki9ERAE2Kb6mJWDkP8=","salt":"3xF2AXE641JN0j1y0GKfjA==","additionalParameters":{}}	{"hashIterations":5,"algorithm":"argon2","additionalParameters":{"hashLength":["32"],"memory":["7168"],"type":["id"],"version":["1.3"],"parallelism":["1"]}}	10
-d40f1ed9-f784-4f8a-a7de-e0abc5686c74	\N	password	1639b859-d3af-4555-b69e-796c1b1c34e3	1770273951114	\N	{"value":"jmiA8LCxkK6zpqX8FuEsN0mpL23FLc/gYyewI2+KT18=","salt":"WZDpZrkzgxR2UvKsjJ7V4g==","additionalParameters":{}}	{"hashIterations":5,"algorithm":"argon2","additionalParameters":{"hashLength":["32"],"memory":["7168"],"type":["id"],"version":["1.3"],"parallelism":["1"]}}	10
+254ebba4-770b-4f14-904b-a6d40f65aecc	\N	password	4aed1f3e-884c-47f0-921a-4ca32c3d4a6b	1773636321763	\N	{"value":"pa8RDBM2INtyLnzTUueoSH3hi7awgwFjfAHPf7urBb0=","salt":"06tM8nT0PKC2/q+TLKIvpg==","additionalParameters":{}}	{"hashIterations":5,"algorithm":"argon2","additionalParameters":{"hashLength":["32"],"memory":["7168"],"type":["id"],"version":["1.3"],"parallelism":["1"]}}	10
 \.
 
 
@@ -3378,6 +3404,150 @@ d40f1ed9-f784-4f8a-a7de-e0abc5686c74	\N	password	1639b859-d3af-4555-b69e-796c1b1
 --
 
 COPY public.databasechangelog (id, author, filename, dateexecuted, orderexecuted, exectype, md5sum, description, comments, tag, liquibase, contexts, labels, deployment_id) FROM stdin;
+1.0.0.Final-KEYCLOAK-5461	sthorger@redhat.com	META-INF/jpa-changelog-1.0.0.Final.xml	2026-03-16 04:45:01.783764	1	EXECUTED	9:6f1016664e21e16d26517a4418f5e3df	createTable tableName=APPLICATION_DEFAULT_ROLES; createTable tableName=CLIENT; createTable tableName=CLIENT_SESSION; createTable tableName=CLIENT_SESSION_ROLE; createTable tableName=COMPOSITE_ROLE; createTable tableName=CREDENTIAL; createTable tab...		\N	4.29.1	\N	\N	3636300860
+1.0.0.Final-KEYCLOAK-5461	sthorger@redhat.com	META-INF/db2-jpa-changelog-1.0.0.Final.xml	2026-03-16 04:45:01.82673	2	MARK_RAN	9:828775b1596a07d1200ba1d49e5e3941	createTable tableName=APPLICATION_DEFAULT_ROLES; createTable tableName=CLIENT; createTable tableName=CLIENT_SESSION; createTable tableName=CLIENT_SESSION_ROLE; createTable tableName=COMPOSITE_ROLE; createTable tableName=CREDENTIAL; createTable tab...		\N	4.29.1	\N	\N	3636300860
+1.1.0.Beta1	sthorger@redhat.com	META-INF/jpa-changelog-1.1.0.Beta1.xml	2026-03-16 04:45:01.898312	3	EXECUTED	9:5f090e44a7d595883c1fb61f4b41fd38	delete tableName=CLIENT_SESSION_ROLE; delete tableName=CLIENT_SESSION; delete tableName=USER_SESSION; createTable tableName=CLIENT_ATTRIBUTES; createTable tableName=CLIENT_SESSION_NOTE; createTable tableName=APP_NODE_REGISTRATIONS; addColumn table...		\N	4.29.1	\N	\N	3636300860
+1.1.0.Final	sthorger@redhat.com	META-INF/jpa-changelog-1.1.0.Final.xml	2026-03-16 04:45:01.906715	4	EXECUTED	9:c07e577387a3d2c04d1adc9aaad8730e	renameColumn newColumnName=EVENT_TIME, oldColumnName=TIME, tableName=EVENT_ENTITY		\N	4.29.1	\N	\N	3636300860
+1.2.0.Beta1	psilva@redhat.com	META-INF/jpa-changelog-1.2.0.Beta1.xml	2026-03-16 04:45:02.078665	5	EXECUTED	9:b68ce996c655922dbcd2fe6b6ae72686	delete tableName=CLIENT_SESSION_ROLE; delete tableName=CLIENT_SESSION_NOTE; delete tableName=CLIENT_SESSION; delete tableName=USER_SESSION; createTable tableName=PROTOCOL_MAPPER; createTable tableName=PROTOCOL_MAPPER_CONFIG; createTable tableName=...		\N	4.29.1	\N	\N	3636300860
+1.2.0.Beta1	psilva@redhat.com	META-INF/db2-jpa-changelog-1.2.0.Beta1.xml	2026-03-16 04:45:02.094187	6	MARK_RAN	9:543b5c9989f024fe35c6f6c5a97de88e	delete tableName=CLIENT_SESSION_ROLE; delete tableName=CLIENT_SESSION_NOTE; delete tableName=CLIENT_SESSION; delete tableName=USER_SESSION; createTable tableName=PROTOCOL_MAPPER; createTable tableName=PROTOCOL_MAPPER_CONFIG; createTable tableName=...		\N	4.29.1	\N	\N	3636300860
+1.2.0.RC1	bburke@redhat.com	META-INF/jpa-changelog-1.2.0.CR1.xml	2026-03-16 04:45:02.24118	7	EXECUTED	9:765afebbe21cf5bbca048e632df38336	delete tableName=CLIENT_SESSION_ROLE; delete tableName=CLIENT_SESSION_NOTE; delete tableName=CLIENT_SESSION; delete tableName=USER_SESSION_NOTE; delete tableName=USER_SESSION; createTable tableName=MIGRATION_MODEL; createTable tableName=IDENTITY_P...		\N	4.29.1	\N	\N	3636300860
+1.2.0.RC1	bburke@redhat.com	META-INF/db2-jpa-changelog-1.2.0.CR1.xml	2026-03-16 04:45:02.253257	8	MARK_RAN	9:db4a145ba11a6fdaefb397f6dbf829a1	delete tableName=CLIENT_SESSION_ROLE; delete tableName=CLIENT_SESSION_NOTE; delete tableName=CLIENT_SESSION; delete tableName=USER_SESSION_NOTE; delete tableName=USER_SESSION; createTable tableName=MIGRATION_MODEL; createTable tableName=IDENTITY_P...		\N	4.29.1	\N	\N	3636300860
+1.2.0.Final	keycloak	META-INF/jpa-changelog-1.2.0.Final.xml	2026-03-16 04:45:02.266702	9	EXECUTED	9:9d05c7be10cdb873f8bcb41bc3a8ab23	update tableName=CLIENT; update tableName=CLIENT; update tableName=CLIENT		\N	4.29.1	\N	\N	3636300860
+1.3.0	bburke@redhat.com	META-INF/jpa-changelog-1.3.0.xml	2026-03-16 04:45:02.438585	10	EXECUTED	9:18593702353128d53111f9b1ff0b82b8	delete tableName=CLIENT_SESSION_ROLE; delete tableName=CLIENT_SESSION_PROT_MAPPER; delete tableName=CLIENT_SESSION_NOTE; delete tableName=CLIENT_SESSION; delete tableName=USER_SESSION_NOTE; delete tableName=USER_SESSION; createTable tableName=ADMI...		\N	4.29.1	\N	\N	3636300860
+1.4.0	bburke@redhat.com	META-INF/jpa-changelog-1.4.0.xml	2026-03-16 04:45:02.519981	11	EXECUTED	9:6122efe5f090e41a85c0f1c9e52cbb62	delete tableName=CLIENT_SESSION_AUTH_STATUS; delete tableName=CLIENT_SESSION_ROLE; delete tableName=CLIENT_SESSION_PROT_MAPPER; delete tableName=CLIENT_SESSION_NOTE; delete tableName=CLIENT_SESSION; delete tableName=USER_SESSION_NOTE; delete table...		\N	4.29.1	\N	\N	3636300860
+1.4.0	bburke@redhat.com	META-INF/db2-jpa-changelog-1.4.0.xml	2026-03-16 04:45:02.53222	12	MARK_RAN	9:e1ff28bf7568451453f844c5d54bb0b5	delete tableName=CLIENT_SESSION_AUTH_STATUS; delete tableName=CLIENT_SESSION_ROLE; delete tableName=CLIENT_SESSION_PROT_MAPPER; delete tableName=CLIENT_SESSION_NOTE; delete tableName=CLIENT_SESSION; delete tableName=USER_SESSION_NOTE; delete table...		\N	4.29.1	\N	\N	3636300860
+1.5.0	bburke@redhat.com	META-INF/jpa-changelog-1.5.0.xml	2026-03-16 04:45:02.575849	13	EXECUTED	9:7af32cd8957fbc069f796b61217483fd	delete tableName=CLIENT_SESSION_AUTH_STATUS; delete tableName=CLIENT_SESSION_ROLE; delete tableName=CLIENT_SESSION_PROT_MAPPER; delete tableName=CLIENT_SESSION_NOTE; delete tableName=CLIENT_SESSION; delete tableName=USER_SESSION_NOTE; delete table...		\N	4.29.1	\N	\N	3636300860
+1.6.1_from15	mposolda@redhat.com	META-INF/jpa-changelog-1.6.1.xml	2026-03-16 04:45:02.603008	14	EXECUTED	9:6005e15e84714cd83226bf7879f54190	addColumn tableName=REALM; addColumn tableName=KEYCLOAK_ROLE; addColumn tableName=CLIENT; createTable tableName=OFFLINE_USER_SESSION; createTable tableName=OFFLINE_CLIENT_SESSION; addPrimaryKey constraintName=CONSTRAINT_OFFL_US_SES_PK2, tableName=...		\N	4.29.1	\N	\N	3636300860
+1.6.1_from16-pre	mposolda@redhat.com	META-INF/jpa-changelog-1.6.1.xml	2026-03-16 04:45:02.606011	15	MARK_RAN	9:bf656f5a2b055d07f314431cae76f06c	delete tableName=OFFLINE_CLIENT_SESSION; delete tableName=OFFLINE_USER_SESSION		\N	4.29.1	\N	\N	3636300860
+1.6.1_from16	mposolda@redhat.com	META-INF/jpa-changelog-1.6.1.xml	2026-03-16 04:45:02.611196	16	MARK_RAN	9:f8dadc9284440469dcf71e25ca6ab99b	dropPrimaryKey constraintName=CONSTRAINT_OFFLINE_US_SES_PK, tableName=OFFLINE_USER_SESSION; dropPrimaryKey constraintName=CONSTRAINT_OFFLINE_CL_SES_PK, tableName=OFFLINE_CLIENT_SESSION; addColumn tableName=OFFLINE_USER_SESSION; update tableName=OF...		\N	4.29.1	\N	\N	3636300860
+1.6.1	mposolda@redhat.com	META-INF/jpa-changelog-1.6.1.xml	2026-03-16 04:45:02.616797	17	EXECUTED	9:d41d8cd98f00b204e9800998ecf8427e	empty		\N	4.29.1	\N	\N	3636300860
+1.7.0	bburke@redhat.com	META-INF/jpa-changelog-1.7.0.xml	2026-03-16 04:45:02.686993	18	EXECUTED	9:3368ff0be4c2855ee2dd9ca813b38d8e	createTable tableName=KEYCLOAK_GROUP; createTable tableName=GROUP_ROLE_MAPPING; createTable tableName=GROUP_ATTRIBUTE; createTable tableName=USER_GROUP_MEMBERSHIP; createTable tableName=REALM_DEFAULT_GROUPS; addColumn tableName=IDENTITY_PROVIDER; ...		\N	4.29.1	\N	\N	3636300860
+1.8.0	mposolda@redhat.com	META-INF/jpa-changelog-1.8.0.xml	2026-03-16 04:45:02.74805	19	EXECUTED	9:8ac2fb5dd030b24c0570a763ed75ed20	addColumn tableName=IDENTITY_PROVIDER; createTable tableName=CLIENT_TEMPLATE; createTable tableName=CLIENT_TEMPLATE_ATTRIBUTES; createTable tableName=TEMPLATE_SCOPE_MAPPING; dropNotNullConstraint columnName=CLIENT_ID, tableName=PROTOCOL_MAPPER; ad...		\N	4.29.1	\N	\N	3636300860
+1.8.0-2	keycloak	META-INF/jpa-changelog-1.8.0.xml	2026-03-16 04:45:02.755611	20	EXECUTED	9:f91ddca9b19743db60e3057679810e6c	dropDefaultValue columnName=ALGORITHM, tableName=CREDENTIAL; update tableName=CREDENTIAL		\N	4.29.1	\N	\N	3636300860
+26.0.0-33201-org-redirect-url	keycloak	META-INF/jpa-changelog-26.0.0.xml	2026-03-16 04:45:11.609734	144	EXECUTED	9:4d0e22b0ac68ebe9794fa9cb752ea660	addColumn tableName=ORG		\N	4.29.1	\N	\N	3636300860
+1.8.0	mposolda@redhat.com	META-INF/db2-jpa-changelog-1.8.0.xml	2026-03-16 04:45:02.761917	21	MARK_RAN	9:831e82914316dc8a57dc09d755f23c51	addColumn tableName=IDENTITY_PROVIDER; createTable tableName=CLIENT_TEMPLATE; createTable tableName=CLIENT_TEMPLATE_ATTRIBUTES; createTable tableName=TEMPLATE_SCOPE_MAPPING; dropNotNullConstraint columnName=CLIENT_ID, tableName=PROTOCOL_MAPPER; ad...		\N	4.29.1	\N	\N	3636300860
+1.8.0-2	keycloak	META-INF/db2-jpa-changelog-1.8.0.xml	2026-03-16 04:45:02.7673	22	MARK_RAN	9:f91ddca9b19743db60e3057679810e6c	dropDefaultValue columnName=ALGORITHM, tableName=CREDENTIAL; update tableName=CREDENTIAL		\N	4.29.1	\N	\N	3636300860
+1.9.0	mposolda@redhat.com	META-INF/jpa-changelog-1.9.0.xml	2026-03-16 04:45:02.916866	23	EXECUTED	9:bc3d0f9e823a69dc21e23e94c7a94bb1	update tableName=REALM; update tableName=REALM; update tableName=REALM; update tableName=REALM; update tableName=CREDENTIAL; update tableName=CREDENTIAL; update tableName=CREDENTIAL; update tableName=REALM; update tableName=REALM; customChange; dr...		\N	4.29.1	\N	\N	3636300860
+1.9.1	keycloak	META-INF/jpa-changelog-1.9.1.xml	2026-03-16 04:45:02.9259	24	EXECUTED	9:c9999da42f543575ab790e76439a2679	modifyDataType columnName=PRIVATE_KEY, tableName=REALM; modifyDataType columnName=PUBLIC_KEY, tableName=REALM; modifyDataType columnName=CERTIFICATE, tableName=REALM		\N	4.29.1	\N	\N	3636300860
+1.9.1	keycloak	META-INF/db2-jpa-changelog-1.9.1.xml	2026-03-16 04:45:02.930159	25	MARK_RAN	9:0d6c65c6f58732d81569e77b10ba301d	modifyDataType columnName=PRIVATE_KEY, tableName=REALM; modifyDataType columnName=CERTIFICATE, tableName=REALM		\N	4.29.1	\N	\N	3636300860
+1.9.2	keycloak	META-INF/jpa-changelog-1.9.2.xml	2026-03-16 04:45:03.788588	26	EXECUTED	9:fc576660fc016ae53d2d4778d84d86d0	createIndex indexName=IDX_USER_EMAIL, tableName=USER_ENTITY; createIndex indexName=IDX_USER_ROLE_MAPPING, tableName=USER_ROLE_MAPPING; createIndex indexName=IDX_USER_GROUP_MAPPING, tableName=USER_GROUP_MEMBERSHIP; createIndex indexName=IDX_USER_CO...		\N	4.29.1	\N	\N	3636300860
+authz-2.0.0	psilva@redhat.com	META-INF/jpa-changelog-authz-2.0.0.xml	2026-03-16 04:45:03.874703	27	EXECUTED	9:43ed6b0da89ff77206289e87eaa9c024	createTable tableName=RESOURCE_SERVER; addPrimaryKey constraintName=CONSTRAINT_FARS, tableName=RESOURCE_SERVER; addUniqueConstraint constraintName=UK_AU8TT6T700S9V50BU18WS5HA6, tableName=RESOURCE_SERVER; createTable tableName=RESOURCE_SERVER_RESOU...		\N	4.29.1	\N	\N	3636300860
+authz-2.5.1	psilva@redhat.com	META-INF/jpa-changelog-authz-2.5.1.xml	2026-03-16 04:45:03.87978	28	EXECUTED	9:44bae577f551b3738740281eceb4ea70	update tableName=RESOURCE_SERVER_POLICY		\N	4.29.1	\N	\N	3636300860
+2.1.0-KEYCLOAK-5461	bburke@redhat.com	META-INF/jpa-changelog-2.1.0.xml	2026-03-16 04:45:03.936222	29	EXECUTED	9:bd88e1f833df0420b01e114533aee5e8	createTable tableName=BROKER_LINK; createTable tableName=FED_USER_ATTRIBUTE; createTable tableName=FED_USER_CONSENT; createTable tableName=FED_USER_CONSENT_ROLE; createTable tableName=FED_USER_CONSENT_PROT_MAPPER; createTable tableName=FED_USER_CR...		\N	4.29.1	\N	\N	3636300860
+2.2.0	bburke@redhat.com	META-INF/jpa-changelog-2.2.0.xml	2026-03-16 04:45:03.952433	30	EXECUTED	9:a7022af5267f019d020edfe316ef4371	addColumn tableName=ADMIN_EVENT_ENTITY; createTable tableName=CREDENTIAL_ATTRIBUTE; createTable tableName=FED_CREDENTIAL_ATTRIBUTE; modifyDataType columnName=VALUE, tableName=CREDENTIAL; addForeignKeyConstraint baseTableName=FED_CREDENTIAL_ATTRIBU...		\N	4.29.1	\N	\N	3636300860
+2.3.0	bburke@redhat.com	META-INF/jpa-changelog-2.3.0.xml	2026-03-16 04:45:03.974321	31	EXECUTED	9:fc155c394040654d6a79227e56f5e25a	createTable tableName=FEDERATED_USER; addPrimaryKey constraintName=CONSTR_FEDERATED_USER, tableName=FEDERATED_USER; dropDefaultValue columnName=TOTP, tableName=USER_ENTITY; dropColumn columnName=TOTP, tableName=USER_ENTITY; addColumn tableName=IDE...		\N	4.29.1	\N	\N	3636300860
+2.4.0	bburke@redhat.com	META-INF/jpa-changelog-2.4.0.xml	2026-03-16 04:45:03.981481	32	EXECUTED	9:eac4ffb2a14795e5dc7b426063e54d88	customChange		\N	4.29.1	\N	\N	3636300860
+2.5.0	bburke@redhat.com	META-INF/jpa-changelog-2.5.0.xml	2026-03-16 04:45:03.992108	33	EXECUTED	9:54937c05672568c4c64fc9524c1e9462	customChange; modifyDataType columnName=USER_ID, tableName=OFFLINE_USER_SESSION		\N	4.29.1	\N	\N	3636300860
+2.5.0-unicode-oracle	hmlnarik@redhat.com	META-INF/jpa-changelog-2.5.0.xml	2026-03-16 04:45:03.996019	34	MARK_RAN	9:3a32bace77c84d7678d035a7f5a8084e	modifyDataType columnName=DESCRIPTION, tableName=AUTHENTICATION_FLOW; modifyDataType columnName=DESCRIPTION, tableName=CLIENT_TEMPLATE; modifyDataType columnName=DESCRIPTION, tableName=RESOURCE_SERVER_POLICY; modifyDataType columnName=DESCRIPTION,...		\N	4.29.1	\N	\N	3636300860
+2.5.0-unicode-other-dbs	hmlnarik@redhat.com	META-INF/jpa-changelog-2.5.0.xml	2026-03-16 04:45:04.032851	35	EXECUTED	9:33d72168746f81f98ae3a1e8e0ca3554	modifyDataType columnName=DESCRIPTION, tableName=AUTHENTICATION_FLOW; modifyDataType columnName=DESCRIPTION, tableName=CLIENT_TEMPLATE; modifyDataType columnName=DESCRIPTION, tableName=RESOURCE_SERVER_POLICY; modifyDataType columnName=DESCRIPTION,...		\N	4.29.1	\N	\N	3636300860
+2.5.0-duplicate-email-support	slawomir@dabek.name	META-INF/jpa-changelog-2.5.0.xml	2026-03-16 04:45:04.043082	36	EXECUTED	9:61b6d3d7a4c0e0024b0c839da283da0c	addColumn tableName=REALM		\N	4.29.1	\N	\N	3636300860
+2.5.0-unique-group-names	hmlnarik@redhat.com	META-INF/jpa-changelog-2.5.0.xml	2026-03-16 04:45:04.049339	37	EXECUTED	9:8dcac7bdf7378e7d823cdfddebf72fda	addUniqueConstraint constraintName=SIBLING_NAMES, tableName=KEYCLOAK_GROUP		\N	4.29.1	\N	\N	3636300860
+2.5.1	bburke@redhat.com	META-INF/jpa-changelog-2.5.1.xml	2026-03-16 04:45:04.055695	38	EXECUTED	9:a2b870802540cb3faa72098db5388af3	addColumn tableName=FED_USER_CONSENT		\N	4.29.1	\N	\N	3636300860
+3.0.0	bburke@redhat.com	META-INF/jpa-changelog-3.0.0.xml	2026-03-16 04:45:04.061031	39	EXECUTED	9:132a67499ba24bcc54fb5cbdcfe7e4c0	addColumn tableName=IDENTITY_PROVIDER		\N	4.29.1	\N	\N	3636300860
+3.2.0-fix	keycloak	META-INF/jpa-changelog-3.2.0.xml	2026-03-16 04:45:04.063147	40	MARK_RAN	9:938f894c032f5430f2b0fafb1a243462	addNotNullConstraint columnName=REALM_ID, tableName=CLIENT_INITIAL_ACCESS		\N	4.29.1	\N	\N	3636300860
+3.2.0-fix-with-keycloak-5416	keycloak	META-INF/jpa-changelog-3.2.0.xml	2026-03-16 04:45:04.066529	41	MARK_RAN	9:845c332ff1874dc5d35974b0babf3006	dropIndex indexName=IDX_CLIENT_INIT_ACC_REALM, tableName=CLIENT_INITIAL_ACCESS; addNotNullConstraint columnName=REALM_ID, tableName=CLIENT_INITIAL_ACCESS; createIndex indexName=IDX_CLIENT_INIT_ACC_REALM, tableName=CLIENT_INITIAL_ACCESS		\N	4.29.1	\N	\N	3636300860
+3.2.0-fix-offline-sessions	hmlnarik	META-INF/jpa-changelog-3.2.0.xml	2026-03-16 04:45:04.074425	42	EXECUTED	9:fc86359c079781adc577c5a217e4d04c	customChange		\N	4.29.1	\N	\N	3636300860
+3.2.0-fixed	keycloak	META-INF/jpa-changelog-3.2.0.xml	2026-03-16 04:45:06.659683	43	EXECUTED	9:59a64800e3c0d09b825f8a3b444fa8f4	addColumn tableName=REALM; dropPrimaryKey constraintName=CONSTRAINT_OFFL_CL_SES_PK2, tableName=OFFLINE_CLIENT_SESSION; dropColumn columnName=CLIENT_SESSION_ID, tableName=OFFLINE_CLIENT_SESSION; addPrimaryKey constraintName=CONSTRAINT_OFFL_CL_SES_P...		\N	4.29.1	\N	\N	3636300860
+3.3.0	keycloak	META-INF/jpa-changelog-3.3.0.xml	2026-03-16 04:45:06.665175	44	EXECUTED	9:d48d6da5c6ccf667807f633fe489ce88	addColumn tableName=USER_ENTITY		\N	4.29.1	\N	\N	3636300860
+authz-3.4.0.CR1-resource-server-pk-change-part1	glavoie@gmail.com	META-INF/jpa-changelog-authz-3.4.0.CR1.xml	2026-03-16 04:45:06.671166	45	EXECUTED	9:dde36f7973e80d71fceee683bc5d2951	addColumn tableName=RESOURCE_SERVER_POLICY; addColumn tableName=RESOURCE_SERVER_RESOURCE; addColumn tableName=RESOURCE_SERVER_SCOPE		\N	4.29.1	\N	\N	3636300860
+authz-3.4.0.CR1-resource-server-pk-change-part2-KEYCLOAK-6095	hmlnarik@redhat.com	META-INF/jpa-changelog-authz-3.4.0.CR1.xml	2026-03-16 04:45:06.677251	46	EXECUTED	9:b855e9b0a406b34fa323235a0cf4f640	customChange		\N	4.29.1	\N	\N	3636300860
+authz-3.4.0.CR1-resource-server-pk-change-part3-fixed	glavoie@gmail.com	META-INF/jpa-changelog-authz-3.4.0.CR1.xml	2026-03-16 04:45:06.680287	47	MARK_RAN	9:51abbacd7b416c50c4421a8cabf7927e	dropIndex indexName=IDX_RES_SERV_POL_RES_SERV, tableName=RESOURCE_SERVER_POLICY; dropIndex indexName=IDX_RES_SRV_RES_RES_SRV, tableName=RESOURCE_SERVER_RESOURCE; dropIndex indexName=IDX_RES_SRV_SCOPE_RES_SRV, tableName=RESOURCE_SERVER_SCOPE		\N	4.29.1	\N	\N	3636300860
+authz-3.4.0.CR1-resource-server-pk-change-part3-fixed-nodropindex	glavoie@gmail.com	META-INF/jpa-changelog-authz-3.4.0.CR1.xml	2026-03-16 04:45:06.848859	48	EXECUTED	9:bdc99e567b3398bac83263d375aad143	addNotNullConstraint columnName=RESOURCE_SERVER_CLIENT_ID, tableName=RESOURCE_SERVER_POLICY; addNotNullConstraint columnName=RESOURCE_SERVER_CLIENT_ID, tableName=RESOURCE_SERVER_RESOURCE; addNotNullConstraint columnName=RESOURCE_SERVER_CLIENT_ID, ...		\N	4.29.1	\N	\N	3636300860
+authn-3.4.0.CR1-refresh-token-max-reuse	glavoie@gmail.com	META-INF/jpa-changelog-authz-3.4.0.CR1.xml	2026-03-16 04:45:06.855665	49	EXECUTED	9:d198654156881c46bfba39abd7769e69	addColumn tableName=REALM		\N	4.29.1	\N	\N	3636300860
+3.4.0	keycloak	META-INF/jpa-changelog-3.4.0.xml	2026-03-16 04:45:06.887244	50	EXECUTED	9:cfdd8736332ccdd72c5256ccb42335db	addPrimaryKey constraintName=CONSTRAINT_REALM_DEFAULT_ROLES, tableName=REALM_DEFAULT_ROLES; addPrimaryKey constraintName=CONSTRAINT_COMPOSITE_ROLE, tableName=COMPOSITE_ROLE; addPrimaryKey constraintName=CONSTR_REALM_DEFAULT_GROUPS, tableName=REALM...		\N	4.29.1	\N	\N	3636300860
+3.4.0-KEYCLOAK-5230	hmlnarik@redhat.com	META-INF/jpa-changelog-3.4.0.xml	2026-03-16 04:45:07.448872	51	EXECUTED	9:7c84de3d9bd84d7f077607c1a4dcb714	createIndex indexName=IDX_FU_ATTRIBUTE, tableName=FED_USER_ATTRIBUTE; createIndex indexName=IDX_FU_CONSENT, tableName=FED_USER_CONSENT; createIndex indexName=IDX_FU_CONSENT_RU, tableName=FED_USER_CONSENT; createIndex indexName=IDX_FU_CREDENTIAL, t...		\N	4.29.1	\N	\N	3636300860
+3.4.1	psilva@redhat.com	META-INF/jpa-changelog-3.4.1.xml	2026-03-16 04:45:07.455355	52	EXECUTED	9:5a6bb36cbefb6a9d6928452c0852af2d	modifyDataType columnName=VALUE, tableName=CLIENT_ATTRIBUTES		\N	4.29.1	\N	\N	3636300860
+3.4.2	keycloak	META-INF/jpa-changelog-3.4.2.xml	2026-03-16 04:45:07.461997	53	EXECUTED	9:8f23e334dbc59f82e0a328373ca6ced0	update tableName=REALM		\N	4.29.1	\N	\N	3636300860
+3.4.2-KEYCLOAK-5172	mkanis@redhat.com	META-INF/jpa-changelog-3.4.2.xml	2026-03-16 04:45:07.469316	54	EXECUTED	9:9156214268f09d970cdf0e1564d866af	update tableName=CLIENT		\N	4.29.1	\N	\N	3636300860
+4.0.0-KEYCLOAK-6335	bburke@redhat.com	META-INF/jpa-changelog-4.0.0.xml	2026-03-16 04:45:07.479084	55	EXECUTED	9:db806613b1ed154826c02610b7dbdf74	createTable tableName=CLIENT_AUTH_FLOW_BINDINGS; addPrimaryKey constraintName=C_CLI_FLOW_BIND, tableName=CLIENT_AUTH_FLOW_BINDINGS		\N	4.29.1	\N	\N	3636300860
+4.0.0-CLEANUP-UNUSED-TABLE	bburke@redhat.com	META-INF/jpa-changelog-4.0.0.xml	2026-03-16 04:45:07.490295	56	EXECUTED	9:229a041fb72d5beac76bb94a5fa709de	dropTable tableName=CLIENT_IDENTITY_PROV_MAPPING		\N	4.29.1	\N	\N	3636300860
+4.0.0-KEYCLOAK-6228	bburke@redhat.com	META-INF/jpa-changelog-4.0.0.xml	2026-03-16 04:45:07.575876	57	EXECUTED	9:079899dade9c1e683f26b2aa9ca6ff04	dropUniqueConstraint constraintName=UK_JKUWUVD56ONTGSUHOGM8UEWRT, tableName=USER_CONSENT; dropNotNullConstraint columnName=CLIENT_ID, tableName=USER_CONSENT; addColumn tableName=USER_CONSENT; addUniqueConstraint constraintName=UK_JKUWUVD56ONTGSUHO...		\N	4.29.1	\N	\N	3636300860
+4.0.0-KEYCLOAK-5579-fixed	mposolda@redhat.com	META-INF/jpa-changelog-4.0.0.xml	2026-03-16 04:45:08.14196	58	EXECUTED	9:139b79bcbbfe903bb1c2d2a4dbf001d9	dropForeignKeyConstraint baseTableName=CLIENT_TEMPLATE_ATTRIBUTES, constraintName=FK_CL_TEMPL_ATTR_TEMPL; renameTable newTableName=CLIENT_SCOPE_ATTRIBUTES, oldTableName=CLIENT_TEMPLATE_ATTRIBUTES; renameColumn newColumnName=SCOPE_ID, oldColumnName...		\N	4.29.1	\N	\N	3636300860
+authz-4.0.0.CR1	psilva@redhat.com	META-INF/jpa-changelog-authz-4.0.0.CR1.xml	2026-03-16 04:45:08.167989	59	EXECUTED	9:b55738ad889860c625ba2bf483495a04	createTable tableName=RESOURCE_SERVER_PERM_TICKET; addPrimaryKey constraintName=CONSTRAINT_FAPMT, tableName=RESOURCE_SERVER_PERM_TICKET; addForeignKeyConstraint baseTableName=RESOURCE_SERVER_PERM_TICKET, constraintName=FK_FRSRHO213XCX4WNKOG82SSPMT...		\N	4.29.1	\N	\N	3636300860
+authz-4.0.0.Beta3	psilva@redhat.com	META-INF/jpa-changelog-authz-4.0.0.Beta3.xml	2026-03-16 04:45:08.176419	60	EXECUTED	9:e0057eac39aa8fc8e09ac6cfa4ae15fe	addColumn tableName=RESOURCE_SERVER_POLICY; addColumn tableName=RESOURCE_SERVER_PERM_TICKET; addForeignKeyConstraint baseTableName=RESOURCE_SERVER_PERM_TICKET, constraintName=FK_FRSRPO2128CX4WNKOG82SSRFY, referencedTableName=RESOURCE_SERVER_POLICY		\N	4.29.1	\N	\N	3636300860
+authz-4.2.0.Final	mhajas@redhat.com	META-INF/jpa-changelog-authz-4.2.0.Final.xml	2026-03-16 04:45:08.187266	61	EXECUTED	9:42a33806f3a0443fe0e7feeec821326c	createTable tableName=RESOURCE_URIS; addForeignKeyConstraint baseTableName=RESOURCE_URIS, constraintName=FK_RESOURCE_SERVER_URIS, referencedTableName=RESOURCE_SERVER_RESOURCE; customChange; dropColumn columnName=URI, tableName=RESOURCE_SERVER_RESO...		\N	4.29.1	\N	\N	3636300860
+authz-4.2.0.Final-KEYCLOAK-9944	hmlnarik@redhat.com	META-INF/jpa-changelog-authz-4.2.0.Final.xml	2026-03-16 04:45:08.192771	62	EXECUTED	9:9968206fca46eecc1f51db9c024bfe56	addPrimaryKey constraintName=CONSTRAINT_RESOUR_URIS_PK, tableName=RESOURCE_URIS		\N	4.29.1	\N	\N	3636300860
+4.2.0-KEYCLOAK-6313	wadahiro@gmail.com	META-INF/jpa-changelog-4.2.0.xml	2026-03-16 04:45:08.197765	63	EXECUTED	9:92143a6daea0a3f3b8f598c97ce55c3d	addColumn tableName=REQUIRED_ACTION_PROVIDER		\N	4.29.1	\N	\N	3636300860
+4.3.0-KEYCLOAK-7984	wadahiro@gmail.com	META-INF/jpa-changelog-4.3.0.xml	2026-03-16 04:45:08.202123	64	EXECUTED	9:82bab26a27195d889fb0429003b18f40	update tableName=REQUIRED_ACTION_PROVIDER		\N	4.29.1	\N	\N	3636300860
+4.6.0-KEYCLOAK-7950	psilva@redhat.com	META-INF/jpa-changelog-4.6.0.xml	2026-03-16 04:45:08.206242	65	EXECUTED	9:e590c88ddc0b38b0ae4249bbfcb5abc3	update tableName=RESOURCE_SERVER_RESOURCE		\N	4.29.1	\N	\N	3636300860
+4.6.0-KEYCLOAK-8377	keycloak	META-INF/jpa-changelog-4.6.0.xml	2026-03-16 04:45:08.303741	66	EXECUTED	9:5c1f475536118dbdc38d5d7977950cc0	createTable tableName=ROLE_ATTRIBUTE; addPrimaryKey constraintName=CONSTRAINT_ROLE_ATTRIBUTE_PK, tableName=ROLE_ATTRIBUTE; addForeignKeyConstraint baseTableName=ROLE_ATTRIBUTE, constraintName=FK_ROLE_ATTRIBUTE_ID, referencedTableName=KEYCLOAK_ROLE...		\N	4.29.1	\N	\N	3636300860
+4.6.0-KEYCLOAK-8555	gideonray@gmail.com	META-INF/jpa-changelog-4.6.0.xml	2026-03-16 04:45:08.436425	67	EXECUTED	9:e7c9f5f9c4d67ccbbcc215440c718a17	createIndex indexName=IDX_COMPONENT_PROVIDER_TYPE, tableName=COMPONENT		\N	4.29.1	\N	\N	3636300860
+4.7.0-KEYCLOAK-1267	sguilhen@redhat.com	META-INF/jpa-changelog-4.7.0.xml	2026-03-16 04:45:08.450992	68	EXECUTED	9:88e0bfdda924690d6f4e430c53447dd5	addColumn tableName=REALM		\N	4.29.1	\N	\N	3636300860
+4.7.0-KEYCLOAK-7275	keycloak	META-INF/jpa-changelog-4.7.0.xml	2026-03-16 04:45:08.596264	69	EXECUTED	9:f53177f137e1c46b6a88c59ec1cb5218	renameColumn newColumnName=CREATED_ON, oldColumnName=LAST_SESSION_REFRESH, tableName=OFFLINE_USER_SESSION; addNotNullConstraint columnName=CREATED_ON, tableName=OFFLINE_USER_SESSION; addColumn tableName=OFFLINE_USER_SESSION; customChange; createIn...		\N	4.29.1	\N	\N	3636300860
+4.8.0-KEYCLOAK-8835	sguilhen@redhat.com	META-INF/jpa-changelog-4.8.0.xml	2026-03-16 04:45:08.612614	70	EXECUTED	9:a74d33da4dc42a37ec27121580d1459f	addNotNullConstraint columnName=SSO_MAX_LIFESPAN_REMEMBER_ME, tableName=REALM; addNotNullConstraint columnName=SSO_IDLE_TIMEOUT_REMEMBER_ME, tableName=REALM		\N	4.29.1	\N	\N	3636300860
+authz-7.0.0-KEYCLOAK-10443	psilva@redhat.com	META-INF/jpa-changelog-authz-7.0.0.xml	2026-03-16 04:45:08.6229	71	EXECUTED	9:fd4ade7b90c3b67fae0bfcfcb42dfb5f	addColumn tableName=RESOURCE_SERVER		\N	4.29.1	\N	\N	3636300860
+8.0.0-adding-credential-columns	keycloak	META-INF/jpa-changelog-8.0.0.xml	2026-03-16 04:45:08.646558	72	EXECUTED	9:aa072ad090bbba210d8f18781b8cebf4	addColumn tableName=CREDENTIAL; addColumn tableName=FED_USER_CREDENTIAL		\N	4.29.1	\N	\N	3636300860
+8.0.0-updating-credential-data-not-oracle-fixed	keycloak	META-INF/jpa-changelog-8.0.0.xml	2026-03-16 04:45:08.669462	73	EXECUTED	9:1ae6be29bab7c2aa376f6983b932be37	update tableName=CREDENTIAL; update tableName=CREDENTIAL; update tableName=CREDENTIAL; update tableName=FED_USER_CREDENTIAL; update tableName=FED_USER_CREDENTIAL; update tableName=FED_USER_CREDENTIAL		\N	4.29.1	\N	\N	3636300860
+8.0.0-updating-credential-data-oracle-fixed	keycloak	META-INF/jpa-changelog-8.0.0.xml	2026-03-16 04:45:08.677589	74	MARK_RAN	9:14706f286953fc9a25286dbd8fb30d97	update tableName=CREDENTIAL; update tableName=CREDENTIAL; update tableName=CREDENTIAL; update tableName=FED_USER_CREDENTIAL; update tableName=FED_USER_CREDENTIAL; update tableName=FED_USER_CREDENTIAL		\N	4.29.1	\N	\N	3636300860
+8.0.0-credential-cleanup-fixed	keycloak	META-INF/jpa-changelog-8.0.0.xml	2026-03-16 04:45:08.739738	75	EXECUTED	9:2b9cc12779be32c5b40e2e67711a218b	dropDefaultValue columnName=COUNTER, tableName=CREDENTIAL; dropDefaultValue columnName=DIGITS, tableName=CREDENTIAL; dropDefaultValue columnName=PERIOD, tableName=CREDENTIAL; dropDefaultValue columnName=ALGORITHM, tableName=CREDENTIAL; dropColumn ...		\N	4.29.1	\N	\N	3636300860
+8.0.0-resource-tag-support	keycloak	META-INF/jpa-changelog-8.0.0.xml	2026-03-16 04:45:08.831299	76	EXECUTED	9:91fa186ce7a5af127a2d7a91ee083cc5	addColumn tableName=MIGRATION_MODEL; createIndex indexName=IDX_UPDATE_TIME, tableName=MIGRATION_MODEL		\N	4.29.1	\N	\N	3636300860
+9.0.0-always-display-client	keycloak	META-INF/jpa-changelog-9.0.0.xml	2026-03-16 04:45:08.841358	77	EXECUTED	9:6335e5c94e83a2639ccd68dd24e2e5ad	addColumn tableName=CLIENT		\N	4.29.1	\N	\N	3636300860
+9.0.0-drop-constraints-for-column-increase	keycloak	META-INF/jpa-changelog-9.0.0.xml	2026-03-16 04:45:08.845188	78	MARK_RAN	9:6bdb5658951e028bfe16fa0a8228b530	dropUniqueConstraint constraintName=UK_FRSR6T700S9V50BU18WS5PMT, tableName=RESOURCE_SERVER_PERM_TICKET; dropUniqueConstraint constraintName=UK_FRSR6T700S9V50BU18WS5HA6, tableName=RESOURCE_SERVER_RESOURCE; dropPrimaryKey constraintName=CONSTRAINT_O...		\N	4.29.1	\N	\N	3636300860
+9.0.0-increase-column-size-federated-fk	keycloak	META-INF/jpa-changelog-9.0.0.xml	2026-03-16 04:45:08.866819	79	EXECUTED	9:d5bc15a64117ccad481ce8792d4c608f	modifyDataType columnName=CLIENT_ID, tableName=FED_USER_CONSENT; modifyDataType columnName=CLIENT_REALM_CONSTRAINT, tableName=KEYCLOAK_ROLE; modifyDataType columnName=OWNER, tableName=RESOURCE_SERVER_POLICY; modifyDataType columnName=CLIENT_ID, ta...		\N	4.29.1	\N	\N	3636300860
+9.0.0-recreate-constraints-after-column-increase	keycloak	META-INF/jpa-changelog-9.0.0.xml	2026-03-16 04:45:08.871179	80	MARK_RAN	9:077cba51999515f4d3e7ad5619ab592c	addNotNullConstraint columnName=CLIENT_ID, tableName=OFFLINE_CLIENT_SESSION; addNotNullConstraint columnName=OWNER, tableName=RESOURCE_SERVER_PERM_TICKET; addNotNullConstraint columnName=REQUESTER, tableName=RESOURCE_SERVER_PERM_TICKET; addNotNull...		\N	4.29.1	\N	\N	3636300860
+9.0.1-add-index-to-client.client_id	keycloak	META-INF/jpa-changelog-9.0.1.xml	2026-03-16 04:45:08.930563	81	EXECUTED	9:be969f08a163bf47c6b9e9ead8ac2afb	createIndex indexName=IDX_CLIENT_ID, tableName=CLIENT		\N	4.29.1	\N	\N	3636300860
+9.0.1-KEYCLOAK-12579-drop-constraints	keycloak	META-INF/jpa-changelog-9.0.1.xml	2026-03-16 04:45:08.933924	82	MARK_RAN	9:6d3bb4408ba5a72f39bd8a0b301ec6e3	dropUniqueConstraint constraintName=SIBLING_NAMES, tableName=KEYCLOAK_GROUP		\N	4.29.1	\N	\N	3636300860
+9.0.1-KEYCLOAK-12579-add-not-null-constraint	keycloak	META-INF/jpa-changelog-9.0.1.xml	2026-03-16 04:45:08.941142	83	EXECUTED	9:966bda61e46bebf3cc39518fbed52fa7	addNotNullConstraint columnName=PARENT_GROUP, tableName=KEYCLOAK_GROUP		\N	4.29.1	\N	\N	3636300860
+9.0.1-KEYCLOAK-12579-recreate-constraints	keycloak	META-INF/jpa-changelog-9.0.1.xml	2026-03-16 04:45:08.943311	84	MARK_RAN	9:8dcac7bdf7378e7d823cdfddebf72fda	addUniqueConstraint constraintName=SIBLING_NAMES, tableName=KEYCLOAK_GROUP		\N	4.29.1	\N	\N	3636300860
+9.0.1-add-index-to-events	keycloak	META-INF/jpa-changelog-9.0.1.xml	2026-03-16 04:45:09.002353	85	EXECUTED	9:7d93d602352a30c0c317e6a609b56599	createIndex indexName=IDX_EVENT_TIME, tableName=EVENT_ENTITY		\N	4.29.1	\N	\N	3636300860
+map-remove-ri	keycloak	META-INF/jpa-changelog-11.0.0.xml	2026-03-16 04:45:09.012684	86	EXECUTED	9:71c5969e6cdd8d7b6f47cebc86d37627	dropForeignKeyConstraint baseTableName=REALM, constraintName=FK_TRAF444KK6QRKMS7N56AIWQ5Y; dropForeignKeyConstraint baseTableName=KEYCLOAK_ROLE, constraintName=FK_KJHO5LE2C0RAL09FL8CM9WFW9		\N	4.29.1	\N	\N	3636300860
+map-remove-ri	keycloak	META-INF/jpa-changelog-12.0.0.xml	2026-03-16 04:45:09.023869	87	EXECUTED	9:a9ba7d47f065f041b7da856a81762021	dropForeignKeyConstraint baseTableName=REALM_DEFAULT_GROUPS, constraintName=FK_DEF_GROUPS_GROUP; dropForeignKeyConstraint baseTableName=REALM_DEFAULT_ROLES, constraintName=FK_H4WPD7W4HSOOLNI3H0SW7BTJE; dropForeignKeyConstraint baseTableName=CLIENT...		\N	4.29.1	\N	\N	3636300860
+12.1.0-add-realm-localization-table	keycloak	META-INF/jpa-changelog-12.0.0.xml	2026-03-16 04:45:09.0358	88	EXECUTED	9:fffabce2bc01e1a8f5110d5278500065	createTable tableName=REALM_LOCALIZATIONS; addPrimaryKey tableName=REALM_LOCALIZATIONS		\N	4.29.1	\N	\N	3636300860
+default-roles	keycloak	META-INF/jpa-changelog-13.0.0.xml	2026-03-16 04:45:09.059579	89	EXECUTED	9:fa8a5b5445e3857f4b010bafb5009957	addColumn tableName=REALM; customChange		\N	4.29.1	\N	\N	3636300860
+default-roles-cleanup	keycloak	META-INF/jpa-changelog-13.0.0.xml	2026-03-16 04:45:09.071782	90	EXECUTED	9:67ac3241df9a8582d591c5ed87125f39	dropTable tableName=REALM_DEFAULT_ROLES; dropTable tableName=CLIENT_DEFAULT_ROLES		\N	4.29.1	\N	\N	3636300860
+13.0.0-KEYCLOAK-16844	keycloak	META-INF/jpa-changelog-13.0.0.xml	2026-03-16 04:45:09.172198	91	EXECUTED	9:ad1194d66c937e3ffc82386c050ba089	createIndex indexName=IDX_OFFLINE_USS_PRELOAD, tableName=OFFLINE_USER_SESSION		\N	4.29.1	\N	\N	3636300860
+map-remove-ri-13.0.0	keycloak	META-INF/jpa-changelog-13.0.0.xml	2026-03-16 04:45:09.194933	92	EXECUTED	9:d9be619d94af5a2f5d07b9f003543b91	dropForeignKeyConstraint baseTableName=DEFAULT_CLIENT_SCOPE, constraintName=FK_R_DEF_CLI_SCOPE_SCOPE; dropForeignKeyConstraint baseTableName=CLIENT_SCOPE_CLIENT, constraintName=FK_C_CLI_SCOPE_SCOPE; dropForeignKeyConstraint baseTableName=CLIENT_SC...		\N	4.29.1	\N	\N	3636300860
+13.0.0-KEYCLOAK-17992-drop-constraints	keycloak	META-INF/jpa-changelog-13.0.0.xml	2026-03-16 04:45:09.19984	93	MARK_RAN	9:544d201116a0fcc5a5da0925fbbc3bde	dropPrimaryKey constraintName=C_CLI_SCOPE_BIND, tableName=CLIENT_SCOPE_CLIENT; dropIndex indexName=IDX_CLSCOPE_CL, tableName=CLIENT_SCOPE_CLIENT; dropIndex indexName=IDX_CL_CLSCOPE, tableName=CLIENT_SCOPE_CLIENT		\N	4.29.1	\N	\N	3636300860
+13.0.0-increase-column-size-federated	keycloak	META-INF/jpa-changelog-13.0.0.xml	2026-03-16 04:45:09.219338	94	EXECUTED	9:43c0c1055b6761b4b3e89de76d612ccf	modifyDataType columnName=CLIENT_ID, tableName=CLIENT_SCOPE_CLIENT; modifyDataType columnName=SCOPE_ID, tableName=CLIENT_SCOPE_CLIENT		\N	4.29.1	\N	\N	3636300860
+13.0.0-KEYCLOAK-17992-recreate-constraints	keycloak	META-INF/jpa-changelog-13.0.0.xml	2026-03-16 04:45:09.223536	95	MARK_RAN	9:8bd711fd0330f4fe980494ca43ab1139	addNotNullConstraint columnName=CLIENT_ID, tableName=CLIENT_SCOPE_CLIENT; addNotNullConstraint columnName=SCOPE_ID, tableName=CLIENT_SCOPE_CLIENT; addPrimaryKey constraintName=C_CLI_SCOPE_BIND, tableName=CLIENT_SCOPE_CLIENT; createIndex indexName=...		\N	4.29.1	\N	\N	3636300860
+json-string-accomodation-fixed	keycloak	META-INF/jpa-changelog-13.0.0.xml	2026-03-16 04:45:09.242287	96	EXECUTED	9:e07d2bc0970c348bb06fb63b1f82ddbf	addColumn tableName=REALM_ATTRIBUTE; update tableName=REALM_ATTRIBUTE; dropColumn columnName=VALUE, tableName=REALM_ATTRIBUTE; renameColumn newColumnName=VALUE, oldColumnName=VALUE_NEW, tableName=REALM_ATTRIBUTE		\N	4.29.1	\N	\N	3636300860
+14.0.0-KEYCLOAK-11019	keycloak	META-INF/jpa-changelog-14.0.0.xml	2026-03-16 04:45:09.562818	97	EXECUTED	9:24fb8611e97f29989bea412aa38d12b7	createIndex indexName=IDX_OFFLINE_CSS_PRELOAD, tableName=OFFLINE_CLIENT_SESSION; createIndex indexName=IDX_OFFLINE_USS_BY_USER, tableName=OFFLINE_USER_SESSION; createIndex indexName=IDX_OFFLINE_USS_BY_USERSESS, tableName=OFFLINE_USER_SESSION		\N	4.29.1	\N	\N	3636300860
+14.0.0-KEYCLOAK-18286	keycloak	META-INF/jpa-changelog-14.0.0.xml	2026-03-16 04:45:09.566979	98	MARK_RAN	9:259f89014ce2506ee84740cbf7163aa7	createIndex indexName=IDX_CLIENT_ATT_BY_NAME_VALUE, tableName=CLIENT_ATTRIBUTES		\N	4.29.1	\N	\N	3636300860
+14.0.0-KEYCLOAK-18286-revert	keycloak	META-INF/jpa-changelog-14.0.0.xml	2026-03-16 04:45:09.581523	99	MARK_RAN	9:04baaf56c116ed19951cbc2cca584022	dropIndex indexName=IDX_CLIENT_ATT_BY_NAME_VALUE, tableName=CLIENT_ATTRIBUTES		\N	4.29.1	\N	\N	3636300860
+14.0.0-KEYCLOAK-18286-supported-dbs	keycloak	META-INF/jpa-changelog-14.0.0.xml	2026-03-16 04:45:09.644186	100	EXECUTED	9:60ca84a0f8c94ec8c3504a5a3bc88ee8	createIndex indexName=IDX_CLIENT_ATT_BY_NAME_VALUE, tableName=CLIENT_ATTRIBUTES		\N	4.29.1	\N	\N	3636300860
+14.0.0-KEYCLOAK-18286-unsupported-dbs	keycloak	META-INF/jpa-changelog-14.0.0.xml	2026-03-16 04:45:09.64844	101	MARK_RAN	9:d3d977031d431db16e2c181ce49d73e9	createIndex indexName=IDX_CLIENT_ATT_BY_NAME_VALUE, tableName=CLIENT_ATTRIBUTES		\N	4.29.1	\N	\N	3636300860
+KEYCLOAK-17267-add-index-to-user-attributes	keycloak	META-INF/jpa-changelog-14.0.0.xml	2026-03-16 04:45:09.727001	102	EXECUTED	9:0b305d8d1277f3a89a0a53a659ad274c	createIndex indexName=IDX_USER_ATTRIBUTE_NAME, tableName=USER_ATTRIBUTE		\N	4.29.1	\N	\N	3636300860
+KEYCLOAK-18146-add-saml-art-binding-identifier	keycloak	META-INF/jpa-changelog-14.0.0.xml	2026-03-16 04:45:09.734359	103	EXECUTED	9:2c374ad2cdfe20e2905a84c8fac48460	customChange		\N	4.29.1	\N	\N	3636300860
+15.0.0-KEYCLOAK-18467	keycloak	META-INF/jpa-changelog-15.0.0.xml	2026-03-16 04:45:09.745462	104	EXECUTED	9:47a760639ac597360a8219f5b768b4de	addColumn tableName=REALM_LOCALIZATIONS; update tableName=REALM_LOCALIZATIONS; dropColumn columnName=TEXTS, tableName=REALM_LOCALIZATIONS; renameColumn newColumnName=TEXTS, oldColumnName=TEXTS_NEW, tableName=REALM_LOCALIZATIONS; addNotNullConstrai...		\N	4.29.1	\N	\N	3636300860
+17.0.0-9562	keycloak	META-INF/jpa-changelog-17.0.0.xml	2026-03-16 04:45:09.803367	105	EXECUTED	9:a6272f0576727dd8cad2522335f5d99e	createIndex indexName=IDX_USER_SERVICE_ACCOUNT, tableName=USER_ENTITY		\N	4.29.1	\N	\N	3636300860
+18.0.0-10625-IDX_ADMIN_EVENT_TIME	keycloak	META-INF/jpa-changelog-18.0.0.xml	2026-03-16 04:45:09.863863	106	EXECUTED	9:015479dbd691d9cc8669282f4828c41d	createIndex indexName=IDX_ADMIN_EVENT_TIME, tableName=ADMIN_EVENT_ENTITY		\N	4.29.1	\N	\N	3636300860
+18.0.15-30992-index-consent	keycloak	META-INF/jpa-changelog-18.0.15.xml	2026-03-16 04:45:09.953316	107	EXECUTED	9:80071ede7a05604b1f4906f3bf3b00f0	createIndex indexName=IDX_USCONSENT_SCOPE_ID, tableName=USER_CONSENT_CLIENT_SCOPE		\N	4.29.1	\N	\N	3636300860
+19.0.0-10135	keycloak	META-INF/jpa-changelog-19.0.0.xml	2026-03-16 04:45:09.95993	108	EXECUTED	9:9518e495fdd22f78ad6425cc30630221	customChange		\N	4.29.1	\N	\N	3636300860
+20.0.0-12964-supported-dbs	keycloak	META-INF/jpa-changelog-20.0.0.xml	2026-03-16 04:45:10.035795	109	EXECUTED	9:e5f243877199fd96bcc842f27a1656ac	createIndex indexName=IDX_GROUP_ATT_BY_NAME_VALUE, tableName=GROUP_ATTRIBUTE		\N	4.29.1	\N	\N	3636300860
+20.0.0-12964-unsupported-dbs	keycloak	META-INF/jpa-changelog-20.0.0.xml	2026-03-16 04:45:10.03925	110	MARK_RAN	9:1a6fcaa85e20bdeae0a9ce49b41946a5	createIndex indexName=IDX_GROUP_ATT_BY_NAME_VALUE, tableName=GROUP_ATTRIBUTE		\N	4.29.1	\N	\N	3636300860
+client-attributes-string-accomodation-fixed	keycloak	META-INF/jpa-changelog-20.0.0.xml	2026-03-16 04:45:10.051881	111	EXECUTED	9:3f332e13e90739ed0c35b0b25b7822ca	addColumn tableName=CLIENT_ATTRIBUTES; update tableName=CLIENT_ATTRIBUTES; dropColumn columnName=VALUE, tableName=CLIENT_ATTRIBUTES; renameColumn newColumnName=VALUE, oldColumnName=VALUE_NEW, tableName=CLIENT_ATTRIBUTES		\N	4.29.1	\N	\N	3636300860
+21.0.2-17277	keycloak	META-INF/jpa-changelog-21.0.2.xml	2026-03-16 04:45:10.058927	112	EXECUTED	9:7ee1f7a3fb8f5588f171fb9a6ab623c0	customChange		\N	4.29.1	\N	\N	3636300860
+21.1.0-19404	keycloak	META-INF/jpa-changelog-21.1.0.xml	2026-03-16 04:45:10.077014	113	EXECUTED	9:3d7e830b52f33676b9d64f7f2b2ea634	modifyDataType columnName=DECISION_STRATEGY, tableName=RESOURCE_SERVER_POLICY; modifyDataType columnName=LOGIC, tableName=RESOURCE_SERVER_POLICY; modifyDataType columnName=POLICY_ENFORCE_MODE, tableName=RESOURCE_SERVER		\N	4.29.1	\N	\N	3636300860
+21.1.0-19404-2	keycloak	META-INF/jpa-changelog-21.1.0.xml	2026-03-16 04:45:10.083691	114	MARK_RAN	9:627d032e3ef2c06c0e1f73d2ae25c26c	addColumn tableName=RESOURCE_SERVER_POLICY; update tableName=RESOURCE_SERVER_POLICY; dropColumn columnName=DECISION_STRATEGY, tableName=RESOURCE_SERVER_POLICY; renameColumn newColumnName=DECISION_STRATEGY, oldColumnName=DECISION_STRATEGY_NEW, tabl...		\N	4.29.1	\N	\N	3636300860
+22.0.0-17484-updated	keycloak	META-INF/jpa-changelog-22.0.0.xml	2026-03-16 04:45:10.0925	115	EXECUTED	9:90af0bfd30cafc17b9f4d6eccd92b8b3	customChange		\N	4.29.1	\N	\N	3636300860
+22.0.5-24031	keycloak	META-INF/jpa-changelog-22.0.0.xml	2026-03-16 04:45:10.095393	116	MARK_RAN	9:a60d2d7b315ec2d3eba9e2f145f9df28	customChange		\N	4.29.1	\N	\N	3636300860
+23.0.0-12062	keycloak	META-INF/jpa-changelog-23.0.0.xml	2026-03-16 04:45:10.107056	117	EXECUTED	9:2168fbe728fec46ae9baf15bf80927b8	addColumn tableName=COMPONENT_CONFIG; update tableName=COMPONENT_CONFIG; dropColumn columnName=VALUE, tableName=COMPONENT_CONFIG; renameColumn newColumnName=VALUE, oldColumnName=VALUE_NEW, tableName=COMPONENT_CONFIG		\N	4.29.1	\N	\N	3636300860
+23.0.0-17258	keycloak	META-INF/jpa-changelog-23.0.0.xml	2026-03-16 04:45:10.114929	118	EXECUTED	9:36506d679a83bbfda85a27ea1864dca8	addColumn tableName=EVENT_ENTITY		\N	4.29.1	\N	\N	3636300860
+24.0.0-9758	keycloak	META-INF/jpa-changelog-24.0.0.xml	2026-03-16 04:45:10.368499	119	EXECUTED	9:502c557a5189f600f0f445a9b49ebbce	addColumn tableName=USER_ATTRIBUTE; addColumn tableName=FED_USER_ATTRIBUTE; createIndex indexName=USER_ATTR_LONG_VALUES, tableName=USER_ATTRIBUTE; createIndex indexName=FED_USER_ATTR_LONG_VALUES, tableName=FED_USER_ATTRIBUTE; createIndex indexName...		\N	4.29.1	\N	\N	3636300860
+24.0.0-9758-2	keycloak	META-INF/jpa-changelog-24.0.0.xml	2026-03-16 04:45:10.374349	120	EXECUTED	9:bf0fdee10afdf597a987adbf291db7b2	customChange		\N	4.29.1	\N	\N	3636300860
+24.0.0-26618-drop-index-if-present	keycloak	META-INF/jpa-changelog-24.0.0.xml	2026-03-16 04:45:10.38385	121	MARK_RAN	9:04baaf56c116ed19951cbc2cca584022	dropIndex indexName=IDX_CLIENT_ATT_BY_NAME_VALUE, tableName=CLIENT_ATTRIBUTES		\N	4.29.1	\N	\N	3636300860
+24.0.0-26618-reindex	keycloak	META-INF/jpa-changelog-24.0.0.xml	2026-03-16 04:45:10.494201	122	EXECUTED	9:08707c0f0db1cef6b352db03a60edc7f	createIndex indexName=IDX_CLIENT_ATT_BY_NAME_VALUE, tableName=CLIENT_ATTRIBUTES		\N	4.29.1	\N	\N	3636300860
+24.0.2-27228	keycloak	META-INF/jpa-changelog-24.0.2.xml	2026-03-16 04:45:10.50455	123	EXECUTED	9:eaee11f6b8aa25d2cc6a84fb86fc6238	customChange		\N	4.29.1	\N	\N	3636300860
+24.0.2-27967-drop-index-if-present	keycloak	META-INF/jpa-changelog-24.0.2.xml	2026-03-16 04:45:10.510714	124	MARK_RAN	9:04baaf56c116ed19951cbc2cca584022	dropIndex indexName=IDX_CLIENT_ATT_BY_NAME_VALUE, tableName=CLIENT_ATTRIBUTES		\N	4.29.1	\N	\N	3636300860
+24.0.2-27967-reindex	keycloak	META-INF/jpa-changelog-24.0.2.xml	2026-03-16 04:45:10.516109	125	MARK_RAN	9:d3d977031d431db16e2c181ce49d73e9	createIndex indexName=IDX_CLIENT_ATT_BY_NAME_VALUE, tableName=CLIENT_ATTRIBUTES		\N	4.29.1	\N	\N	3636300860
+25.0.0-28265-tables	keycloak	META-INF/jpa-changelog-25.0.0.xml	2026-03-16 04:45:10.531059	126	EXECUTED	9:deda2df035df23388af95bbd36c17cef	addColumn tableName=OFFLINE_USER_SESSION; addColumn tableName=OFFLINE_CLIENT_SESSION		\N	4.29.1	\N	\N	3636300860
+25.0.0-28265-index-creation	keycloak	META-INF/jpa-changelog-25.0.0.xml	2026-03-16 04:45:10.646786	127	EXECUTED	9:3e96709818458ae49f3c679ae58d263a	createIndex indexName=IDX_OFFLINE_USS_BY_LAST_SESSION_REFRESH, tableName=OFFLINE_USER_SESSION		\N	4.29.1	\N	\N	3636300860
+25.0.0-28265-index-cleanup	keycloak	META-INF/jpa-changelog-25.0.0.xml	2026-03-16 04:45:10.662142	128	EXECUTED	9:8c0cfa341a0474385b324f5c4b2dfcc1	dropIndex indexName=IDX_OFFLINE_USS_CREATEDON, tableName=OFFLINE_USER_SESSION; dropIndex indexName=IDX_OFFLINE_USS_PRELOAD, tableName=OFFLINE_USER_SESSION; dropIndex indexName=IDX_OFFLINE_USS_BY_USERSESS, tableName=OFFLINE_USER_SESSION; dropIndex ...		\N	4.29.1	\N	\N	3636300860
+25.0.0-28265-index-2-mysql	keycloak	META-INF/jpa-changelog-25.0.0.xml	2026-03-16 04:45:10.666755	129	MARK_RAN	9:b7ef76036d3126bb83c2423bf4d449d6	createIndex indexName=IDX_OFFLINE_USS_BY_BROKER_SESSION_ID, tableName=OFFLINE_USER_SESSION		\N	4.29.1	\N	\N	3636300860
+25.0.0-28265-index-2-not-mysql	keycloak	META-INF/jpa-changelog-25.0.0.xml	2026-03-16 04:45:10.789534	130	EXECUTED	9:23396cf51ab8bc1ae6f0cac7f9f6fcf7	createIndex indexName=IDX_OFFLINE_USS_BY_BROKER_SESSION_ID, tableName=OFFLINE_USER_SESSION		\N	4.29.1	\N	\N	3636300860
+25.0.0-org	keycloak	META-INF/jpa-changelog-25.0.0.xml	2026-03-16 04:45:10.814674	131	EXECUTED	9:5c859965c2c9b9c72136c360649af157	createTable tableName=ORG; addUniqueConstraint constraintName=UK_ORG_NAME, tableName=ORG; addUniqueConstraint constraintName=UK_ORG_GROUP, tableName=ORG; createTable tableName=ORG_DOMAIN		\N	4.29.1	\N	\N	3636300860
+unique-consentuser	keycloak	META-INF/jpa-changelog-25.0.0.xml	2026-03-16 04:45:10.836599	132	EXECUTED	9:5857626a2ea8767e9a6c66bf3a2cb32f	customChange; dropUniqueConstraint constraintName=UK_JKUWUVD56ONTGSUHOGM8UEWRT, tableName=USER_CONSENT; addUniqueConstraint constraintName=UK_LOCAL_CONSENT, tableName=USER_CONSENT; addUniqueConstraint constraintName=UK_EXTERNAL_CONSENT, tableName=...		\N	4.29.1	\N	\N	3636300860
+unique-consentuser-mysql	keycloak	META-INF/jpa-changelog-25.0.0.xml	2026-03-16 04:45:10.840613	133	MARK_RAN	9:b79478aad5adaa1bc428e31563f55e8e	customChange; dropUniqueConstraint constraintName=UK_JKUWUVD56ONTGSUHOGM8UEWRT, tableName=USER_CONSENT; addUniqueConstraint constraintName=UK_LOCAL_CONSENT, tableName=USER_CONSENT; addUniqueConstraint constraintName=UK_EXTERNAL_CONSENT, tableName=...		\N	4.29.1	\N	\N	3636300860
+25.0.0-28861-index-creation	keycloak	META-INF/jpa-changelog-25.0.0.xml	2026-03-16 04:45:11.067887	134	EXECUTED	9:b9acb58ac958d9ada0fe12a5d4794ab1	createIndex indexName=IDX_PERM_TICKET_REQUESTER, tableName=RESOURCE_SERVER_PERM_TICKET; createIndex indexName=IDX_PERM_TICKET_OWNER, tableName=RESOURCE_SERVER_PERM_TICKET		\N	4.29.1	\N	\N	3636300860
+26.0.0-org-alias	keycloak	META-INF/jpa-changelog-26.0.0.xml	2026-03-16 04:45:11.086497	135	EXECUTED	9:6ef7d63e4412b3c2d66ed179159886a4	addColumn tableName=ORG; update tableName=ORG; addNotNullConstraint columnName=ALIAS, tableName=ORG; addUniqueConstraint constraintName=UK_ORG_ALIAS, tableName=ORG		\N	4.29.1	\N	\N	3636300860
+26.0.0-org-group	keycloak	META-INF/jpa-changelog-26.0.0.xml	2026-03-16 04:45:11.107827	136	EXECUTED	9:da8e8087d80ef2ace4f89d8c5b9ca223	addColumn tableName=KEYCLOAK_GROUP; update tableName=KEYCLOAK_GROUP; addNotNullConstraint columnName=TYPE, tableName=KEYCLOAK_GROUP; customChange		\N	4.29.1	\N	\N	3636300860
+26.0.0-org-indexes	keycloak	META-INF/jpa-changelog-26.0.0.xml	2026-03-16 04:45:11.211894	137	EXECUTED	9:79b05dcd610a8c7f25ec05135eec0857	createIndex indexName=IDX_ORG_DOMAIN_ORG_ID, tableName=ORG_DOMAIN		\N	4.29.1	\N	\N	3636300860
+26.0.0-org-group-membership	keycloak	META-INF/jpa-changelog-26.0.0.xml	2026-03-16 04:45:11.223607	138	EXECUTED	9:a6ace2ce583a421d89b01ba2a28dc2d4	addColumn tableName=USER_GROUP_MEMBERSHIP; update tableName=USER_GROUP_MEMBERSHIP; addNotNullConstraint columnName=MEMBERSHIP_TYPE, tableName=USER_GROUP_MEMBERSHIP		\N	4.29.1	\N	\N	3636300860
+31296-persist-revoked-access-tokens	keycloak	META-INF/jpa-changelog-26.0.0.xml	2026-03-16 04:45:11.237907	139	EXECUTED	9:64ef94489d42a358e8304b0e245f0ed4	createTable tableName=REVOKED_TOKEN; addPrimaryKey constraintName=CONSTRAINT_RT, tableName=REVOKED_TOKEN		\N	4.29.1	\N	\N	3636300860
+31725-index-persist-revoked-access-tokens	keycloak	META-INF/jpa-changelog-26.0.0.xml	2026-03-16 04:45:11.333305	140	EXECUTED	9:b994246ec2bf7c94da881e1d28782c7b	createIndex indexName=IDX_REV_TOKEN_ON_EXPIRE, tableName=REVOKED_TOKEN		\N	4.29.1	\N	\N	3636300860
+26.0.0-idps-for-login	keycloak	META-INF/jpa-changelog-26.0.0.xml	2026-03-16 04:45:11.557022	141	EXECUTED	9:51f5fffadf986983d4bd59582c6c1604	addColumn tableName=IDENTITY_PROVIDER; createIndex indexName=IDX_IDP_REALM_ORG, tableName=IDENTITY_PROVIDER; createIndex indexName=IDX_IDP_FOR_LOGIN, tableName=IDENTITY_PROVIDER; customChange		\N	4.29.1	\N	\N	3636300860
+26.0.0-32583-drop-redundant-index-on-client-session	keycloak	META-INF/jpa-changelog-26.0.0.xml	2026-03-16 04:45:11.565639	142	EXECUTED	9:24972d83bf27317a055d234187bb4af9	dropIndex indexName=IDX_US_SESS_ID_ON_CL_SESS, tableName=OFFLINE_CLIENT_SESSION		\N	4.29.1	\N	\N	3636300860
+26.0.0.32582-remove-tables-user-session-user-session-note-and-client-session	keycloak	META-INF/jpa-changelog-26.0.0.xml	2026-03-16 04:45:11.602299	143	EXECUTED	9:febdc0f47f2ed241c59e60f58c3ceea5	dropTable tableName=CLIENT_SESSION_ROLE; dropTable tableName=CLIENT_SESSION_NOTE; dropTable tableName=CLIENT_SESSION_PROT_MAPPER; dropTable tableName=CLIENT_SESSION_AUTH_STATUS; dropTable tableName=CLIENT_USER_SESSION_NOTE; dropTable tableName=CLI...		\N	4.29.1	\N	\N	3636300860
 1.0.0.Final-KEYCLOAK-5461	sthorger@redhat.com	META-INF/jpa-changelog-1.0.0.Final.xml	2026-02-05 03:38:53.925139	1	EXECUTED	9:6f1016664e21e16d26517a4418f5e3df	createTable tableName=APPLICATION_DEFAULT_ROLES; createTable tableName=CLIENT; createTable tableName=CLIENT_SESSION; createTable tableName=CLIENT_SESSION_ROLE; createTable tableName=COMPOSITE_ROLE; createTable tableName=CREDENTIAL; createTable tab...		\N	4.29.1	\N	\N	0262733286
 1.0.0.Final-KEYCLOAK-5461	sthorger@redhat.com	META-INF/db2-jpa-changelog-1.0.0.Final.xml	2026-02-05 03:38:53.959227	2	MARK_RAN	9:828775b1596a07d1200ba1d49e5e3941	createTable tableName=APPLICATION_DEFAULT_ROLES; createTable tableName=CLIENT; createTable tableName=CLIENT_SESSION; createTable tableName=CLIENT_SESSION_ROLE; createTable tableName=COMPOSITE_ROLE; createTable tableName=CREDENTIAL; createTable tab...		\N	4.29.1	\N	\N	0262733286
 1.1.0.Beta1	sthorger@redhat.com	META-INF/jpa-changelog-1.1.0.Beta1.xml	2026-02-05 03:38:54.034703	3	EXECUTED	9:5f090e44a7d595883c1fb61f4b41fd38	delete tableName=CLIENT_SESSION_ROLE; delete tableName=CLIENT_SESSION; delete tableName=USER_SESSION; createTable tableName=CLIENT_ATTRIBUTES; createTable tableName=CLIENT_SESSION_NOTE; createTable tableName=APP_NODE_REGISTRATIONS; addColumn table...		\N	4.29.1	\N	\N	0262733286
@@ -3540,19 +3710,19 @@ COPY public.databasechangeloglock (id, locked, lockgranted, lockedby) FROM stdin
 --
 
 COPY public.default_client_scope (realm_id, scope_id, default_scope) FROM stdin;
-be66634f-b27a-4e21-b03e-7d51f28d6003	32118b74-1b1d-4e6e-a7e8-5a1a9dc0ab54	f
-be66634f-b27a-4e21-b03e-7d51f28d6003	d501607c-9d9c-4658-99be-4174d8e72dd7	t
-be66634f-b27a-4e21-b03e-7d51f28d6003	f2fa0658-e363-4601-8449-20ec03d7a4da	t
-be66634f-b27a-4e21-b03e-7d51f28d6003	7b5fd5f9-e7d7-4dd4-b723-5b2581adb26f	t
-be66634f-b27a-4e21-b03e-7d51f28d6003	1db87056-8e91-45bf-94d5-83db7a4741b8	t
-be66634f-b27a-4e21-b03e-7d51f28d6003	a13756c8-71f2-4e3a-bfa2-e11fa0f500e5	f
-be66634f-b27a-4e21-b03e-7d51f28d6003	765ebfcf-be15-4d68-a301-cb637fbc4f45	f
-be66634f-b27a-4e21-b03e-7d51f28d6003	6655fa57-075f-4290-a4fb-c7b0ccbcc419	t
-be66634f-b27a-4e21-b03e-7d51f28d6003	fe13d2b5-c08b-4b6e-bf58-f2d2e97553cc	t
-be66634f-b27a-4e21-b03e-7d51f28d6003	191aee24-0234-4b99-bfa2-de5171fe1fa0	f
-be66634f-b27a-4e21-b03e-7d51f28d6003	b2b993cf-09b3-4a73-b472-7252d8b8f62b	t
-be66634f-b27a-4e21-b03e-7d51f28d6003	86582f7f-d214-4da0-9fea-3c46f7e9c40a	t
-be66634f-b27a-4e21-b03e-7d51f28d6003	4e77fd07-9de1-4105-bddf-fc8ccb5b09f2	f
+0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	78288688-5478-43f4-a536-e621ca0a123f	f
+0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	00bb3269-c9e7-4feb-ada6-78138f8de442	t
+0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	64293740-8869-48e9-8bc0-ec1816ed724c	t
+0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	83de2a22-63e4-4dd3-b0fa-bbf946a4886d	t
+0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	d09b8c28-c12b-439b-95a5-1a99f3287d70	t
+0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	320ad60b-580d-430b-8217-cc5c4f1a57fe	f
+0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	849258fc-9eec-4dba-b85c-e300d05f9129	f
+0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	17095d46-d030-492d-892c-a8252b29bfbc	t
+0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	45121ad7-8871-4ded-b37b-4decb41f0bd6	t
+0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	06acf73a-7701-47d6-82c9-4245f80696cb	f
+0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	a6443962-58c8-4b16-af9a-b867f16e105f	t
+0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	2310b041-955e-4fac-9a66-df3bf3dff5e2	t
+0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	d76e2c83-c2e4-4182-9b6b-31e3905cd3ff	f
 83b6664d-539e-4bed-a376-685d50e40b98	2714f410-8ea1-4442-b110-09d56464c942	t
 83b6664d-539e-4bed-a376-685d50e40b98	26d881ea-f02a-4da4-a770-096c22dcf2b6	t
 83b6664d-539e-4bed-a376-685d50e40b98	424886ac-3b5a-446c-a0f8-2d2cd6474e44	t
@@ -3663,6 +3833,9 @@ COPY public.flyway_schema_history (installed_rank, version, description, type, s
 --
 
 COPY public.group_ (conversation_id, created_date, id, last_active, last_modified_date, public_id, group_profile_picture, group_name) FROM stdin;
+199	2026-03-16 05:15:09.035071+00	1	2026-03-16 05:15:09.000135+00	2026-03-16 05:15:09.035071+00	a947d464-25b1-4603-99d7-6c0c1d622c98	https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse1.mm.bing.net%2Fth%2Fid%2FOIP.VQIsvREn5F2yJD_6EN2WRwHaHa%3Fpid%3DApi&f=1&ipt=47e7757126d0ddcbf716ebd0218d403ae12e008465b6129843d16d5db01edad5&ipo=images	Example Group
+201	2026-03-16 10:16:42.468737+00	2	2026-03-16 10:16:42.416328+00	2026-03-16 10:16:42.468737+00	4a9722a9-a5aa-458e-a01a-581b06314179	https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse1.mm.bing.net%2Fth%2Fid%2FOIP.VQIsvREn5F2yJD_6EN2WRwHaHa%3Fpid%3DApi&f=1&ipt=47e7757126d0ddcbf716ebd0218d403ae12e008465b6129843d16d5db01edad5&ipo=images	asdas2
+203	2026-03-17 08:20:39.030636+00	3	2026-03-17 08:20:39.016937+00	2026-03-17 08:20:39.030636+00	84449c20-e740-43eb-b15f-ea341edca2fb	https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse1.mm.bing.net%2Fth%2Fid%2FOIP.VQIsvREn5F2yJD_6EN2WRwHaHa%3Fpid%3DApi&f=1&ipt=47e7757126d0ddcbf716ebd0218d403ae12e008465b6129843d16d5db01edad5&ipo=images	The joy
 \.
 
 
@@ -3727,56 +3900,56 @@ COPY public.keycloak_group (id, name, parent_group, realm_id, type) FROM stdin;
 --
 
 COPY public.keycloak_role (id, client_realm_constraint, client_role, description, name, realm_id, client, realm) FROM stdin;
-5ea353d2-033e-4026-88ca-d70ae17157cc	be66634f-b27a-4e21-b03e-7d51f28d6003	f	${role_default-roles}	default-roles-master	be66634f-b27a-4e21-b03e-7d51f28d6003	\N	\N
-43d6e07f-425c-4e22-a520-fec4553c67f7	be66634f-b27a-4e21-b03e-7d51f28d6003	f	${role_admin}	admin	be66634f-b27a-4e21-b03e-7d51f28d6003	\N	\N
-45fc1a0e-400a-4762-80d7-ca64fdf9685e	be66634f-b27a-4e21-b03e-7d51f28d6003	f	${role_create-realm}	create-realm	be66634f-b27a-4e21-b03e-7d51f28d6003	\N	\N
-e2450599-fb0d-4261-a65d-1fe3529e336f	180fcf63-6d87-43c6-b197-dd94f05c8729	t	${role_create-client}	create-client	be66634f-b27a-4e21-b03e-7d51f28d6003	180fcf63-6d87-43c6-b197-dd94f05c8729	\N
-9b3e9dee-5ab0-462c-a5b2-a1d3c4542a19	180fcf63-6d87-43c6-b197-dd94f05c8729	t	${role_view-realm}	view-realm	be66634f-b27a-4e21-b03e-7d51f28d6003	180fcf63-6d87-43c6-b197-dd94f05c8729	\N
-c7a4926a-4c81-46f6-a12f-bf932fcc4bdf	180fcf63-6d87-43c6-b197-dd94f05c8729	t	${role_view-users}	view-users	be66634f-b27a-4e21-b03e-7d51f28d6003	180fcf63-6d87-43c6-b197-dd94f05c8729	\N
-2e07ef14-56c2-48fc-b4b4-ba315329a029	180fcf63-6d87-43c6-b197-dd94f05c8729	t	${role_view-clients}	view-clients	be66634f-b27a-4e21-b03e-7d51f28d6003	180fcf63-6d87-43c6-b197-dd94f05c8729	\N
-6938546d-2770-438d-87d9-23f8f7e45d8e	180fcf63-6d87-43c6-b197-dd94f05c8729	t	${role_view-events}	view-events	be66634f-b27a-4e21-b03e-7d51f28d6003	180fcf63-6d87-43c6-b197-dd94f05c8729	\N
-b49e50b2-dde1-46bd-9d47-e148f855b76d	180fcf63-6d87-43c6-b197-dd94f05c8729	t	${role_view-identity-providers}	view-identity-providers	be66634f-b27a-4e21-b03e-7d51f28d6003	180fcf63-6d87-43c6-b197-dd94f05c8729	\N
-2cf01fa9-1cea-4717-ae0e-58142d5613cb	180fcf63-6d87-43c6-b197-dd94f05c8729	t	${role_view-authorization}	view-authorization	be66634f-b27a-4e21-b03e-7d51f28d6003	180fcf63-6d87-43c6-b197-dd94f05c8729	\N
-b74ecc58-6f10-4bb7-9bcd-c179d93d3bfc	180fcf63-6d87-43c6-b197-dd94f05c8729	t	${role_manage-realm}	manage-realm	be66634f-b27a-4e21-b03e-7d51f28d6003	180fcf63-6d87-43c6-b197-dd94f05c8729	\N
-cd83381b-8d04-4097-8de8-9271586a039a	180fcf63-6d87-43c6-b197-dd94f05c8729	t	${role_manage-users}	manage-users	be66634f-b27a-4e21-b03e-7d51f28d6003	180fcf63-6d87-43c6-b197-dd94f05c8729	\N
-00f15235-26c4-4a6c-9367-a41a0b75853f	180fcf63-6d87-43c6-b197-dd94f05c8729	t	${role_manage-clients}	manage-clients	be66634f-b27a-4e21-b03e-7d51f28d6003	180fcf63-6d87-43c6-b197-dd94f05c8729	\N
-8a33bea0-bcdf-4650-85aa-a3ce2f21d6ed	180fcf63-6d87-43c6-b197-dd94f05c8729	t	${role_manage-events}	manage-events	be66634f-b27a-4e21-b03e-7d51f28d6003	180fcf63-6d87-43c6-b197-dd94f05c8729	\N
-8d0d258b-9906-4302-b009-cb7746389269	180fcf63-6d87-43c6-b197-dd94f05c8729	t	${role_manage-identity-providers}	manage-identity-providers	be66634f-b27a-4e21-b03e-7d51f28d6003	180fcf63-6d87-43c6-b197-dd94f05c8729	\N
-20e3b031-9da2-408d-b75d-f29c93e1751d	180fcf63-6d87-43c6-b197-dd94f05c8729	t	${role_manage-authorization}	manage-authorization	be66634f-b27a-4e21-b03e-7d51f28d6003	180fcf63-6d87-43c6-b197-dd94f05c8729	\N
-409c8218-5b23-4bb4-9daf-32d87e3efafd	180fcf63-6d87-43c6-b197-dd94f05c8729	t	${role_query-users}	query-users	be66634f-b27a-4e21-b03e-7d51f28d6003	180fcf63-6d87-43c6-b197-dd94f05c8729	\N
-ad7f1d57-c22f-43d1-8b84-f027d2b2a0f1	180fcf63-6d87-43c6-b197-dd94f05c8729	t	${role_query-clients}	query-clients	be66634f-b27a-4e21-b03e-7d51f28d6003	180fcf63-6d87-43c6-b197-dd94f05c8729	\N
-7e4017e7-ba9a-4e37-ae08-4d053cf86df3	180fcf63-6d87-43c6-b197-dd94f05c8729	t	${role_query-realms}	query-realms	be66634f-b27a-4e21-b03e-7d51f28d6003	180fcf63-6d87-43c6-b197-dd94f05c8729	\N
-fed6fb93-fd41-42c0-8eb5-1d049c4c3ad0	180fcf63-6d87-43c6-b197-dd94f05c8729	t	${role_query-groups}	query-groups	be66634f-b27a-4e21-b03e-7d51f28d6003	180fcf63-6d87-43c6-b197-dd94f05c8729	\N
-fb5d0b9b-afb8-427c-9ad4-cbd2b2c64409	1738a449-92cf-4611-9eca-58023f662849	t	${role_view-profile}	view-profile	be66634f-b27a-4e21-b03e-7d51f28d6003	1738a449-92cf-4611-9eca-58023f662849	\N
-9cbb4c10-20d6-42a4-b09c-7132659c9039	1738a449-92cf-4611-9eca-58023f662849	t	${role_manage-account}	manage-account	be66634f-b27a-4e21-b03e-7d51f28d6003	1738a449-92cf-4611-9eca-58023f662849	\N
-c3c5a69f-7b8a-4492-a703-94380bc144b1	1738a449-92cf-4611-9eca-58023f662849	t	${role_manage-account-links}	manage-account-links	be66634f-b27a-4e21-b03e-7d51f28d6003	1738a449-92cf-4611-9eca-58023f662849	\N
-ced57b95-831b-4d3c-af26-0d6768f546f5	1738a449-92cf-4611-9eca-58023f662849	t	${role_view-applications}	view-applications	be66634f-b27a-4e21-b03e-7d51f28d6003	1738a449-92cf-4611-9eca-58023f662849	\N
-481e97b7-5ccc-42fe-ac29-ff722cf7076e	1738a449-92cf-4611-9eca-58023f662849	t	${role_view-consent}	view-consent	be66634f-b27a-4e21-b03e-7d51f28d6003	1738a449-92cf-4611-9eca-58023f662849	\N
-26b931bb-3b09-43da-b6c6-bdcb5750481c	1738a449-92cf-4611-9eca-58023f662849	t	${role_manage-consent}	manage-consent	be66634f-b27a-4e21-b03e-7d51f28d6003	1738a449-92cf-4611-9eca-58023f662849	\N
-232e160e-a55f-4b49-9bd6-971fea97a290	1738a449-92cf-4611-9eca-58023f662849	t	${role_view-groups}	view-groups	be66634f-b27a-4e21-b03e-7d51f28d6003	1738a449-92cf-4611-9eca-58023f662849	\N
-3ba0c3fc-91f0-446c-8f3d-4d4b822a2a30	1738a449-92cf-4611-9eca-58023f662849	t	${role_delete-account}	delete-account	be66634f-b27a-4e21-b03e-7d51f28d6003	1738a449-92cf-4611-9eca-58023f662849	\N
-5d58e0da-d581-4131-9200-15325fa5462e	86566afb-29ed-4a51-be41-6bbc6445b6fa	t	${role_read-token}	read-token	be66634f-b27a-4e21-b03e-7d51f28d6003	86566afb-29ed-4a51-be41-6bbc6445b6fa	\N
-c5116b05-9db1-4773-8756-1d368d3f2ebf	180fcf63-6d87-43c6-b197-dd94f05c8729	t	${role_impersonation}	impersonation	be66634f-b27a-4e21-b03e-7d51f28d6003	180fcf63-6d87-43c6-b197-dd94f05c8729	\N
-ece8840c-9a8d-4b57-8f15-0f989d6b80fe	be66634f-b27a-4e21-b03e-7d51f28d6003	f	${role_offline-access}	offline_access	be66634f-b27a-4e21-b03e-7d51f28d6003	\N	\N
-35ef1bbd-79a5-406e-bf0d-a74de55047b5	be66634f-b27a-4e21-b03e-7d51f28d6003	f	${role_uma_authorization}	uma_authorization	be66634f-b27a-4e21-b03e-7d51f28d6003	\N	\N
+69545a87-078a-4282-91ee-802c3c1c746a	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	f	${role_default-roles}	default-roles-master	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	\N	\N
+12cbfeda-8508-4c50-b57d-0f3d35a57c2f	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	f	${role_create-realm}	create-realm	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	\N	\N
+c6db3fe2-addb-424c-94bf-964ce7aea7a1	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	f	${role_admin}	admin	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	\N	\N
+f02d87bc-cc93-4c05-be79-9a48841f0dcf	3716fee0-d082-40bc-9e2e-d67302c5c042	t	${role_create-client}	create-client	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	3716fee0-d082-40bc-9e2e-d67302c5c042	\N
+d0671755-37b9-4d57-b6c3-7d6414dd7866	3716fee0-d082-40bc-9e2e-d67302c5c042	t	${role_view-realm}	view-realm	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	3716fee0-d082-40bc-9e2e-d67302c5c042	\N
+52f8bcac-12ab-4f6c-8c9b-675c664f1139	3716fee0-d082-40bc-9e2e-d67302c5c042	t	${role_view-users}	view-users	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	3716fee0-d082-40bc-9e2e-d67302c5c042	\N
+dc2369ea-5050-498b-94ce-5350c71bb9ca	3716fee0-d082-40bc-9e2e-d67302c5c042	t	${role_view-clients}	view-clients	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	3716fee0-d082-40bc-9e2e-d67302c5c042	\N
+d7bac925-a702-4088-87f2-754f9c21a4b4	3716fee0-d082-40bc-9e2e-d67302c5c042	t	${role_view-events}	view-events	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	3716fee0-d082-40bc-9e2e-d67302c5c042	\N
+1321934a-8d77-4fae-9c9e-faba2b28d7f6	3716fee0-d082-40bc-9e2e-d67302c5c042	t	${role_view-identity-providers}	view-identity-providers	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	3716fee0-d082-40bc-9e2e-d67302c5c042	\N
+172bc481-97d2-4e6b-9a49-de1ea665671f	3716fee0-d082-40bc-9e2e-d67302c5c042	t	${role_view-authorization}	view-authorization	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	3716fee0-d082-40bc-9e2e-d67302c5c042	\N
+8faae7cd-20db-4edb-b1b0-6edb34f0caf1	3716fee0-d082-40bc-9e2e-d67302c5c042	t	${role_manage-realm}	manage-realm	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	3716fee0-d082-40bc-9e2e-d67302c5c042	\N
+e04d0dac-4270-4cae-951b-ec312be93b32	3716fee0-d082-40bc-9e2e-d67302c5c042	t	${role_manage-users}	manage-users	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	3716fee0-d082-40bc-9e2e-d67302c5c042	\N
+709b32fd-28e8-4cc3-91de-4d039752c537	3716fee0-d082-40bc-9e2e-d67302c5c042	t	${role_manage-clients}	manage-clients	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	3716fee0-d082-40bc-9e2e-d67302c5c042	\N
+bf903b0f-6a33-421d-a7e7-e43388ae8b46	3716fee0-d082-40bc-9e2e-d67302c5c042	t	${role_manage-events}	manage-events	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	3716fee0-d082-40bc-9e2e-d67302c5c042	\N
+e327197a-3124-42b8-9a09-2e2d04eea168	3716fee0-d082-40bc-9e2e-d67302c5c042	t	${role_manage-identity-providers}	manage-identity-providers	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	3716fee0-d082-40bc-9e2e-d67302c5c042	\N
+469ad077-4fc3-4e85-8c7d-a89b63fa08a4	3716fee0-d082-40bc-9e2e-d67302c5c042	t	${role_manage-authorization}	manage-authorization	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	3716fee0-d082-40bc-9e2e-d67302c5c042	\N
+6c19d6fe-7dfe-48e5-88e0-7803c038447f	3716fee0-d082-40bc-9e2e-d67302c5c042	t	${role_query-users}	query-users	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	3716fee0-d082-40bc-9e2e-d67302c5c042	\N
+6b7b7f41-9036-4ed9-9608-84eebd91375d	3716fee0-d082-40bc-9e2e-d67302c5c042	t	${role_query-clients}	query-clients	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	3716fee0-d082-40bc-9e2e-d67302c5c042	\N
+af554b21-806b-4b7a-a902-c50e70ee72c2	3716fee0-d082-40bc-9e2e-d67302c5c042	t	${role_query-realms}	query-realms	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	3716fee0-d082-40bc-9e2e-d67302c5c042	\N
+d8bcea2d-84a6-4a71-9690-fb4692aa0963	3716fee0-d082-40bc-9e2e-d67302c5c042	t	${role_query-groups}	query-groups	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	3716fee0-d082-40bc-9e2e-d67302c5c042	\N
+0980f492-0a4b-4cbe-8579-07ad2dcf4a94	1ff3074f-d7a0-43b7-b75c-523be33369ce	t	${role_view-profile}	view-profile	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	1ff3074f-d7a0-43b7-b75c-523be33369ce	\N
+f5f5d47e-8316-47bf-b479-3cfea07ea5c2	1ff3074f-d7a0-43b7-b75c-523be33369ce	t	${role_manage-account}	manage-account	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	1ff3074f-d7a0-43b7-b75c-523be33369ce	\N
+6f359d5e-8561-45dc-a78a-9a8e5af1c71f	1ff3074f-d7a0-43b7-b75c-523be33369ce	t	${role_manage-account-links}	manage-account-links	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	1ff3074f-d7a0-43b7-b75c-523be33369ce	\N
+cbe236e9-e364-4686-b7c3-c7494531092e	1ff3074f-d7a0-43b7-b75c-523be33369ce	t	${role_view-applications}	view-applications	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	1ff3074f-d7a0-43b7-b75c-523be33369ce	\N
+4435ecf7-761c-416f-b23e-d38bbe1edc23	1ff3074f-d7a0-43b7-b75c-523be33369ce	t	${role_view-consent}	view-consent	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	1ff3074f-d7a0-43b7-b75c-523be33369ce	\N
+900ec742-e2b3-461b-b8be-00e3fe7fddb7	1ff3074f-d7a0-43b7-b75c-523be33369ce	t	${role_manage-consent}	manage-consent	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	1ff3074f-d7a0-43b7-b75c-523be33369ce	\N
+37c8c5df-f92b-4418-9880-60fd24478c83	1ff3074f-d7a0-43b7-b75c-523be33369ce	t	${role_view-groups}	view-groups	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	1ff3074f-d7a0-43b7-b75c-523be33369ce	\N
+63b6d674-5b60-4fda-862d-79e4de5c38cc	1ff3074f-d7a0-43b7-b75c-523be33369ce	t	${role_delete-account}	delete-account	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	1ff3074f-d7a0-43b7-b75c-523be33369ce	\N
+5710d7cd-03a9-415a-9037-0d80021de642	56fd5161-9828-4e15-a832-08a0a3926d6d	t	${role_read-token}	read-token	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	56fd5161-9828-4e15-a832-08a0a3926d6d	\N
+44c81794-d083-4b6c-8dcf-76e091d85b70	3716fee0-d082-40bc-9e2e-d67302c5c042	t	${role_impersonation}	impersonation	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	3716fee0-d082-40bc-9e2e-d67302c5c042	\N
+5670c91c-8594-4a71-9009-20ad77fc9ba4	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	f	${role_offline-access}	offline_access	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	\N	\N
+ca95e2c4-340a-4fd2-855c-402686b9f31a	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	f	${role_uma_authorization}	uma_authorization	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	\N	\N
 929392ee-0474-4ed0-a64e-9b0132025c91	83b6664d-539e-4bed-a376-685d50e40b98	f	${role_default-roles}	default-roles-loci-realm	83b6664d-539e-4bed-a376-685d50e40b98	\N	\N
-58322d83-6ad4-43ff-818d-2ffdfa163267	79444884-c5b7-42b8-a725-66aad65ac358	t	${role_create-client}	create-client	be66634f-b27a-4e21-b03e-7d51f28d6003	79444884-c5b7-42b8-a725-66aad65ac358	\N
-0de19735-b65f-43e6-84d0-b2ce0e7b38c5	79444884-c5b7-42b8-a725-66aad65ac358	t	${role_view-realm}	view-realm	be66634f-b27a-4e21-b03e-7d51f28d6003	79444884-c5b7-42b8-a725-66aad65ac358	\N
-78f47948-fe72-4715-ab7f-8f379328edf8	79444884-c5b7-42b8-a725-66aad65ac358	t	${role_view-users}	view-users	be66634f-b27a-4e21-b03e-7d51f28d6003	79444884-c5b7-42b8-a725-66aad65ac358	\N
-8cacdf8e-47b2-46f8-a13b-e46c3e1b3d54	79444884-c5b7-42b8-a725-66aad65ac358	t	${role_view-clients}	view-clients	be66634f-b27a-4e21-b03e-7d51f28d6003	79444884-c5b7-42b8-a725-66aad65ac358	\N
-cf3911cf-6de6-4014-a06f-771819352d09	79444884-c5b7-42b8-a725-66aad65ac358	t	${role_view-events}	view-events	be66634f-b27a-4e21-b03e-7d51f28d6003	79444884-c5b7-42b8-a725-66aad65ac358	\N
-6fa77ccc-2898-4154-a72f-2463cbde0cfc	79444884-c5b7-42b8-a725-66aad65ac358	t	${role_view-identity-providers}	view-identity-providers	be66634f-b27a-4e21-b03e-7d51f28d6003	79444884-c5b7-42b8-a725-66aad65ac358	\N
-92eaf1e9-ae71-4f6b-969e-9b4f50ad0d1f	79444884-c5b7-42b8-a725-66aad65ac358	t	${role_view-authorization}	view-authorization	be66634f-b27a-4e21-b03e-7d51f28d6003	79444884-c5b7-42b8-a725-66aad65ac358	\N
-9b90f0e5-a693-4a7f-967e-6e91b3c53eb3	79444884-c5b7-42b8-a725-66aad65ac358	t	${role_manage-realm}	manage-realm	be66634f-b27a-4e21-b03e-7d51f28d6003	79444884-c5b7-42b8-a725-66aad65ac358	\N
-b6ecb822-7fa1-4a35-92c5-617a79e5bf8d	79444884-c5b7-42b8-a725-66aad65ac358	t	${role_manage-users}	manage-users	be66634f-b27a-4e21-b03e-7d51f28d6003	79444884-c5b7-42b8-a725-66aad65ac358	\N
-15748f75-0a0d-4c5f-ab39-f7817b7ce68b	79444884-c5b7-42b8-a725-66aad65ac358	t	${role_manage-clients}	manage-clients	be66634f-b27a-4e21-b03e-7d51f28d6003	79444884-c5b7-42b8-a725-66aad65ac358	\N
-b8e897ef-5bd5-4e4c-96df-c58c4f997e74	79444884-c5b7-42b8-a725-66aad65ac358	t	${role_manage-events}	manage-events	be66634f-b27a-4e21-b03e-7d51f28d6003	79444884-c5b7-42b8-a725-66aad65ac358	\N
-84e6d154-dee3-4200-9cf7-2a9b47872418	79444884-c5b7-42b8-a725-66aad65ac358	t	${role_manage-identity-providers}	manage-identity-providers	be66634f-b27a-4e21-b03e-7d51f28d6003	79444884-c5b7-42b8-a725-66aad65ac358	\N
-9be58f3d-4c48-436e-a3c9-86aa2fcdfcbd	79444884-c5b7-42b8-a725-66aad65ac358	t	${role_manage-authorization}	manage-authorization	be66634f-b27a-4e21-b03e-7d51f28d6003	79444884-c5b7-42b8-a725-66aad65ac358	\N
-6746b5d7-b7ab-4f65-bc3e-794ac6f1a0cb	79444884-c5b7-42b8-a725-66aad65ac358	t	${role_query-users}	query-users	be66634f-b27a-4e21-b03e-7d51f28d6003	79444884-c5b7-42b8-a725-66aad65ac358	\N
-a1cbbd07-01d8-4b56-b936-03851c96f0d7	79444884-c5b7-42b8-a725-66aad65ac358	t	${role_query-clients}	query-clients	be66634f-b27a-4e21-b03e-7d51f28d6003	79444884-c5b7-42b8-a725-66aad65ac358	\N
-818a00f7-4126-4319-a351-137e2f9948e2	79444884-c5b7-42b8-a725-66aad65ac358	t	${role_query-realms}	query-realms	be66634f-b27a-4e21-b03e-7d51f28d6003	79444884-c5b7-42b8-a725-66aad65ac358	\N
-ac1615dd-9436-4eaa-8274-81b125397d1d	79444884-c5b7-42b8-a725-66aad65ac358	t	${role_query-groups}	query-groups	be66634f-b27a-4e21-b03e-7d51f28d6003	79444884-c5b7-42b8-a725-66aad65ac358	\N
+b86ae6a8-96ee-4c61-972c-249298a95e40	d63e6c56-ea5d-4d57-b860-86482a42e25f	t	${role_create-client}	create-client	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	d63e6c56-ea5d-4d57-b860-86482a42e25f	\N
+05f1b1ca-6768-415c-b3ab-6ea73b22b7a4	d63e6c56-ea5d-4d57-b860-86482a42e25f	t	${role_view-realm}	view-realm	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	d63e6c56-ea5d-4d57-b860-86482a42e25f	\N
+9b842559-782d-442d-9754-ebdbca01c7d0	d63e6c56-ea5d-4d57-b860-86482a42e25f	t	${role_view-users}	view-users	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	d63e6c56-ea5d-4d57-b860-86482a42e25f	\N
+42546ad0-93fd-4600-901f-fed6688bb0fb	d63e6c56-ea5d-4d57-b860-86482a42e25f	t	${role_view-clients}	view-clients	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	d63e6c56-ea5d-4d57-b860-86482a42e25f	\N
+ade59042-6b46-4f35-bae4-b588e0a841c4	d63e6c56-ea5d-4d57-b860-86482a42e25f	t	${role_view-events}	view-events	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	d63e6c56-ea5d-4d57-b860-86482a42e25f	\N
+a498cd5f-88fe-4a83-86bf-eea96ac8e9da	d63e6c56-ea5d-4d57-b860-86482a42e25f	t	${role_view-identity-providers}	view-identity-providers	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	d63e6c56-ea5d-4d57-b860-86482a42e25f	\N
+f7b3375e-bdd8-4c24-9485-87b647a0c457	d63e6c56-ea5d-4d57-b860-86482a42e25f	t	${role_view-authorization}	view-authorization	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	d63e6c56-ea5d-4d57-b860-86482a42e25f	\N
+a5d4a4b9-a680-47aa-a060-59edd7fb4cd4	d63e6c56-ea5d-4d57-b860-86482a42e25f	t	${role_manage-realm}	manage-realm	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	d63e6c56-ea5d-4d57-b860-86482a42e25f	\N
+50bd2a41-ca19-439b-9283-4d7d4ef39548	d63e6c56-ea5d-4d57-b860-86482a42e25f	t	${role_manage-users}	manage-users	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	d63e6c56-ea5d-4d57-b860-86482a42e25f	\N
+16029c9c-59cb-4097-8f34-29772f620ed1	d63e6c56-ea5d-4d57-b860-86482a42e25f	t	${role_manage-clients}	manage-clients	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	d63e6c56-ea5d-4d57-b860-86482a42e25f	\N
+0e532c26-0e90-4471-9f34-ebdf918de860	d63e6c56-ea5d-4d57-b860-86482a42e25f	t	${role_manage-events}	manage-events	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	d63e6c56-ea5d-4d57-b860-86482a42e25f	\N
+b8452691-a5a6-4a14-b47c-204e865209bd	d63e6c56-ea5d-4d57-b860-86482a42e25f	t	${role_manage-identity-providers}	manage-identity-providers	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	d63e6c56-ea5d-4d57-b860-86482a42e25f	\N
+4eaccf71-decf-4642-a51e-523b45e86d77	d63e6c56-ea5d-4d57-b860-86482a42e25f	t	${role_manage-authorization}	manage-authorization	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	d63e6c56-ea5d-4d57-b860-86482a42e25f	\N
+3ee16c4d-21dc-488f-8596-02969887b138	d63e6c56-ea5d-4d57-b860-86482a42e25f	t	${role_query-users}	query-users	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	d63e6c56-ea5d-4d57-b860-86482a42e25f	\N
+ac41bbd1-1870-4060-9113-2be836ef19b7	d63e6c56-ea5d-4d57-b860-86482a42e25f	t	${role_query-clients}	query-clients	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	d63e6c56-ea5d-4d57-b860-86482a42e25f	\N
+fe7e1331-9cb7-48c7-b4a4-0b1796050a8a	d63e6c56-ea5d-4d57-b860-86482a42e25f	t	${role_query-realms}	query-realms	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	d63e6c56-ea5d-4d57-b860-86482a42e25f	\N
+c900338a-858e-4840-b099-cd3f9e6fb793	d63e6c56-ea5d-4d57-b860-86482a42e25f	t	${role_query-groups}	query-groups	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	d63e6c56-ea5d-4d57-b860-86482a42e25f	\N
 eb9be962-f203-49c6-9075-ce80642bf363	83b6664d-539e-4bed-a376-685d50e40b98	f	${role_uma_authorization}	uma_authorization	83b6664d-539e-4bed-a376-685d50e40b98	\N	\N
 5df2f1e3-7508-4fbb-889f-c8b70f84ec3b	83b6664d-539e-4bed-a376-685d50e40b98	f		user	83b6664d-539e-4bed-a376-685d50e40b98	\N	\N
 6d7b0d9a-0ac1-481e-aebb-8acd9d5c3e39	83b6664d-539e-4bed-a376-685d50e40b98	f	${role_offline-access}	offline_access	83b6664d-539e-4bed-a376-685d50e40b98	\N	\N
@@ -3808,7 +3981,7 @@ cd9c2212-1347-472e-8e9f-20be2bfc2ec2	cb847cf7-5d97-441b-b7dd-a6f1a47689a2	t	${ro
 f24cb736-a373-4bd6-a34a-ab059b81f98f	cb847cf7-5d97-441b-b7dd-a6f1a47689a2	t	${role_view-profile}	view-profile	83b6664d-539e-4bed-a376-685d50e40b98	cb847cf7-5d97-441b-b7dd-a6f1a47689a2	\N
 710ed846-759e-45bc-afa4-bb5ef183d08c	cb847cf7-5d97-441b-b7dd-a6f1a47689a2	t	${role_manage-account}	manage-account	83b6664d-539e-4bed-a376-685d50e40b98	cb847cf7-5d97-441b-b7dd-a6f1a47689a2	\N
 b39c73a7-84b1-40ff-9fd9-6f314c9ede7a	cb847cf7-5d97-441b-b7dd-a6f1a47689a2	t	${role_view-consent}	view-consent	83b6664d-539e-4bed-a376-685d50e40b98	cb847cf7-5d97-441b-b7dd-a6f1a47689a2	\N
-e5be2e9e-d1ff-4cb8-af27-44722544242e	79444884-c5b7-42b8-a725-66aad65ac358	t	${role_impersonation}	impersonation	be66634f-b27a-4e21-b03e-7d51f28d6003	79444884-c5b7-42b8-a725-66aad65ac358	\N
+5033caf4-d01b-42ce-8c46-fd095c600868	d63e6c56-ea5d-4d57-b860-86482a42e25f	t	${role_impersonation}	impersonation	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	d63e6c56-ea5d-4d57-b860-86482a42e25f	\N
 \.
 
 
@@ -3895,6 +4068,7 @@ f	2	2025-07-21 00:51:43.050411+00	2025-07-21 00:52:43.050411+00	75	2025-07-21 00
 f	2	2025-07-21 00:57:43.050411+00	2025-07-21 00:58:11.050411+00	76	2025-07-21 00:57:43.050411+00	2025-07-21 00:59:01.050411+00	\N	10	2025-07-21 00:57:43.050411+00	e4acf385-5e8b-4d75-bc25-ecbafa1378f0	SEEN	TEXT	\N	\N	Heart policy side.
 f	2	2025-07-21 01:35:43.050411+00	2025-07-21 01:36:19.050411+00	77	2025-07-21 01:35:43.050411+00	2025-07-21 01:41:07.050411+00	\N	34	2025-07-21 01:35:43.050411+00	cc650400-0058-4a2c-960c-2a72c451b649	SEEN	IMAGE	media_6400	https://cdn.example.com/3002	image_content_1982
 f	2	2025-07-21 02:31:43.050411+00	2025-07-21 02:32:42.050411+00	78	2025-07-21 02:31:43.050411+00	2025-07-21 02:33:09.050411+00	\N	34	2025-07-21 02:31:43.050411+00	f7327b0e-005e-46f7-8197-21cccce80cda	SEEN	TEXT	\N	\N	Any yes product president after ready indicate herself natural listen check receive piece feeling product production establish paper case store bit responsibility.
+f	199	2026-03-16 05:15:14.019995+00	\N	5694	2026-03-16 05:15:14.019995+00	\N	\N	10	2026-03-16 05:15:14.013294+00	0f36dc72-ab66-4c06-b992-9216edeeb38d	PREPARE	TEXT	\N	\N	example
 f	2	2025-07-21 02:38:43.050411+00	2025-07-21 02:39:20.050411+00	79	2025-07-21 02:38:43.050411+00	2025-07-21 02:43:40.050411+00	\N	34	2025-07-21 02:38:43.050411+00	f6eb87d1-cc19-4207-b2ee-71af28820eb4	SEEN	TEXT	\N	\N	Executive size marriage participant sing story win group important civil.
 f	2	2025-07-21 02:53:43.050411+00	2025-07-21 02:54:38.050411+00	80	2025-07-21 02:53:43.050411+00	2025-07-21 02:55:34.050411+00	\N	10	2025-07-21 02:53:43.050411+00	1703367a-6e1b-4d93-9d74-fef462156b95	SEEN	TEXT	\N	\N	Many debate value former able public trade structure protect chance bed memory rich big eight discuss write fast less between company always fact.
 f	2	2025-07-21 03:01:43.050411+00	2025-07-21 03:02:32.050411+00	81	2025-07-21 03:01:43.050411+00	2025-07-21 03:04:55.050411+00	\N	34	2025-07-21 03:01:43.050411+00	9118b0df-f1af-4321-b162-8249f37c2322	SEEN	IMAGE	media_4705	https://cdn.example.com/8030	image_content_7022
@@ -6253,6 +6427,7 @@ f	86	2025-04-14 01:05:57.496849+00	2025-04-14 01:06:37.496849+00	2431	2025-04-14
 f	86	2025-04-14 01:33:57.496849+00	2025-04-14 01:34:23.496849+00	2432	2025-04-14 01:33:57.496849+00	2025-04-14 01:38:05.496849+00	\N	4	2025-04-14 01:33:57.496849+00	bdc83d1c-484b-449a-862a-5fa956eb11a0	SEEN	FILE	media_3523	https://cdn.example.com/7786	file_content_1932
 f	86	2025-04-14 01:57:57.496849+00	2025-04-14 01:58:05.496849+00	2433	2025-04-14 01:57:57.496849+00	2025-04-14 02:00:43.496849+00	\N	13	2025-04-14 01:57:57.496849+00	02cb2d58-b503-4507-9d55-0d97c42e5bc9	SEEN	VIDEO	media_4861	https://cdn.example.com/8971	video_content_6468
 f	86	2025-04-14 02:35:57.496849+00	2025-04-14 02:36:11.496849+00	2434	2025-04-14 02:35:57.496849+00	2025-04-14 02:39:39.496849+00	\N	13	2025-04-14 02:35:57.496849+00	c2b37d4b-e1f0-441b-ad40-d2bb60dd8329	SEEN	IMAGE	media_8046	https://cdn.example.com/4852	image_content_7493
+f	201	2026-03-16 13:47:52.27264+00	\N	5717	2026-03-16 13:47:52.339495+00	\N	\N	10	2026-03-16 13:47:52.270445+00	ca83d9d0-7495-4567-8dc8-63eead3021e4	SENT	TEXT	\N	\N	123
 f	86	2025-04-14 02:57:57.496849+00	2025-04-14 02:58:08.496849+00	2435	2025-04-14 02:57:57.496849+00	2025-04-14 03:00:56.496849+00	\N	13	2025-04-14 02:57:57.496849+00	ced3528a-c4a4-459d-b047-897560333c43	SEEN	TEXT	\N	\N	Record ask science government outside able last.
 f	86	2025-04-14 03:03:57.496849+00	2025-04-14 03:04:03.496849+00	2436	2025-04-14 03:03:57.496849+00	2025-04-14 03:04:08.496849+00	\N	13	2025-04-14 03:03:57.496849+00	e3bf5c15-3eec-4772-bf49-ec0de1e5cead	SEEN	IMAGE	media_3458	https://cdn.example.com/9853	image_content_2649
 f	86	2025-04-14 04:03:57.496849+00	2025-04-14 04:04:48.496849+00	2437	2025-04-14 04:03:57.496849+00	2025-04-14 04:06:06.496849+00	\N	13	2025-04-14 04:03:57.496849+00	a38d1efa-dc43-490d-8829-ab021c3aeefa	SEEN	TEXT	\N	\N	Speech central a soldier general sound.
@@ -6648,6 +6823,7 @@ f	98	2025-09-20 13:32:43.413836+00	2025-09-20 13:32:47.413836+00	2825	2025-09-20
 f	98	2025-09-20 13:47:43.413836+00	2025-09-20 13:48:37.413836+00	2826	2025-09-20 13:47:43.413836+00	2025-09-20 13:50:07.413836+00	\N	40	2025-09-20 13:47:43.413836+00	3cb765b3-82a4-4f88-a56d-5dc08943012b	SEEN	TEXT	\N	\N	Hit task suddenly class anything organization support through growth often.
 f	98	2025-09-20 14:35:43.413836+00	2025-09-20 14:36:28.413836+00	2827	2025-09-20 14:35:43.413836+00	2025-09-20 14:40:52.413836+00	\N	40	2025-09-20 14:35:43.413836+00	18144d3e-7f39-40e1-9427-a418d254202c	SEEN	TEXT	\N	\N	Sort including bring blue machine year line fill.
 f	98	2025-09-20 15:15:43.413836+00	2025-09-20 15:16:12.413836+00	2828	2025-09-20 15:15:43.413836+00	2025-09-20 15:16:20.413836+00	\N	40	2025-09-20 15:15:43.413836+00	d9583675-546e-4227-a750-542ab092f190	SEEN	TEXT	\N	\N	Gun purpose go game change north lay.
+f	199	2026-03-16 05:15:25.306421+00	\N	5695	2026-03-16 05:15:25.306421+00	\N	\N	10	2026-03-16 05:15:25.300736+00	28053c83-5b9d-4cfc-ade0-43a312632e42	PREPARE	TEXT	\N	\N	new message
 f	98	2025-09-20 15:26:43.413836+00	2025-09-20 15:27:40.413836+00	2829	2025-09-20 15:26:43.413836+00	2025-09-20 15:31:21.413836+00	\N	30	2025-09-20 15:26:43.413836+00	0ac8510a-8380-47e3-8622-7bd14df796cd	SEEN	FILE	media_3286	https://cdn.example.com/1431	file_content_5327
 f	98	2025-09-20 15:56:43.413836+00	2025-09-20 15:57:36.413836+00	2830	2025-09-20 15:56:43.413836+00	2025-09-20 16:02:13.413836+00	\N	30	2025-09-20 15:56:43.413836+00	c88ec69f-fc90-4634-b122-7f12a2e9e849	SEEN	TEXT	\N	\N	Hold office fast full wall quite serve oil participant election rate more give indicate successful.
 f	98	2025-09-20 16:00:43.413836+00	2025-09-20 16:01:37.413836+00	2831	2025-09-20 16:00:43.413836+00	2025-09-20 16:02:59.413836+00	\N	30	2025-09-20 16:00:43.413836+00	aa3d7d9f-36f4-4727-a902-e6e6e783601d	SEEN	TEXT	\N	\N	Rich rock consider tend practice television attack mind use site live person television third three keep hear.
@@ -6766,6 +6942,7 @@ f	102	2026-01-13 21:02:18.940969+00	2026-01-13 21:02:39.940969+00	2943	2026-01-1
 f	102	2026-01-13 21:52:18.940969+00	2026-01-13 21:52:21.940969+00	2944	2026-01-13 21:52:18.940969+00	\N	\N	27	2026-01-13 21:52:18.940969+00	d3dec82d-d3b4-4deb-ac6d-ef3aeac0dad5	DELIVERED	TEXT	\N	\N	Produce me money attorney cup enjoy southern several hope fire.
 f	103	2025-03-23 03:25:21.29723+00	2025-03-23 03:25:48.29723+00	2945	2025-03-23 03:25:21.29723+00	2025-03-23 03:30:29.29723+00	\N	6	2025-03-23 03:25:21.29723+00	1c601bbb-91d2-4d89-be02-5ad50d5eede9	SEEN	FILE	media_4314	https://cdn.example.com/5820	file_content_4189
 f	103	2025-03-23 03:36:21.29723+00	2025-03-23 03:36:46.29723+00	2946	2025-03-23 03:36:21.29723+00	2025-03-23 03:40:42.29723+00	\N	4	2025-03-23 03:36:21.29723+00	21514565-95ee-45c1-8d17-cee816e836d0	SEEN	TEXT	\N	\N	Leader product line environmental area rise agree Democrat year last election.
+f	201	2026-03-16 13:47:58.530215+00	\N	5718	2026-03-16 13:47:58.60615+00	\N	\N	10	2026-03-16 13:47:58.524335+00	767a22d8-bb4a-44d0-a6b8-9a3000e6ad0a	SENT	TEXT	\N	\N	12
 f	103	2025-03-23 04:04:21.29723+00	2025-03-23 04:04:57.29723+00	2947	2025-03-23 04:04:21.29723+00	2025-03-23 04:09:42.29723+00	\N	4	2025-03-23 04:04:21.29723+00	65260e7b-f8c0-47ed-94ff-addd97057d32	SEEN	TEXT	\N	\N	Oil TV moment about wall east blood director security your eye control picture white audience street admit cold service late do assume position animal major way drop rate.
 f	103	2025-03-23 04:55:21.29723+00	2025-03-23 04:56:01.29723+00	2948	2025-03-23 04:55:21.29723+00	2025-03-23 04:56:39.29723+00	\N	4	2025-03-23 04:55:21.29723+00	07f03a3c-4cd8-426c-947b-1d0d07788a15	SEEN	TEXT	\N	\N	Ball you owner popular far skill close difficult also use again.
 f	103	2025-03-23 05:07:21.29723+00	2025-03-23 05:07:45.29723+00	2949	2025-03-23 05:07:21.29723+00	2025-03-23 05:11:38.29723+00	\N	6	2025-03-23 05:07:21.29723+00	1c5d3d15-2e29-4d38-8491-5d1720fd9cb6	SEEN	TEXT	\N	\N	Kid week hundred outside theory her player on million even education attorney activity power if.
@@ -6963,6 +7140,7 @@ f	112	2025-04-11 15:58:50.322816+00	2025-04-11 15:59:34.322816+00	3141	2025-04-1
 f	112	2025-04-11 16:08:50.322816+00	2025-04-11 16:08:53.322816+00	3142	2025-04-11 16:08:50.322816+00	2025-04-11 16:10:15.322816+00	\N	9	2025-04-11 16:08:50.322816+00	b121cb02-4bca-4f75-ba27-062aaf701d90	SEEN	TEXT	\N	\N	Office ahead bring return mean.
 f	112	2025-04-11 17:02:50.322816+00	2025-04-11 17:02:52.322816+00	3143	2025-04-11 17:02:50.322816+00	2025-04-11 17:05:51.322816+00	\N	1	2025-04-11 17:02:50.322816+00	55903bc5-0c2d-41dc-a8fe-fcfbe42e0fec	SEEN	TEXT	\N	\N	Term heavy name easy interest person fly thought simple.
 f	112	2025-04-11 17:21:50.322816+00	2025-04-11 17:22:27.322816+00	3144	2025-04-11 17:21:50.322816+00	2025-04-11 17:26:21.322816+00	\N	9	2025-04-11 17:21:50.322816+00	c73eca46-e841-4265-96f6-fffc160c13de	SEEN	IMAGE	media_5654	https://cdn.example.com/8863	image_content_5461
+f	199	2026-03-16 05:15:56.480729+00	\N	5696	2026-03-16 05:15:56.480729+00	\N	\N	10	2026-03-16 05:15:56.475459+00	d4e478e9-74e4-4ac7-841c-1ae55ae8fb54	PREPARE	TEXT	\N	\N	new message
 f	112	2025-04-11 17:30:50.322816+00	2025-04-11 17:31:17.322816+00	3145	2025-04-11 17:30:50.322816+00	2025-04-11 17:36:05.322816+00	\N	1	2025-04-11 17:30:50.322816+00	085dc72f-cf8d-45d4-8761-979afc841faa	SEEN	FILE	media_8606	https://cdn.example.com/7482	file_content_1019
 f	112	2025-04-11 18:02:50.322816+00	2025-04-11 18:03:16.322816+00	3146	2025-04-11 18:02:50.322816+00	2025-04-11 18:05:49.322816+00	\N	9	2025-04-11 18:02:50.322816+00	1bffcd8a-0feb-4259-bea7-9f2f3f44141e	SEEN	TEXT	\N	\N	Although purpose water hand despite lead study culture idea again player.
 f	112	2025-04-11 18:59:50.322816+00	2025-04-11 18:59:56.322816+00	3147	2025-04-11 18:59:50.322816+00	2025-04-11 19:03:31.322816+00	\N	9	2025-04-11 18:59:50.322816+00	6ca0ffbd-dc26-42ab-a6ec-e39ff287839b	SEEN	TEXT	\N	\N	Make memory leave your unit hand issue per leg trouble property fast whether future.
@@ -7081,6 +7259,7 @@ f	115	2025-08-24 10:33:43.644794+00	2025-08-24 10:34:22.644794+00	3259	2025-08-2
 f	115	2025-08-24 11:20:43.644794+00	2025-08-24 11:20:58.644794+00	3260	2025-08-24 11:20:43.644794+00	2025-08-24 11:23:57.644794+00	\N	1	2025-08-24 11:20:43.644794+00	0e128bd8-ced8-438c-aef1-81f12e98e88f	SEEN	TEXT	\N	\N	Serious station inside generation guy ball rate ahead forward how its treatment power if provide already position development fear individual.
 f	115	2025-08-24 11:54:43.644794+00	2025-08-24 11:55:14.644794+00	3261	2025-08-24 11:54:43.644794+00	2025-08-24 11:58:01.644794+00	\N	1	2025-08-24 11:54:43.644794+00	69693833-9a09-475c-ac5a-fce458380299	SEEN	TEXT	\N	\N	That stock officer.
 f	115	2025-08-24 12:26:43.644794+00	2025-08-24 12:27:08.644794+00	3262	2025-08-24 12:26:43.644794+00	2025-08-24 12:27:57.644794+00	\N	1	2025-08-24 12:26:43.644794+00	ad0a0d5c-a2c3-4ca5-a30b-6c1a9f8d4f7a	SEEN	TEXT	\N	\N	Investment central on right become room discuss friend financial task high check foot not hundred traditional kid day quality increase others either front.
+f	199	2026-03-16 10:11:05.365247+00	\N	5697	2026-03-16 10:11:05.777363+00	\N	\N	10	2026-03-16 10:11:05.251186+00	cefb6ae3-2ef3-43ef-af86-aeed46b8d47f	SENT	TEXT	\N	\N	name
 f	115	2025-08-24 13:19:43.644794+00	2025-08-24 13:20:21.644794+00	3263	2025-08-24 13:19:43.644794+00	2025-08-24 13:21:47.644794+00	\N	1	2025-08-24 13:19:43.644794+00	e8b669c5-08fc-4322-b2b3-f98c2a55ac21	SEEN	TEXT	\N	\N	Eye cut none fly season increase itself production happy avoid around make all change system administration chair southern life.
 f	115	2025-08-24 13:53:43.644794+00	2025-08-24 13:53:50.644794+00	3264	2025-08-24 13:53:43.644794+00	2025-08-24 13:56:07.644794+00	\N	1	2025-08-24 13:53:43.644794+00	3f14f265-ea7a-492c-9628-bac04d95db70	SEEN	TEXT	\N	\N	Herself heavy raise win go hospital some daughter relate control water daughter truth later nor out assume.
 f	115	2025-08-24 14:23:43.644794+00	2025-08-24 14:24:22.644794+00	3265	2025-08-24 14:23:43.644794+00	2025-08-24 14:28:10.644794+00	\N	1	2025-08-24 14:23:43.644794+00	f7c60cd6-15e9-4e8a-bf9e-9cc30d2bb50c	SEEN	FILE	media_7713	https://cdn.example.com/2913	file_content_3087
@@ -7393,6 +7572,7 @@ f	122	2025-04-01 01:04:49.838129+00	2025-04-01 01:05:24.838129+00	3572	2025-04-0
 f	122	2025-04-01 01:24:49.838129+00	2025-04-01 01:25:39.838129+00	3573	2025-04-01 01:24:49.838129+00	2025-04-01 01:30:28.838129+00	\N	6	2025-04-01 01:24:49.838129+00	e0349724-58e7-4ff6-82cd-2149cd070bac	SEEN	TEXT	\N	\N	Name language.
 f	122	2025-04-01 02:10:49.838129+00	2025-04-01 02:11:16.838129+00	3574	2025-04-01 02:10:49.838129+00	2025-04-01 02:15:08.838129+00	\N	6	2025-04-01 02:10:49.838129+00	92c2bcb4-44ce-434c-9b91-193f8bbc19d7	SEEN	TEXT	\N	\N	Military win artist play like knowledge society court service example paper long.
 f	122	2025-04-01 02:40:49.838129+00	2025-04-01 02:41:45.838129+00	3575	2025-04-01 02:40:49.838129+00	2025-04-01 02:43:11.838129+00	\N	6	2025-04-01 02:40:49.838129+00	e8e4fb35-af9a-4bd5-acef-d972058d84d9	SEEN	TEXT	\N	\N	Decide campaign again could.
+f	200	2026-03-16 10:15:45.370334+00	\N	5698	2026-03-16 10:15:49.018058+00	2026-03-16 10:15:49.008092+00	\N	10	2026-03-16 10:15:45.366172+00	1cf7e413-d96b-4a68-aed3-a113993c8a07	SEEN	TEXT	\N	\N	Hi
 f	122	2025-04-01 03:18:49.838129+00	2025-04-01 03:19:21.838129+00	3576	2025-04-01 03:18:49.838129+00	2025-04-01 03:21:37.838129+00	\N	6	2025-04-01 03:18:49.838129+00	000f68d3-2416-4d05-a622-90e7d21ae22b	SEEN	TEXT	\N	\N	Professor eight right fill can analysis guess that.
 f	122	2025-04-01 03:51:49.838129+00	2025-04-01 03:52:44.838129+00	3577	2025-04-01 03:51:49.838129+00	2025-04-01 03:57:24.838129+00	\N	6	2025-04-01 03:51:49.838129+00	c3e7dfaf-126d-4b87-b113-b68801a77203	SEEN	TEXT	\N	\N	Financial.
 f	122	2025-04-01 04:18:49.838129+00	2025-04-01 04:19:37.838129+00	3578	2025-04-01 04:18:49.838129+00	2025-04-01 04:23:51.838129+00	\N	6	2025-04-01 04:18:49.838129+00	88caff17-1238-402d-be6f-3c2b0bb2733a	SEEN	TEXT	\N	\N	Ability activity factor.
@@ -7944,6 +8124,7 @@ f	143	2025-12-03 21:37:08.496447+00	2025-12-03 21:37:47.496447+00	4123	2025-12-0
 f	143	2025-12-03 21:41:08.496447+00	2025-12-03 21:41:50.496447+00	4124	2025-12-03 21:41:08.496447+00	2025-12-03 21:42:02.496447+00	\N	8	2025-12-03 21:41:08.496447+00	65553321-3fe1-4375-adf9-003ea1f4fc9a	SEEN	TEXT	\N	\N	Season impact.
 f	143	2025-12-03 22:09:08.496447+00	2025-12-03 22:09:15.496447+00	4125	2025-12-03 22:09:08.496447+00	2025-12-03 22:12:28.496447+00	\N	8	2025-12-03 22:09:08.496447+00	cda82175-b370-4951-b119-324172d098bd	SEEN	FILE	media_3395	https://cdn.example.com/4018	file_content_6596
 f	143	2025-12-03 22:54:08.496447+00	2025-12-03 22:54:40.496447+00	4126	2025-12-03 22:54:08.496447+00	2025-12-03 22:55:13.496447+00	\N	19	2025-12-03 22:54:08.496447+00	87fd15b1-b9f8-446d-a993-f63f19c5b6e3	SEEN	TEXT	\N	\N	Cup look thus challenge soldier use involve throughout maybe.
+f	201	2026-03-16 12:53:17.394648+00	2026-03-16 12:53:17.612923+00	5707	2026-03-16 12:53:17.620966+00	\N	\N	10	2026-03-16 12:53:17.321938+00	3d185b1a-1e37-4023-9f13-7e65f41f5354	DELIVERED	TEXT	\N	\N	as
 f	143	2025-12-03 22:55:08.496447+00	2025-12-03 22:55:55.496447+00	4127	2025-12-03 22:55:08.496447+00	2025-12-03 22:59:46.496447+00	\N	19	2025-12-03 22:55:08.496447+00	f574188e-8491-4240-840a-38943891d695	SEEN	TEXT	\N	\N	Understand general consider machine deal though material explain finish follow clearly outside across traditional about list.
 f	143	2025-12-03 23:46:08.496447+00	2025-12-03 23:46:58.496447+00	4128	2025-12-03 23:46:08.496447+00	2025-12-03 23:49:55.496447+00	\N	8	2025-12-03 23:46:08.496447+00	574281b7-b996-4847-9373-156e1698f93c	SEEN	TEXT	\N	\N	Ago long training nor clearly away green onto late with important administration mouth.
 f	143	2025-12-03 23:52:08.496447+00	2025-12-03 23:52:33.496447+00	4129	2025-12-03 23:52:08.496447+00	2025-12-03 23:56:33.496447+00	\N	8	2025-12-03 23:52:08.496447+00	c7945edc-fe3a-4c19-9938-5a804b34c400	SEEN	TEXT	\N	\N	Oil paper behavior seem machine result home half pass population.
@@ -8296,6 +8477,7 @@ f	159	2025-07-10 13:14:54.458628+00	2025-07-10 13:15:23.458628+00	4476	2025-07-1
 f	159	2025-07-10 13:26:54.458628+00	2025-07-10 13:27:38.458628+00	4477	2025-07-10 13:26:54.458628+00	2025-07-10 13:31:10.458628+00	\N	37	2025-07-10 13:26:54.458628+00	baeb6339-b855-4cba-805c-b778c19143c3	SEEN	TEXT	\N	\N	Increase present author safe opportunity particular factor follow last.
 f	159	2025-07-10 13:55:54.458628+00	2025-07-10 13:56:29.458628+00	4478	2025-07-10 13:55:54.458628+00	2025-07-10 13:59:10.458628+00	\N	36	2025-07-10 13:55:54.458628+00	926b6afa-cfb3-4d95-bec6-dad5b0459f8f	SEEN	TEXT	\N	\N	Tax people score decide real strategy choose clear PM some consumer final charge will.
 f	159	2025-07-10 14:54:54.458628+00	2025-07-10 14:55:51.458628+00	4479	2025-07-10 14:54:54.458628+00	2025-07-10 15:00:02.458628+00	\N	36	2025-07-10 14:54:54.458628+00	01317ca2-cfa3-439e-9869-2a2e61bc9326	SEEN	TEXT	\N	\N	Bad eight should window measure design less will appear around talk know perform water return point usually his design kitchen conference effort prevent several write.
+f	201	2026-03-16 10:16:50.006901+00	\N	5700	2026-03-16 10:16:50.059058+00	\N	\N	43	2026-03-16 10:16:50.004184+00	de7ccb43-798a-4646-bc12-2304af0d8427	SENT	TEXT	\N	\N	123
 f	159	2025-07-10 15:44:54.458628+00	2025-07-10 15:45:49.458628+00	4480	2025-07-10 15:44:54.458628+00	2025-07-10 15:49:01.458628+00	\N	37	2025-07-10 15:44:54.458628+00	d57a55ba-c90d-4d9f-a7d6-d940ae6abb07	SEEN	TEXT	\N	\N	Into laugh about shoulder paper apply school always message your score political kid.
 f	159	2025-07-10 16:03:54.458628+00	2025-07-10 16:04:48.458628+00	4481	2025-07-10 16:03:54.458628+00	2025-07-10 16:09:06.458628+00	\N	37	2025-07-10 16:03:54.458628+00	89456ab2-38f1-40fb-ab99-cb63bdc352d0	SEEN	TEXT	\N	\N	Material professional clear wife course open itself strong home south specific feel.
 f	159	2025-07-10 16:58:54.458628+00	2025-07-10 16:59:07.458628+00	4482	2025-07-10 16:58:54.458628+00	2025-07-10 17:02:56.458628+00	\N	37	2025-07-10 16:58:54.458628+00	b8e09690-5adf-4051-b4bb-b1617f3ba2c2	SEEN	TEXT	\N	\N	Environment term southern nation different medical gun win three child close speak score.
@@ -8414,6 +8596,7 @@ f	164	2025-11-17 16:08:22.134232+00	2025-11-17 16:08:55.134232+00	4594	2025-11-1
 f	164	2025-11-17 17:05:22.134232+00	2025-11-17 17:06:19.134232+00	4595	2025-11-17 17:05:22.134232+00	2025-11-17 17:09:22.134232+00	\N	24	2025-11-17 17:05:22.134232+00	691b1763-af47-4988-b90d-54c77e70edb1	SEEN	TEXT	\N	\N	Fear hot race maintain analysis require.
 f	164	2025-11-17 17:41:22.134232+00	2025-11-17 17:41:38.134232+00	4596	2025-11-17 17:41:22.134232+00	2025-11-17 17:41:49.134232+00	\N	29	2025-11-17 17:41:22.134232+00	ef2201c5-8b9b-4135-ae29-b9e64bee57e4	SEEN	FILE	media_9144	https://cdn.example.com/8438	file_content_4563
 f	164	2025-11-17 17:50:22.134232+00	2025-11-17 17:50:28.134232+00	4597	2025-11-17 17:50:22.134232+00	2025-11-17 17:51:50.134232+00	\N	29	2025-11-17 17:50:22.134232+00	b2142758-21d1-4c19-8937-e75f4ef7c527	SEEN	IMAGE	media_7328	https://cdn.example.com/3988	image_content_9995
+f	201	2026-03-16 10:25:01.143316+00	\N	5701	2026-03-16 10:25:01.210749+00	\N	\N	43	2026-03-16 10:25:01.140082+00	54a44ee0-8bd0-4d43-87dc-44b367d6fc1f	SENT	TEXT	\N	\N	send
 f	164	2025-11-17 18:16:22.134232+00	2025-11-17 18:16:53.134232+00	4598	2025-11-17 18:16:22.134232+00	2025-11-17 18:21:16.134232+00	\N	29	2025-11-17 18:16:22.134232+00	38313e2a-ea6a-42cc-b3c2-675f70d0ac61	SEEN	TEXT	\N	\N	Mind possible environmental guy whole sit different eight plan world test guess respond risk week home.
 f	164	2025-11-17 18:17:22.134232+00	2025-11-17 18:17:51.134232+00	4599	2025-11-17 18:17:22.134232+00	2025-11-17 18:22:39.134232+00	\N	29	2025-11-17 18:17:22.134232+00	b226807c-fac0-4d83-ba6f-21d0ed2ab739	SEEN	TEXT	\N	\N	Poor around maybe several trip again degree able heart girl outside natural page image.
 f	164	2025-11-17 18:23:22.134232+00	2025-11-17 18:24:05.134232+00	4600	2025-11-17 18:23:22.134232+00	2025-11-17 18:28:54.134232+00	\N	24	2025-11-17 18:23:22.134232+00	ef4b8802-117a-47e8-a089-da396ec50188	SEEN	IMAGE	media_2639	https://cdn.example.com/9271	image_content_6626
@@ -8769,6 +8952,7 @@ f	175	2026-02-01 15:00:20.030934+00	2026-02-01 15:01:02.030934+00	4948	2026-02-0
 f	175	2026-02-01 15:05:20.030934+00	2026-02-01 15:05:51.030934+00	4949	2026-02-01 15:05:20.030934+00	2026-02-01 15:07:42.030934+00	\N	34	2026-02-01 15:05:20.030934+00	89b12f1e-fc46-4310-a1eb-fac1bafd4628	SEEN	TEXT	\N	\N	Government moment ago already story.
 f	175	2026-02-01 15:06:20.030934+00	2026-02-01 15:06:34.030934+00	4950	2026-02-01 15:06:20.030934+00	2026-02-01 15:11:05.030934+00	\N	34	2026-02-01 15:06:20.030934+00	f453779b-da9d-4e1f-a81b-aa43b4eaeef8	SEEN	VIDEO	media_7974	https://cdn.example.com/3431	video_content_8471
 f	175	2026-02-01 16:02:20.030934+00	2026-02-01 16:02:48.030934+00	4951	2026-02-01 16:02:20.030934+00	2026-02-01 16:03:42.030934+00	\N	34	2026-02-01 16:02:20.030934+00	cff7aa18-fa03-4287-8f16-e83525e1431b	SEEN	TEXT	\N	\N	Quickly apply design indicate perform guess reality opportunity measure along worker.
+f	201	2026-03-16 10:33:49.27531+00	\N	5702	2026-03-16 10:33:49.543156+00	\N	\N	10	2026-03-16 10:33:49.205812+00	8b9c32d7-8349-48db-8a29-0d5c55aaca0f	SENT	TEXT	\N	\N	asd
 f	175	2026-02-01 16:21:20.030934+00	2026-02-01 16:22:07.030934+00	4952	2026-02-01 16:21:20.030934+00	2026-02-01 16:23:30.030934+00	\N	31	2026-02-01 16:21:20.030934+00	3132fe55-d018-4729-8f4c-0e5a67165189	SEEN	TEXT	\N	\N	Through up find back off explain attack camera deep assume answer actually conference player weight particular amount human ok several measure.
 f	175	2026-02-01 16:56:20.030934+00	2026-02-01 16:56:23.030934+00	4953	2026-02-01 16:56:20.030934+00	2026-02-01 16:59:29.030934+00	\N	31	2026-02-01 16:56:20.030934+00	198e9fe1-9bd8-4509-8171-1a95a347ea7d	SEEN	TEXT	\N	\N	Particularly Mr.
 f	175	2026-02-01 17:44:20.030934+00	2026-02-01 17:44:53.030934+00	4954	2026-02-01 17:44:20.030934+00	2026-02-01 17:46:08.030934+00	\N	34	2026-02-01 17:44:20.030934+00	1efbd319-624d-4e78-b561-32fa14a09f85	SEEN	VIDEO	media_3721	https://cdn.example.com/5140	video_content_1525
@@ -9395,6 +9579,7 @@ f	195	2025-10-28 01:20:21.218449+00	2025-10-28 01:20:31.218449+00	5575	2025-10-2
 f	195	2025-10-28 01:49:21.218449+00	2025-10-28 01:50:11.218449+00	5576	2025-10-28 01:49:21.218449+00	2025-10-28 01:54:03.218449+00	\N	24	2025-10-28 01:49:21.218449+00	c4436e76-5b44-4ad0-b327-92738271d520	SEEN	FILE	media_9137	https://cdn.example.com/9079	file_content_5915
 f	195	2025-10-28 02:13:21.218449+00	2025-10-28 02:13:40.218449+00	5577	2025-10-28 02:13:21.218449+00	2025-10-28 02:14:41.218449+00	\N	24	2025-10-28 02:13:21.218449+00	33e983f5-44a5-426c-8c20-e687b3bdac55	SEEN	TEXT	\N	\N	Camera author difference set record middle.
 f	195	2025-10-28 02:23:21.218449+00	2025-10-28 02:24:16.218449+00	5578	2025-10-28 02:23:21.218449+00	2025-10-28 02:26:44.218449+00	\N	9	2025-10-28 02:23:21.218449+00	4f366aac-7db4-4444-a9b4-c017f8f3eafc	SEEN	TEXT	\N	\N	Skill political quite energy available expert memory station from put serious senior law nor money pick peace.
+f	201	2026-03-16 10:33:58.231508+00	2026-03-16 10:33:58.523641+00	5703	2026-03-16 10:33:58.555113+00	\N	\N	43	2026-03-16 10:33:58.226883+00	8854b523-ff72-4870-a7fb-688fb6dd0b6e	DELIVERED	TEXT	\N	\N	123
 f	195	2025-10-28 03:03:21.218449+00	2025-10-28 03:03:24.218449+00	5579	2025-10-28 03:03:21.218449+00	2025-10-28 03:03:33.218449+00	\N	9	2025-10-28 03:03:21.218449+00	71acf35b-199e-4c0a-9f4e-1b8138a1afab	SEEN	TEXT	\N	\N	Wife no camera character test Democrat perhaps court game eat sense common ask as cultural world smile information sure wait item mouth.
 f	195	2025-10-28 03:59:21.218449+00	2025-10-28 03:59:43.218449+00	5580	2025-10-28 03:59:21.218449+00	2025-10-28 04:02:50.218449+00	\N	24	2025-10-28 03:59:21.218449+00	80325684-ffb8-48cd-b8b4-f54569bae2e3	SEEN	TEXT	\N	\N	Policy speak same charge see like while live fly through admit another travel although degree.
 f	195	2025-10-28 04:36:21.218449+00	2025-10-28 04:37:06.218449+00	5581	2025-10-28 04:36:21.218449+00	2025-10-28 04:40:40.218449+00	\N	24	2025-10-28 04:36:21.218449+00	c001a20d-63f5-4ec9-aac1-058713c5a6fd	SEEN	TEXT	\N	\N	Class three resource decide full guy condition.
@@ -9510,6 +9695,114 @@ f	198	2025-11-24 09:54:03.144587+00	2025-11-24 09:54:48.144587+00	5690	2025-11-2
 f	198	2025-11-24 10:01:03.144587+00	2025-11-24 10:01:40.144587+00	5691	2025-11-24 10:01:03.144587+00	2025-11-24 10:04:32.144587+00	\N	11	2025-11-24 10:01:03.144587+00	5f1dc9ff-d82e-4b91-a574-bad3cdd34d4a	SEEN	IMAGE	media_7992	https://cdn.example.com/7573	image_content_2647
 f	198	2025-11-24 10:30:03.144587+00	2025-11-24 10:30:16.144587+00	5692	2025-11-24 10:30:03.144587+00	2025-11-24 10:32:59.144587+00	\N	30	2025-11-24 10:30:03.144587+00	02817a73-d192-4adc-848c-7a9bfd1cb35d	SEEN	TEXT	\N	\N	Become beautiful picture Democrat kitchen home hope live hit upon hold rich news environment including someone Mrs treatment somebody.
 f	198	2025-11-24 11:08:03.144587+00	\N	5693	2025-11-24 11:08:03.144587+00	\N	\N	30	2025-11-24 11:08:03.144587+00	595b49bc-ec6a-4157-98c3-b502e6b508d8	SENT	TEXT	\N	\N	Use mission call.
+f	201	2026-03-16 10:34:06.126934+00	2026-03-16 10:34:06.343514+00	5704	2026-03-16 10:34:06.361533+00	\N	\N	43	2026-03-16 10:34:06.122662+00	a660774b-874a-4f66-a971-e32c39ecbcc8	DELIVERED	TEXT	\N	\N	123
+f	201	2026-03-16 10:34:24.412312+00	2026-03-16 10:34:24.59277+00	5705	2026-03-16 10:34:24.603415+00	\N	\N	10	2026-03-16 10:34:24.408753+00	ba8b4248-f61c-415d-97e7-918eb8cfaf5b	DELIVERED	TEXT	\N	\N	same message
+f	201	2026-03-16 10:34:36.335358+00	2026-03-16 10:34:36.505916+00	5706	2026-03-16 10:34:36.518541+00	\N	\N	43	2026-03-16 10:34:36.33109+00	aadf5f21-dd63-46e4-b930-3947d6ba0715	DELIVERED	TEXT	\N	\N	123
+f	201	2026-03-16 12:55:06.898992+00	2026-03-16 12:55:07.236879+00	5708	2026-03-16 12:55:07.241721+00	\N	\N	10	2026-03-16 12:55:06.895872+00	bd909961-a3f4-443f-9757-c3269f29b061	DELIVERED	TEXT	\N	\N	1
+f	201	2026-03-16 13:01:20.061213+00	2026-03-16 13:01:20.34195+00	5709	2026-03-16 13:01:20.345814+00	\N	\N	10	2026-03-16 13:01:20.055222+00	5ad0c5d8-fcd2-4c8e-90d9-ff5d98f0c3b7	DELIVERED	TEXT	\N	\N	1
+f	201	2026-03-16 13:01:26.577286+00	2026-03-16 13:01:26.829101+00	5710	2026-03-16 13:01:26.838261+00	\N	\N	10	2026-03-16 13:01:26.570953+00	9fd37150-955f-4c1c-9b67-74b0a383ff8f	DELIVERED	TEXT	\N	\N	21
+f	201	2026-03-16 13:01:38.355162+00	2026-03-16 13:01:38.701227+00	5711	2026-03-16 13:01:38.717164+00	\N	\N	10	2026-03-16 13:01:38.351176+00	38641d6f-2c61-4387-9e1a-d600d37451b6	DELIVERED	TEXT	\N	\N	1
+f	201	2026-03-16 13:22:48.197605+00	2026-03-16 13:22:48.555013+00	5712	2026-03-16 13:22:48.563014+00	\N	\N	10	2026-03-16 13:22:48.194441+00	d8925986-6daf-4c17-8907-0e40db5d074b	DELIVERED	TEXT	\N	\N	send
+f	201	2026-03-16 13:26:05.792595+00	\N	5713	2026-03-16 13:26:05.836538+00	\N	\N	10	2026-03-16 13:26:05.789876+00	d9b709f4-3c48-4bd7-9663-9409b009c240	SENT	TEXT	\N	\N	1
+f	201	2026-03-16 13:27:30.173203+00	\N	5714	2026-03-16 13:27:30.229561+00	\N	\N	10	2026-03-16 13:27:30.169044+00	8f731808-a976-4aab-bdb3-27a0bc064192	SENT	TEXT	\N	\N	1
+f	201	2026-03-16 13:28:26.037654+00	\N	5715	2026-03-16 13:28:26.063092+00	\N	\N	10	2026-03-16 13:28:26.03645+00	918aebb2-9dee-4c86-9d17-cc35dddfbd0f	SENT	TEXT	\N	\N	12
+f	201	2026-03-16 13:29:45.272311+00	\N	5716	2026-03-16 13:29:45.320019+00	\N	\N	10	2026-03-16 13:29:45.269235+00	fdc0eb1a-71bc-483e-b35e-810f3a9ecf0e	SENT	TEXT	\N	\N	123
+f	201	2026-03-16 13:48:24.706759+00	\N	5719	2026-03-16 13:48:24.766646+00	\N	\N	10	2026-03-16 13:48:24.702365+00	1df6253e-0b30-4eee-8bf7-0bc301a2472a	SENT	TEXT	\N	\N	123
+f	201	2026-03-16 13:48:29.959746+00	\N	5720	2026-03-16 13:48:30.0056+00	\N	\N	10	2026-03-16 13:48:29.955854+00	c7dbc0a2-5d59-4415-ac7c-1b2e3a64e551	SENT	TEXT	\N	\N	same
+f	201	2026-03-16 13:49:05.94832+00	\N	5721	2026-03-16 13:49:05.996468+00	\N	\N	43	2026-03-16 13:49:05.944887+00	469f3668-fdcc-4909-859b-5a44c93c5c34	SENT	TEXT	\N	\N	1
+f	201	2026-03-16 13:50:42.049788+00	\N	5722	2026-03-16 13:50:42.091717+00	\N	\N	43	2026-03-16 13:50:42.046121+00	502aec72-ed48-4374-bddf-cb5473333c0e	SENT	TEXT	\N	\N	1
+f	201	2026-03-16 13:50:56.335456+00	\N	5723	2026-03-16 13:50:56.39338+00	\N	\N	43	2026-03-16 13:50:56.332475+00	b3cd9129-8cf8-4b49-b3c9-d76c26aa72f4	SENT	TEXT	\N	\N	2
+f	201	2026-03-16 13:51:05.08223+00	\N	5724	2026-03-16 13:51:05.13905+00	\N	\N	43	2026-03-16 13:51:05.07809+00	44b94a64-9d61-48ca-bef5-5c91096d6895	SENT	TEXT	\N	\N	12
+f	201	2026-03-16 13:52:20.555511+00	\N	5725	2026-03-16 13:52:20.581493+00	\N	\N	10	2026-03-16 13:52:20.554328+00	266b0094-2020-45dd-92f0-a027ae9afbe5	SENT	TEXT	\N	\N	123
+f	201	2026-03-16 13:53:38.286009+00	\N	5726	2026-03-16 13:53:38.333257+00	\N	\N	43	2026-03-16 13:53:38.282715+00	841bf61b-86b2-40b8-802a-627974d412ed	SENT	TEXT	\N	\N	123
+f	201	2026-03-16 13:54:41.45654+00	2026-03-16 13:54:41.555166+00	5727	2026-03-16 13:54:41.562501+00	\N	\N	10	2026-03-16 13:54:41.455347+00	303fdaae-6c4b-4c70-9e1c-806955de5e91	DELIVERED	TEXT	\N	\N	123
+f	201	2026-03-16 15:04:00.727178+00	2026-03-16 15:04:00.965668+00	5761	2026-03-16 15:04:02.793832+00	2026-03-16 15:04:02.783365+00	\N	10	2026-03-16 15:04:00.723657+00	a39cbf11-2092-457d-b3e4-f20a0c5745e3	SEEN	TEXT	\N	\N	123
+f	201	2026-03-16 13:54:45.506311+00	2026-03-16 13:54:45.683797+00	5728	2026-03-16 13:54:45.695293+00	\N	\N	10	2026-03-16 13:54:45.502838+00	245a1d23-98df-4194-b874-225e7f59b15f	DELIVERED	TEXT	\N	\N	22
+f	201	2026-03-16 13:54:49.641562+00	2026-03-16 13:54:49.820923+00	5729	2026-03-16 13:54:49.826789+00	\N	\N	10	2026-03-16 13:54:49.638284+00	45d44960-b595-45c3-b85f-d189383511cc	DELIVERED	TEXT	\N	\N	1
+f	200	2026-03-16 10:15:50.26525+00	2026-03-16 10:15:50.562687+00	5699	2026-03-16 15:04:30.435625+00	2026-03-16 15:04:30.425018+00	\N	43	2026-03-16 10:15:50.262552+00	b2ad6038-c1ae-416f-b70d-db071e6da5b1	SEEN	TEXT	\N	\N	as
+f	201	2026-03-16 13:55:30.051066+00	2026-03-16 13:55:30.226597+00	5730	2026-03-16 13:55:30.236529+00	\N	\N	10	2026-03-16 13:55:30.047882+00	3bbbf150-f335-48e6-8a1b-452dc39e4da2	DELIVERED	TEXT	\N	\N	2
+f	201	2026-03-16 15:00:20.697383+00	2026-03-16 15:00:20.995754+00	5759	2026-03-17 01:47:49.458218+00	2026-03-17 01:47:49.421616+00	\N	10	2026-03-16 15:00:20.613385+00	8b5b4764-b1cc-440a-916f-1cc072b132ab	SEEN	TEXT	\N	\N	123
+f	201	2026-03-16 13:56:39.111259+00	2026-03-16 13:56:39.27192+00	5731	2026-03-16 13:56:39.284616+00	\N	\N	10	2026-03-16 13:56:39.106854+00	5e3a45b7-0ac7-4eca-be2b-8a2803ebf4bf	DELIVERED	TEXT	\N	\N	12
+f	201	2026-03-16 13:56:44.293738+00	2026-03-16 13:56:44.397166+00	5732	2026-03-16 13:56:44.406804+00	\N	\N	10	2026-03-16 13:56:44.291752+00	0fa786a4-cfe7-4f6b-92b1-ccbd119491f5	DELIVERED	TEXT	\N	\N	k
+f	201	2026-03-16 13:58:57.291278+00	2026-03-16 13:58:57.521977+00	5733	2026-03-16 13:58:57.530747+00	\N	\N	10	2026-03-16 13:58:57.288969+00	3df50add-de31-4f9a-b23a-b851765cb865	DELIVERED	TEXT	\N	\N	123
+f	201	2026-03-16 13:59:11.28213+00	\N	5734	2026-03-16 13:59:11.325863+00	\N	\N	10	2026-03-16 13:59:11.279233+00	b6d641d3-ae67-46f7-9380-86e7e96d2ca9	SENT	TEXT	\N	\N	123
+f	201	2026-03-16 14:11:03.380271+00	2026-03-16 14:11:03.747964+00	5735	2026-03-16 14:11:03.755107+00	\N	\N	10	2026-03-16 14:11:03.376598+00	626bbdcb-9173-45e3-a192-ceda52b0e307	DELIVERED	TEXT	\N	\N	send
+f	201	2026-03-16 14:12:02.245172+00	2026-03-16 14:12:02.503248+00	5736	2026-03-16 14:12:02.513952+00	\N	\N	10	2026-03-16 14:12:02.240878+00	3d71c99c-f6d3-497f-ba54-540f1a27cd53	DELIVERED	TEXT	\N	\N	123
+f	201	2026-03-16 14:19:25.340974+00	2026-03-16 14:19:25.593538+00	5742	2026-03-17 01:47:49.353411+00	2026-03-17 01:47:49.314809+00	\N	10	2026-03-16 14:19:25.33649+00	2a19100e-2121-45fb-aa6f-456050f671e3	SEEN	TEXT	\N	\N	1
+f	201	2026-03-16 14:12:27.513277+00	2026-03-16 14:12:27.710193+00	5737	2026-03-17 06:15:41.729373+00	2026-03-17 06:15:41.726674+00	\N	10	2026-03-16 14:12:27.50981+00	9dd4db8a-6266-4ded-a8d3-35950b7f3372	SEEN	TEXT	\N	\N	sent
+f	201	2026-03-17 01:47:48.03135+00	2026-03-17 01:47:48.607488+00	5768	2026-03-17 01:47:51.590843+00	2026-03-17 01:47:51.578768+00	\N	43	2026-03-17 01:47:47.961361+00	771da883-68a8-43bb-89b5-e7bed7be2bd7	SEEN	TEXT	\N	\N	123
+f	201	2026-03-16 14:13:28.227936+00	2026-03-16 14:13:28.351543+00	5738	2026-03-17 06:15:41.708351+00	2026-03-17 06:15:41.706439+00	\N	10	2026-03-16 14:13:28.226367+00	983f5cca-9a2c-4acf-a573-d4fc58db6828	SEEN	TEXT	\N	\N	123
+f	201	2026-03-16 14:49:51.323842+00	2026-03-16 14:49:51.513804+00	5757	2026-03-17 01:47:49.387731+00	2026-03-17 01:47:49.369617+00	\N	10	2026-03-16 14:49:51.320748+00	3863dcc2-2bf6-42e7-9d17-264b5adbbe93	SEEN	TEXT	\N	\N	send
+f	201	2026-03-16 14:14:19.900202+00	2026-03-16 14:14:20.205676+00	5739	2026-03-17 06:15:41.691318+00	2026-03-17 06:15:41.689546+00	\N	10	2026-03-16 14:14:19.896627+00	247983bf-8857-41de-96cc-36abea09005e	SEEN	TEXT	\N	\N	123
+f	201	2026-03-16 14:46:12.076204+00	2026-03-16 14:46:12.213557+00	5752	2026-03-17 01:47:48.962564+00	2026-03-17 01:47:48.893783+00	\N	10	2026-03-16 14:46:12.075083+00	f7507faf-033a-4161-8ba1-f51c7935ed7e	SEEN	TEXT	\N	\N	123
+f	201	2026-03-16 14:17:06.760373+00	2026-03-16 14:17:07.264927+00	5741	2026-03-16 15:03:48.761638+00	2026-03-16 15:03:48.732712+00	\N	43	2026-03-16 14:17:06.755688+00	44467ef2-c7ef-496a-a7ab-cfb45edbfc88	SEEN	TEXT	\N	\N	1
+f	201	2026-03-16 14:22:51.13439+00	2026-03-16 14:22:51.344564+00	5745	2026-03-17 01:47:49.290918+00	2026-03-17 01:47:49.247098+00	\N	10	2026-03-16 14:22:51.131386+00	3877bf92-7e61-43ab-a9e7-25683d5fba29	SEEN	TEXT	\N	\N	wow
+f	201	2026-03-16 14:55:17.891876+00	2026-03-16 14:55:18.179824+00	5758	2026-03-17 01:47:49.570875+00	2026-03-17 01:47:49.489532+00	\N	10	2026-03-16 14:55:17.889165+00	bac15611-09bc-4dc1-9085-448ff2cdc34c	SEEN	TEXT	\N	\N	123
+f	200	2026-03-16 15:04:33.290248+00	2026-03-16 15:04:33.464116+00	5762	2026-03-16 15:05:08.059158+00	2026-03-16 15:05:08.053496+00	\N	10	2026-03-16 15:04:33.286862+00	f826a1ae-2d00-4c12-ba5b-6559964f82c7	SEEN	TEXT	\N	\N	123
+f	201	2026-03-16 14:40:21.283824+00	2026-03-16 14:40:21.640827+00	5751	2026-03-16 15:03:48.796476+00	2026-03-16 15:03:48.774806+00	\N	43	2026-03-16 14:40:21.2805+00	6183b2c6-a65d-4879-9e98-6bbc4a4867f2	SEEN	TEXT	\N	\N	123
+f	200	2026-03-17 01:47:55.869749+00	2026-03-17 01:47:56.041487+00	5769	2026-03-17 01:48:20.924272+00	2026-03-17 01:48:20.914998+00	\N	10	2026-03-17 01:47:55.866536+00	a2f6de9e-f789-4810-8286-f20c322333db	SEEN	TEXT	\N	\N	123
+f	201	2026-03-16 14:47:13.441284+00	2026-03-16 14:47:13.811029+00	5754	2026-03-16 15:03:48.82375+00	2026-03-16 15:03:48.806555+00	\N	43	2026-03-16 14:47:13.438587+00	53b25c49-8195-45f5-90a1-8db2aa334619	SEEN	TEXT	\N	\N	:w
+f	201	2026-03-16 14:49:30.018871+00	2026-03-16 14:49:30.376985+00	5756	2026-03-16 15:03:48.871619+00	2026-03-16 15:03:48.861579+00	\N	43	2026-03-16 14:49:30.015849+00	53507ead-c673-412a-a18a-62a307007dfe	SEEN	TEXT	\N	\N	send
+f	201	2026-03-16 14:22:26.370595+00	\N	5743	2026-03-16 14:55:18.509242+00	2026-03-16 14:55:18.493692+00	\N	43	2026-03-16 14:22:26.368688+00	5f76edb1-dace-41de-a978-cf051a42f9f0	SEEN	TEXT	\N	\N	12
+f	201	2026-03-16 14:32:26.680697+00	\N	5747	2026-03-16 14:55:18.538629+00	2026-03-16 14:55:18.518643+00	\N	43	2026-03-16 14:32:26.678201+00	196814db-0ede-491a-a7cb-288622e7427a	SEEN	TEXT	\N	\N	123
+f	201	2026-03-16 14:28:22.529644+00	\N	5746	2026-03-16 14:55:18.571822+00	2026-03-16 14:55:18.556286+00	\N	43	2026-03-16 14:28:22.525759+00	11bcc1e2-7a71-4fab-904a-1d19d94fbf6f	SEEN	TEXT	\N	\N	12
+f	201	2026-03-16 14:37:16.516949+00	\N	5749	2026-03-16 14:55:18.600134+00	2026-03-16 14:55:18.590649+00	\N	43	2026-03-16 14:37:16.48575+00	42eee0a0-3f24-413d-bea0-a29c1d351a7f	SEEN	TEXT	\N	\N	send
+f	201	2026-03-16 14:34:01.239517+00	\N	5748	2026-03-16 14:55:18.650814+00	2026-03-16 14:55:18.639745+00	\N	43	2026-03-16 14:34:01.23633+00	5be36110-f7a7-4002-99b2-2fba42da753b	SEEN	TEXT	\N	\N	123
+f	201	2026-03-16 15:03:47.952649+00	2026-03-16 15:03:48.469244+00	5760	2026-03-16 15:03:50.614048+00	2026-03-16 15:03:50.606342+00	\N	10	2026-03-16 15:03:47.891136+00	039478ac-9233-437e-8ed6-7cce162105fe	SEEN	TEXT	\N	\N	123
+f	200	2026-03-16 15:05:10.408591+00	2026-03-16 15:05:10.853314+00	5763	2026-03-16 15:05:31.166183+00	2026-03-16 15:05:31.158562+00	\N	43	2026-03-16 15:05:10.405446+00	71821299-8b0b-41e0-a681-09034bad240d	SEEN	TEXT	\N	\N	smae
+f	200	2026-03-16 15:05:30.783314+00	2026-03-16 15:05:31.041053+00	5765	2026-03-16 15:05:33.105115+00	2026-03-16 15:05:33.095186+00	\N	10	2026-03-16 15:05:30.780841+00	c5a79b3a-2551-41fc-ae37-9c8cff565c38	SEEN	TEXT	\N	\N	123
+f	200	2026-03-16 15:05:21.017038+00	2026-03-16 15:05:21.42856+00	5764	2026-03-16 15:05:23.696918+00	2026-03-16 15:05:23.693455+00	\N	43	2026-03-16 15:05:21.014293+00	a97ef1b3-83e6-4bb4-b164-680f7d23c81a	SEEN	TEXT	\N	\N	same
+f	200	2026-03-16 15:06:23.876595+00	2026-03-16 15:06:24.140015+00	5766	2026-03-16 15:06:30.190496+00	2026-03-16 15:06:30.177218+00	\N	43	2026-03-16 15:06:23.874091+00	65e2aba3-c198-4a95-b93d-ea45c8112a7e	SEEN	TEXT	\N	\N	123
+f	200	2026-03-16 15:06:29.278776+00	2026-03-16 15:06:29.568695+00	5767	2026-03-16 15:06:41.401905+00	2026-03-16 15:06:41.39472+00	\N	10	2026-03-16 15:06:29.276101+00	1b1abb0b-0a17-4acd-a6ad-947f7328ce07	SEEN	TEXT	\N	\N	123]
+f	200	2026-03-17 01:48:48.298413+00	2026-03-17 01:48:48.514486+00	5771	2026-03-17 01:48:52.540945+00	2026-03-17 01:48:52.53296+00	\N	43	2026-03-17 01:48:48.295761+00	21f06a76-ae67-4f43-80b8-e9317aa51dba	SEEN	TEXT	\N	\N	safdad
+f	201	2026-03-16 14:48:02.716392+00	2026-03-16 14:48:03.007274+00	5755	2026-03-17 01:47:49.013786+00	2026-03-17 01:47:48.985949+00	\N	10	2026-03-16 14:48:02.713925+00	0c9db0f7-c5b0-4ad4-97f0-9d464471f38a	SEEN	TEXT	\N	\N	sent
+f	201	2026-03-16 14:37:37.475295+00	2026-03-16 14:37:37.763933+00	5750	2026-03-17 01:47:49.084816+00	2026-03-17 01:47:49.046515+00	\N	10	2026-03-16 14:37:37.469366+00	7a08f602-3bc1-4fef-b7d9-40f6d92dc9bd	SEEN	TEXT	\N	\N	123
+f	201	2026-03-16 14:22:31.761333+00	2026-03-16 14:22:31.936037+00	5744	2026-03-17 01:47:49.177179+00	2026-03-17 01:47:49.133322+00	\N	10	2026-03-16 14:22:31.758903+00	705f4b9c-63fa-42b1-a8a0-1c9fec5121b5	SEEN	TEXT	\N	\N	2
+f	201	2026-03-16 14:46:22.421369+00	2026-03-16 14:46:22.628571+00	5753	2026-03-17 01:47:49.226881+00	2026-03-17 01:47:49.199542+00	\N	10	2026-03-16 14:46:22.417888+00	f8fdf783-9a52-4ec4-acbb-be1ea5277e7d	SEEN	TEXT	\N	\N	123
+f	200	2026-03-17 01:48:56.124616+00	2026-03-17 01:48:56.318544+00	5772	2026-03-17 01:49:01.994335+00	2026-03-17 01:49:01.984461+00	\N	10	2026-03-17 01:48:56.12159+00	e037bbb5-5217-446e-8368-4de2a1b237e8	SEEN	TEXT	\N	\N	adsa
+f	200	2026-03-17 01:48:28.396596+00	2026-03-17 01:48:28.661264+00	5770	2026-03-17 01:48:56.418451+00	2026-03-17 01:48:56.410722+00	\N	43	2026-03-17 01:48:28.394073+00	d2c25fe9-7fae-49fe-b8f6-da03f259bcf4	SEEN	TEXT	\N	\N	asdfsjaf
+f	201	2026-03-17 06:14:14.92875+00	\N	5774	2026-03-17 06:15:33.001388+00	2026-03-17 06:15:32.999192+00	\N	10	2026-03-17 06:14:14.927922+00	310141ea-8810-4f3c-a3c7-2c3665748b41	SEEN	TEXT	\N	\N	same
+f	201	2026-03-16 14:16:05.617608+00	2026-03-16 14:16:05.910734+00	5740	2026-03-17 06:15:41.6724+00	2026-03-17 06:15:41.667676+00	\N	10	2026-03-16 14:16:05.611962+00	f195b5ca-4f7f-44fd-b07b-f3404f6b8169	SEEN	TEXT	\N	\N	12
+f	201	2026-03-17 06:08:29.757027+00	\N	5773	2026-03-17 06:15:32.995533+00	2026-03-17 06:15:32.992392+00	\N	10	2026-03-17 06:08:29.730157+00	969160c6-8a57-4e68-9b2c-741e3cb5550c	SEEN	TEXT	\N	\N	123
+f	203	2026-03-17 08:21:47.719522+00	2026-03-17 08:21:47.775426+00	5797	2026-03-17 08:21:50.180923+00	2026-03-17 08:21:50.17963+00	\N	43	2026-03-17 08:21:47.718451+00	e3050460-eae6-4acf-bd40-1017fd6883e4	SEEN	TEXT	\N	\N	123
+f	201	2026-03-17 06:14:25.507887+00	\N	5775	2026-03-17 06:15:33.013425+00	2026-03-17 06:15:33.011015+00	\N	10	2026-03-17 06:14:25.507185+00	18614966-c5b2-47d9-a9a7-d6c432af3294	SEEN	TEXT	\N	\N	2
+f	201	2026-03-17 06:14:36.746589+00	\N	5776	2026-03-17 06:15:33.028834+00	2026-03-17 06:15:33.026986+00	\N	10	2026-03-17 06:14:36.745576+00	c6ebe635-4cc6-4472-b967-262b3a052709	SEEN	TEXT	\N	\N	sent
+f	201	2026-03-17 06:14:47.711181+00	\N	5777	2026-03-17 06:15:33.043347+00	2026-03-17 06:15:33.04183+00	\N	10	2026-03-17 06:14:47.709918+00	73bf3365-de99-4029-8334-70fdf0c3d83f	SEEN	TEXT	\N	\N	now
+f	202	2026-03-17 08:19:36.363003+00	2026-03-17 08:19:36.448893+00	5790	2026-03-17 08:19:41.41172+00	2026-03-17 08:19:41.410317+00	\N	46	2026-03-17 08:19:36.362054+00	72161813-7a1e-4b03-bb94-bb51d2012867	SEEN	TEXT	\N	\N	nice to meet u
+f	203	2026-03-17 08:21:32.870857+00	2026-03-17 08:21:32.926408+00	5796	2026-03-17 08:21:51.756758+00	2026-03-17 08:21:51.754607+00	\N	43	2026-03-17 08:21:32.869766+00	fbb49d3d-2c0a-41ec-888a-9a47f79e502b	SEEN	TEXT	\N	\N	nice to meet u too
+f	203	2026-03-17 08:21:51.387196+00	2026-03-17 08:21:51.420379+00	5798	2026-03-17 08:21:53.534925+00	2026-03-17 08:21:53.533089+00	\N	46	2026-03-17 08:21:51.386693+00	b84afcfc-ec67-4763-9637-451c39497fd4	SEEN	TEXT	\N	\N	123
+f	202	2026-03-17 08:19:46.157176+00	2026-03-17 08:19:46.185518+00	5791	2026-03-17 08:19:48.084475+00	2026-03-17 08:19:48.081587+00	\N	43	2026-03-17 08:19:46.156485+00	cab1365f-24b6-4c30-bb2e-d1f9e8a941d6	SEEN	TEXT	\N	\N	yeah
+f	201	2026-03-17 06:37:09.238652+00	2026-03-17 06:37:09.31907+00	5779	2026-03-17 08:16:01.225391+00	2026-03-17 08:16:01.213353+00	\N	10	2026-03-17 06:37:09.23707+00	09b8fa11-4bfb-462d-93f2-19039b53f4b8	SEEN	TEXT	\N	\N	123
+f	201	2026-03-17 06:38:56.926774+00	2026-03-17 06:38:56.975054+00	5780	2026-03-17 08:16:01.238188+00	2026-03-17 08:16:01.232269+00	\N	10	2026-03-17 06:38:56.925773+00	c3814bed-a488-4b33-a26e-2b1204f80185	SEEN	TEXT	\N	\N	12
+f	201	2026-03-17 08:16:00.250027+00	2026-03-17 08:16:00.40443+00	5782	2026-03-17 08:16:02.6601+00	2026-03-17 08:16:02.65626+00	\N	43	2026-03-17 08:16:00.236825+00	cfb178ad-939e-4709-a88e-47e71495dd7d	SEEN	TEXT	\N	\N	123
+f	200	2026-03-23 08:44:39.572537+00	2026-03-23 08:44:39.65312+00	5803	2026-03-23 08:44:48.390779+00	2026-03-23 08:44:48.388731+00	\N	43	2026-03-23 08:44:39.571935+00	781195ff-9029-4205-b38b-011d6858a544	SEEN	TEXT	\N	\N	hi
+f	201	2026-03-17 08:16:08.223695+00	2026-03-17 08:16:08.345367+00	5783	2026-03-17 08:16:18.362898+00	2026-03-17 08:16:18.359944+00	\N	10	2026-03-17 08:16:08.222505+00	e9024092-2b5e-4d70-99b4-395da371cd06	SEEN	TEXT	\N	\N	same
+f	203	2026-03-17 08:21:59.570264+00	2026-03-17 08:21:59.62546+00	5799	2026-03-17 08:22:03.587019+00	2026-03-17 08:22:03.584574+00	\N	10	2026-03-17 08:21:59.569154+00	fa59b50f-804f-481d-ba77-153f68c34f72	SEEN	TEXT	\N	\N	we are the same
+f	202	2026-03-17 08:20:03.180378+00	2026-03-17 08:20:03.269736+00	5792	2026-03-17 08:20:05.399718+00	2026-03-17 08:20:05.397168+00	\N	46	2026-03-17 08:20:03.179116+00	4d6bc4c6-bd92-4d34-a56a-db9df2f4a94d	SEEN	TEXT	\N	\N	let create a group for this conversation
+f	201	2026-03-17 06:39:30.590363+00	2026-03-17 06:39:30.667616+00	5781	2026-03-17 08:16:27.577053+00	2026-03-17 08:16:27.573118+00	\N	10	2026-03-17 06:39:30.588967+00	eb86cac4-2086-4d15-b137-ce03e3da1589	SEEN	TEXT	\N	\N	12
+f	201	2026-03-17 08:16:44.325046+00	2026-03-17 08:16:44.395044+00	5785	2026-03-17 08:16:51.737837+00	2026-03-17 08:16:51.736395+00	\N	43	2026-03-17 08:16:44.32372+00	a114af59-51c0-4135-92df-2959ea07df0e	SEEN	TEXT	\N	\N	yes pretty good
+f	201	2026-03-17 06:33:45.340023+00	2026-03-17 06:33:45.456223+00	5778	2026-03-17 08:17:08.621214+00	2026-03-17 08:17:08.619596+00	\N	10	2026-03-17 06:33:45.338638+00	1bc46135-c1ee-46e3-a754-e71b1e44831f	SEEN	TEXT	\N	\N	123
+f	201	2026-03-17 08:16:27.049221+00	2026-03-17 08:16:27.113761+00	5784	2026-03-17 08:17:26.407629+00	2026-03-17 08:17:26.404952+00	\N	43	2026-03-17 08:16:27.048171+00	50b2e8c8-71d0-4f5a-9ed3-e063cfd39075	SEEN	TEXT	\N	\N	wow it work on the group chat
+f	201	2026-03-17 08:17:08.226618+00	\N	5786	2026-03-17 08:17:26.468398+00	2026-03-17 08:17:26.466453+00	\N	43	2026-03-17 08:17:08.225855+00	0d76350c-86a3-412d-8cbb-2acefbb09641	SEEN	TEXT	\N	\N	not that
+f	201	2026-03-17 08:17:25.915358+00	2026-03-17 08:17:25.970306+00	5787	2026-03-17 08:17:37.776009+00	2026-03-17 08:17:37.772329+00	\N	10	2026-03-17 08:17:25.913762+00	a388fa94-9aa0-4f25-8f7b-bfe3dd0b1dbb	SEEN	TEXT	\N	\N	smae
+f	201	2026-03-17 08:17:40.878602+00	2026-03-17 08:17:40.943263+00	5788	2026-03-17 08:18:16.080258+00	2026-03-17 08:18:16.076278+00	\N	43	2026-03-17 08:17:40.87749+00	cb2549d2-9f99-49dc-9884-ab99daa8357c	SEEN	TEXT	\N	\N	not great
+f	202	2026-03-17 08:19:24.44543+00	\N	5789	2026-03-17 08:19:28.326125+00	2026-03-17 08:19:28.323385+00	\N	43	2026-03-17 08:19:24.444937+00	7b011eb1-e02b-4080-8fc0-f3ffd3bc13d4	SEEN	TEXT	\N	\N	hi there
+f	203	2026-03-17 08:21:20.663395+00	2026-03-17 08:21:20.71439+00	5795	2026-03-17 08:21:23.393919+00	2026-03-17 08:21:23.391053+00	\N	43	2026-03-17 08:21:20.662451+00	0077345a-7253-4721-a02f-6f29f34c0f95	SEEN	TEXT	\N	\N	nice to meed u
+f	200	2026-03-23 08:44:50.054965+00	2026-03-23 08:44:50.169417+00	5804	2026-03-23 08:44:51.015842+00	2026-03-23 08:44:51.013206+00	\N	10	2026-03-23 08:44:50.054179+00	c1c01ecf-2509-4834-8b5e-ce9924e44223	SEEN	TEXT	\N	\N	hi
+f	203	2026-03-17 08:20:56.703531+00	2026-03-17 08:20:56.789229+00	5793	2026-03-17 08:21:33.39235+00	2026-03-17 08:21:33.389644+00	\N	46	2026-03-17 08:20:56.702484+00	3cee3b5c-7862-424f-ad72-93329abb9f4d	SEEN	TEXT	\N	\N	hi
+f	203	2026-03-17 08:21:14.138272+00	2026-03-17 08:21:14.221518+00	5794	2026-03-17 08:21:33.407263+00	2026-03-17 08:21:33.40415+00	\N	46	2026-03-17 08:21:14.13722+00	5e7adaee-eea5-4554-abeb-b8f14c395439	SEEN	TEXT	\N	\N	hi
+f	200	2026-03-24 07:01:50.716969+00	2026-03-24 07:01:50.873099+00	5805	2026-03-24 08:54:48.939929+00	2026-03-24 08:54:48.921155+00	\N	43	2026-03-24 07:01:50.695656+00	4087cb52-769e-47d9-9395-5d676b2e6232	SEEN	TEXT	\N	\N	12
+f	200	2026-03-24 09:28:51.289396+00	\N	5806	2026-03-24 09:28:51.289396+00	\N	\N	10	2026-03-24 09:28:51.254261+00	5b00a30f-819d-4bab-b1dc-f1e9689ceb5d	PREPARE	TEXT	\N	\N	123
+f	203	2026-03-17 08:23:00.635834+00	2026-03-17 08:23:00.725208+00	5801	2026-03-17 08:23:15.446635+00	2026-03-17 08:23:15.445531+00	\N	10	2026-03-17 08:23:00.634477+00	f2b34f67-20f0-4599-8357-9f8b0940d47b	SEEN	TEXT	\N	\N	yes
+f	200	2026-03-24 09:29:06.895921+00	\N	5807	2026-03-24 09:29:06.895921+00	\N	\N	10	2026-03-24 09:29:06.895274+00	f11ffd11-2cc5-4751-a03e-db0aa4892fb0	PREPARE	TEXT	\N	\N	hi there
+f	203	2026-03-23 08:43:54.201516+00	\N	5802	2026-03-23 08:43:57.471667+00	2026-03-23 08:43:57.468333+00	\N	43	2026-03-23 08:43:54.176154+00	b3f256d7-fd40-4d70-a2b5-9ab57e9201c1	SEEN	TEXT	\N	\N	hi
+f	202	2026-03-17 08:22:52.891016+00	2026-03-17 08:22:52.962496+00	5800	2026-03-23 08:44:12.468654+00	2026-03-23 08:44:12.466952+00	\N	46	2026-03-17 08:22:52.890154+00	2474a83e-9768-4d31-a44e-6b2b3a270607	SEEN	TEXT	\N	\N	the is pretty good right ? ????
+f	200	2026-03-24 09:29:21.413808+00	\N	5808	2026-03-24 09:29:21.413808+00	\N	\N	43	2026-03-24 09:29:21.412932+00	cc563bc4-2546-4c87-bfc1-46c039282fd0	PREPARE	TEXT	\N	\N	123
+f	203	2026-03-24 09:29:38.875182+00	\N	5809	2026-03-24 09:29:38.875182+00	\N	\N	46	2026-03-24 09:29:38.874487+00	b19b61cc-8c0a-4511-95f5-9be18228ebd6	PREPARE	TEXT	\N	\N	123
+f	200	2026-03-24 09:30:22.1193+00	\N	5810	2026-03-24 09:30:22.1193+00	\N	\N	43	2026-03-24 09:30:22.11812+00	47100d57-ffa3-4eb8-9902-28ae66cba61a	PREPARE	TEXT	\N	\N	send
+f	203	2026-03-24 09:39:46.341927+00	\N	5811	2026-03-24 09:39:46.341927+00	\N	\N	10	2026-03-24 09:39:46.327069+00	cbf03c6c-a907-49c5-a1de-2b12eebace7c	PREPARE	TEXT	\N	\N	hi
+f	203	2026-03-24 09:39:55.54207+00	\N	5812	2026-03-24 09:39:55.54207+00	\N	\N	10	2026-03-24 09:39:55.541197+00	f5aaa214-a309-4447-969b-6bf9fa9be302	PREPARE	TEXT	\N	\N	123
+f	203	2026-03-24 09:43:23.024695+00	\N	5813	2026-03-24 09:43:23.024695+00	\N	\N	43	2026-03-24 09:43:23.024027+00	21468fac-268b-41a6-81c9-7f0ade97d012	PREPARE	TEXT	\N	\N	send
 \.
 
 
@@ -9518,6 +9811,7 @@ f	198	2025-11-24 11:08:03.144587+00	\N	5693	2025-11-24 11:08:03.144587+00	\N	\N	
 --
 
 COPY public.migration_model (id, version, update_time) FROM stdin;
+odai4	26.0.0	1773636312
 k8vzu	26.0.0	1770262744
 \.
 
@@ -9535,11 +9829,9 @@ COPY public.notification (created_date, id, last_modified_date, read_at, user_id
 --
 
 COPY public.offline_client_session (user_session_id, client_id, offline_flag, "timestamp", data, client_storage_provider, external_client_id, version) FROM stdin;
-570015a1-9b29-486d-904a-67128f0b981c	1946f9ea-72fe-4697-bf83-3dec92a8f8ee	0	1771063636	{"authMethod":"openid-connect","redirectUri":"http://localhost:4200/chat/create-group","notes":{"clientId":"1946f9ea-72fe-4697-bf83-3dec92a8f8ee","iss":"http://localhost:9090/realms/loci-realm","startedAt":"1771060556","response_type":"code","level-of-authentication":"-1","code_challenge_method":"S256","nonce":"f19c50cb-cb01-4c8b-947a-3458c913403a","response_mode":"fragment","scope":"openid","userSessionStartedAt":"1771060555","redirect_uri":"http://localhost:4200/chat/create-group","state":"76c79630-3fe4-41c7-a021-4e58814fedc1","code_challenge":"3YK0_BViAQ60VborgvIfak_eeaQKhZ1qd8kj-Td4zw0","SSO_AUTH":"true"}}	local	local	55
-ef083061-dda8-4656-9591-ba4f423b6255	e85deedd-b2fb-47d3-acef-508423a77f22	0	1771062592	{"authMethod":"openid-connect","notes":{"clientId":"e85deedd-b2fb-47d3-acef-508423a77f22","userSessionStartedAt":"1771062592","iss":"http://localhost:9090/realms/loci-realm","startedAt":"1771062592","level-of-authentication":"-1"}}	local	local	0
-76bdc11d-53f9-413b-bafe-95a5ed1052f9	e85deedd-b2fb-47d3-acef-508423a77f22	0	1771062663	{"authMethod":"openid-connect","notes":{"clientId":"e85deedd-b2fb-47d3-acef-508423a77f22","userSessionStartedAt":"1771062663","iss":"http://localhost:9090/realms/loci-realm","startedAt":"1771062663","level-of-authentication":"-1"}}	local	local	0
-ffe991c1-c92c-457a-a4a6-d7ee7f1ddc9c	e85deedd-b2fb-47d3-acef-508423a77f22	0	1771062783	{"authMethod":"openid-connect","notes":{"clientId":"e85deedd-b2fb-47d3-acef-508423a77f22","userSessionStartedAt":"1771062783","iss":"http://localhost:9090/realms/loci-realm","startedAt":"1771062783","level-of-authentication":"-1"}}	local	local	0
-caab6528-d222-4860-ab11-c8787c498a51	e85deedd-b2fb-47d3-acef-508423a77f22	0	1771061963	{"authMethod":"openid-connect","notes":{"clientId":"e85deedd-b2fb-47d3-acef-508423a77f22","userSessionStartedAt":"1771061963","iss":"http://localhost:9090/realms/loci-realm","startedAt":"1771061963","level-of-authentication":"-1"}}	local	local	0
+7a196089-9be0-4cff-87f1-cec5c95c6e4b	1946f9ea-72fe-4697-bf83-3dec92a8f8ee	0	1774345180	{"authMethod":"openid-connect","redirectUri":"http://localhost:4200/chat/group/4f7690b6-eb6c-4f56-942d-ff64da63beb6","notes":{"clientId":"1946f9ea-72fe-4697-bf83-3dec92a8f8ee","iss":"http://localhost:9090/realms/loci-realm","startedAt":"1774344469","response_type":"code","level-of-authentication":"-1","code_challenge_method":"S256","nonce":"89f70d4f-435c-43f5-ae69-6f73954c0bd6","response_mode":"fragment","scope":"openid","userSessionStartedAt":"1774344469","redirect_uri":"http://localhost:4200/chat/group/4f7690b6-eb6c-4f56-942d-ff64da63beb6","state":"4b99b4eb-ddd9-4a9e-9848-55608bbddd42","code_challenge":"52ye6Z9SDdxvbQzAjYVNwooP-XjOGwecFjVcmYIJsYk","SSO_AUTH":"true"}}	local	local	10
+edd2a648-072e-4d17-99e0-0005d562af08	1946f9ea-72fe-4697-bf83-3dec92a8f8ee	0	1774345391	{"authMethod":"openid-connect","redirectUri":"http://localhost:4200/chat/group/4f7690b6-eb6c-4f56-942d-ff64da63beb6","notes":{"clientId":"1946f9ea-72fe-4697-bf83-3dec92a8f8ee","iss":"http://localhost:9090/realms/loci-realm","startedAt":"1774344426","response_type":"code","level-of-authentication":"-1","code_challenge_method":"S256","nonce":"b67fa705-bfeb-4408-8cdd-03e09bf59e0d","response_mode":"fragment","scope":"openid","userSessionStartedAt":"1774344426","redirect_uri":"http://localhost:4200/chat/group/4f7690b6-eb6c-4f56-942d-ff64da63beb6","state":"212cd622-c66f-4e30-9dec-0ca20d35eecb","code_challenge":"OnJ9_tPp0QjmzSUS4REu54HWJ3JdKCpAK9dPWeU6v38","SSO_AUTH":"true"}}	local	local	10
+e8227ef4-49cf-4d53-b88b-136bf4b7c46c	1946f9ea-72fe-4697-bf83-3dec92a8f8ee	0	1774345392	{"authMethod":"openid-connect","redirectUri":"http://localhost:4200/chat/group/4f7690b6-eb6c-4f56-942d-ff64da63beb6","notes":{"clientId":"1946f9ea-72fe-4697-bf83-3dec92a8f8ee","iss":"http://localhost:9090/realms/loci-realm","startedAt":"1774342450","response_type":"code","level-of-authentication":"-1","code_challenge_method":"S256","nonce":"8b041460-907a-4cff-926e-e2ccb066808a","response_mode":"fragment","scope":"openid","userSessionStartedAt":"1774342450","redirect_uri":"http://localhost:4200/chat/group/4f7690b6-eb6c-4f56-942d-ff64da63beb6","state":"c846faef-2f37-4280-8cd3-3a935fca4280","code_challenge":"-FUgc9u8PYCGfNsPU7BeD4BOmoIkdJP9_lXhqToi4N0","SSO_AUTH":"true"}}	local	local	36
 \.
 
 
@@ -9548,11 +9840,9 @@ caab6528-d222-4860-ab11-c8787c498a51	e85deedd-b2fb-47d3-acef-508423a77f22	0	1771
 --
 
 COPY public.offline_user_session (user_session_id, user_id, realm_id, created_on, offline_flag, data, last_session_refresh, broker_session_id, version) FROM stdin;
-570015a1-9b29-486d-904a-67128f0b981c	1639b859-d3af-4555-b69e-796c1b1c34e3	83b6664d-539e-4bed-a376-685d50e40b98	1771060555	0	{"ipAddress":"172.18.0.1","authMethod":"openid-connect","rememberMe":false,"started":0,"notes":{"KC_DEVICE_NOTE":"eyJpcEFkZHJlc3MiOiIxNzIuMTguMC4xIiwib3MiOiJMaW51eCIsIm9zVmVyc2lvbiI6IlVua25vd24iLCJicm93c2VyIjoiRmlyZWZveC8xNDcuMCIsImRldmljZSI6Ik90aGVyIiwibGFzdEFjY2VzcyI6MCwibW9iaWxlIjpmYWxzZX0=","AUTH_TIME":"1771060556","authenticators-completed":"{\\"14382972-0e38-475e-a660-96ff981a7ce9\\":1771060555,\\"ffe3b05a-442e-4775-b599-a068080c4153\\":1771063635}"},"state":"LOGGED_IN"}	1771063636	\N	55
-caab6528-d222-4860-ab11-c8787c498a51	1639b859-d3af-4555-b69e-796c1b1c34e3	83b6664d-539e-4bed-a376-685d50e40b98	1771061963	0	{"ipAddress":"172.18.0.1","authMethod":"openid-connect","rememberMe":false,"started":0,"notes":{"KC_DEVICE_NOTE":"eyJpcEFkZHJlc3MiOiIxNzIuMTguMC4xIiwib3MiOiJPdGhlciIsIm9zVmVyc2lvbiI6IlVua25vd24iLCJicm93c2VyIjoiT3RoZXIvVW5rbm93biIsImRldmljZSI6Ik90aGVyIiwibGFzdEFjY2VzcyI6MCwibW9iaWxlIjpmYWxzZX0=","authenticators-completed":"{\\"0edc14aa-bc09-4fe9-a202-dbc7b7ae0d93\\":1771061963,\\"8a715f4f-d734-45e3-8e1d-ac1bcabc272d\\":1771061963}"},"state":"LOGGED_IN"}	1771061963	\N	0
-ef083061-dda8-4656-9591-ba4f423b6255	1639b859-d3af-4555-b69e-796c1b1c34e3	83b6664d-539e-4bed-a376-685d50e40b98	1771062592	0	{"ipAddress":"172.18.0.1","authMethod":"openid-connect","rememberMe":false,"started":0,"notes":{"KC_DEVICE_NOTE":"eyJpcEFkZHJlc3MiOiIxNzIuMTguMC4xIiwib3MiOiJPdGhlciIsIm9zVmVyc2lvbiI6IlVua25vd24iLCJicm93c2VyIjoiT3RoZXIvVW5rbm93biIsImRldmljZSI6Ik90aGVyIiwibGFzdEFjY2VzcyI6MCwibW9iaWxlIjpmYWxzZX0=","authenticators-completed":"{\\"0edc14aa-bc09-4fe9-a202-dbc7b7ae0d93\\":1771062592,\\"8a715f4f-d734-45e3-8e1d-ac1bcabc272d\\":1771062592}"},"state":"LOGGED_IN"}	1771062592	\N	0
-76bdc11d-53f9-413b-bafe-95a5ed1052f9	1639b859-d3af-4555-b69e-796c1b1c34e3	83b6664d-539e-4bed-a376-685d50e40b98	1771062663	0	{"ipAddress":"172.18.0.1","authMethod":"openid-connect","rememberMe":false,"started":0,"notes":{"KC_DEVICE_NOTE":"eyJpcEFkZHJlc3MiOiIxNzIuMTguMC4xIiwib3MiOiJPdGhlciIsIm9zVmVyc2lvbiI6IlVua25vd24iLCJicm93c2VyIjoiT3RoZXIvVW5rbm93biIsImRldmljZSI6Ik90aGVyIiwibGFzdEFjY2VzcyI6MCwibW9iaWxlIjpmYWxzZX0=","authenticators-completed":"{\\"0edc14aa-bc09-4fe9-a202-dbc7b7ae0d93\\":1771062663,\\"8a715f4f-d734-45e3-8e1d-ac1bcabc272d\\":1771062663}"},"state":"LOGGED_IN"}	1771062663	\N	0
-ffe991c1-c92c-457a-a4a6-d7ee7f1ddc9c	1639b859-d3af-4555-b69e-796c1b1c34e3	83b6664d-539e-4bed-a376-685d50e40b98	1771062783	0	{"ipAddress":"172.18.0.1","authMethod":"openid-connect","rememberMe":false,"started":0,"notes":{"KC_DEVICE_NOTE":"eyJpcEFkZHJlc3MiOiIxNzIuMTguMC4xIiwib3MiOiJPdGhlciIsIm9zVmVyc2lvbiI6IlVua25vd24iLCJicm93c2VyIjoiT3RoZXIvVW5rbm93biIsImRldmljZSI6Ik90aGVyIiwibGFzdEFjY2VzcyI6MCwibW9iaWxlIjpmYWxzZX0=","authenticators-completed":"{\\"0edc14aa-bc09-4fe9-a202-dbc7b7ae0d93\\":1771062783,\\"8a715f4f-d734-45e3-8e1d-ac1bcabc272d\\":1771062783}"},"state":"LOGGED_IN"}	1771062783	\N	0
+edd2a648-072e-4d17-99e0-0005d562af08	8a98e8b9-37ff-4a89-b8d8-a7e4d45d4f1e	83b6664d-539e-4bed-a376-685d50e40b98	1774344426	0	{"ipAddress":"172.18.0.1","authMethod":"openid-connect","rememberMe":false,"started":0,"notes":{"KC_DEVICE_NOTE":"eyJpcEFkZHJlc3MiOiIxNzIuMTguMC4xIiwib3MiOiJMaW51eCIsIm9zVmVyc2lvbiI6IlVua25vd24iLCJicm93c2VyIjoiQ2hyb21lLzE0Ni4wLjAiLCJkZXZpY2UiOiJPdGhlciIsImxhc3RBY2Nlc3MiOjAsIm1vYmlsZSI6ZmFsc2V9","AUTH_TIME":"1774344426","authenticators-completed":"{\\"fd4a97f2-e506-4983-baec-b0786c4b963d\\":1774344426,\\"fedf5375-9a34-4951-94b0-7ffa6c5dd7bd\\":1774345391}"},"state":"LOGGED_IN"}	1774345391	\N	10
+e8227ef4-49cf-4d53-b88b-136bf4b7c46c	1639b859-d3af-4555-b69e-796c1b1c34e3	83b6664d-539e-4bed-a376-685d50e40b98	1774342450	0	{"ipAddress":"172.18.0.1","authMethod":"openid-connect","rememberMe":false,"started":0,"notes":{"KC_DEVICE_NOTE":"eyJpcEFkZHJlc3MiOiIxNzIuMTguMC4xIiwib3MiOiJMaW51eCIsIm9zVmVyc2lvbiI6IlVua25vd24iLCJicm93c2VyIjoiRmlyZWZveC8xNDguMCIsImRldmljZSI6Ik90aGVyIiwibGFzdEFjY2VzcyI6MCwibW9iaWxlIjpmYWxzZX0=","AUTH_TIME":"1774342450","authenticators-completed":"{\\"fd4a97f2-e506-4983-baec-b0786c4b963d\\":1774342450,\\"fedf5375-9a34-4951-94b0-7ffa6c5dd7bd\\":1774345390}"},"state":"LOGGED_IN"}	1774345392	\N	36
+7a196089-9be0-4cff-87f1-cec5c95c6e4b	09ef75b6-5d8f-443f-ab88-1e6e4fdd09a0	83b6664d-539e-4bed-a376-685d50e40b98	1774344469	0	{"ipAddress":"172.18.0.1","authMethod":"openid-connect","rememberMe":false,"started":0,"notes":{"KC_DEVICE_NOTE":"eyJpcEFkZHJlc3MiOiIxNzIuMTguMC4xIiwib3MiOiJMaW51eCIsIm9zVmVyc2lvbiI6IlVua25vd24iLCJicm93c2VyIjoiQ2hyb21lLzE0Ni4wLjAiLCJkZXZpY2UiOiJPdGhlciIsImxhc3RBY2Nlc3MiOjAsIm1vYmlsZSI6ZmFsc2V9","AUTH_TIME":"1774344469","authenticators-completed":"{\\"fd4a97f2-e506-4983-baec-b0786c4b963d\\":1774344469,\\"fedf5375-9a34-4951-94b0-7ffa6c5dd7bd\\":1774345180}"},"state":"LOGGED_IN"}	1774345180	\N	10
 \.
 
 
@@ -9585,39 +9875,39 @@ COPY public.policy_config (policy_id, name, value) FROM stdin;
 --
 
 COPY public.protocol_mapper (id, name, protocol, protocol_mapper_name, client_id, client_scope_id) FROM stdin;
-d51582c5-6865-4eb2-be57-ecf6b276a89a	audience resolve	openid-connect	oidc-audience-resolve-mapper	cecdd714-967c-4e15-8875-b88d9b8fba0c	\N
-5beb8996-bfa4-42c7-a1ca-4d35a62cd458	locale	openid-connect	oidc-usermodel-attribute-mapper	990d6270-c329-4d6b-a770-51394bfee084	\N
-7d0bbf10-2470-4b52-8e03-c2b7b46217d7	role list	saml	saml-role-list-mapper	\N	d501607c-9d9c-4658-99be-4174d8e72dd7
-e030db75-5b16-46ec-9fca-fc306e3cca16	organization	saml	saml-organization-membership-mapper	\N	f2fa0658-e363-4601-8449-20ec03d7a4da
-0c2ea006-e7a5-482c-8288-451d74a15ecc	full name	openid-connect	oidc-full-name-mapper	\N	7b5fd5f9-e7d7-4dd4-b723-5b2581adb26f
-d30fc256-a6cb-4541-8efa-76f6f513a4c5	family name	openid-connect	oidc-usermodel-attribute-mapper	\N	7b5fd5f9-e7d7-4dd4-b723-5b2581adb26f
-d92e149b-5008-467e-a735-b054ad5935ab	given name	openid-connect	oidc-usermodel-attribute-mapper	\N	7b5fd5f9-e7d7-4dd4-b723-5b2581adb26f
-5754ae87-8d60-493f-87f4-13e6220c9146	middle name	openid-connect	oidc-usermodel-attribute-mapper	\N	7b5fd5f9-e7d7-4dd4-b723-5b2581adb26f
-5ada1f80-9f2f-4bf1-a394-91d643fa62fc	nickname	openid-connect	oidc-usermodel-attribute-mapper	\N	7b5fd5f9-e7d7-4dd4-b723-5b2581adb26f
-ad62f1c9-f676-43e6-948a-267194867e3a	username	openid-connect	oidc-usermodel-attribute-mapper	\N	7b5fd5f9-e7d7-4dd4-b723-5b2581adb26f
-47bf342b-d18d-40d7-8255-aa0dae643744	profile	openid-connect	oidc-usermodel-attribute-mapper	\N	7b5fd5f9-e7d7-4dd4-b723-5b2581adb26f
-e057dde2-5616-4c78-8438-f0f3fc999ad2	picture	openid-connect	oidc-usermodel-attribute-mapper	\N	7b5fd5f9-e7d7-4dd4-b723-5b2581adb26f
-d11a6008-6ade-4e05-8135-38e2d0213f90	website	openid-connect	oidc-usermodel-attribute-mapper	\N	7b5fd5f9-e7d7-4dd4-b723-5b2581adb26f
-38831ee4-cd36-4096-8181-d81023fabf2b	gender	openid-connect	oidc-usermodel-attribute-mapper	\N	7b5fd5f9-e7d7-4dd4-b723-5b2581adb26f
-1b27089d-4cba-47f7-bf83-6a741ca70b17	birthdate	openid-connect	oidc-usermodel-attribute-mapper	\N	7b5fd5f9-e7d7-4dd4-b723-5b2581adb26f
-6fa46261-334c-46eb-81ce-534f855633d1	zoneinfo	openid-connect	oidc-usermodel-attribute-mapper	\N	7b5fd5f9-e7d7-4dd4-b723-5b2581adb26f
-98cefae8-ec3f-4be6-b310-90dc7d8a8c6f	locale	openid-connect	oidc-usermodel-attribute-mapper	\N	7b5fd5f9-e7d7-4dd4-b723-5b2581adb26f
-69d79529-3f24-4846-a6e2-c404038411e7	updated at	openid-connect	oidc-usermodel-attribute-mapper	\N	7b5fd5f9-e7d7-4dd4-b723-5b2581adb26f
-3ad30884-ff12-41f3-b0b3-4ae9df87cb06	email	openid-connect	oidc-usermodel-attribute-mapper	\N	1db87056-8e91-45bf-94d5-83db7a4741b8
-68cb7a6d-ce5d-43f1-8a5f-70471834c942	email verified	openid-connect	oidc-usermodel-property-mapper	\N	1db87056-8e91-45bf-94d5-83db7a4741b8
-90bc2ecb-8c63-4ba4-b68b-dae7fe981dc3	address	openid-connect	oidc-address-mapper	\N	a13756c8-71f2-4e3a-bfa2-e11fa0f500e5
-c258198d-3931-4db1-8215-7d333780cb43	phone number	openid-connect	oidc-usermodel-attribute-mapper	\N	765ebfcf-be15-4d68-a301-cb637fbc4f45
-07240551-1973-4057-a6d4-11bf4de56d91	phone number verified	openid-connect	oidc-usermodel-attribute-mapper	\N	765ebfcf-be15-4d68-a301-cb637fbc4f45
-f4327f9d-892c-4bf8-bb01-ba6a0871d6d2	realm roles	openid-connect	oidc-usermodel-realm-role-mapper	\N	6655fa57-075f-4290-a4fb-c7b0ccbcc419
-d9e11e71-f5b1-44ed-a2d7-456015eadbf1	client roles	openid-connect	oidc-usermodel-client-role-mapper	\N	6655fa57-075f-4290-a4fb-c7b0ccbcc419
-a0c80599-eb5b-4aaa-be4e-8c0740c40b5d	audience resolve	openid-connect	oidc-audience-resolve-mapper	\N	6655fa57-075f-4290-a4fb-c7b0ccbcc419
-312a46b4-fe35-4e3d-a9eb-8fdbaff244ae	allowed web origins	openid-connect	oidc-allowed-origins-mapper	\N	fe13d2b5-c08b-4b6e-bf58-f2d2e97553cc
-3f6d4879-e64b-4386-853d-384749950e8a	upn	openid-connect	oidc-usermodel-attribute-mapper	\N	191aee24-0234-4b99-bfa2-de5171fe1fa0
-fc8264df-ac1e-4236-9430-af14f850b129	groups	openid-connect	oidc-usermodel-realm-role-mapper	\N	191aee24-0234-4b99-bfa2-de5171fe1fa0
-7c6ecc27-62a3-42eb-868d-38b3338c4b73	acr loa level	openid-connect	oidc-acr-mapper	\N	b2b993cf-09b3-4a73-b472-7252d8b8f62b
-968f6a78-0d39-4a6d-80b1-25b1b131ad62	auth_time	openid-connect	oidc-usersessionmodel-note-mapper	\N	86582f7f-d214-4da0-9fea-3c46f7e9c40a
-dbb0373f-d9c1-4212-acaf-3366bab9a8e0	sub	openid-connect	oidc-sub-mapper	\N	86582f7f-d214-4da0-9fea-3c46f7e9c40a
-fc48af48-9d04-4eb1-9d7f-d69670ddaec0	organization	openid-connect	oidc-organization-membership-mapper	\N	4e77fd07-9de1-4105-bddf-fc8ccb5b09f2
+41a3924f-aa87-459d-99bd-ae2029c15e1a	audience resolve	openid-connect	oidc-audience-resolve-mapper	0a647cec-fab1-4ccb-8b29-f3a76fd51749	\N
+88ecfd84-08b1-4251-8485-e7102e048781	locale	openid-connect	oidc-usermodel-attribute-mapper	09dc476f-68fc-4768-a31f-85a3d4f9ff84	\N
+b460fd19-f578-4519-94d5-9d1f01a6c066	role list	saml	saml-role-list-mapper	\N	00bb3269-c9e7-4feb-ada6-78138f8de442
+0b4c8b46-4da2-4fc9-a5fe-0707c97c87ec	organization	saml	saml-organization-membership-mapper	\N	64293740-8869-48e9-8bc0-ec1816ed724c
+35a17f5e-bb40-40d3-a5ad-347df696bdf2	full name	openid-connect	oidc-full-name-mapper	\N	83de2a22-63e4-4dd3-b0fa-bbf946a4886d
+ecdeabda-8a6c-484a-b18f-03b9952c69d8	family name	openid-connect	oidc-usermodel-attribute-mapper	\N	83de2a22-63e4-4dd3-b0fa-bbf946a4886d
+c2169a9f-0d73-42f0-951e-b67119ec0e7a	given name	openid-connect	oidc-usermodel-attribute-mapper	\N	83de2a22-63e4-4dd3-b0fa-bbf946a4886d
+cdf558a8-fcd9-4f47-b1a9-5cd22e308769	middle name	openid-connect	oidc-usermodel-attribute-mapper	\N	83de2a22-63e4-4dd3-b0fa-bbf946a4886d
+3e491461-5be7-4883-8002-22310a5b94aa	nickname	openid-connect	oidc-usermodel-attribute-mapper	\N	83de2a22-63e4-4dd3-b0fa-bbf946a4886d
+0576ffbe-17e5-49b2-bd97-607288e1c487	username	openid-connect	oidc-usermodel-attribute-mapper	\N	83de2a22-63e4-4dd3-b0fa-bbf946a4886d
+1b5406f4-e5e6-40a6-bb56-9c1f4ec2fd48	profile	openid-connect	oidc-usermodel-attribute-mapper	\N	83de2a22-63e4-4dd3-b0fa-bbf946a4886d
+60b865c9-006f-4a86-8d4e-6319cd1640dd	picture	openid-connect	oidc-usermodel-attribute-mapper	\N	83de2a22-63e4-4dd3-b0fa-bbf946a4886d
+de15dc1e-641d-4f2c-8bfc-98059c336152	website	openid-connect	oidc-usermodel-attribute-mapper	\N	83de2a22-63e4-4dd3-b0fa-bbf946a4886d
+d3f41778-1b00-42ee-aa57-bf30e42f022e	gender	openid-connect	oidc-usermodel-attribute-mapper	\N	83de2a22-63e4-4dd3-b0fa-bbf946a4886d
+ab449a38-7f3b-4abd-83a0-2cfc9bd38949	birthdate	openid-connect	oidc-usermodel-attribute-mapper	\N	83de2a22-63e4-4dd3-b0fa-bbf946a4886d
+e31cf650-c39b-4dd0-803c-6fb6a9bf495e	zoneinfo	openid-connect	oidc-usermodel-attribute-mapper	\N	83de2a22-63e4-4dd3-b0fa-bbf946a4886d
+c0b8e4e0-530d-438a-ba52-c69293873c05	locale	openid-connect	oidc-usermodel-attribute-mapper	\N	83de2a22-63e4-4dd3-b0fa-bbf946a4886d
+05e2a64e-efd7-44d4-9702-8f58977a4c83	updated at	openid-connect	oidc-usermodel-attribute-mapper	\N	83de2a22-63e4-4dd3-b0fa-bbf946a4886d
+0330f97f-f033-4ccd-a987-73001ca59455	email	openid-connect	oidc-usermodel-attribute-mapper	\N	d09b8c28-c12b-439b-95a5-1a99f3287d70
+0ea47a11-6377-40bd-9775-3622577f6f74	email verified	openid-connect	oidc-usermodel-property-mapper	\N	d09b8c28-c12b-439b-95a5-1a99f3287d70
+d0c0e0d6-84cf-48bf-bf72-ca04d74d78a9	address	openid-connect	oidc-address-mapper	\N	320ad60b-580d-430b-8217-cc5c4f1a57fe
+55e5b16a-da8f-46c0-9cc9-d18e02f3905c	phone number	openid-connect	oidc-usermodel-attribute-mapper	\N	849258fc-9eec-4dba-b85c-e300d05f9129
+d0c27e30-1e8b-4357-8c3d-9647a50b8fcd	phone number verified	openid-connect	oidc-usermodel-attribute-mapper	\N	849258fc-9eec-4dba-b85c-e300d05f9129
+706fff38-c504-4608-ab47-c9a4ed13d515	realm roles	openid-connect	oidc-usermodel-realm-role-mapper	\N	17095d46-d030-492d-892c-a8252b29bfbc
+f770e7a2-b022-4f10-8840-f58914f16c09	client roles	openid-connect	oidc-usermodel-client-role-mapper	\N	17095d46-d030-492d-892c-a8252b29bfbc
+7c85aee9-b9b1-4e32-88d8-fe178b00dbcd	audience resolve	openid-connect	oidc-audience-resolve-mapper	\N	17095d46-d030-492d-892c-a8252b29bfbc
+8b539212-2000-4998-8c93-ce11942e7870	allowed web origins	openid-connect	oidc-allowed-origins-mapper	\N	45121ad7-8871-4ded-b37b-4decb41f0bd6
+a49cdc55-68f3-4972-88d2-009c7e7c9273	upn	openid-connect	oidc-usermodel-attribute-mapper	\N	06acf73a-7701-47d6-82c9-4245f80696cb
+70175842-1fde-4517-bbd2-5f09377785a4	groups	openid-connect	oidc-usermodel-realm-role-mapper	\N	06acf73a-7701-47d6-82c9-4245f80696cb
+ec57f014-acbb-468a-89ee-dc3fefaf526f	acr loa level	openid-connect	oidc-acr-mapper	\N	a6443962-58c8-4b16-af9a-b867f16e105f
+e897cb8e-9151-427b-8d80-6f9ed2ad492e	auth_time	openid-connect	oidc-usersessionmodel-note-mapper	\N	2310b041-955e-4fac-9a66-df3bf3dff5e2
+14ef1268-2245-4710-b92e-f1519dd9a561	sub	openid-connect	oidc-sub-mapper	\N	2310b041-955e-4fac-9a66-df3bf3dff5e2
+5bc594b2-c3b0-45e2-bc07-abf6cafcda1b	organization	openid-connect	oidc-organization-membership-mapper	\N	d76e2c83-c2e4-4182-9b6b-31e3905cd3ff
 a5f42024-b607-4292-b1d6-a9d4191bb4e8	groups	openid-connect	oidc-usermodel-realm-role-mapper	\N	2753e1d9-77a7-4059-8465-fa23a6b418c4
 e136e954-04d6-4224-bdb0-336990f7b794	upn	openid-connect	oidc-usermodel-attribute-mapper	\N	2753e1d9-77a7-4059-8465-fa23a6b418c4
 2caf2e3b-868c-48c5-a684-532529b920ed	auth_time	openid-connect	oidc-usersessionmodel-note-mapper	\N	ac70839b-f142-47ab-93cf-f21d06d1f546
@@ -9659,196 +9949,196 @@ fede70dd-d1c5-4408-a082-a5f0364195d6	locale	openid-connect	oidc-usermodel-attrib
 --
 
 COPY public.protocol_mapper_config (protocol_mapper_id, value, name) FROM stdin;
-5beb8996-bfa4-42c7-a1ca-4d35a62cd458	true	introspection.token.claim
-5beb8996-bfa4-42c7-a1ca-4d35a62cd458	true	userinfo.token.claim
-5beb8996-bfa4-42c7-a1ca-4d35a62cd458	locale	user.attribute
-5beb8996-bfa4-42c7-a1ca-4d35a62cd458	true	id.token.claim
-5beb8996-bfa4-42c7-a1ca-4d35a62cd458	true	access.token.claim
-5beb8996-bfa4-42c7-a1ca-4d35a62cd458	locale	claim.name
-5beb8996-bfa4-42c7-a1ca-4d35a62cd458	String	jsonType.label
-7d0bbf10-2470-4b52-8e03-c2b7b46217d7	false	single
-7d0bbf10-2470-4b52-8e03-c2b7b46217d7	Basic	attribute.nameformat
-7d0bbf10-2470-4b52-8e03-c2b7b46217d7	Role	attribute.name
-0c2ea006-e7a5-482c-8288-451d74a15ecc	true	introspection.token.claim
-0c2ea006-e7a5-482c-8288-451d74a15ecc	true	userinfo.token.claim
-0c2ea006-e7a5-482c-8288-451d74a15ecc	true	id.token.claim
-0c2ea006-e7a5-482c-8288-451d74a15ecc	true	access.token.claim
-1b27089d-4cba-47f7-bf83-6a741ca70b17	true	introspection.token.claim
-1b27089d-4cba-47f7-bf83-6a741ca70b17	true	userinfo.token.claim
-1b27089d-4cba-47f7-bf83-6a741ca70b17	birthdate	user.attribute
-1b27089d-4cba-47f7-bf83-6a741ca70b17	true	id.token.claim
-1b27089d-4cba-47f7-bf83-6a741ca70b17	true	access.token.claim
-1b27089d-4cba-47f7-bf83-6a741ca70b17	birthdate	claim.name
-1b27089d-4cba-47f7-bf83-6a741ca70b17	String	jsonType.label
-38831ee4-cd36-4096-8181-d81023fabf2b	true	introspection.token.claim
-38831ee4-cd36-4096-8181-d81023fabf2b	true	userinfo.token.claim
-38831ee4-cd36-4096-8181-d81023fabf2b	gender	user.attribute
-38831ee4-cd36-4096-8181-d81023fabf2b	true	id.token.claim
-38831ee4-cd36-4096-8181-d81023fabf2b	true	access.token.claim
-38831ee4-cd36-4096-8181-d81023fabf2b	gender	claim.name
-38831ee4-cd36-4096-8181-d81023fabf2b	String	jsonType.label
-47bf342b-d18d-40d7-8255-aa0dae643744	true	introspection.token.claim
-47bf342b-d18d-40d7-8255-aa0dae643744	true	userinfo.token.claim
-47bf342b-d18d-40d7-8255-aa0dae643744	profile	user.attribute
-47bf342b-d18d-40d7-8255-aa0dae643744	true	id.token.claim
-47bf342b-d18d-40d7-8255-aa0dae643744	true	access.token.claim
-47bf342b-d18d-40d7-8255-aa0dae643744	profile	claim.name
-47bf342b-d18d-40d7-8255-aa0dae643744	String	jsonType.label
-5754ae87-8d60-493f-87f4-13e6220c9146	true	introspection.token.claim
-5754ae87-8d60-493f-87f4-13e6220c9146	true	userinfo.token.claim
-5754ae87-8d60-493f-87f4-13e6220c9146	middleName	user.attribute
-5754ae87-8d60-493f-87f4-13e6220c9146	true	id.token.claim
-5754ae87-8d60-493f-87f4-13e6220c9146	true	access.token.claim
-5754ae87-8d60-493f-87f4-13e6220c9146	middle_name	claim.name
-5754ae87-8d60-493f-87f4-13e6220c9146	String	jsonType.label
-5ada1f80-9f2f-4bf1-a394-91d643fa62fc	true	introspection.token.claim
-5ada1f80-9f2f-4bf1-a394-91d643fa62fc	true	userinfo.token.claim
-5ada1f80-9f2f-4bf1-a394-91d643fa62fc	nickname	user.attribute
-5ada1f80-9f2f-4bf1-a394-91d643fa62fc	true	id.token.claim
-5ada1f80-9f2f-4bf1-a394-91d643fa62fc	true	access.token.claim
-5ada1f80-9f2f-4bf1-a394-91d643fa62fc	nickname	claim.name
-5ada1f80-9f2f-4bf1-a394-91d643fa62fc	String	jsonType.label
-69d79529-3f24-4846-a6e2-c404038411e7	true	introspection.token.claim
-69d79529-3f24-4846-a6e2-c404038411e7	true	userinfo.token.claim
-69d79529-3f24-4846-a6e2-c404038411e7	updatedAt	user.attribute
-69d79529-3f24-4846-a6e2-c404038411e7	true	id.token.claim
-69d79529-3f24-4846-a6e2-c404038411e7	true	access.token.claim
-69d79529-3f24-4846-a6e2-c404038411e7	updated_at	claim.name
-69d79529-3f24-4846-a6e2-c404038411e7	long	jsonType.label
-6fa46261-334c-46eb-81ce-534f855633d1	true	introspection.token.claim
-6fa46261-334c-46eb-81ce-534f855633d1	true	userinfo.token.claim
-6fa46261-334c-46eb-81ce-534f855633d1	zoneinfo	user.attribute
-6fa46261-334c-46eb-81ce-534f855633d1	true	id.token.claim
-6fa46261-334c-46eb-81ce-534f855633d1	true	access.token.claim
-6fa46261-334c-46eb-81ce-534f855633d1	zoneinfo	claim.name
-6fa46261-334c-46eb-81ce-534f855633d1	String	jsonType.label
-98cefae8-ec3f-4be6-b310-90dc7d8a8c6f	true	introspection.token.claim
-98cefae8-ec3f-4be6-b310-90dc7d8a8c6f	true	userinfo.token.claim
-98cefae8-ec3f-4be6-b310-90dc7d8a8c6f	locale	user.attribute
-98cefae8-ec3f-4be6-b310-90dc7d8a8c6f	true	id.token.claim
-98cefae8-ec3f-4be6-b310-90dc7d8a8c6f	true	access.token.claim
-98cefae8-ec3f-4be6-b310-90dc7d8a8c6f	locale	claim.name
-98cefae8-ec3f-4be6-b310-90dc7d8a8c6f	String	jsonType.label
-ad62f1c9-f676-43e6-948a-267194867e3a	true	introspection.token.claim
-ad62f1c9-f676-43e6-948a-267194867e3a	true	userinfo.token.claim
-ad62f1c9-f676-43e6-948a-267194867e3a	username	user.attribute
-ad62f1c9-f676-43e6-948a-267194867e3a	true	id.token.claim
-ad62f1c9-f676-43e6-948a-267194867e3a	true	access.token.claim
-ad62f1c9-f676-43e6-948a-267194867e3a	preferred_username	claim.name
-ad62f1c9-f676-43e6-948a-267194867e3a	String	jsonType.label
-d11a6008-6ade-4e05-8135-38e2d0213f90	true	introspection.token.claim
-d11a6008-6ade-4e05-8135-38e2d0213f90	true	userinfo.token.claim
-d11a6008-6ade-4e05-8135-38e2d0213f90	website	user.attribute
-d11a6008-6ade-4e05-8135-38e2d0213f90	true	id.token.claim
-d11a6008-6ade-4e05-8135-38e2d0213f90	true	access.token.claim
-d11a6008-6ade-4e05-8135-38e2d0213f90	website	claim.name
-d11a6008-6ade-4e05-8135-38e2d0213f90	String	jsonType.label
-d30fc256-a6cb-4541-8efa-76f6f513a4c5	true	introspection.token.claim
-d30fc256-a6cb-4541-8efa-76f6f513a4c5	true	userinfo.token.claim
-d30fc256-a6cb-4541-8efa-76f6f513a4c5	lastName	user.attribute
-d30fc256-a6cb-4541-8efa-76f6f513a4c5	true	id.token.claim
-d30fc256-a6cb-4541-8efa-76f6f513a4c5	true	access.token.claim
-d30fc256-a6cb-4541-8efa-76f6f513a4c5	family_name	claim.name
-d30fc256-a6cb-4541-8efa-76f6f513a4c5	String	jsonType.label
-d92e149b-5008-467e-a735-b054ad5935ab	true	introspection.token.claim
-d92e149b-5008-467e-a735-b054ad5935ab	true	userinfo.token.claim
-d92e149b-5008-467e-a735-b054ad5935ab	firstName	user.attribute
-d92e149b-5008-467e-a735-b054ad5935ab	true	id.token.claim
-d92e149b-5008-467e-a735-b054ad5935ab	true	access.token.claim
-d92e149b-5008-467e-a735-b054ad5935ab	given_name	claim.name
-d92e149b-5008-467e-a735-b054ad5935ab	String	jsonType.label
-e057dde2-5616-4c78-8438-f0f3fc999ad2	true	introspection.token.claim
-e057dde2-5616-4c78-8438-f0f3fc999ad2	true	userinfo.token.claim
-e057dde2-5616-4c78-8438-f0f3fc999ad2	picture	user.attribute
-e057dde2-5616-4c78-8438-f0f3fc999ad2	true	id.token.claim
-e057dde2-5616-4c78-8438-f0f3fc999ad2	true	access.token.claim
-e057dde2-5616-4c78-8438-f0f3fc999ad2	picture	claim.name
-e057dde2-5616-4c78-8438-f0f3fc999ad2	String	jsonType.label
-3ad30884-ff12-41f3-b0b3-4ae9df87cb06	true	introspection.token.claim
-3ad30884-ff12-41f3-b0b3-4ae9df87cb06	true	userinfo.token.claim
-3ad30884-ff12-41f3-b0b3-4ae9df87cb06	email	user.attribute
-3ad30884-ff12-41f3-b0b3-4ae9df87cb06	true	id.token.claim
-3ad30884-ff12-41f3-b0b3-4ae9df87cb06	true	access.token.claim
-3ad30884-ff12-41f3-b0b3-4ae9df87cb06	email	claim.name
-3ad30884-ff12-41f3-b0b3-4ae9df87cb06	String	jsonType.label
-68cb7a6d-ce5d-43f1-8a5f-70471834c942	true	introspection.token.claim
-68cb7a6d-ce5d-43f1-8a5f-70471834c942	true	userinfo.token.claim
-68cb7a6d-ce5d-43f1-8a5f-70471834c942	emailVerified	user.attribute
-68cb7a6d-ce5d-43f1-8a5f-70471834c942	true	id.token.claim
-68cb7a6d-ce5d-43f1-8a5f-70471834c942	true	access.token.claim
-68cb7a6d-ce5d-43f1-8a5f-70471834c942	email_verified	claim.name
-68cb7a6d-ce5d-43f1-8a5f-70471834c942	boolean	jsonType.label
-90bc2ecb-8c63-4ba4-b68b-dae7fe981dc3	formatted	user.attribute.formatted
-90bc2ecb-8c63-4ba4-b68b-dae7fe981dc3	country	user.attribute.country
-90bc2ecb-8c63-4ba4-b68b-dae7fe981dc3	true	introspection.token.claim
-90bc2ecb-8c63-4ba4-b68b-dae7fe981dc3	postal_code	user.attribute.postal_code
-90bc2ecb-8c63-4ba4-b68b-dae7fe981dc3	true	userinfo.token.claim
-90bc2ecb-8c63-4ba4-b68b-dae7fe981dc3	street	user.attribute.street
-90bc2ecb-8c63-4ba4-b68b-dae7fe981dc3	true	id.token.claim
-90bc2ecb-8c63-4ba4-b68b-dae7fe981dc3	region	user.attribute.region
-90bc2ecb-8c63-4ba4-b68b-dae7fe981dc3	true	access.token.claim
-90bc2ecb-8c63-4ba4-b68b-dae7fe981dc3	locality	user.attribute.locality
-07240551-1973-4057-a6d4-11bf4de56d91	true	introspection.token.claim
-07240551-1973-4057-a6d4-11bf4de56d91	true	userinfo.token.claim
-07240551-1973-4057-a6d4-11bf4de56d91	phoneNumberVerified	user.attribute
-07240551-1973-4057-a6d4-11bf4de56d91	true	id.token.claim
-07240551-1973-4057-a6d4-11bf4de56d91	true	access.token.claim
-07240551-1973-4057-a6d4-11bf4de56d91	phone_number_verified	claim.name
-07240551-1973-4057-a6d4-11bf4de56d91	boolean	jsonType.label
-c258198d-3931-4db1-8215-7d333780cb43	true	introspection.token.claim
-c258198d-3931-4db1-8215-7d333780cb43	true	userinfo.token.claim
-c258198d-3931-4db1-8215-7d333780cb43	phoneNumber	user.attribute
-c258198d-3931-4db1-8215-7d333780cb43	true	id.token.claim
-c258198d-3931-4db1-8215-7d333780cb43	true	access.token.claim
-c258198d-3931-4db1-8215-7d333780cb43	phone_number	claim.name
-c258198d-3931-4db1-8215-7d333780cb43	String	jsonType.label
-a0c80599-eb5b-4aaa-be4e-8c0740c40b5d	true	introspection.token.claim
-a0c80599-eb5b-4aaa-be4e-8c0740c40b5d	true	access.token.claim
-d9e11e71-f5b1-44ed-a2d7-456015eadbf1	true	introspection.token.claim
-d9e11e71-f5b1-44ed-a2d7-456015eadbf1	true	multivalued
-d9e11e71-f5b1-44ed-a2d7-456015eadbf1	foo	user.attribute
-d9e11e71-f5b1-44ed-a2d7-456015eadbf1	true	access.token.claim
-d9e11e71-f5b1-44ed-a2d7-456015eadbf1	resource_access.${client_id}.roles	claim.name
-d9e11e71-f5b1-44ed-a2d7-456015eadbf1	String	jsonType.label
-f4327f9d-892c-4bf8-bb01-ba6a0871d6d2	true	introspection.token.claim
-f4327f9d-892c-4bf8-bb01-ba6a0871d6d2	true	multivalued
-f4327f9d-892c-4bf8-bb01-ba6a0871d6d2	foo	user.attribute
-f4327f9d-892c-4bf8-bb01-ba6a0871d6d2	true	access.token.claim
-f4327f9d-892c-4bf8-bb01-ba6a0871d6d2	realm_access.roles	claim.name
-f4327f9d-892c-4bf8-bb01-ba6a0871d6d2	String	jsonType.label
-312a46b4-fe35-4e3d-a9eb-8fdbaff244ae	true	introspection.token.claim
-312a46b4-fe35-4e3d-a9eb-8fdbaff244ae	true	access.token.claim
-3f6d4879-e64b-4386-853d-384749950e8a	true	introspection.token.claim
-3f6d4879-e64b-4386-853d-384749950e8a	true	userinfo.token.claim
-3f6d4879-e64b-4386-853d-384749950e8a	username	user.attribute
-3f6d4879-e64b-4386-853d-384749950e8a	true	id.token.claim
-3f6d4879-e64b-4386-853d-384749950e8a	true	access.token.claim
-3f6d4879-e64b-4386-853d-384749950e8a	upn	claim.name
-3f6d4879-e64b-4386-853d-384749950e8a	String	jsonType.label
-fc8264df-ac1e-4236-9430-af14f850b129	true	introspection.token.claim
-fc8264df-ac1e-4236-9430-af14f850b129	true	multivalued
-fc8264df-ac1e-4236-9430-af14f850b129	foo	user.attribute
-fc8264df-ac1e-4236-9430-af14f850b129	true	id.token.claim
-fc8264df-ac1e-4236-9430-af14f850b129	true	access.token.claim
-fc8264df-ac1e-4236-9430-af14f850b129	groups	claim.name
-fc8264df-ac1e-4236-9430-af14f850b129	String	jsonType.label
-7c6ecc27-62a3-42eb-868d-38b3338c4b73	true	introspection.token.claim
-7c6ecc27-62a3-42eb-868d-38b3338c4b73	true	id.token.claim
-7c6ecc27-62a3-42eb-868d-38b3338c4b73	true	access.token.claim
-968f6a78-0d39-4a6d-80b1-25b1b131ad62	AUTH_TIME	user.session.note
-968f6a78-0d39-4a6d-80b1-25b1b131ad62	true	introspection.token.claim
-968f6a78-0d39-4a6d-80b1-25b1b131ad62	true	id.token.claim
-968f6a78-0d39-4a6d-80b1-25b1b131ad62	true	access.token.claim
-968f6a78-0d39-4a6d-80b1-25b1b131ad62	auth_time	claim.name
-968f6a78-0d39-4a6d-80b1-25b1b131ad62	long	jsonType.label
-dbb0373f-d9c1-4212-acaf-3366bab9a8e0	true	introspection.token.claim
-dbb0373f-d9c1-4212-acaf-3366bab9a8e0	true	access.token.claim
-fc48af48-9d04-4eb1-9d7f-d69670ddaec0	true	introspection.token.claim
-fc48af48-9d04-4eb1-9d7f-d69670ddaec0	true	multivalued
-fc48af48-9d04-4eb1-9d7f-d69670ddaec0	true	id.token.claim
-fc48af48-9d04-4eb1-9d7f-d69670ddaec0	true	access.token.claim
-fc48af48-9d04-4eb1-9d7f-d69670ddaec0	organization	claim.name
-fc48af48-9d04-4eb1-9d7f-d69670ddaec0	String	jsonType.label
+88ecfd84-08b1-4251-8485-e7102e048781	true	introspection.token.claim
+88ecfd84-08b1-4251-8485-e7102e048781	true	userinfo.token.claim
+88ecfd84-08b1-4251-8485-e7102e048781	locale	user.attribute
+88ecfd84-08b1-4251-8485-e7102e048781	true	id.token.claim
+88ecfd84-08b1-4251-8485-e7102e048781	true	access.token.claim
+88ecfd84-08b1-4251-8485-e7102e048781	locale	claim.name
+88ecfd84-08b1-4251-8485-e7102e048781	String	jsonType.label
+b460fd19-f578-4519-94d5-9d1f01a6c066	false	single
+b460fd19-f578-4519-94d5-9d1f01a6c066	Basic	attribute.nameformat
+b460fd19-f578-4519-94d5-9d1f01a6c066	Role	attribute.name
+0576ffbe-17e5-49b2-bd97-607288e1c487	true	introspection.token.claim
+0576ffbe-17e5-49b2-bd97-607288e1c487	true	userinfo.token.claim
+0576ffbe-17e5-49b2-bd97-607288e1c487	username	user.attribute
+0576ffbe-17e5-49b2-bd97-607288e1c487	true	id.token.claim
+0576ffbe-17e5-49b2-bd97-607288e1c487	true	access.token.claim
+0576ffbe-17e5-49b2-bd97-607288e1c487	preferred_username	claim.name
+0576ffbe-17e5-49b2-bd97-607288e1c487	String	jsonType.label
+05e2a64e-efd7-44d4-9702-8f58977a4c83	true	introspection.token.claim
+05e2a64e-efd7-44d4-9702-8f58977a4c83	true	userinfo.token.claim
+05e2a64e-efd7-44d4-9702-8f58977a4c83	updatedAt	user.attribute
+05e2a64e-efd7-44d4-9702-8f58977a4c83	true	id.token.claim
+05e2a64e-efd7-44d4-9702-8f58977a4c83	true	access.token.claim
+05e2a64e-efd7-44d4-9702-8f58977a4c83	updated_at	claim.name
+05e2a64e-efd7-44d4-9702-8f58977a4c83	long	jsonType.label
+1b5406f4-e5e6-40a6-bb56-9c1f4ec2fd48	true	introspection.token.claim
+1b5406f4-e5e6-40a6-bb56-9c1f4ec2fd48	true	userinfo.token.claim
+1b5406f4-e5e6-40a6-bb56-9c1f4ec2fd48	profile	user.attribute
+1b5406f4-e5e6-40a6-bb56-9c1f4ec2fd48	true	id.token.claim
+1b5406f4-e5e6-40a6-bb56-9c1f4ec2fd48	true	access.token.claim
+1b5406f4-e5e6-40a6-bb56-9c1f4ec2fd48	profile	claim.name
+1b5406f4-e5e6-40a6-bb56-9c1f4ec2fd48	String	jsonType.label
+35a17f5e-bb40-40d3-a5ad-347df696bdf2	true	introspection.token.claim
+35a17f5e-bb40-40d3-a5ad-347df696bdf2	true	userinfo.token.claim
+35a17f5e-bb40-40d3-a5ad-347df696bdf2	true	id.token.claim
+35a17f5e-bb40-40d3-a5ad-347df696bdf2	true	access.token.claim
+3e491461-5be7-4883-8002-22310a5b94aa	true	introspection.token.claim
+3e491461-5be7-4883-8002-22310a5b94aa	true	userinfo.token.claim
+3e491461-5be7-4883-8002-22310a5b94aa	nickname	user.attribute
+3e491461-5be7-4883-8002-22310a5b94aa	true	id.token.claim
+3e491461-5be7-4883-8002-22310a5b94aa	true	access.token.claim
+3e491461-5be7-4883-8002-22310a5b94aa	nickname	claim.name
+3e491461-5be7-4883-8002-22310a5b94aa	String	jsonType.label
+60b865c9-006f-4a86-8d4e-6319cd1640dd	true	introspection.token.claim
+60b865c9-006f-4a86-8d4e-6319cd1640dd	true	userinfo.token.claim
+60b865c9-006f-4a86-8d4e-6319cd1640dd	picture	user.attribute
+60b865c9-006f-4a86-8d4e-6319cd1640dd	true	id.token.claim
+60b865c9-006f-4a86-8d4e-6319cd1640dd	true	access.token.claim
+60b865c9-006f-4a86-8d4e-6319cd1640dd	picture	claim.name
+60b865c9-006f-4a86-8d4e-6319cd1640dd	String	jsonType.label
+ab449a38-7f3b-4abd-83a0-2cfc9bd38949	true	introspection.token.claim
+ab449a38-7f3b-4abd-83a0-2cfc9bd38949	true	userinfo.token.claim
+ab449a38-7f3b-4abd-83a0-2cfc9bd38949	birthdate	user.attribute
+ab449a38-7f3b-4abd-83a0-2cfc9bd38949	true	id.token.claim
+ab449a38-7f3b-4abd-83a0-2cfc9bd38949	true	access.token.claim
+ab449a38-7f3b-4abd-83a0-2cfc9bd38949	birthdate	claim.name
+ab449a38-7f3b-4abd-83a0-2cfc9bd38949	String	jsonType.label
+c0b8e4e0-530d-438a-ba52-c69293873c05	true	introspection.token.claim
+c0b8e4e0-530d-438a-ba52-c69293873c05	true	userinfo.token.claim
+c0b8e4e0-530d-438a-ba52-c69293873c05	locale	user.attribute
+c0b8e4e0-530d-438a-ba52-c69293873c05	true	id.token.claim
+c0b8e4e0-530d-438a-ba52-c69293873c05	true	access.token.claim
+c0b8e4e0-530d-438a-ba52-c69293873c05	locale	claim.name
+c0b8e4e0-530d-438a-ba52-c69293873c05	String	jsonType.label
+c2169a9f-0d73-42f0-951e-b67119ec0e7a	true	introspection.token.claim
+c2169a9f-0d73-42f0-951e-b67119ec0e7a	true	userinfo.token.claim
+c2169a9f-0d73-42f0-951e-b67119ec0e7a	firstName	user.attribute
+c2169a9f-0d73-42f0-951e-b67119ec0e7a	true	id.token.claim
+c2169a9f-0d73-42f0-951e-b67119ec0e7a	true	access.token.claim
+c2169a9f-0d73-42f0-951e-b67119ec0e7a	given_name	claim.name
+c2169a9f-0d73-42f0-951e-b67119ec0e7a	String	jsonType.label
+cdf558a8-fcd9-4f47-b1a9-5cd22e308769	true	introspection.token.claim
+cdf558a8-fcd9-4f47-b1a9-5cd22e308769	true	userinfo.token.claim
+cdf558a8-fcd9-4f47-b1a9-5cd22e308769	middleName	user.attribute
+cdf558a8-fcd9-4f47-b1a9-5cd22e308769	true	id.token.claim
+cdf558a8-fcd9-4f47-b1a9-5cd22e308769	true	access.token.claim
+cdf558a8-fcd9-4f47-b1a9-5cd22e308769	middle_name	claim.name
+cdf558a8-fcd9-4f47-b1a9-5cd22e308769	String	jsonType.label
+d3f41778-1b00-42ee-aa57-bf30e42f022e	true	introspection.token.claim
+d3f41778-1b00-42ee-aa57-bf30e42f022e	true	userinfo.token.claim
+d3f41778-1b00-42ee-aa57-bf30e42f022e	gender	user.attribute
+d3f41778-1b00-42ee-aa57-bf30e42f022e	true	id.token.claim
+d3f41778-1b00-42ee-aa57-bf30e42f022e	true	access.token.claim
+d3f41778-1b00-42ee-aa57-bf30e42f022e	gender	claim.name
+d3f41778-1b00-42ee-aa57-bf30e42f022e	String	jsonType.label
+de15dc1e-641d-4f2c-8bfc-98059c336152	true	introspection.token.claim
+de15dc1e-641d-4f2c-8bfc-98059c336152	true	userinfo.token.claim
+de15dc1e-641d-4f2c-8bfc-98059c336152	website	user.attribute
+de15dc1e-641d-4f2c-8bfc-98059c336152	true	id.token.claim
+de15dc1e-641d-4f2c-8bfc-98059c336152	true	access.token.claim
+de15dc1e-641d-4f2c-8bfc-98059c336152	website	claim.name
+de15dc1e-641d-4f2c-8bfc-98059c336152	String	jsonType.label
+e31cf650-c39b-4dd0-803c-6fb6a9bf495e	true	introspection.token.claim
+e31cf650-c39b-4dd0-803c-6fb6a9bf495e	true	userinfo.token.claim
+e31cf650-c39b-4dd0-803c-6fb6a9bf495e	zoneinfo	user.attribute
+e31cf650-c39b-4dd0-803c-6fb6a9bf495e	true	id.token.claim
+e31cf650-c39b-4dd0-803c-6fb6a9bf495e	true	access.token.claim
+e31cf650-c39b-4dd0-803c-6fb6a9bf495e	zoneinfo	claim.name
+e31cf650-c39b-4dd0-803c-6fb6a9bf495e	String	jsonType.label
+ecdeabda-8a6c-484a-b18f-03b9952c69d8	true	introspection.token.claim
+ecdeabda-8a6c-484a-b18f-03b9952c69d8	true	userinfo.token.claim
+ecdeabda-8a6c-484a-b18f-03b9952c69d8	lastName	user.attribute
+ecdeabda-8a6c-484a-b18f-03b9952c69d8	true	id.token.claim
+ecdeabda-8a6c-484a-b18f-03b9952c69d8	true	access.token.claim
+ecdeabda-8a6c-484a-b18f-03b9952c69d8	family_name	claim.name
+ecdeabda-8a6c-484a-b18f-03b9952c69d8	String	jsonType.label
+0330f97f-f033-4ccd-a987-73001ca59455	true	introspection.token.claim
+0330f97f-f033-4ccd-a987-73001ca59455	true	userinfo.token.claim
+0330f97f-f033-4ccd-a987-73001ca59455	email	user.attribute
+0330f97f-f033-4ccd-a987-73001ca59455	true	id.token.claim
+0330f97f-f033-4ccd-a987-73001ca59455	true	access.token.claim
+0330f97f-f033-4ccd-a987-73001ca59455	email	claim.name
+0330f97f-f033-4ccd-a987-73001ca59455	String	jsonType.label
+0ea47a11-6377-40bd-9775-3622577f6f74	true	introspection.token.claim
+0ea47a11-6377-40bd-9775-3622577f6f74	true	userinfo.token.claim
+0ea47a11-6377-40bd-9775-3622577f6f74	emailVerified	user.attribute
+0ea47a11-6377-40bd-9775-3622577f6f74	true	id.token.claim
+0ea47a11-6377-40bd-9775-3622577f6f74	true	access.token.claim
+0ea47a11-6377-40bd-9775-3622577f6f74	email_verified	claim.name
+0ea47a11-6377-40bd-9775-3622577f6f74	boolean	jsonType.label
+d0c0e0d6-84cf-48bf-bf72-ca04d74d78a9	formatted	user.attribute.formatted
+d0c0e0d6-84cf-48bf-bf72-ca04d74d78a9	country	user.attribute.country
+d0c0e0d6-84cf-48bf-bf72-ca04d74d78a9	true	introspection.token.claim
+d0c0e0d6-84cf-48bf-bf72-ca04d74d78a9	postal_code	user.attribute.postal_code
+d0c0e0d6-84cf-48bf-bf72-ca04d74d78a9	true	userinfo.token.claim
+d0c0e0d6-84cf-48bf-bf72-ca04d74d78a9	street	user.attribute.street
+d0c0e0d6-84cf-48bf-bf72-ca04d74d78a9	true	id.token.claim
+d0c0e0d6-84cf-48bf-bf72-ca04d74d78a9	region	user.attribute.region
+d0c0e0d6-84cf-48bf-bf72-ca04d74d78a9	true	access.token.claim
+d0c0e0d6-84cf-48bf-bf72-ca04d74d78a9	locality	user.attribute.locality
+55e5b16a-da8f-46c0-9cc9-d18e02f3905c	true	introspection.token.claim
+55e5b16a-da8f-46c0-9cc9-d18e02f3905c	true	userinfo.token.claim
+55e5b16a-da8f-46c0-9cc9-d18e02f3905c	phoneNumber	user.attribute
+55e5b16a-da8f-46c0-9cc9-d18e02f3905c	true	id.token.claim
+55e5b16a-da8f-46c0-9cc9-d18e02f3905c	true	access.token.claim
+55e5b16a-da8f-46c0-9cc9-d18e02f3905c	phone_number	claim.name
+55e5b16a-da8f-46c0-9cc9-d18e02f3905c	String	jsonType.label
+d0c27e30-1e8b-4357-8c3d-9647a50b8fcd	true	introspection.token.claim
+d0c27e30-1e8b-4357-8c3d-9647a50b8fcd	true	userinfo.token.claim
+d0c27e30-1e8b-4357-8c3d-9647a50b8fcd	phoneNumberVerified	user.attribute
+d0c27e30-1e8b-4357-8c3d-9647a50b8fcd	true	id.token.claim
+d0c27e30-1e8b-4357-8c3d-9647a50b8fcd	true	access.token.claim
+d0c27e30-1e8b-4357-8c3d-9647a50b8fcd	phone_number_verified	claim.name
+d0c27e30-1e8b-4357-8c3d-9647a50b8fcd	boolean	jsonType.label
+706fff38-c504-4608-ab47-c9a4ed13d515	true	introspection.token.claim
+706fff38-c504-4608-ab47-c9a4ed13d515	true	multivalued
+706fff38-c504-4608-ab47-c9a4ed13d515	foo	user.attribute
+706fff38-c504-4608-ab47-c9a4ed13d515	true	access.token.claim
+706fff38-c504-4608-ab47-c9a4ed13d515	realm_access.roles	claim.name
+706fff38-c504-4608-ab47-c9a4ed13d515	String	jsonType.label
+7c85aee9-b9b1-4e32-88d8-fe178b00dbcd	true	introspection.token.claim
+7c85aee9-b9b1-4e32-88d8-fe178b00dbcd	true	access.token.claim
+f770e7a2-b022-4f10-8840-f58914f16c09	true	introspection.token.claim
+f770e7a2-b022-4f10-8840-f58914f16c09	true	multivalued
+f770e7a2-b022-4f10-8840-f58914f16c09	foo	user.attribute
+f770e7a2-b022-4f10-8840-f58914f16c09	true	access.token.claim
+f770e7a2-b022-4f10-8840-f58914f16c09	resource_access.${client_id}.roles	claim.name
+f770e7a2-b022-4f10-8840-f58914f16c09	String	jsonType.label
+8b539212-2000-4998-8c93-ce11942e7870	true	introspection.token.claim
+8b539212-2000-4998-8c93-ce11942e7870	true	access.token.claim
+70175842-1fde-4517-bbd2-5f09377785a4	true	introspection.token.claim
+70175842-1fde-4517-bbd2-5f09377785a4	true	multivalued
+70175842-1fde-4517-bbd2-5f09377785a4	foo	user.attribute
+70175842-1fde-4517-bbd2-5f09377785a4	true	id.token.claim
+70175842-1fde-4517-bbd2-5f09377785a4	true	access.token.claim
+70175842-1fde-4517-bbd2-5f09377785a4	groups	claim.name
+70175842-1fde-4517-bbd2-5f09377785a4	String	jsonType.label
+a49cdc55-68f3-4972-88d2-009c7e7c9273	true	introspection.token.claim
+a49cdc55-68f3-4972-88d2-009c7e7c9273	true	userinfo.token.claim
+a49cdc55-68f3-4972-88d2-009c7e7c9273	username	user.attribute
+a49cdc55-68f3-4972-88d2-009c7e7c9273	true	id.token.claim
+a49cdc55-68f3-4972-88d2-009c7e7c9273	true	access.token.claim
+a49cdc55-68f3-4972-88d2-009c7e7c9273	upn	claim.name
+a49cdc55-68f3-4972-88d2-009c7e7c9273	String	jsonType.label
+ec57f014-acbb-468a-89ee-dc3fefaf526f	true	introspection.token.claim
+ec57f014-acbb-468a-89ee-dc3fefaf526f	true	id.token.claim
+ec57f014-acbb-468a-89ee-dc3fefaf526f	true	access.token.claim
+14ef1268-2245-4710-b92e-f1519dd9a561	true	introspection.token.claim
+14ef1268-2245-4710-b92e-f1519dd9a561	true	access.token.claim
+e897cb8e-9151-427b-8d80-6f9ed2ad492e	AUTH_TIME	user.session.note
+e897cb8e-9151-427b-8d80-6f9ed2ad492e	true	introspection.token.claim
+e897cb8e-9151-427b-8d80-6f9ed2ad492e	true	id.token.claim
+e897cb8e-9151-427b-8d80-6f9ed2ad492e	true	access.token.claim
+e897cb8e-9151-427b-8d80-6f9ed2ad492e	auth_time	claim.name
+e897cb8e-9151-427b-8d80-6f9ed2ad492e	long	jsonType.label
+5bc594b2-c3b0-45e2-bc07-abf6cafcda1b	true	introspection.token.claim
+5bc594b2-c3b0-45e2-bc07-abf6cafcda1b	true	multivalued
+5bc594b2-c3b0-45e2-bc07-abf6cafcda1b	true	id.token.claim
+5bc594b2-c3b0-45e2-bc07-abf6cafcda1b	true	access.token.claim
+5bc594b2-c3b0-45e2-bc07-abf6cafcda1b	organization	claim.name
+5bc594b2-c3b0-45e2-bc07-abf6cafcda1b	String	jsonType.label
 a5f42024-b607-4292-b1d6-a9d4191bb4e8	true	introspection.token.claim
 a5f42024-b607-4292-b1d6-a9d4191bb4e8	true	multivalued
 a5f42024-b607-4292-b1d6-a9d4191bb4e8	true	userinfo.token.claim
@@ -10051,8 +10341,8 @@ fede70dd-d1c5-4408-a082-a5f0364195d6	String	jsonType.label
 --
 
 COPY public.realm (id, access_code_lifespan, user_action_lifespan, access_token_lifespan, account_theme, admin_theme, email_theme, enabled, events_enabled, events_expiration, login_theme, name, not_before, password_policy, registration_allowed, remember_me, reset_password_allowed, social, ssl_required, sso_idle_timeout, sso_max_lifespan, update_profile_on_soc_login, verify_email, master_admin_client, login_lifespan, internationalization_enabled, default_locale, reg_email_as_username, admin_events_enabled, admin_events_details_enabled, edit_username_allowed, otp_policy_counter, otp_policy_window, otp_policy_period, otp_policy_digits, otp_policy_alg, otp_policy_type, browser_flow, registration_flow, direct_grant_flow, reset_credentials_flow, client_auth_flow, offline_session_idle_timeout, revoke_refresh_token, access_token_life_implicit, login_with_email_allowed, duplicate_emails_allowed, docker_auth_flow, refresh_token_max_reuse, allow_user_managed_access, sso_max_lifespan_remember_me, sso_idle_timeout_remember_me, default_role) FROM stdin;
-be66634f-b27a-4e21-b03e-7d51f28d6003	60	300	60	\N	\N	\N	t	f	0	\N	master	0	\N	f	f	f	f	EXTERNAL	1800	36000	f	f	180fcf63-6d87-43c6-b197-dd94f05c8729	1800	f	\N	f	f	f	f	0	1	30	6	HmacSHA1	totp	a2cf13ed-cc0c-413f-b209-21a8c8a87df5	1625effa-abe8-4200-aa65-5459683dd456	f33c5374-9a64-4a7e-b141-16a1febc302f	20ce111d-5838-461c-bbb9-cc30748743a3	2b0e1adf-3f89-4051-96b9-26083951c3d0	2592000	f	900	t	f	063166ee-7d44-4327-90cc-a9c2f6aa3f4d	0	f	0	0	5ea353d2-033e-4026-88ca-d70ae17157cc
-83b6664d-539e-4bed-a376-685d50e40b98	60	300	300	\N	\N	\N	t	f	0	\N	loci-realm	0	\N	t	t	t	f	EXTERNAL	1800	36000	f	f	79444884-c5b7-42b8-a725-66aad65ac358	1800	f	\N	f	f	f	f	0	1	30	6	HmacSHA1	totp	801e570d-bc15-45e3-9f8e-afe9f8f28dec	8c356fe3-6843-440d-ac93-b4cc6352781f	d7b8234b-3d04-4263-ac07-79794e3fb8c0	2ec9ca75-4f99-43e9-816d-708c9a550838	05607ab5-8839-424c-b1e7-7f0ccad2063e	2592000	f	900	t	f	08caf47c-2dda-42d5-a33d-3df1271e703c	0	f	0	0	929392ee-0474-4ed0-a64e-9b0132025c91
+0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	60	300	60	\N	\N	\N	t	f	0	\N	master	0	\N	f	f	f	f	EXTERNAL	1800	36000	f	f	3716fee0-d082-40bc-9e2e-d67302c5c042	1800	f	\N	f	f	f	f	0	1	30	6	HmacSHA1	totp	07907b9f-74ca-4f75-ba91-91a33b29c614	c1d0978d-9ddc-4feb-8656-b1acd99fcb9b	d68fc02f-44bf-42f4-b8fe-8f87aaea2a49	0904b0d2-38b7-4bf6-85f8-5652eda9a3a1	d61fde5a-21c2-4f8a-b403-d3aa1a7c3900	2592000	f	900	t	f	3c097cb6-b0e4-4bf5-9381-83c3e1e41f95	0	f	0	0	69545a87-078a-4282-91ee-802c3c1c746a
+83b6664d-539e-4bed-a376-685d50e40b98	60	300	300	\N	\N	\N	t	f	0	\N	loci-realm	0	\N	t	t	t	f	EXTERNAL	1800	36000	f	f	d63e6c56-ea5d-4d57-b860-86482a42e25f	1800	f	\N	f	f	f	f	0	1	30	6	HmacSHA1	totp	801e570d-bc15-45e3-9f8e-afe9f8f28dec	8c356fe3-6843-440d-ac93-b4cc6352781f	d7b8234b-3d04-4263-ac07-79794e3fb8c0	2ec9ca75-4f99-43e9-816d-708c9a550838	05607ab5-8839-424c-b1e7-7f0ccad2063e	2592000	f	900	t	f	08caf47c-2dda-42d5-a33d-3df1271e703c	0	f	0	0	929392ee-0474-4ed0-a64e-9b0132025c91
 \.
 
 
@@ -10061,30 +10351,30 @@ be66634f-b27a-4e21-b03e-7d51f28d6003	60	300	60	\N	\N	\N	t	f	0	\N	master	0	\N	f	f
 --
 
 COPY public.realm_attribute (name, realm_id, value) FROM stdin;
-_browser_header.contentSecurityPolicyReportOnly	be66634f-b27a-4e21-b03e-7d51f28d6003	
-_browser_header.xContentTypeOptions	be66634f-b27a-4e21-b03e-7d51f28d6003	nosniff
-_browser_header.referrerPolicy	be66634f-b27a-4e21-b03e-7d51f28d6003	no-referrer
-_browser_header.xRobotsTag	be66634f-b27a-4e21-b03e-7d51f28d6003	none
-_browser_header.xFrameOptions	be66634f-b27a-4e21-b03e-7d51f28d6003	SAMEORIGIN
-_browser_header.contentSecurityPolicy	be66634f-b27a-4e21-b03e-7d51f28d6003	frame-src 'self'; frame-ancestors 'self'; object-src 'none';
-_browser_header.xXSSProtection	be66634f-b27a-4e21-b03e-7d51f28d6003	1; mode=block
-_browser_header.strictTransportSecurity	be66634f-b27a-4e21-b03e-7d51f28d6003	max-age=31536000; includeSubDomains
-bruteForceProtected	be66634f-b27a-4e21-b03e-7d51f28d6003	false
-permanentLockout	be66634f-b27a-4e21-b03e-7d51f28d6003	false
-maxTemporaryLockouts	be66634f-b27a-4e21-b03e-7d51f28d6003	0
-maxFailureWaitSeconds	be66634f-b27a-4e21-b03e-7d51f28d6003	900
-minimumQuickLoginWaitSeconds	be66634f-b27a-4e21-b03e-7d51f28d6003	60
-waitIncrementSeconds	be66634f-b27a-4e21-b03e-7d51f28d6003	60
-quickLoginCheckMilliSeconds	be66634f-b27a-4e21-b03e-7d51f28d6003	1000
-maxDeltaTimeSeconds	be66634f-b27a-4e21-b03e-7d51f28d6003	43200
-failureFactor	be66634f-b27a-4e21-b03e-7d51f28d6003	30
-realmReusableOtpCode	be66634f-b27a-4e21-b03e-7d51f28d6003	false
-firstBrokerLoginFlowId	be66634f-b27a-4e21-b03e-7d51f28d6003	38e7d14b-b4c0-49e9-95f8-f7d8be097883
-displayName	be66634f-b27a-4e21-b03e-7d51f28d6003	Keycloak
-displayNameHtml	be66634f-b27a-4e21-b03e-7d51f28d6003	<div class="kc-logo-text"><span>Keycloak</span></div>
-defaultSignatureAlgorithm	be66634f-b27a-4e21-b03e-7d51f28d6003	RS256
-offlineSessionMaxLifespanEnabled	be66634f-b27a-4e21-b03e-7d51f28d6003	false
-offlineSessionMaxLifespan	be66634f-b27a-4e21-b03e-7d51f28d6003	5184000
+_browser_header.contentSecurityPolicyReportOnly	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	
+_browser_header.xContentTypeOptions	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	nosniff
+_browser_header.referrerPolicy	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	no-referrer
+_browser_header.xRobotsTag	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	none
+_browser_header.xFrameOptions	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	SAMEORIGIN
+_browser_header.contentSecurityPolicy	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	frame-src 'self'; frame-ancestors 'self'; object-src 'none';
+_browser_header.xXSSProtection	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	1; mode=block
+_browser_header.strictTransportSecurity	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	max-age=31536000; includeSubDomains
+bruteForceProtected	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	false
+permanentLockout	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	false
+maxTemporaryLockouts	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	0
+maxFailureWaitSeconds	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	900
+minimumQuickLoginWaitSeconds	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	60
+waitIncrementSeconds	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	60
+quickLoginCheckMilliSeconds	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	1000
+maxDeltaTimeSeconds	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	43200
+failureFactor	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	30
+realmReusableOtpCode	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	false
+firstBrokerLoginFlowId	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	c6d5c95a-02df-435f-a91f-0e84f0837d41
+displayName	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	Keycloak
+displayNameHtml	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	<div class="kc-logo-text"><span>Keycloak</span></div>
+defaultSignatureAlgorithm	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	RS256
+offlineSessionMaxLifespanEnabled	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	false
+offlineSessionMaxLifespan	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	5184000
 _browser_header.contentSecurityPolicyReportOnly	83b6664d-539e-4bed-a376-685d50e40b98	
 _browser_header.xContentTypeOptions	83b6664d-539e-4bed-a376-685d50e40b98	nosniff
 _browser_header.referrerPolicy	83b6664d-539e-4bed-a376-685d50e40b98	no-referrer
@@ -10165,7 +10455,7 @@ COPY public.realm_enabled_event_types (realm_id, value) FROM stdin;
 --
 
 COPY public.realm_events_listeners (realm_id, value) FROM stdin;
-be66634f-b27a-4e21-b03e-7d51f28d6003	jboss-logging
+0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	jboss-logging
 83b6664d-539e-4bed-a376-685d50e40b98	jboss-logging
 \.
 
@@ -10183,7 +10473,7 @@ COPY public.realm_localizations (realm_id, locale, texts) FROM stdin;
 --
 
 COPY public.realm_required_credential (type, form_label, input, secret, realm_id) FROM stdin;
-password	password	t	t	be66634f-b27a-4e21-b03e-7d51f28d6003
+password	password	t	t	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9
 password	password	t	t	83b6664d-539e-4bed-a376-685d50e40b98
 \.
 
@@ -10209,9 +10499,9 @@ COPY public.realm_supported_locales (realm_id, value) FROM stdin;
 --
 
 COPY public.redirect_uris (client_id, value) FROM stdin;
-1738a449-92cf-4611-9eca-58023f662849	/realms/master/account/*
-cecdd714-967c-4e15-8875-b88d9b8fba0c	/realms/master/account/*
-990d6270-c329-4d6b-a770-51394bfee084	/admin/master/console/*
+1ff3074f-d7a0-43b7-b75c-523be33369ce	/realms/master/account/*
+0a647cec-fab1-4ccb-8b29-f3a76fd51749	/realms/master/account/*
+09dc476f-68fc-4768-a31f-85a3d4f9ff84	/admin/master/console/*
 cb847cf7-5d97-441b-b7dd-a6f1a47689a2	/realms/loci-realm/account/*
 1512bb33-3ef4-4dad-af1f-47081a2a75dc	/realms/loci-realm/account/*
 1946f9ea-72fe-4697-bf83-3dec92a8f8ee	http://192.168.1.21:4200/*
@@ -10237,28 +10527,28 @@ COPY public.required_action_config (required_action_id, value, name) FROM stdin;
 --
 
 COPY public.required_action_provider (id, alias, name, realm_id, enabled, default_action, provider_id, priority) FROM stdin;
-40a414a3-f1c3-49ee-9226-2d8dad6f1578	VERIFY_EMAIL	Verify Email	be66634f-b27a-4e21-b03e-7d51f28d6003	t	f	VERIFY_EMAIL	50
-eaaf2fc4-3c8b-49f7-b8b7-16dc51208eec	UPDATE_PROFILE	Update Profile	be66634f-b27a-4e21-b03e-7d51f28d6003	t	f	UPDATE_PROFILE	40
-adde5b86-1bff-4b1a-b4bd-620d986148eb	CONFIGURE_TOTP	Configure OTP	be66634f-b27a-4e21-b03e-7d51f28d6003	t	f	CONFIGURE_TOTP	10
-fd03ce5c-afbc-4045-82ca-784c17e4615a	UPDATE_PASSWORD	Update Password	be66634f-b27a-4e21-b03e-7d51f28d6003	t	f	UPDATE_PASSWORD	30
-c8462ce0-5c93-463d-b842-dd9b00936f37	TERMS_AND_CONDITIONS	Terms and Conditions	be66634f-b27a-4e21-b03e-7d51f28d6003	f	f	TERMS_AND_CONDITIONS	20
-9aa11111-de3e-490d-824d-d15c6f716e20	delete_account	Delete Account	be66634f-b27a-4e21-b03e-7d51f28d6003	f	f	delete_account	60
-7ad318eb-71eb-45ff-80c7-83e639d54979	delete_credential	Delete Credential	be66634f-b27a-4e21-b03e-7d51f28d6003	t	f	delete_credential	100
-4d074d13-d652-4bd9-b5d7-f384b70d8f08	update_user_locale	Update User Locale	be66634f-b27a-4e21-b03e-7d51f28d6003	t	f	update_user_locale	1000
-6b37da4f-2f88-419f-9c9a-cee4a14b1f65	webauthn-register	Webauthn Register	be66634f-b27a-4e21-b03e-7d51f28d6003	t	f	webauthn-register	70
-a0b48b20-9a95-4920-b4d4-c38a835645c3	webauthn-register-passwordless	Webauthn Register Passwordless	be66634f-b27a-4e21-b03e-7d51f28d6003	t	f	webauthn-register-passwordless	80
-7eff3ca5-eedb-466e-82d9-0a5ac3fa6fac	VERIFY_PROFILE	Verify Profile	be66634f-b27a-4e21-b03e-7d51f28d6003	t	f	VERIFY_PROFILE	90
-07d121c7-fda3-4068-890a-b5341da67f9c	CONFIGURE_TOTP	Configure OTP	83b6664d-539e-4bed-a376-685d50e40b98	t	f	CONFIGURE_TOTP	10
-beb170dd-c62a-4cef-874c-4ceab3cc7cbe	TERMS_AND_CONDITIONS	Terms and Conditions	83b6664d-539e-4bed-a376-685d50e40b98	f	f	TERMS_AND_CONDITIONS	20
-bae1eff7-dae3-4c7a-b7a3-6fdd5f11bd8b	UPDATE_PASSWORD	Update Password	83b6664d-539e-4bed-a376-685d50e40b98	t	f	UPDATE_PASSWORD	30
-09a5a3b4-6d4b-4240-9ed2-51d0b179bc07	UPDATE_PROFILE	Update Profile	83b6664d-539e-4bed-a376-685d50e40b98	t	f	UPDATE_PROFILE	40
-c662f925-69a4-4977-b926-9c88032d9602	VERIFY_EMAIL	Verify Email	83b6664d-539e-4bed-a376-685d50e40b98	t	f	VERIFY_EMAIL	50
-4f9fd06b-4246-44f7-9ab6-08ae4e89fd85	delete_account	Delete Account	83b6664d-539e-4bed-a376-685d50e40b98	f	f	delete_account	60
-e912a68d-b836-4799-b443-334177254d17	webauthn-register	Webauthn Register	83b6664d-539e-4bed-a376-685d50e40b98	t	f	webauthn-register	70
-fbaf0d1b-920d-47e1-ab59-461feff890b5	webauthn-register-passwordless	Webauthn Register Passwordless	83b6664d-539e-4bed-a376-685d50e40b98	t	f	webauthn-register-passwordless	80
-9b088471-deb2-4377-9dbd-b952a8d1bd94	VERIFY_PROFILE	Verify Profile	83b6664d-539e-4bed-a376-685d50e40b98	t	f	VERIFY_PROFILE	90
-f9539c96-9e6e-498e-9de2-0a5a4d02ac0a	delete_credential	Delete Credential	83b6664d-539e-4bed-a376-685d50e40b98	t	f	delete_credential	100
-6922d5bb-4ff0-44b3-bcde-708417084e62	update_user_locale	Update User Locale	83b6664d-539e-4bed-a376-685d50e40b98	t	f	update_user_locale	1000
+8f1765bc-ffde-4a48-add2-0b2c93b60d5a	VERIFY_EMAIL	Verify Email	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	t	f	VERIFY_EMAIL	50
+39448329-5793-444e-8a28-8cc539f3e1e7	UPDATE_PROFILE	Update Profile	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	t	f	UPDATE_PROFILE	40
+3b24c965-91eb-4825-be51-e22153829b76	CONFIGURE_TOTP	Configure OTP	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	t	f	CONFIGURE_TOTP	10
+55660b3e-7b64-420d-967c-6a6418d3d957	UPDATE_PASSWORD	Update Password	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	t	f	UPDATE_PASSWORD	30
+342395c3-3d2e-446e-82cb-f965a0ae808a	TERMS_AND_CONDITIONS	Terms and Conditions	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	f	f	TERMS_AND_CONDITIONS	20
+c9afb28e-a7de-418a-b7e9-18016d66c933	delete_account	Delete Account	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	f	f	delete_account	60
+825049d3-48d8-4d8a-8ec2-e62d2aef486d	delete_credential	Delete Credential	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	t	f	delete_credential	100
+d6e86ca2-489e-4b93-97e9-f91252f94ae5	update_user_locale	Update User Locale	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	t	f	update_user_locale	1000
+081838f9-9176-48ab-845c-c18bbc5e03ba	webauthn-register	Webauthn Register	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	t	f	webauthn-register	70
+9094d1d6-d5df-42c0-a60b-b8cd10e54e4f	webauthn-register-passwordless	Webauthn Register Passwordless	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	t	f	webauthn-register-passwordless	80
+f3484c34-319c-412b-9b57-f7646f42142d	VERIFY_PROFILE	Verify Profile	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	t	f	VERIFY_PROFILE	90
+eafe801f-5231-4f9b-ba86-63d5df4fa404	CONFIGURE_TOTP	Configure OTP	83b6664d-539e-4bed-a376-685d50e40b98	t	f	CONFIGURE_TOTP	10
+077d0b33-df5b-462d-858c-35653c62b33b	TERMS_AND_CONDITIONS	Terms and Conditions	83b6664d-539e-4bed-a376-685d50e40b98	f	f	TERMS_AND_CONDITIONS	20
+0880f915-7289-49c6-8746-63412977000c	UPDATE_PASSWORD	Update Password	83b6664d-539e-4bed-a376-685d50e40b98	t	f	UPDATE_PASSWORD	30
+19d57ebe-0544-435f-ae25-041601ec863b	UPDATE_PROFILE	Update Profile	83b6664d-539e-4bed-a376-685d50e40b98	t	f	UPDATE_PROFILE	40
+3f6bff25-020d-40ad-ac5b-ab48d1d153b8	VERIFY_EMAIL	Verify Email	83b6664d-539e-4bed-a376-685d50e40b98	t	f	VERIFY_EMAIL	50
+24f2fcd9-fb25-4c05-9acf-c0270204e3ba	delete_account	Delete Account	83b6664d-539e-4bed-a376-685d50e40b98	f	f	delete_account	60
+6b0dd2bf-7007-4b50-b8fa-372b0279b8fa	webauthn-register	Webauthn Register	83b6664d-539e-4bed-a376-685d50e40b98	t	f	webauthn-register	70
+19fe44cb-f129-48be-965e-fe290a88c90f	webauthn-register-passwordless	Webauthn Register Passwordless	83b6664d-539e-4bed-a376-685d50e40b98	t	f	webauthn-register-passwordless	80
+4e925b48-6be2-42b0-8ad0-f0f1f49a622d	VERIFY_PROFILE	Verify Profile	83b6664d-539e-4bed-a376-685d50e40b98	t	f	VERIFY_PROFILE	90
+a39b1471-3bfa-4096-a758-e217c8e2c225	delete_credential	Delete Credential	83b6664d-539e-4bed-a376-685d50e40b98	t	f	delete_credential	100
+ca32f927-2b4d-4dca-928c-e7ee9ddeb601	update_user_locale	Update User Locale	83b6664d-539e-4bed-a376-685d50e40b98	t	f	update_user_locale	1000
 \.
 
 
@@ -10355,8 +10645,8 @@ COPY public.role_attribute (id, role_id, name, value) FROM stdin;
 --
 
 COPY public.scope_mapping (client_id, role_id) FROM stdin;
-cecdd714-967c-4e15-8875-b88d9b8fba0c	9cbb4c10-20d6-42a4-b09c-7132659c9039
-cecdd714-967c-4e15-8875-b88d9b8fba0c	232e160e-a55f-4b49-9bd6-971fea97a290
+0a647cec-fab1-4ccb-8b29-f3a76fd51749	f5f5d47e-8316-47bf-b479-3cfea07ea5c2
+0a647cec-fab1-4ccb-8b29-f3a76fd51749	37c8c5df-f92b-4418-9880-60fd24478c83
 1512bb33-3ef4-4dad-af1f-47081a2a75dc	cd9c2212-1347-472e-8e9f-20be2bfc2ec2
 1512bb33-3ef4-4dad-af1f-47081a2a75dc	710ed846-759e-45bc-afa4-bb5ef183d08c
 \.
@@ -10415,7 +10705,9 @@ COPY public.user_ (created_date, id, last_active, last_modified_date, public_id,
 2025-04-24 20:18:51.969497+00	40	2025-07-13 14:52:38.857086+00	2025-04-24 20:18:51.969497+00	5ea8e3d4-8882-4395-85c5-1eb497aaac37	Miss give best reveal laugh. Feel special boy support. Quality clearly worker during.	gabriel90@example.net	Tonya	Byrd	https://api.dicebear.com/7.x/notionists/svg?scale=200&seed=3433	rodriguezjohn364
 2026-01-12 07:51:45.447194+00	32	2026-01-13 04:53:50.595567+00	2026-02-05 03:47:06.750932+00	c1208c9f-0b1d-4514-9346-98c9af384cfc	Even no even body scientist dream anything. Difficult do beyond form line race case.	angela34@example.com	Vaughn	Janet	https://api.dicebear.com/7.x/notionists/svg?scale=200&seed=1140	chelsea33722
 2026-02-05 06:33:51.899014+00	42	2026-02-05 06:33:51.658776+00	2026-02-05 06:33:51.899014+00	98bdd123-513e-4fbe-b69a-28388007cf83	\N	testuser1@gmail.com	kien	trung	https://api.dicebear.com/7.x/notionists/svg?scale=200&seed=916	testuser1
-2025-12-12 14:24:09.937685+00	10	2025-12-16 14:15:58.163275+00	2026-02-05 06:46:40.39326+00	e8fe4a7f-619c-4d14-a25f-fe3de4b90549	Notice image street fight decision size parent focus. Kind degree list top somebody college.	cruzbarbara@example.com	Graham 	Bradley	https://api.dicebear.com/7.x/notionists/svg?scale=200&seed=9864	jessica56518
+2026-03-16 10:14:57.359829+00	43	2026-03-16 10:14:57.32585+00	2026-03-16 10:14:57.359829+00	b78fbeee-da3d-40fe-8b61-fd1fe22ac071	\N	alaina.goyette@gmail.com	Schamberger	Janean	https://api.dicebear.com/7.x/notionists/svg?scale=200&seed=75	alaina.goyette@gmail.com
+2026-03-17 08:18:45.857594+00	46	2026-03-17 08:18:45.842609+00	2026-03-17 08:18:45.857594+00	15dab576-86ed-43e2-946e-95440d1dda96	\N	bryon.reilly@yahoo.com	Goldner	Junita	https://api.dicebear.com/7.x/notionists/svg?scale=200&seed=733	bryon.reilly@yahoo.com
+2025-12-12 14:24:09.937685+00	10	2025-12-16 14:15:58.163275+00	2026-02-05 06:46:40.39326+00	e8fe4a7f-619c-4d14-a25f-fe3de4b90549	Notice image street fight decision size parent focus. Kind degree list top somebody college.	cruzbarbara@example.com	Graham 	Bradley	https://api.dicebear.com/7.x/notionists/svg?scale=200&seed=9863	jessica56518
 \.
 
 
@@ -10424,7 +10716,7 @@ COPY public.user_ (created_date, id, last_active, last_modified_date, public_id,
 --
 
 COPY public.user_attribute (name, value, user_id, id, long_value_hash, long_value_hash_lower_case, long_value) FROM stdin;
-is_temporary_admin	true	a94e5bd9-0766-48c7-aa6d-0b4a5010da14	535ff267-8e69-4636-b4b6-e650e2f57756	\N	\N	\N
+is_temporary_admin	true	4aed1f3e-884c-47f0-921a-4ca32c3d4a6b	d4925829-f830-47ab-9cea-5653fa688b5e	\N	\N	\N
 \.
 
 
@@ -10483,6 +10775,14 @@ COPY public.user_authority (user_id, authority_name) FROM stdin;
 10	ROLE_default-roles-loci-realm
 10	ROLE_uma_authorization
 10	ROLE_offline_access
+43	ROLE_default-roles-loci-realm
+43	ROLE_uma_authorization
+43	ROLE_user
+43	ROLE_offline_access
+46	ROLE_default-roles-loci-realm
+46	ROLE_uma_authorization
+46	ROLE_user
+46	ROLE_offline_access
 \.
 
 
@@ -10510,6 +10810,7 @@ COPY public.user_entity (id, email, email_constraint, email_verified, enabled, f
 8a98e8b9-37ff-4a89-b8d8-a7e4d45d4f1e	alaina.goyette@gmail.com	alaina.goyette@gmail.com	t	t	\N	Janean	Schamberger	83b6664d-539e-4bed-a376-685d50e40b98	alaina.goyette@gmail.com	1764321071537	\N	0
 09ef75b6-5d8f-443f-ab88-1e6e4fdd09a0	bryon.reilly@yahoo.com	bryon.reilly@yahoo.com	t	t	\N	Junita	Goldner	83b6664d-539e-4bed-a376-685d50e40b98	bryon.reilly@yahoo.com	1764321071055	\N	0
 e0f4cddc-281e-48f7-8ca7-6dbbd0c0a96a	cedric.rau@yahoo.com	cedric.rau@yahoo.com	t	t	\N	Hong	Hammes	83b6664d-539e-4bed-a376-685d50e40b98	cedric.rau@yahoo.com	1764321074165	\N	0
+2aa6f4d9-a114-4da6-9399-85faf256854e	angela34@example.com	angela34@example.com	f	t	\N	Janet	Vaughn	83b6664d-539e-4bed-a376-685d50e40b98	chelsea33722	1770263007441	\N	0
 a03e7f08-f0c7-4c40-97d6-e3bff7d00057	corazon.quigley@gmail.com	corazon.quigley@gmail.com	t	t	\N	Dorene	Brekke	83b6664d-539e-4bed-a376-685d50e40b98	corazon.quigley@gmail.com	1764321071300	\N	0
 8c2bd715-2950-4ad6-a43b-7d75874ed33d	earle.wilderman@yahoo.com	earle.wilderman@yahoo.com	t	t	\N	Tory	Bradtke	83b6664d-539e-4bed-a376-685d50e40b98	earle.wilderman@yahoo.com	1764321071770	\N	0
 9d478593-8658-473d-9f6a-cfb8530385b3	eugenie.goldner@gmail.com	eugenie.goldner@gmail.com	t	t	\N	Davida	Weimann	83b6664d-539e-4bed-a376-685d50e40b98	eugenie.goldner@gmail.com	1764321070817	\N	0
@@ -10518,6 +10819,7 @@ b1e6055e-734d-4367-8330-975869b72a10	fanny.jakubowski@gmail.com	fanny.jakubowski
 a8973d47-25d6-4904-ab93-4b30aac43dba	glady.conn@yahoo.com	glady.conn@yahoo.com	t	t	\N	Fatima	Hessel	83b6664d-539e-4bed-a376-685d50e40b98	glady.conn@yahoo.com	1764321072001	\N	0
 a50fc325-a397-4f18-bb31-75cc1191ffa8	halley.balistreri@gmail.com	halley.balistreri@gmail.com	t	t	\N	Jaquelyn	Collier	83b6664d-539e-4bed-a376-685d50e40b98	halley.balistreri@gmail.com	1764321073905	\N	0
 32ca4097-7490-4a9a-aecf-8c948a2a0e41	jae.koch@yahoo.com	jae.koch@yahoo.com	t	t	\N	Sage	Graham	83b6664d-539e-4bed-a376-685d50e40b98	jae.koch@yahoo.com	1764321074615	\N	0
+1639b859-d3af-4555-b69e-796c1b1c34e3	cruzbarbara@example.com	cruzbarbara@example.com	f	t	\N	Bradley	Graham 	83b6664d-539e-4bed-a376-685d50e40b98	jessica56518	1770273950585	\N	0
 cf8665b4-ef04-45b5-9b90-b3864e58e0ff	jung.heidenreich@gmail.com	jung.heidenreich@gmail.com	t	t	\N	Galen	Beier	83b6664d-539e-4bed-a376-685d50e40b98	jung.heidenreich@gmail.com	1764321072681	\N	0
 8ad53006-5ab5-45fb-84c0-497a6424d782	kittie.hackett@yahoo.com	kittie.hackett@yahoo.com	t	t	\N	Caroline	Doyle	83b6664d-539e-4bed-a376-685d50e40b98	kittie.hackett@yahoo.com	1764321073662	\N	0
 7b0afce6-4207-467a-9e67-e013d8f70566	kourtney.ohara@yahoo.com	kourtney.ohara@yahoo.com	t	t	\N	Missy	Purdy	83b6664d-539e-4bed-a376-685d50e40b98	kourtney.ohara@yahoo.com	1764321072951	\N	0
@@ -10528,9 +10830,7 @@ ce35d0b0-2a72-4a57-8fac-dcb8348f4c41	nestor.cartwright@yahoo.com	nestor.cartwrig
 27e24793-eb80-4ba8-9ace-95f432ca5199	sydney.mclaughlin@hotmail.com	sydney.mclaughlin@hotmail.com	t	t	\N	Ricky	Skiles	83b6664d-539e-4bed-a376-685d50e40b98	sydney.mclaughlin@hotmail.com	1764321072456	\N	0
 cd2e474a-f099-4cce-ac9f-4d047fd00a01	testuser1@gmail.com	testuser1@gmail.com	f	t	\N	trung	kien	83b6664d-539e-4bed-a376-685d50e40b98	testuser1	1764321439014	\N	0
 4c8aa205-60a4-4caf-8b62-34777a9784dc	ulysses.barrows@gmail.com	ulysses.barrows@gmail.com	t	t	\N	Loreta	Beer	83b6664d-539e-4bed-a376-685d50e40b98	ulysses.barrows@gmail.com	1764321072228	\N	0
-a94e5bd9-0766-48c7-aa6d-0b4a5010da14	\N	250e276c-a260-430f-b5c0-26c51617a6d3	f	t	\N	\N	\N	be66634f-b27a-4e21-b03e-7d51f28d6003	admin	1770262752469	\N	0
-2aa6f4d9-a114-4da6-9399-85faf256854e	angela34@example.com	angela34@example.com	f	t	\N	Janet	Vaughn	83b6664d-539e-4bed-a376-685d50e40b98	chelsea33722	1770263007441	\N	0
-1639b859-d3af-4555-b69e-796c1b1c34e3	cruzbarbara@example.com	cruzbarbara@example.com	f	t	\N	Bradley	Graham 	83b6664d-539e-4bed-a376-685d50e40b98	jessica56518	1770273950585	\N	0
+4aed1f3e-884c-47f0-921a-4ca32c3d4a6b	\N	05f4642b-0d0e-466e-bee4-3fdc6b8fedc7	f	t	\N	\N	\N	0e1741a1-6eba-4a3a-abf2-239bc29f7fa9	admin	1773636321580	\N	0
 \.
 
 
@@ -10590,6 +10890,7 @@ COPY public.user_role_mapping (role_id, user_id) FROM stdin;
 929392ee-0474-4ed0-a64e-9b0132025c91	8a98e8b9-37ff-4a89-b8d8-a7e4d45d4f1e
 929392ee-0474-4ed0-a64e-9b0132025c91	09ef75b6-5d8f-443f-ab88-1e6e4fdd09a0
 929392ee-0474-4ed0-a64e-9b0132025c91	e0f4cddc-281e-48f7-8ca7-6dbbd0c0a96a
+929392ee-0474-4ed0-a64e-9b0132025c91	2aa6f4d9-a114-4da6-9399-85faf256854e
 929392ee-0474-4ed0-a64e-9b0132025c91	a03e7f08-f0c7-4c40-97d6-e3bff7d00057
 929392ee-0474-4ed0-a64e-9b0132025c91	8c2bd715-2950-4ad6-a43b-7d75874ed33d
 929392ee-0474-4ed0-a64e-9b0132025c91	9d478593-8658-473d-9f6a-cfb8530385b3
@@ -10598,6 +10899,7 @@ COPY public.user_role_mapping (role_id, user_id) FROM stdin;
 929392ee-0474-4ed0-a64e-9b0132025c91	a8973d47-25d6-4904-ab93-4b30aac43dba
 929392ee-0474-4ed0-a64e-9b0132025c91	a50fc325-a397-4f18-bb31-75cc1191ffa8
 929392ee-0474-4ed0-a64e-9b0132025c91	32ca4097-7490-4a9a-aecf-8c948a2a0e41
+929392ee-0474-4ed0-a64e-9b0132025c91	1639b859-d3af-4555-b69e-796c1b1c34e3
 929392ee-0474-4ed0-a64e-9b0132025c91	cf8665b4-ef04-45b5-9b90-b3864e58e0ff
 929392ee-0474-4ed0-a64e-9b0132025c91	8ad53006-5ab5-45fb-84c0-497a6424d782
 929392ee-0474-4ed0-a64e-9b0132025c91	7b0afce6-4207-467a-9e67-e013d8f70566
@@ -10608,10 +10910,8 @@ COPY public.user_role_mapping (role_id, user_id) FROM stdin;
 929392ee-0474-4ed0-a64e-9b0132025c91	27e24793-eb80-4ba8-9ace-95f432ca5199
 929392ee-0474-4ed0-a64e-9b0132025c91	cd2e474a-f099-4cce-ac9f-4d047fd00a01
 929392ee-0474-4ed0-a64e-9b0132025c91	4c8aa205-60a4-4caf-8b62-34777a9784dc
-5ea353d2-033e-4026-88ca-d70ae17157cc	a94e5bd9-0766-48c7-aa6d-0b4a5010da14
-43d6e07f-425c-4e22-a520-fec4553c67f7	a94e5bd9-0766-48c7-aa6d-0b4a5010da14
-929392ee-0474-4ed0-a64e-9b0132025c91	2aa6f4d9-a114-4da6-9399-85faf256854e
-929392ee-0474-4ed0-a64e-9b0132025c91	1639b859-d3af-4555-b69e-796c1b1c34e3
+69545a87-078a-4282-91ee-802c3c1c746a	4aed1f3e-884c-47f0-921a-4ca32c3d4a6b
+c6db3fe2-addb-424c-94bf-964ce7aea7a1	4aed1f3e-884c-47f0-921a-4ca32c3d4a6b
 \.
 
 
@@ -10661,6 +10961,8 @@ t	2026-02-05 10:42:02.988311+00	2026-02-05 10:42:02.988314+00	38	EVERYONE	NOBODY
 t	2026-02-05 10:42:02.988317+00	2026-02-05 10:42:02.98832+00	39	NOBODY	EVERYONE
 t	2026-02-05 10:42:02.988324+00	2026-02-05 10:42:02.988326+00	40	NOBODY	NOBODY
 t	2026-02-05 06:33:52.000417+00	2026-02-05 06:33:52.000417+00	42	EVERYONE	EVERYONE
+t	2026-03-16 10:14:57.424451+00	2026-03-16 10:14:57.424451+00	43	EVERYONE	EVERYONE
+t	2026-03-17 08:18:45.882036+00	2026-03-17 08:18:45.882036+00	46	EVERYONE	EVERYONE
 \.
 
 
@@ -10677,7 +10979,7 @@ COPY public.username_login_failure (realm_id, username, failed_login_not_before,
 --
 
 COPY public.web_origins (client_id, value) FROM stdin;
-990d6270-c329-4d6b-a770-51394bfee084	+
+09dc476f-68fc-4768-a31f-85a3d4f9ff84	+
 1946f9ea-72fe-4697-bf83-3dec92a8f8ee	*
 d004af51-9d2e-47d3-9340-a3a411f42029	
 d004af51-9d2e-47d3-9340-a3a411f42029	http://localhost:8080/
@@ -10690,42 +10992,42 @@ e85deedd-b2fb-47d3-acef-508423a77f22	http://localhost:8080
 -- Name: contact_request_sequence; Type: SEQUENCE SET; Schema: public; Owner: admin
 --
 
-SELECT pg_catalog.setval('public.contact_request_sequence', 3, true);
+SELECT pg_catalog.setval('public.contact_request_sequence', 7, true);
 
 
 --
 -- Name: contact_sequence; Type: SEQUENCE SET; Schema: public; Owner: admin
 --
 
-SELECT pg_catalog.setval('public.contact_sequence', 202, true);
+SELECT pg_catalog.setval('public.contact_sequence', 204, true);
 
 
 --
 -- Name: conversation_participant_sequence; Type: SEQUENCE SET; Schema: public; Owner: admin
 --
 
-SELECT pg_catalog.setval('public.conversation_participant_sequence', 396, true);
+SELECT pg_catalog.setval('public.conversation_participant_sequence', 413, true);
 
 
 --
 -- Name: conversation_sequence; Type: SEQUENCE SET; Schema: public; Owner: admin
 --
 
-SELECT pg_catalog.setval('public.conversation_sequence', 198, true);
+SELECT pg_catalog.setval('public.conversation_sequence', 203, true);
 
 
 --
 -- Name: group_sequence; Type: SEQUENCE SET; Schema: public; Owner: admin
 --
 
-SELECT pg_catalog.setval('public.group_sequence', 1, false);
+SELECT pg_catalog.setval('public.group_sequence', 3, true);
 
 
 --
 -- Name: message_sequence; Type: SEQUENCE SET; Schema: public; Owner: admin
 --
 
-SELECT pg_catalog.setval('public.message_sequence', 5693, true);
+SELECT pg_catalog.setval('public.message_sequence', 5813, true);
 
 
 --
@@ -10739,7 +11041,7 @@ SELECT pg_catalog.setval('public.notification_sequence', 1, false);
 -- Name: user_sequence; Type: SEQUENCE SET; Schema: public; Owner: admin
 --
 
-SELECT pg_catalog.setval('public.user_sequence', 42, true);
+SELECT pg_catalog.setval('public.user_sequence', 46, true);
 
 
 --
@@ -13054,5 +13356,5 @@ ALTER TABLE ONLY public.contact_request
 -- PostgreSQL database dump complete
 --
 
-\unrestrict 5FUkHhi3BeWTdgsOMJ5dzrppwCePfeVLYtdPkwSa1uBdsKc6uxQi4Twkr8wjVY8
+\unrestrict 5dieaXYuUgrAplz85rxto7DV2cv0Mbl7mJZXfschbB7CBkR3Nd8F4BU6VeOi0gM
 

@@ -490,6 +490,16 @@ export class GroupConversation implements OnInit {
     this.observeIncomingMessages();
   }
 
+  sendAndTrackingNewMessage(dto: ISendMessageRequest) {
+    return this.chatApiService.group
+      .sendMessage(dto)
+      .pipe(
+        tap(message => {
+          this.chatListState.onMessageSending(message);
+        }),
+        takeUntilDestroyed(this.destroyRef)
+      )
+  }
   onSendMessage(req: ISendMessageData): void {
     const conversationId = this.conversationId;
     if (!conversationId) return;
@@ -498,8 +508,7 @@ export class GroupConversation implements OnInit {
 
     const requestMessage: ISendMessageRequest = { conversationId: conversationId, content: req.content, type: 'text' };
     this.logger.debug("send message with request {}", requestMessage);
-    this.chatApiService.group
-      .sendMessage(requestMessage)
+    this.sendAndTrackingNewMessage(requestMessage)
       .pipe(
         tap(sent => sent && this.state.addMessage(sent)),
         catchError(error => {
@@ -537,8 +546,7 @@ export class GroupConversation implements OnInit {
       .pipe(
         switchMap(attachment => {
           if (!attachment) throw new Error('Upload returned no data');
-          return this.chatApiService.group
-            .sendMessage({ conversationId: groupId, type: attachment.messageType, attachment })
+          return this.sendAndTrackingNewMessage({ conversationId: groupId, type: attachment.messageType, attachment })
             .pipe(
               tap(sent => sent && this.state.addMessage({
                 ...sent,

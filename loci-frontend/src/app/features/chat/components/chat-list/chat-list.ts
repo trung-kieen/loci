@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { ChatFilter } from '../../models/chat.model';
 import { CommonModule, TitleCasePipe } from '@angular/common';
@@ -23,6 +23,8 @@ import { MessageTimePipe } from '../../pipe/message-time.pipe';
 import { MessageStateIndicator } from '../shared/message-state-indicator/message-state-indicator';
 import { ConversationApi } from '../../service/conversation-api.service';
 import { ChatListState } from './chat-list.state';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { tap } from 'rxjs';
 
 
 
@@ -36,6 +38,7 @@ export class ChatList implements OnInit {
   private router = inject(Router);
 
   protected readonly chatListState = inject(ChatListState);
+  private readonly destroyRef = inject(DestroyRef);
   private readonly chatApi = inject(ConversationApi);
 
   // Expose computed signals as direct template bindings
@@ -49,11 +52,11 @@ export class ChatList implements OnInit {
 
   ngOnInit(): void {
     this.chatListState.load();
-    this.chatApi.onReceiveNewMessage().subscribe({
-      next: message => {
-        this.chatListState.onMessageReceived(message);
-      }
-    })
+    this.chatApi.onReceiveNewMessage().pipe(
+      takeUntilDestroyed(this.destroyRef),
+    ).subscribe(message => {
+      this.chatListState.onMessageReceived(message);
+    });
   }
 
   onSearch(event: Event): void {

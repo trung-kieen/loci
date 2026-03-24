@@ -48,7 +48,7 @@ import { MessageBubble } from '../shared/message-bubble/message-bubble';
 import { ISendMessageData, MessageInput } from '../shared/message-input/message-input';
 import { ErrorAlert } from '../shared/error-alert/error-alert';
 import { ChatInfo, IChatError } from '../../models/chat.model';
-import { IAttachment, IConversationMessage, IMarkMessageSeenRequest, IMessage, IMessageSeenEvent } from '../../models/message.model';
+import { IAttachment, IConversationMessage, IMarkMessageSeenRequest, IMessage, IMessageSeenEvent, ISendMessageRequest } from '../../models/message.model';
 import { FriendshipStatus } from '../../../contact/models/contact.model';
 import { LoggerService } from '../../../../core/services/logger.service';
 import { ChatListState } from '../chat-list/chat-list.state';
@@ -407,8 +407,7 @@ export class DirectConversation implements OnInit {
 
     this.state.setSendingMessage(true);
 
-    this.chatApiService.direct
-      .sendMessage({ conversationId, content: req.content, type: 'text' })
+    this.sendAndTrackingNewMessage({ conversationId, content: req.content, type: 'text' })
       .pipe(
         tap(sent => sent && this.state.addMessage(sent)),
         catchError(error => {
@@ -421,6 +420,15 @@ export class DirectConversation implements OnInit {
         takeUntilDestroyed(this.destroyRef)
       )
       .subscribe();
+  }
+  sendAndTrackingNewMessage(dto: ISendMessageRequest) {
+    return this.chatApiService.direct.sendMessage(dto)
+      .pipe(
+        tap(message => {
+          this.chatListStateService.onMessageSending(message);
+        }),
+        takeUntilDestroyed(this.destroyRef)
+      );
   }
 
   onFileSelected(req: { file: File; type: 'file' }): void {
@@ -438,8 +446,7 @@ export class DirectConversation implements OnInit {
       .pipe(
         switchMap(attachment => {
           if (!attachment) throw new Error('Upload returned no data');
-          return this.chatApiService.direct
-            .sendMessage({ conversationId, type: attachment.messageType, attachment })
+          return this.sendAndTrackingNewMessage({ conversationId, type: attachment.messageType, attachment })
             .pipe(
               tap(sent => sent && this.state.addMessage({
                 ...sent,
