@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject, effect, computed } from '@angular/core';
 import { Router } from '@angular/router';
 import { KeycloakAuthenticationManager } from '../../../core/auth/keycloak-auth-manager';
 import { PresenceApi } from '../../../features/user/services/presence.api';
+import { ChatListState } from '../../../features/chat/components/chat-list/chat-list.state';
 
 // Updated interface to support positioning
 interface NavItem {
@@ -40,13 +41,14 @@ interface NavItem {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Sidebar {
+  private chatListState = inject(ChatListState);
+  readonly unreadCount = this.chatListState.unreadConversationCount;
   onSearch() {
     throw new Error('Method not implemented.');
   }
   searchQuery = '';
 
-  menuItems: NavItem[] = [
-    // Core Features - Ordered by priority
+  readonly menuItems = computed(() => [
     {
       label: 'My Profile',
       icon: 'fa-circle-user',
@@ -57,7 +59,7 @@ export class Sidebar {
       label: 'Chat',
       icon: 'fa-comments',
       route: '/chat',
-      badge: 3, // Unread conversations count from ChatList
+      badge: this.unreadCount(),
       badgeColor: 'primary'
     },
     {
@@ -72,12 +74,6 @@ export class Sidebar {
       route: '/contact/friends',
       tooltip: ''
     },
-    // {
-    //   label: 'Friends',
-    //   icon: 'fa-user-friends',
-    //   route: '/contact/friends',
-    //   tooltip: 'Manager your friends'
-    // },
     {
       label: 'Blocks',
       icon: 'fa-ban',
@@ -88,26 +84,17 @@ export class Sidebar {
       label: 'Notifications',
       icon: 'fa-bell',
       route: '/notifications',
-      badge: 5, // New notifications count
+      badge: 5, // Keep static or make reactive similarly
       badgeColor: 'accent'
     },
-
-    // Secondary Actions - Typically at bottom of sidebar
+    // Secondary Actions
     {
       label: 'Settings',
       icon: 'fa-gear',
       route: '/user/settings',
       position: 'bottom'
     },
-    // {
-    //   label: 'Logout',
-    //   icon: 'fa-right-from-bracket',
-    //   route: '/logout',
-    //   color: 'warn',
-    //   position: 'bottom',
-    //   separator: true // Add visual divider above
-    // }
-  ];
+  ]);
 
 
   private presenceApi = inject(PresenceApi);

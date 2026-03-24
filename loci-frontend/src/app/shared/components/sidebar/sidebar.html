@@ -20,46 +20,35 @@
 -->
 <aside class="h-full bg-white border-r border-neutral-200 flex flex-col">
 
-  <!-- Search bar -->
-  <!-- <div class="flex-shrink-0 p-4"> -->
-  <!--   <div class="relative"> -->
-  <!--     <input -->
-  <!--       type="text" -->
-  <!--       placeholder="Search..." -->
-  <!--       class="w-full pl-10 pr-4 py-2 border border-neutral-200 rounded-lg -->
-  <!--              focus:outline-none focus:ring-2 focus:ring-neutral-500 text-sm" -->
-  <!--     /> -->
-  <!--     <i class="fa-solid fa-search absolute left-3 top-1/2 transform -translate-y-1/2 -->
-  <!--               text-neutral-400 text-sm"></i> -->
-  <!--   </div> -->
-  <!-- </div> -->
-
   <!-- Navigation menu -->
   <nav class="pt-20 flex-1 px-4 overflow-y-auto">
     <ul class="space-y-1">
-      <li *ngFor="let item of menuItems; trackBy: trackByRoute">
-        <a
-          [routerLink]="item.route"
-          routerLinkActive="bg-neutral-100 text-neutral-900"
-          [routerLinkActiveOptions]="{ exact: false }"
-          class="flex items-center space-x-3 px-3 py-2.5 rounded-lg
-                 hover:bg-neutral-50 cursor-pointer transition-colors
-                 text-neutral-700 group"
-        >
-          <i
-            class="fa-solid {{ item.icon }} text-neutral-600 w-5 text-center
-                   group-hover:text-neutral-700"
-          ></i>
-          <span class="flex-1 text-sm font-medium">{{ item.label }}</span>
+      @for (item of menuItems(); track item.route) {
+        <li>
+          <a
+            [routerLink]="item.route"
+            routerLinkActive="bg-neutral-100 text-neutral-900"
+            [routerLinkActiveOptions]="{ exact: false }"
+            class="flex items-center space-x-3 px-3 py-2.5 rounded-lg
+                   hover:bg-neutral-50 cursor-pointer transition-colors
+                   text-neutral-700 group"
+          >
+            <i
+              class="fa-solid {{ item.icon }} text-neutral-600 w-5 text-center
+                     group-hover:text-neutral-700"
+            ></i>
+            <span class="flex-1 text-sm font-medium">{{ item.label }}</span>
 
-          @if (item.badge) {
-            <span class="bg-red-500 text-white text-xs rounded-full
-                         px-2 py-0.5 font-medium min-w-[20px] text-center">
-              {{ item.badge }}
-            </span>
-          }
-        </a>
-      </li>
+            @if (item.badge) {
+              <span
+                [class]="'text-white text-xs rounded-full px-2 py-0.5 font-medium min-w-[20px] text-center ' +
+                         (item.badgeColor === 'accent' ? 'bg-neutral-500' : 'bg-neutral-500')">
+                {{ item.badge }}
+              </span>
+            }
+          </a>
+        </li>
+      }
     </ul>
   </nav>
 

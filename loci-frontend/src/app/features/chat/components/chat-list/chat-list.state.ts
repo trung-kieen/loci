@@ -86,6 +86,13 @@ export class ChatListState {
     return result;
   });
 
+  readonly unreadConversationCount = computed(() => {
+    return this.state().conversations.filter((c) => c.unreadCount > 0).length;
+  });
+
+  readonly totalUnreadMessages = computed(() => {
+    return this.state().conversations.reduce((sum, c) => sum + c.unreadCount, 0);
+  });
 
 
   load(): void {

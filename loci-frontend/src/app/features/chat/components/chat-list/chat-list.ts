@@ -48,7 +48,9 @@ export class ChatList implements OnInit {
 
 
   filterOptions = ['inbox', 'unread', 'followups', 'archived'] as const;
-  totalUnread = signal(10);
+
+  readonly totalUnread = this.chatListState.totalUnreadMessages;
+
 
   ngOnInit(): void {
     this.chatListState.load();
