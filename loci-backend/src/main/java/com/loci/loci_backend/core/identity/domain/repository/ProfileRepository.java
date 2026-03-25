@@ -38,6 +38,8 @@ public interface ProfileRepository {
 
   UserSetting findProfileSettings(UserDBId dbId);
 
+  PersonalProfile save(PersonalProfile profile);
+
   UserSetting save(UserSetting settings);
 
 }

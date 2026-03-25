@@ -41,6 +41,7 @@ import com.loci.loci_backend.core.social.domain.vo.FriendshipStatus;
 import org.springframework.transaction.annotation.Transactional;
 
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.TransactionScoped;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
@@ -96,8 +97,14 @@ public class ProfileManagerService {
     return profile;
   }
 
+  @Transactional(readOnly = false)
   public PersonalProfile applyUpdate(PersonalProfileChanges profileChanges) {
-    return repository.applyProfileUpdate(principal.getUsername(), profileChanges);
+    PersonalProfile profile = readPersonalProfile();
+    profileMapper.applyChanges(profile, profileChanges);
+    log.warn("Profile before persistence {}", profile);
+    PersonalProfile savedProfile = repository.save(profile);
+    log.warn("Profile after persistence {}", profile);
+    return savedProfile;
   }
 
   public UserSetting readProfileSettings() {

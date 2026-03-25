@@ -33,7 +33,10 @@ import com.loci.loci_backend.core.identity.domain.repository.ProfileRepository;
 import com.loci.loci_backend.core.identity.infrastructure.secondary.entity.UserSettingEntity;
 import com.loci.loci_backend.core.identity.infrastructure.secondary.mapper.IdentityEntityMapper;
 
+import org.springframework.transaction.annotation.Transactional;
+
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.TransactionScoped;
 import lombok.RequiredArgsConstructor;
 
 @SecondaryPort
@@ -47,6 +50,7 @@ public class SpringDataProfileRepository implements ProfileRepository {
     return userRepository.findByUsername(username.username());
   }
 
+  @Transactional(readOnly = true)
   @Override
   public PersonalProfile findPersonalProfile(UserEmail userEmail) {
     UserEntity userEntity = userRepository.findByEmail(userEmail.value())
@@ -54,6 +58,7 @@ public class SpringDataProfileRepository implements ProfileRepository {
     return profileMapper.toPersonalProfile(userEntity);
   }
 
+  @Transactional(readOnly = true)
   @Override
   public PublicProfile findPublicProfileByUserIdOrUserName(PublicId userId, Username username) {
     // Find by public id first else fall back to username
@@ -65,6 +70,7 @@ public class SpringDataProfileRepository implements ProfileRepository {
     return profileMapper.toPublicProfile(userEntity);
   }
 
+  @Transactional(readOnly = true)
   @Override
   public PublicProfile findPublicProfileUserName(Username username) {
     UserEntity userEntity = findByUsernameOpt(username)
@@ -73,6 +79,7 @@ public class SpringDataProfileRepository implements ProfileRepository {
     return profileMapper.toPublicProfile(userEntity);
   }
 
+  @Transactional(readOnly = false)
   @Override
   public PersonalProfile applyProfileUpdate(Username username, PersonalProfileChanges profileChanges) {
     UserEntity userEntity = findByUsernameOpt(username)
@@ -83,6 +90,7 @@ public class SpringDataProfileRepository implements ProfileRepository {
     return profileMapper.toPersonalProfile(savedEntity);
   }
 
+  @Transactional(readOnly = true)
   @Override
   public UserSetting findProfileSettings(UserDBId dbId) {
     Long userDbId = dbId.value();
@@ -91,6 +99,7 @@ public class SpringDataProfileRepository implements ProfileRepository {
     return profileMapper.toDomain(settings);
   }
 
+  @Transactional(readOnly = false)
   @Override
   public UserSetting save(UserSetting settings) {
     UserSettingEntity settingEntity = profileMapper.from(settings);
@@ -98,6 +107,7 @@ public class SpringDataProfileRepository implements ProfileRepository {
     return profileMapper.toDomain(savedEntity);
   }
 
+  @Transactional(readOnly = true)
   @Override
   public PublicProfile findPublicProfileById(UserDBId dbId) {
     // Find by public id first else fall back to username
@@ -105,6 +115,14 @@ public class SpringDataProfileRepository implements ProfileRepository {
         .orElseThrow(() -> new EntityNotFoundException("Personal profile information not found"));
 
     return profileMapper.toPublicProfile(userEntity);
+  }
+
+  @Transactional(readOnly = false)
+  @Override
+  public PersonalProfile save(PersonalProfile profile) {
+    UserEntity userEntity = profileMapper.from(profile);
+    UserEntity savedEntity = userRepository.saveAndFlush(userEntity);
+    return profileMapper.toPersonalProfile(savedEntity);
   }
 
 }
