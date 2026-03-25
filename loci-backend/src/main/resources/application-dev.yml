@@ -175,7 +175,7 @@ shell:
     enabled: false
 
 logging:
-  com.loci.loci_backend: DEBUG
+  com.loci.loci_backend: INFO
   # level.org.springframework:
   #   messaging: TRACE
   #   web.socket: TRACE

@@ -23,6 +23,7 @@ import com.loci.loci_backend.common.store.domain.aggregate.File;
 import com.loci.loci_backend.common.store.infrastructure.primary.mapper.RestFileMapper;
 import com.loci.loci_backend.common.user.domain.vo.PublicId;
 import com.loci.loci_backend.core.groups.application.GroupApplicationService;
+import com.loci.loci_backend.core.groups.domain.aggregate.GroupOnlineStatusResponse;
 import com.loci.loci_backend.core.groups.domain.aggregate.GroupParticipantList;
 import com.loci.loci_backend.core.groups.domain.aggregate.GroupProfile;
 import com.loci.loci_backend.core.groups.domain.aggregate.GroupProfileChanges;
@@ -83,8 +84,13 @@ public class GroupResource {
   }
 
   @GetMapping("/{groupId}/participants/online")
-  public ResponseEntity<RestGroupOnlineStatusResponse> getGroupMembersOnlineStatus() {
-    return ResponseEntity.ok(RestGroupOnlineStatusResponse.EMPTY());
+  public ResponseEntity<RestGroupOnlineStatusResponse> getGroupMembersOnlineStatus(
+      @PathVariable("groupId") UUID groupId) {
+    PublicId groupPublicId = new PublicId(groupId);
+    GroupOnlineStatusResponse groupOnlineStatus = groupApplicationService
+        .getGroupOnlineStatus(groupPublicId);
+    RestGroupOnlineStatusResponse resp = groupMapper.from(groupOnlineStatus);
+    return ResponseEntity.ok(resp);
   }
 
 }

@@ -20,6 +20,7 @@ import com.loci.loci_backend.common.ddd.infrastructure.stereotype.ApplicationSer
 import com.loci.loci_backend.common.store.domain.aggregate.File;
 import com.loci.loci_backend.common.user.domain.vo.PublicId;
 import com.loci.loci_backend.core.groups.domain.aggregate.CreateGroupProfileEvent;
+import com.loci.loci_backend.core.groups.domain.aggregate.GroupOnlineStatusResponse;
 import com.loci.loci_backend.core.groups.domain.aggregate.GroupParticipantList;
 import com.loci.loci_backend.core.groups.domain.aggregate.GroupProfile;
 import com.loci.loci_backend.core.groups.domain.aggregate.GroupProfileChanges;
@@ -52,6 +53,10 @@ public class GroupApplicationService {
   public GroupParticipantList getGroupParticipants(PublicId groupPublicId) {
 
     return groupManager.getGroupParticipants(groupPublicId);
+  }
+
+  public GroupOnlineStatusResponse getGroupOnlineStatus(PublicId groupPublicId) {
+    return groupManager.getGroupOnlineStatus(groupPublicId);
   }
 
 }

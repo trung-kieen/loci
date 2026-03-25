@@ -149,7 +149,6 @@ export class ChatHeader {
     this.videoClick.emit();
   }
 
-  // === Helpers ===
   private formatTime(date: Date): string {
     return new Date(date).toLocaleTimeString("en-US", {
       hour: "numeric",

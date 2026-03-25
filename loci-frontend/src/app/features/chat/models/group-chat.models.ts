@@ -33,7 +33,7 @@ export interface IGroupParticipant {
   username: string;
   avatarUrl?: string;
   role: 'admin' | 'member';
-  status?: IUserPresence;
+  presence?: IUserPresence;
 }
 
 export interface IGroupConversationInfo {
@@ -54,7 +54,7 @@ export interface IGroupParticipantsResponse {
 }
 
 export interface IGroupOnlineStatusResponse {
-  onlineUserIds: IUserPresence[];
+  userPresences: IUserPresence[];
   fetchedAt: string;
 }
 

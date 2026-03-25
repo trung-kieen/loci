@@ -274,7 +274,7 @@ export class GroupConversation implements OnInit {
 
   onUpdateMemberStatus(updated: IUserPresence): void {
     this.state.patchMember(updated.userId, {
-      status: updated,
+      presence: updated,
     });
   }
 
@@ -345,7 +345,7 @@ export class GroupConversation implements OnInit {
       }),
 
       tap(({ groupInfo, members, messages, online }) => {
-        const statusLookup = new Map(online.onlineUserIds.map(u => [u.userId, u]));
+        const statusLookup = new Map(online.userPresences.map(u => [u.userId, u]));
         const membersWithOnlineStatus: IGroupParticipant[] = members.participants.map(m => ({
           ...m,
           status: statusLookup.get(m.userId),

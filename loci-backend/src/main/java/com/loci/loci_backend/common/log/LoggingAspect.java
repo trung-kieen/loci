@@ -109,7 +109,7 @@ public class LoggingAspect {
     String methodName = joinPoint.getSignature().getName();
     Object[] args = joinPoint.getArgs();
 
-    log.info("Entering: {}.{}() with arguments: {}",
+    log.debug("Entering: {}.{}() with arguments: {}",
         className, methodName, sanitizeArgs(args));
   }
 
@@ -145,7 +145,7 @@ public class LoggingAspect {
     try {
       Object result = joinPoint.proceed();
       long executionTime = System.currentTimeMillis() - start;
-      log.info("Performance: {}.{}() executed in {} ms",
+      log.debug("Performance: {}.{}() executed in {} ms",
           className, methodName, executionTime);
       return result;
     } catch (Throwable e) {

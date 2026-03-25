@@ -236,4 +236,13 @@ public class SpringDataUserIdTranslator implements UserIdTranslator {
 
     return Collections.unmodifiableMap(hitMap);
   }
+
+  @Override
+  public Set<PublicId> toPublic(Collection<UserDBId> internalIds) {
+    if (internalIds == null || internalIds.isEmpty()) {
+      return Collections.emptySet();
+    }
+    return Collections.unmodifiableSet(
+        new HashSet<>(toPublicLookup(internalIds).values()));
+  }
 }

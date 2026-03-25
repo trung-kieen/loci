@@ -16,8 +16,13 @@
 
 package com.loci.loci_backend.core.groups.domain.service;
 
+import java.time.Instant;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.loci.loci_backend.common.collection.Lists;
 import com.loci.loci_backend.common.ddd.infrastructure.stereotype.DomainService;
@@ -32,11 +37,17 @@ import com.loci.loci_backend.core.conversation.domain.aggregate.Participant;
 import com.loci.loci_backend.core.conversation.domain.repository.ConversationRepository;
 import com.loci.loci_backend.core.conversation.domain.repository.ParticipantRepository;
 import com.loci.loci_backend.core.groups.domain.aggregate.CreateGroupProfileEvent;
+import com.loci.loci_backend.core.groups.domain.aggregate.GroupOnlineStatusResponse;
 import com.loci.loci_backend.core.groups.domain.aggregate.GroupParticipantList;
 import com.loci.loci_backend.core.groups.domain.aggregate.GroupProfile;
 import com.loci.loci_backend.core.groups.domain.aggregate.GroupProfileChanges;
 import com.loci.loci_backend.core.groups.domain.repository.GroupRepository;
 import com.loci.loci_backend.core.groups.domain.vo.GroupImageUrl;
+import com.loci.loci_backend.core.identity.domain.aggregate.UserPresence;
+import com.loci.loci_backend.core.identity.domain.repository.UserIdTranslator;
+import com.loci.loci_backend.core.identity.domain.service.PresenceIndicator;
+import com.loci.loci_backend.core.identity.domain.service.UserPresenceIdTranslator;
+import com.loci.loci_backend.core.identity.domain.vo.PresenceId;
 
 import org.springframework.transaction.annotation.Transactional;
 
@@ -50,6 +61,9 @@ public class GroupManager {
   private final FileStorageService fileStorageService;
   private final ParticipantRepository participantRepository;
   private final UserRepository userRepository;
+  private final UserIdTranslator idTranslator;
+  private final PresenceIndicator presenceIndicator;
+  private final UserPresenceIdTranslator presenceIdTranslator;
 
   // inter communication
   private final ConversationRepository conversationRepository;
@@ -96,6 +110,18 @@ public class GroupManager {
     List<Participant> participants = participantRepository.getParticipantsByConversationId(group.getConversationId());
     List<User> userDataOfParticipants = userRepository.getAllByIds(Lists.byField(participants, Participant::getUserId));
     return GroupParticipantList.buildFromList(participants, userDataOfParticipants);
+
+  }
+
+  public GroupOnlineStatusResponse getGroupOnlineStatus(PublicId groupPublicId) {
+    GroupProfile group = groupRepository.getByPublicId(groupPublicId).orElseThrow(EntityNotFoundException::new);
+
+    List<Participant> participants = participantRepository.getParticipantsByConversationId(group.getConversationId());
+
+    Set<PresenceId> presenceIds = presenceIdTranslator
+        .toPresenceIdFromDBIds(participants.stream().map(Participant::getUserId).collect(Collectors.toSet()));
+    Map<PresenceId, UserPresence> multipleStatuses = presenceIndicator.getMultipleStatuses(presenceIds);
+    return new GroupOnlineStatusResponse(new HashSet<>(multipleStatuses.values()), Instant.now());
 
   }
 }

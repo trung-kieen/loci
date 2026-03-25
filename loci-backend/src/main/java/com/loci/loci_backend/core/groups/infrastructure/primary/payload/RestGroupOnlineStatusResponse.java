@@ -17,27 +17,20 @@
 package com.loci.loci_backend.core.groups.infrastructure.primary.payload;
 
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.Set;
 
+import com.loci.loci_backend.core.identity.infrastructure.primary.payload.RestUserPresence;
+
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
-@NoArgsConstructor
+@AllArgsConstructor
 public class RestGroupOnlineStatusResponse {
 
-  private List<UUID> onlineUserIds;
-  private Instant fetchedAt;
-
-  public static RestGroupOnlineStatusResponse EMPTY() {
-    RestGroupOnlineStatusResponse dto = new RestGroupOnlineStatusResponse();
-    dto.onlineUserIds = new ArrayList<>();
-    dto.fetchedAt = Instant.now();
-    return dto;
-  }
+  private final Set<RestUserPresence> userPresences;
+  private final Instant fetchedAt;
 
 }

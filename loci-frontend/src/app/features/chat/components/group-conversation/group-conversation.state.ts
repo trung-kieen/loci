@@ -46,7 +46,7 @@ export class GroupConversationState extends BaseConversationStateService {
 
   /** Derived from members array — stays in sync with patchMember automatically */
   readonly onlineCount = computed(() =>
-    (this.groupInfo()?.participants ?? []).filter(m => m.status).length
+    (this.groupInfo()?.participants ?? []).filter(m => m.presence?.status === 'online').length
   );
 
   /**
@@ -109,7 +109,6 @@ export class GroupConversationState extends BaseConversationStateService {
   // ── Mutators ───────────────────────────────────────────────────────────────
 
   setGroupInfo(info: IGroupConversationInfo): void {
-    this.logger.debug("Group info is changed", info);
     this.groupInfo.set(info);
   }
 

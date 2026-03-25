@@ -33,5 +33,8 @@ public interface UserIdTranslator {
 
   Set<UserDBId> toInternal(Collection<PublicId> publicIds);
 
+  Set<PublicId> toPublic(Collection<UserDBId> dbIds);
+
   Map<UserDBId, PublicId> toPublicLookup(Collection<UserDBId> dbIds);
+
 }

@@ -16,6 +16,10 @@
 
 package com.loci.loci_backend.core.identity.domain.service;
 
+import java.util.Collection;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import com.loci.loci_backend.common.ddd.infrastructure.stereotype.AntiDomainService;
 import com.loci.loci_backend.common.user.domain.aggregate.User;
 import com.loci.loci_backend.common.user.domain.vo.PublicId;
@@ -35,6 +39,18 @@ public class UserPresenceIdTranslator {
     PublicId userPublicId = userIdTranslator.toPublic(userDBId)
         .orElseThrow(() -> new EntityNotFoundException(String.format("Can not find user db with id {}", userDBId)));
     return toPresenceId(userPublicId);
+  }
+
+  public Set<PresenceId> toPresenceIdFromPublicIds(Collection<PublicId> userPublicIds) {
+    return userPublicIds.stream().map(PresenceId::new).collect(Collectors.toSet());
+  }
+
+  public Set<PresenceId> toPresenceIdFromDBIds(Collection<UserDBId> ids) {
+    return userIdTranslator.toPublic(ids)
+        .stream()
+        .map(PresenceId::new)
+        .collect(Collectors.toSet());
+
   }
 
   public PresenceId toPresenceId(PublicId userPublicId) {
