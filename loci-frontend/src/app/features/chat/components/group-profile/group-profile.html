@@ -15,12 +15,13 @@
 -->
 
 <main id="main-content" class="flex h-[calc(100vh-4rem)]">
-
   <section id="group-profile" class="flex-1 bg-white flex flex-col">
+
+    <!-- ── Header ── -->
     <div id="profile-header" class="p-4 border-b border-neutral-200 bg-white">
       <div class="flex items-center justify-between">
         <div class="flex items-center space-x-4">
-          <button class="text-neutral-400 hover:text-neutral-600">
+          <button class="text-neutral-400 hover:text-neutral-600" (click)="onBack()">
             <i class="fa-solid fa-arrow-left text-xl"></i>
           </button>
           <h3 class="text-lg text-black">Group Info</h3>
@@ -28,149 +29,177 @@
       </div>
     </div>
 
-    <div id="profile-content" class="flex-1 overflow-y-auto">
-      <div class="p-6 space-y-6">
-        <div class="flex flex-col items-center space-y-4">
-          <div class="relative">
-            <img src="https://api.dicebear.com/7.x/notionists/svg?scale=200&seed=9876" alt="Project Team"
-              class="w-24 h-24 rounded-full">
-            <button
-              class="absolute bottom-0 right-0 w-8 h-8 bg-neutral-500 text-white rounded-full flex items-center justify-center hover:bg-neutral-600">
-              <i class="fa-solid fa-camera text-sm"></i>
-            </button>
+    <!-- ── Loading / Error states ── -->
+    @if (loading()) {
+      <div class="flex-1 flex items-center justify-center text-neutral-400">
+        <i class="fa-solid fa-spinner fa-spin text-2xl"></i>
+      </div>
+    } @else if (error()) {
+      <div class="flex-1 flex items-center justify-center p-6">
+        <p class="text-red-500 text-sm text-center">{{ error() }}</p>
+      </div>
+    } @else {
+
+      <!-- ── Scrollable Content ── -->
+      <div id="profile-content" class="flex-1 overflow-y-auto">
+        <div class="p-6 space-y-6">
+
+          <!-- ── Avatar + Name ── -->
+          <div class="flex flex-col items-center space-y-4">
+            <div class="relative">
+              <img
+                [src]="meta()?.profileImage ?? 'https://api.dicebear.com/7.x/notionists/svg?scale=200&seed=default'"
+                [alt]="meta()?.groupName"
+                class="w-24 h-24 rounded-full object-cover"
+              />
+              @if (isAdmin()) {
+                <button
+                  class="absolute bottom-0 right-0 w-8 h-8 bg-neutral-500 text-white rounded-full flex items-center justify-center hover:bg-neutral-600">
+                  <i class="fa-solid fa-camera text-sm"></i>
+                </button>
+              }
+            </div>
+
+            <div class="text-center">
+              <div class="flex items-center space-x-2 justify-center">
+                <h2 class="text-xl text-black">{{ meta()?.groupName }}</h2>
+                @if (isAdmin()) {
+                  <button class="text-neutral-400 hover:text-neutral-600">
+                    <i class="fa-solid fa-edit text-sm"></i>
+                  </button>
+                }
+              </div>
+              @if (meta()?.createdAt) {
+                <p class="text-sm text-neutral-500 mt-1">
+                  Created on {{ meta()!.createdAt | messageTime }}
+                </p>
+              }
+              <p class="text-xs text-neutral-400 mt-1">
+                {{ onlineCount() }} online · {{ meta()?.participantCount }} members
+              </p>
+            </div>
           </div>
-          <div class="text-center">
-            <div class="flex items-center space-x-2 justify-center">
-              <h2 class="text-xl text-black">Project Team</h2>
-              <button class="text-neutral-400 hover:text-neutral-600">
-                <i class="fa-solid fa-edit text-sm"></i>
+
+          <!-- ── Search ── -->
+          <div class="space-y-4">
+            <div class="relative">
+              <input
+                type="text"
+                placeholder="Search in group messages..."
+                class="w-full pl-10 pr-4 py-3 border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-neutral-500"
+              />
+              <i class="fa-solid fa-search absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400"></i>
+            </div>
+          </div>
+
+          <!-- ── Notifications toggle ── -->
+          <div class="space-y-4">
+            <div class="flex items-center justify-between p-4 bg-neutral-50 rounded-lg">
+              <div class="flex items-center space-x-3">
+                <i class="fa-solid fa-bell text-neutral-600"></i>
+                <span class="text-neutral-700">Notifications</span>
+              </div>
+              <label class="relative inline-flex items-center cursor-pointer" (click)="toggleNotifications()">
+                <input type="checkbox" [checked]="notificationsEnabled()" class="sr-only peer" readonly />
+                <div class="w-11 h-6 bg-neutral-200 peer-focus:outline-none rounded-full peer
+                            peer-checked:after:translate-x-full peer-checked:after:border-white
+                            after:content-[''] after:absolute after:top-[2px] after:left-[2px]
+                            after:bg-white after:border-neutral-300 after:border after:rounded-full
+                            after:h-5 after:w-5 after:transition-all peer-checked:bg-neutral-500">
+                </div>
+              </label>
+            </div>
+          </div>
+
+          <!-- ── Members list ── -->
+          <div class="space-y-4">
+            <div class="flex items-center justify-between">
+              <h3 class="text-lg text-black">
+                Members ({{ meta()?.participantCount }})
+              </h3>
+              @if (isAdmin()) {
+                <button
+                  class="px-4 py-2 bg-neutral-500 text-white rounded-lg hover:bg-neutral-600 flex items-center space-x-2">
+                  <i class="fa-solid fa-user-plus"></i>
+                  <span>Add Member</span>
+                </button>
+              }
+            </div>
+
+            <div class="space-y-3">
+              @for (participant of participants(); track participant.userId) {
+                <div class="flex items-center justify-between p-3 bg-neutral-50 rounded-lg">
+
+                  <!-- Avatar + name -->
+                  <div class="flex items-center space-x-3">
+                    <div class="relative">
+                      <img
+                        [src]="participant.avatarUrl ?? 'https://api.dicebear.com/7.x/notionists/svg?scale=200&seed=' + participant.userId"
+                        [alt]="participant.fullname"
+                        class="w-10 h-10 rounded-full object-cover"
+                      />
+                      <!-- Online dot -->
+                      @if (participant.presence?.status === 'online') {
+                        <span class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 rounded-full border-2 border-white"></span>
+                      }
+                    </div>
+                    <div>
+                      <p class="text-sm text-neutral-900">{{ participant.fullname }}</p>
+                      <p class="text-xs text-neutral-500 capitalize">{{ participant.role }}</p>
+                    </div>
+                  </div>
+
+                  <!-- Actions -->
+                  <div class="flex items-center space-x-2">
+                    @if (participant.role === 'admin') {
+                      <span class="px-2 py-1 bg-neutral-200 text-neutral-700 text-xs rounded">Admin</span>
+                    }
+
+                    <!-- Admin can promote/remove others (not themselves) -->
+                    @if (isAdmin() && participant.userId !== currentUserId()) {
+                      @if (participant.role === 'member') {
+                        <button
+                          class="text-neutral-400 hover:text-neutral-600"
+                          title="Promote to admin"
+                          (click)="promoteToAdmin(participant)">
+                          <i class="fa-solid fa-crown text-sm"></i>
+                        </button>
+                      }
+                      <button
+                        class="text-neutral-400 hover:text-red-500"
+                        title="Remove member"
+                        (click)="removeMember(participant)">
+                        <i class="fa-solid fa-user-minus text-sm"></i>
+                      </button>
+                    }
+                  </div>
+                </div>
+              }
+            </div>
+          </div>
+
+          <!-- ── Danger zone ── -->
+          <div class="space-y-3 pt-4 border-t border-neutral-200">
+            <button
+              class="w-full px-4 py-3 bg-neutral-100 text-neutral-700 rounded-lg hover:bg-neutral-200 flex items-center justify-center space-x-2"
+              (click)="leaveGroup()">
+              <i class="fa-solid fa-sign-out-alt"></i>
+              <span>Leave Group</span>
+            </button>
+
+            @if (isAdmin()) {
+              <button
+                class="w-full px-4 py-3 bg-neutral-100 text-neutral-700 rounded-lg hover:bg-neutral-200 flex items-center justify-center space-x-2"
+                (click)="deleteGroup()">
+                <i class="fa-solid fa-trash"></i>
+                <span>Delete Group</span>
               </button>
-            </div>
-            <p class="text-sm text-neutral-500 mt-1">Created on Oct 1, 2025</p>
-          </div>
-        </div>
-
-        <div class="space-y-4">
-          <div class="relative">
-            <input type="text" placeholder="Search in group messages..."
-              class="w-full pl-10 pr-4 py-3 border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-neutral-500">
-            <i class="fa-solid fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-neutral-400"></i>
-          </div>
-        </div>
-
-        <div class="space-y-4">
-          <div class="flex items-center justify-between p-4 bg-neutral-50 rounded-lg">
-            <div class="flex items-center space-x-3">
-              <i class="fa-solid fa-bell text-neutral-600"></i>
-              <span class="text-neutral-700">Notifications</span>
-            </div>
-            <label class="relative inline-flex items-center cursor-pointer">
-              <input type="checkbox" checked class="sr-only peer">
-              <div
-                class="w-11 h-6 bg-neutral-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-neutral-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-neutral-500">
-              </div>
-            </label>
-          </div>
-        </div>
-
-        <div class="space-y-4">
-          <div class="flex items-center justify-between">
-            <h3 class="text-lg text-black">Members (4)</h3>
-            <button
-              class="px-4 py-2 bg-neutral-500 text-white rounded-lg hover:bg-neutral-600 flex items-center space-x-2">
-              <i class="fa-solid fa-user-plus"></i>
-              <span>Add Member</span>
-            </button>
+            }
           </div>
 
-          <div class="space-y-3">
-            <div class="flex items-center justify-between p-3 bg-neutral-50 rounded-lg">
-              <div class="flex items-center space-x-3">
-                <img src="https://api.dicebear.com/7.x/notionists/svg?scale=200&seed=1111" alt="Alex Chen"
-                  class="w-10 h-10 rounded-full">
-                <div>
-                  <p class="text-sm text-neutral-900">Alex Chen</p>
-                  <p class="text-xs text-neutral-500">Admin</p>
-                </div>
-              </div>
-              <div class="flex items-center space-x-2">
-                <span class="px-2 py-1 bg-neutral-200 text-neutral-700 text-xs rounded">Admin</span>
-              </div>
-            </div>
-
-            <div class="flex items-center justify-between p-3 bg-neutral-50 rounded-lg">
-              <div class="flex items-center space-x-3">
-                <img src="https://api.dicebear.com/7.x/notionists/svg?scale=200&seed=2222" alt="Sarah Johnson"
-                  class="w-10 h-10 rounded-full">
-                <div>
-                  <p class="text-sm text-neutral-900">Sarah Johnson</p>
-                  <p class="text-xs text-neutral-500">Member</p>
-                </div>
-              </div>
-              <div class="flex items-center space-x-2">
-                <button class="text-neutral-400 hover:text-neutral-600">
-                  <i class="fa-solid fa-crown text-sm"></i>
-                </button>
-                <button class="text-neutral-400 hover:text-neutral-600">
-                  <i class="fa-solid fa-user-minus text-sm"></i>
-                </button>
-              </div>
-            </div>
-
-            <div class="flex items-center justify-between p-3 bg-neutral-50 rounded-lg">
-              <div class="flex items-center space-x-3">
-                <img src="https://api.dicebear.com/7.x/notionists/svg?scale=200&seed=3333" alt="Mike Rodriguez"
-                  class="w-10 h-10 rounded-full">
-                <div>
-                  <p class="text-sm text-neutral-900">Mike Rodriguez</p>
-                  <p class="text-xs text-neutral-500">Member</p>
-                </div>
-              </div>
-              <div class="flex items-center space-x-2">
-                <button class="text-neutral-400 hover:text-neutral-600">
-                  <i class="fa-solid fa-crown text-sm"></i>
-                </button>
-                <button class="text-neutral-400 hover:text-neutral-600">
-                  <i class="fa-solid fa-user-minus text-sm"></i>
-                </button>
-              </div>
-            </div>
-
-            <div class="flex items-center justify-between p-3 bg-neutral-50 rounded-lg">
-              <div class="flex items-center space-x-3">
-                <img src="https://api.dicebear.com/7.x/notionists/svg?scale=200&seed=4444" alt="Emma Wilson"
-                  class="w-10 h-10 rounded-full">
-                <div>
-                  <p class="text-sm text-neutral-900">Emma Wilson</p>
-                  <p class="text-xs text-neutral-500">Member</p>
-                </div>
-              </div>
-              <div class="flex items-center space-x-2">
-                <button class="text-neutral-400 hover:text-neutral-600">
-                  <i class="fa-solid fa-crown text-sm"></i>
-                </button>
-                <button class="text-neutral-400 hover:text-neutral-600">
-                  <i class="fa-solid fa-user-minus text-sm"></i>
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="space-y-3 pt-4 border-t border-neutral-200">
-          <button
-            class="w-full px-4 py-3 bg-neutral-100 text-neutral-700 rounded-lg hover:bg-neutral-200 flex items-center justify-center space-x-2">
-            <i class="fa-solid fa-sign-out-alt"></i>
-            <span>Leave Group</span>
-          </button>
-
-          <button
-            class="w-full px-4 py-3 bg-neutral-100 text-neutral-700 rounded-lg hover:bg-neutral-200 flex items-center justify-center space-x-2">
-            <i class="fa-solid fa-trash"></i>
-            <span>Delete Group</span>
-          </button>
         </div>
       </div>
-    </div>
+
+    } <!-- end @else -->
   </section>
 </main>
