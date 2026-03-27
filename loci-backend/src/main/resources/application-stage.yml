@@ -73,7 +73,7 @@ stomp.relay:
   system-heartbeat-receive-interval: 4000
 
 application:
-  client-base-url: ${APPLICATION_CLIENT_BASE_URL:http://localhost:4200}
+  client-base-url: ${APPLICATION_CLIENT_BASE_URL}
   cors:
     allowed-origins: ${APPLICATION_CORS_ALLOWED_ORIGINS}
     allowed-methods: "*"
@@ -129,10 +129,11 @@ shell:
 
 logging:
   com.loci.loci_backend: DEBUG
-  level.org.springframework:
-    messaging: TRACE
-    web.socket: TRACE
-    security: DEBUG
+  # level.org.springframework:
+  #   messaging: TRACE
+  #   web.socket: TRACE
+  #   security: DEBUG
+  #   web.cors: DEBUG
 
 
 keycloak:

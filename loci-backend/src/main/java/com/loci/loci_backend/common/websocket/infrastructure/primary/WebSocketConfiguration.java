@@ -71,28 +71,24 @@ public class WebSocketConfiguration implements WebSocketMessageBrokerConfigurer 
   @Override
   public void registerStompEndpoints(StompEndpointRegistry registry) {
 
-    registry
-        .addEndpoint(WsPaths.ENDPOINT, WsPaths.MESSAGE_ENDPOINT, WsPaths.NOTIFICATION_ENDPOINT,
-            WsPaths.PRESENCE_ENDPOINT)
-        .setAllowedOriginPatterns("*")
+    // registry
+    // .addEndpoint(WsPaths.ENDPOINT, WsPaths.MESSAGE_ENDPOINT,
+    // WsPaths.NOTIFICATION_ENDPOINT,
+    // WsPaths.PRESENCE_ENDPOINT)
+    // .setAllowedOriginPatterns("*")
+    // registry
+    // .addEndpoint(WsPaths.ENDPOINT, WsPaths.MESSAGE_ENDPOINT,
+    // WsPaths.NOTIFICATION_ENDPOINT,
+    // WsPaths.PRESENCE_ENDPOINT)
+    // .setAllowedOriginPatterns("*")
+    // .withSockJS();
 
-    // .setAllowedOriginPatterns("*") // Or this for flexibility
-    // .withSockJS()// to disable SockJS wrapping
-    ;
-    registry
-        .addEndpoint(WsPaths.ENDPOINT, WsPaths.MESSAGE_ENDPOINT, WsPaths.NOTIFICATION_ENDPOINT,
-            WsPaths.PRESENCE_ENDPOINT)
-        .setAllowedOriginPatterns("*")
-        .withSockJS();
     // for (String origin : corsConfiguration.getAllowedOrigins()) {
     // registry
     // .addEndpoint(WsPaths.ENDPOINT, WsPaths.MESSAGE_ENDPOINT,
     // WsPaths.NOTIFICATION_ENDPOINT,
     // WsPaths.PRESENCE_ENDPOINT)
     // .setAllowedOrigins(origin)
-
-    // // .setAllowedOriginPatterns("*") // Or this for flexibility
-    // // .withSockJS()// to disable SockJS wrapping
     // ;
     // registry
     // .addEndpoint(WsPaths.ENDPOINT, WsPaths.MESSAGE_ENDPOINT,
@@ -100,7 +96,16 @@ public class WebSocketConfiguration implements WebSocketMessageBrokerConfigurer 
     // WsPaths.PRESENCE_ENDPOINT)
     // .setAllowedOrigins(origin)
     // .withSockJS();
-    // }
+    // log.error("Receive the allowed origin {}", corsConfiguration.getAllowedOrigins());
+    // log.error("Receive the allowed origin pattern {}", corsConfiguration.getAllowedOrigins().toArray(new String[0]).toString());
+
+    registry
+        .addEndpoint(WsPaths.ENDPOINT, WsPaths.MESSAGE_ENDPOINT,
+            WsPaths.NOTIFICATION_ENDPOINT,
+            WsPaths.PRESENCE_ENDPOINT)
+        .setAllowedOrigins(corsConfiguration.getAllowedOrigins().toArray(new String[0]));
+
+
   }
 
   // Security pre handshake
