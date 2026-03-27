@@ -30,6 +30,8 @@ import lombok.Setter;
 @ConfigurationProperties(prefix = "keycloak")
 public class KeycloakProperties {
   private String authServerUrl;
+  // for fetching certs
+  private String internalServerUrl;
   private String realm;
   private String resource;
   private boolean publicClient;
@@ -59,13 +61,20 @@ public class KeycloakProperties {
     }
   }
 
-  // Getters and Setters
   public String getAuthServerUrl() {
     return authServerUrl;
   }
 
   public void setAuthServerUrl(String authServerUrl) {
     this.authServerUrl = authServerUrl;
+  }
+
+  public String getInternalServerUrl() {
+    return internalServerUrl;
+  }
+
+  public void getInternalServerUrl(String internalServerUrl) {
+    this.internalServerUrl = internalServerUrl;
   }
 
   public String getRealm() {
@@ -98,6 +107,16 @@ public class KeycloakProperties {
 
   public void setCredentials(Credentials credentials) {
     this.credentials = credentials;
+  }
+
+  public String getRealmUrl() {
+    return String.format("%s/realms/%s", this.authServerUrl, this.realm);
+  }
+
+  public String getRealmCertsUrlInternal() {
+    // internal Docker URL resolver to make sure reachable inside container
+    return String.format("%s/realms/%s/protocol/openid-connect/certs",
+        this.internalServerUrl, this.realm);
   }
 
   @Getter

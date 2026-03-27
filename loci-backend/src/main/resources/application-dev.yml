@@ -1,40 +1,14 @@
 spring:
-  cache:
-    # type: hybrid # hybrid | redis | caffeine
-    type: caffeine
-  application:
-    name: loci
-  # boot:
-  #   admin:
-  #     client:
-  #       url: ${SPRING_BOOT_ADMIN_CLIENT_URL:http://localhost:7070}
-  #       username: ${SPRING_BOOT_ADMIN_CLIENT_USERNAME:admin}
-  #       password: ${SPRING_BOOT_ADMIN_CLIENT_PASSWORD:adminadmin}
-
-  # redis:
-  #   host: localhost
-  #   port: 6379
-  #   password:
-
-  threads:
-    virtual:
-      enabled: true
-  servlet:
-    multipart:
-      enabled: true
-      max-file-size: 100MB
-      max-request-size: 100MB
-
   security:
-    # websocket:
-    #   same-origin-disabled: true
     oauth2:
       resourceserver:
-        jwt.issuer-uri: http://localhost:9090/realms/loci-realm
+        jwt:
+          issuer-uri: ${KEYCLOAK_ISSUER_URI_HOST:http://localhost:9090}/realms/${KEYCLOAK_REALM:loci-realm}
+          jwk-set-uri: ${KEYCLOAK_JWK_SET_URI_HOST:http://localhost:9090}/realms/${KEYCLOAK_REALM:loci-realm}/protocol/openid-connect/certs
   flyway:
-    enabled: false
+    enabled: true
     locations: classpath:db/migrations
-    baseline-on-migrate: true # disable in production
+    baseline-on-migrate: false
     baseline-version: 0
     validate-on-migrate: true # for production
     url: ${SPRING_FLYWAY_URL:jdbc:postgresql://localhost:5432/locidb}
@@ -77,14 +51,16 @@ spring:
       #         action: create
       #         create-target: src/main/resources/schema.sql
 
-      jakarta:
-        persistence:
-          schema-generation:
-            create-source: metadata
-            scripts:
-              action: update
-              create-target: src/main/resources/update.sql
+      # NOTE: disable sql staging script
+      # jakarta:
+      #   persistence:
+      #     schema-generation:
+      #       create-source: metadata
+      #       scripts:
+      #         action: update
+      #         create-target: src/main/resources/update.sql
 
+  # Disable
   devtools:
     restart:
       enabled: true
@@ -139,7 +115,6 @@ management:
 
     web:
       exposure:
-        # Access /actuator/metrics or /actuator/prometheus
         include: "*"
         # include: health,info,metrics,prometheus,httpexchanges
 
@@ -164,10 +139,10 @@ management:
 
 flyway:
   enabled: true
-  url: ${FLYWAY_URL:jdbc:postgresql://localhost:5432/locidb}
-  user: ${FLYWAY_USER:admin}
+  url: ${SPRING_FLYWAY_URL:jdbc:postgresql://localhost:5432/locidb}
+  user: ${SPRING_FLYWAY_USER:admin}
   schemas: public
-  password: ${FLYWAY_PASSWORD:admin}
+  password: ${SPRING_FLYWAY_PASSWORD:admin}
   locations: src/main/resources/db/migrations
 
 shell:
@@ -183,7 +158,8 @@ logging:
   # level:
   #   org.springframework.security.web.FilterChainProxy: TRACE
 keycloak:
-  auth-server-url: ${KEYCLOAK_AUTH_SERVER_URL:http://localhost:8080}
+  auth-server-url: ${KEYCLOAK_ISSUER_URI_HOST:http://localhost:9090}
+  internal-server-url: ${KEYCLOAK_JWK_SET_URI_HOST:http://localhost:9090}
   resource: ${KEYCLOAK_RESOURCE:spring}
   public-client: false
   migration-password: ${KEYCLOAK_MIGRATION_PASSWORD:exampleloci123}
@@ -202,15 +178,3 @@ upload:
     metric-name: ""
     url-prefix: ${UPLOAD_MINIO_URL_PREFIX:http://localhost:9000}
     region: ${UPLOAD_MINIO_REGION:us-east-1}
-
-
-# logging:
-#   structured:
-#     json:
-#       enabled: true
-#       format: logstash  # Or 'ecs' for Elastic Common Schema
-#       stacktrace:
-#         root: first
-#         max-length: 1024
-#         include-common-frames: true
-#         include-hashes: true

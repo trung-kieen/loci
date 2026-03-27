@@ -70,21 +70,37 @@ public class WebSocketConfiguration implements WebSocketMessageBrokerConfigurer 
 
   @Override
   public void registerStompEndpoints(StompEndpointRegistry registry) {
-    for (String origin : corsConfiguration.getAllowedOrigins()) {
-      registry
-          .addEndpoint(WsPaths.ENDPOINT, WsPaths.MESSAGE_ENDPOINT, WsPaths.NOTIFICATION_ENDPOINT,
-              WsPaths.PRESENCE_ENDPOINT)
-          .setAllowedOrigins(origin)
 
-      // .setAllowedOriginPatterns("*") // Or this for flexibility
-      // .withSockJS()// to disable SockJS wrapping
-      ;
-      registry
-          .addEndpoint(WsPaths.ENDPOINT, WsPaths.MESSAGE_ENDPOINT, WsPaths.NOTIFICATION_ENDPOINT,
-              WsPaths.PRESENCE_ENDPOINT)
-          .setAllowedOrigins(origin)
-          .withSockJS();
-    }
+    registry
+        .addEndpoint(WsPaths.ENDPOINT, WsPaths.MESSAGE_ENDPOINT, WsPaths.NOTIFICATION_ENDPOINT,
+            WsPaths.PRESENCE_ENDPOINT)
+        .setAllowedOriginPatterns("*")
+
+    // .setAllowedOriginPatterns("*") // Or this for flexibility
+    // .withSockJS()// to disable SockJS wrapping
+    ;
+    registry
+        .addEndpoint(WsPaths.ENDPOINT, WsPaths.MESSAGE_ENDPOINT, WsPaths.NOTIFICATION_ENDPOINT,
+            WsPaths.PRESENCE_ENDPOINT)
+        .setAllowedOriginPatterns("*")
+        .withSockJS();
+    // for (String origin : corsConfiguration.getAllowedOrigins()) {
+    // registry
+    // .addEndpoint(WsPaths.ENDPOINT, WsPaths.MESSAGE_ENDPOINT,
+    // WsPaths.NOTIFICATION_ENDPOINT,
+    // WsPaths.PRESENCE_ENDPOINT)
+    // .setAllowedOrigins(origin)
+
+    // // .setAllowedOriginPatterns("*") // Or this for flexibility
+    // // .withSockJS()// to disable SockJS wrapping
+    // ;
+    // registry
+    // .addEndpoint(WsPaths.ENDPOINT, WsPaths.MESSAGE_ENDPOINT,
+    // WsPaths.NOTIFICATION_ENDPOINT,
+    // WsPaths.PRESENCE_ENDPOINT)
+    // .setAllowedOrigins(origin)
+    // .withSockJS();
+    // }
   }
 
   // Security pre handshake

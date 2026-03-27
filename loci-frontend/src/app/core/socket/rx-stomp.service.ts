@@ -32,6 +32,7 @@ export class RxStompAdapterService extends RxStomp {
     // console.log("Get auth success for rxStomp")
     this.authService = authService;
   }
+  // add header to connrect frame
   override configure(rxStompConfig: RxStompConfig): void {
     const headers = {
       Authorization: '',

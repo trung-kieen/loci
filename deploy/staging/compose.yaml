@@ -1,30 +1,26 @@
 services:
   loci-db:
     container_name: loci-db
-    image: postgres
+    image: postgres:18.1
     environment:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: admin
       PGDATA: /var/lib/postgresql/data
       POSTGRES_DB: locidb
     volumes:
-      - ./loci-db:/data/postgres
-      ## Use local path
-      # - ./postgres-data:/var/lib/postgresql/data
-      - ./backups:/backups
-
-      # - ./postgres-entrypoint.sh:/postgres-entrypoint.sh
-    # entrypoint: ["postgres-entrypoint.sh"]
-
+      - loci-db:/data/postgres
+      - ./backups/backup.sql:/docker-entrypoint-initdb.d/init.sql
+#
+    restart: unless-stopped
     ports:
       - 5432:5432
     networks:
       - loci-net
-
+#
   loci-pgadmin:
     container_name: loci-pgadmin
-    image: dpage/pgadmin4:latest
-    restart: always
+    image: dpage/pgadmin4:9.11
+    restart: unless-stopped
     ports:
       - "81:80"
     environment:
@@ -32,60 +28,136 @@ services:
       PGADMIN_DEFAULT_PASSWORD: admin
     networks:
       - loci-net
+#
 
 
 
+  loci-server:
+    container_name: loci-server
+    image: trungkieen/loci-server:1.0
+    ports:
+      - 8080:8080
+    # TOOD: add the env file
+    networks:
+      - loci-net
+    depends_on:
+     - loci-db
+     - loci-auth
+     - loci-rabbitmq
+    env_file: .env
+    environment:
+      SPRING_PROFILES_ACTIVE: stage
+      LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_SECURITY_OAUTH2: TRACE
 
-  loci-keycloak:
-    container_name: loci-keycloak
-    image: quay.io/keycloak/keycloak:26.0.0
+
+
+  loci-web:
+    container_name: loci-web
+    image: trungkieen/loci-web:1.0
+    ports:
+      - 4200:80
+    networks:
+      - loci-net
+
+    depends_on:
+     - loci-db
+     - loci-auth
+
+  loci-auth:
+    container_name: loci-auth
+    image: trungkieen/loci-auth:1.0
     ports:
       - 9090:8080
     environment:
-        KEYCLOAK_ADMIN: admin
-        KEYCLOAK_ADMIN_PASSWORD: admin
-        KC_DB: postgres
-        KC_DB_URL_HOST: loci-db
-        KC_DB_URL_DATABASE: locidb
-        KC_DB_USERNAME: admin
-        KC_DB_PASSWORD: admin
+      KC_HOSTNAME: localhost
+      KC_HOSTNAME_PORT: 9090
+      KC_HOSTNAME_STRICT: false
+      KC_HOSTNAME_STRICT_HTTPS: false
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+      KC_DB: postgres
+      KC_DB_URL_HOST: loci-db
+      KC_DB_URL_DATABASE: locidb
+      KC_DB_USERNAME: admin
+      KC_DB_PASSWORD: admin
     networks:
       - loci-net
+
     depends_on:
       - loci-db
+    restart: unless-stopped
+#
+  loci-rabbitmq:
+    image: rabbitmq:3.12-management-alpine
+    container_name: "loci-mq"
+    ports:
+      - 5672:5672
+      - 15672:15672
+      - 61613:61613
     volumes:
-      # - ./apps/keycloak/import:/opt/keycloak/data/import
-      # - loci-keycloak:/opt/keycloak/data
-      - ./keycloak-data:/opt/keycloak/data/
-      # User export as the data import
-      # - ./keycloak-data/export/:/opt/keycloak/data/import
+      - loci-rabbitmq:/var/lib/rabbitmq
+      - ./rabbitmq/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf
+    command: >
+      sh -c "
+        rabbitmq-plugins enable --offline rabbitmq_stomp rabbitmq_web_stomp &&
+        rabbitmq-server
+      "
 
-    command:
-      start-dev --import-realm
-
-  loci-backend:
-    image: ${REGISTRY}/loci-backend:${SHA:-latest}
-    restart: unless-stopped
     environment:
-      SPRING_PROFILES_ACTIVE: staging
-      DB_HOST: postgres
-      DB_PASSWORD: ${DB_PASSWORD}
-      JWT_SECRET: ${JWT_SECRET}
-    ports:
-      - "8080:8080"
-    depends_on:
-      - loci-db
+      - ./enabled_plugins:/etc/rabbitmq/enabled_plugins # Use to enable stomp plugin
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=admin
+      - ./rabbitmq/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf
+
     networks:
       - loci-net
-
-  loci-frontend:
-    image: ${REGISTRY}/chat-frontend:${SHA:-latest}
     restart: unless-stopped
+#
+#
+  loci-minio:
+    image: minio/minio:RELEASE.2025-09-07T16-13-09Z
+    container_name: loci-minio
+    environment:
+      - MINIO_ROOT_USER=minioadmin
+      - MINIO_ROOT_PASSWORD=minioadmin
+      - MINIO_DEFAULT_BUCKETS=loci-bucket-01
+    networks:
+      - loci-net
+    volumes:
+      - loci-minio:/data
+    command: server /data --console-address ":9001"
     ports:
-      - "80:80"
+      - "9000:9000"
+      - "9001:9001"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+    restart: unless-stopped
+
+  loci-minio-mc:
+    image: minio/mc:RELEASE.2025-08-13T08-35-41Z-cpuv1
+    container_name: loci-minio-client
+    depends_on:
+      - loci-minio
+    environment:
+      - BUCKET_NAME=${BUCKET_NAME:-loci-bucket-01}
+      - MINIO_ACCESS_KEY=${MINIO_ACCESS_KEY:-minioadmin}
+      - MINIO_SECRET_KEY=${MINIO_SECRET_KEY:-minioadmin123}
+    entrypoint: >
+      /bin/sh -c "
+      sleep 5;
+      /usr/bin/mc alias set local http://loci-minio:9000 ${MINIO_ACCESS_KEY:-minioadmin} ${MINIO_SECRET_KEY:-minioadmin};
+      /usr/bin/mc mb local/${BUCKET_NAME:-loci-bucket-01};
+      /usr/bin/mc anonymous set public local/${BUCKET_NAME:-loci-bucket-01};
+      tail -f /dev/null;
+      exit 0;
+      "
     networks:
       - loci-net
 
+    restart: unless-stopped
 networks:
   loci-net:
     driver: bridge
@@ -93,4 +165,12 @@ volumes:
   loci-db:
     driver: local
   loci-keycloak:
+    driver: local
+  loci-minio:
+    driver: local
+  loci-rabbitmq:
+    driver: local
+  prometheus_data:
+    driver: local
+  grafana_data:
     driver: local

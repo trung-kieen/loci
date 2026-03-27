@@ -2,6 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { forkJoin, map, switchMap } from 'rxjs';
 import { IGroupChatInfoMeta, IGroupOnlineStatusResponse, IGroupParticipant, IGroupParticipantsResponse } from '../../models/group-chat.models';
+import { WebApiService } from '../../../../core/api/web-api.service';
 
 
 /** Shape returned by GET /conversations/group/:id — superset of IGroupChatInfoMeta */
@@ -11,24 +12,24 @@ export interface IGroupConversationMetaResponse extends IGroupChatInfoMeta {
 
 @Injectable({ providedIn: 'root' })
 export class GroupProfileService {
-  private readonly http = inject(HttpClient);
+  private readonly webApiService = inject(WebApiService);
   private readonly base = '/api/v1';
 
   // ── 1. Lightweight header info ─────────────────────────────────────────────
   getGroupMeta(conversationId: string) {
-    return this.http.get<IGroupConversationMetaResponse>(
-      `${this.base}/conversations/group/${conversationId}`
+    return this.webApiService.get<IGroupConversationMetaResponse>(
+      `/conversations/group/${conversationId}`
     );
   }
 
   // ── 2 + 3. Participants merged with live presence ──────────────────────────
   getParticipantsWithPresence(groupId: string) {
     return forkJoin({
-      members: this.http.get<IGroupParticipantsResponse>(
-        `${this.base}/groups/${groupId}/participants`
+      members: this.webApiService.get<IGroupParticipantsResponse>(
+        `/groups/${groupId}/participants`
       ),
-      online: this.http.get<IGroupOnlineStatusResponse>(
-        `${this.base}/groups/${groupId}/participants/online`
+      online: this.webApiService.get<IGroupOnlineStatusResponse>(
+        `/groups/${groupId}/participants/online`
       ),
     }).pipe(
       map(({ members, online }) =>

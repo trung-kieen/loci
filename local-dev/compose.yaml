@@ -18,7 +18,7 @@ services:
 
     # entrypoint: ["postgres-entrypoint.sh"]
 
-    restart: always
+    restart: "no"
     ports:
       - 5432:5432
     networks:
@@ -27,7 +27,7 @@ services:
   loci-pgadmin:
     container_name: loci-pgadmin
     image: dpage/pgadmin4:9.11
-    restart: unless-stopped
+    restart: "no"
     ports:
       - "81:80"
     environment:
@@ -36,8 +36,9 @@ services:
     networks:
       - loci-net
 
-  loci-keycloak:
-    container_name: loci-keycloak
+
+  loci-auth:
+    container_name: loci-auth
     image: quay.io/keycloak/keycloak:26.0.0
     ports:
       - 9090:8080
@@ -61,7 +62,7 @@ services:
       # - ./keycloak-data/export/:/opt/keycloak/data/import
 
     command: start-dev --import-realm
-    restart: always
+    restart: "no"
 
   loci-rabbitmq:
     image: rabbitmq:3.12-management-alpine
@@ -87,7 +88,7 @@ services:
 
     networks:
       - loci-net
-    restart: always
+    restart: "no"
 
   loci-prometheus:
     image: prom/prometheus:v2.45.0
@@ -110,7 +111,7 @@ services:
     extra_hosts:
       # Access via dns
       - "host.docker.internal:host-gateway"
-    restart: unless-stopped
+    restart: "no"
 
   # Visualization
 
@@ -139,7 +140,7 @@ services:
       - loci-net
     depends_on:
       - loci-prometheus
-    restart: unless-stopped
+    restart: "no"
 
   loci-minio:
     image: minio/minio:RELEASE.2025-09-07T16-13-09Z
@@ -161,11 +162,11 @@ services:
       interval: 30s
       timeout: 20s
       retries: 3
-    restart: always
+    restart: "no"
 
   loci-minio-mc:
     image: minio/mc:RELEASE.2025-08-13T08-35-41Z-cpuv1
-    container_name: minio_client
+    container_name: loci-minio-client
     depends_on:
       - loci-minio
     environment:
@@ -184,14 +185,14 @@ services:
     networks:
       - loci-net
 
-    restart: always
+    restart: "no"
 networks:
   loci-net:
     driver: bridge
 volumes:
   loci-db:
     driver: local
-  loci-keycloak:
+  loci-auth:
     driver: local
   loci-minio:
     driver: local

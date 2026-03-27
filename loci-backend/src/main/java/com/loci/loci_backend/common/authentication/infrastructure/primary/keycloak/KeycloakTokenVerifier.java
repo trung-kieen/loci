@@ -52,14 +52,18 @@ public class KeycloakTokenVerifier {
   public AccessToken verifyToken(String tokenString) throws VerificationException {
     RSATokenVerifier verifier = RSATokenVerifier.create(tokenString);
     PublicKey publicKey = retrievePublicKeyFromCertsEndpoint(verifier.getHeader());
-    return verifier.realmUrl(getRealmUrl()).publicKey(publicKey).verify().getToken();
+    if (publicKey == null) {
+      throw new VerificationException("Failed to retrieve public key from Keycloak certs endpoint");
+    }
+
+    return verifier.realmUrl(config.getRealmUrl()).publicKey(publicKey).verify().getToken();
   }
 
   @SuppressWarnings("unchecked")
   private PublicKey retrievePublicKeyFromCertsEndpoint(JWSHeader jwsHeader) {
     try {
       ObjectMapper om = new ObjectMapper();
-      Map<String, Object> certInfos = om.readValue(new URL(getRealmCertsUrl()).openStream(), Map.class);
+      Map<String, Object> certInfos = om.readValue(new URL(config.getRealmCertsUrlInternal()).openStream(), Map.class);
       List<Map<String, Object>> keys = (List<Map<String, Object>>) certInfos.get("keys");
 
       Map<String, Object> keyInfo = null;
@@ -88,14 +92,6 @@ public class KeycloakTokenVerifier {
       e.printStackTrace();
     }
     return null;
-  }
-
-  public String getRealmUrl() {
-    return String.format("%s/realms/%s", config.getAuthServerUrl(), config.getRealm());
-  }
-
-  public String getRealmCertsUrl() {
-    return getRealmUrl() + "/protocol/openid-connect/certs";
   }
 
 }

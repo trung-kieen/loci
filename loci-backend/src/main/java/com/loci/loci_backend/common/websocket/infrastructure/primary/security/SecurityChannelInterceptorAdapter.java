@@ -36,7 +36,6 @@ import lombok.extern.log4j.Log4j2;
 public class SecurityChannelInterceptorAdapter implements ChannelInterceptor {
   private final AuthenticationManager keycloakWebSocketAuthManager;
 
-
   @Override
   public Message<?> preSend(Message<?> message, MessageChannel channel) {
     StompHeaderAccessor accessor = MessageHeaderAccessor.getAccessor(message,
@@ -61,8 +60,15 @@ public class SecurityChannelInterceptorAdapter implements ChannelInterceptor {
         accessor.setUser(jwsAuthentication);
         log.debug("Auth inbound ws channel with principal {}", jwsAuthentication.getPrincipal());
       } catch (Exception e) {
-        log.warn("Fail to authenticate websocket request {}", e);
-        e.printStackTrace();
+        log.warn("Fail to authenticate websocket request", e);
+        // ADD THIS:
+        log.error("Root cause class: {}", e.getClass().getName());
+        log.error("Root cause message: {}", e.getMessage());
+        if (e.getCause() != null) {
+          log.error("Underlying cause: {} - {}",
+              e.getCause().getClass().getName(),
+              e.getCause().getMessage());
+        }
         throw new WebSocketTokenValicationException();
       }
     }

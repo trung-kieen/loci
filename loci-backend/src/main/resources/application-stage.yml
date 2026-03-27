@@ -1,0 +1,158 @@
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${KEYCLOAK_ISSUER_URI_HOST}/realms/${KEYCLOAK_REALM}
+          # Fetch JWKs internally via Docker service name => bypasses localhost
+          jwk-set-uri: ${KEYCLOAK_JWK_SET_URI_HOST}/realms/${KEYCLOAK_REALM}/protocol/openid-connect/certs
+  flyway:
+    enabled: false
+    locations: classpath:db/migrations
+    baseline-on-migrate: false
+    baseline-version: 0
+    validate-on-migrate: true
+    url: ${SPRING_FLYWAY_URL}
+    user: ${SPRING_FLYWAY_USER}
+    schemas: public
+    password: ${SPRING_FLYWAY_PASSWORD}
+    clean-disabled: true
+
+  datasource:
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+    hikari:
+      poolName: Hikari
+      auto-commit: false
+    type: com.zaxxer.hikari.HikariDataSource
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+    open-in-view: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        # generate_statistics: true
+        format_sql: true
+
+
+  # Disable
+  devtools:
+    restart:
+      enabled: false
+    livereload:
+      enabled: false
+
+  # Define message queue connection
+  rabbitmq:
+    host: ${SPRING_RABBITMQ_HOST}
+    port: ${SPRING_RABBITMQ_PORT}
+    virtual-host: ${SPRING_RABBITMQ_VIRTUAL_HOST}
+    username: ${SPRING_RABBITMQ_USERNAME}
+    password: ${SPRING_RABBITMQ_PASSWORD}
+
+    stomp:
+      enabled: true
+      host: ${SPRING_RABBITMQ_STOMP_HOST}
+      port: ${SPRING_RABBITMQ_STOMP_PORT}
+  websocket:
+    max-text-message-size: 8192
+    max-binary-message-size: 8192
+
+stomp.relay:
+  type: ${STOMP_RELAY_TYPE:rabbitmq} # rabbitmq | inmemory
+  relay-host: ${STOMP_RELAY_HOST}
+  relay-port: ${STOMP_RELAY_PORT}
+  client-login: ${STOMP_RELAY_CLIENT_LOGIN}
+  client-passcode: ${STOMP_RELAY_CLIENT_PASSCODE}
+  system-login: ${STOMP_RELAY_SYSTEM_LOGIN}
+  system-passcode: ${STOMP_RELAY_SYSTEM_PASSCODE}
+  system-heartbeat-send-interval: 5000
+  system-heartbeat-receive-interval: 4000
+
+application:
+  client-base-url: ${APPLICATION_CLIENT_BASE_URL:http://localhost:4200}
+  cors:
+    allowed-origins: ${APPLICATION_CORS_ALLOWED_ORIGINS}
+    allowed-methods: "*"
+    # allowed-mappings: "/**"
+    allowed-headers: "*"
+    exposed-headers: "*"
+    allow-credentials: true
+    max-age: 300
+
+management:
+  endpoints:
+    prometheus:
+      enabled: true # Check /actuator/prometheus
+    jmx:
+      exposure:
+        include: health,info
+
+    web:
+      exposure:
+        # include: "*"
+        include: health,info,metrics,prometheus,httpexchanges
+
+        exclude: env,beans
+
+  endpoint:
+    health:
+      show-details: always
+    prometheus:
+      enabled: true
+    metrics:
+      enabled: true
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+    tags:
+      application: loci-app
+    distribution.percentiles-histogram.http:
+      server.requests: true
+      client.requests: true # 50ms,100ms,200ms,500ms,1s,5s #true
+
+flyway:
+  enabled: true
+  url: ${SPRING_FLYWAY_URL}
+  user: ${SPRING_FLYWAY_USER}
+  schemas: public
+  password: ${SPRING_FLYWAY_PASSWORD}
+  locations: src/main/resources/db/migrations
+
+shell:
+  interactive:
+    enabled: false
+
+logging:
+  com.loci.loci_backend: DEBUG
+  level.org.springframework:
+    messaging: TRACE
+    web.socket: TRACE
+    security: DEBUG
+
+
+keycloak:
+  auth-server-url: ${KEYCLOAK_ISSUER_URI_HOST}
+  internal-server-url: ${KEYCLOAK_JWK_SET_URI_HOST}
+  resource: ${KEYCLOAK_RESOURCE:spring}
+  public-client: false
+  migration-password: ${KEYCLOAK_MIGRATION_PASSWORD}
+  credentials:
+    username: ${KEYCLOAK_CREDENTIALS_USERNAME}
+    password: ${KEYCLOAK_CREDENTIALS_PASSWORD}
+
+upload:
+  minio:
+    enable: ${UPLOAD_MINIO_ENABLE:true}
+    url: ${UPLOAD_MINIO_URL}
+    access-key: ${UPLOAD_MINIO_ACCESS_KEY}
+    secret-key: ${UPLOAD_MINIO_SECRET_KEY}
+    secure: false
+    bucket: ${UPLOAD_MINIO_BUCKET}
+    metric-name: ""
+    url-prefix: ${UPLOAD_MINIO_URL_PREFIX}
+    region: ${UPLOAD_MINIO_REGION}

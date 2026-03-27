@@ -1,4 +1,7 @@
 spring:
+  cache:
+    # type: hybrid # hybrid | redis | caffeine
+    type: caffeine
   output:
     ansi:
       enabled: always
@@ -6,12 +9,14 @@ spring:
     name: loci
   profiles:
     active: "dev"
-
-# keycloak.auth-server-url=https://your-keycloak-server.com
-# keycloak.realm=your-realm-name
-# mvc:
-#   servlet:
-#     path: /api/v1
+  threads:
+    virtual:
+      enabled: true
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 100MB
+      max-request-size: 100MB
 server:
   servlet:
     context-path: /api/v1
