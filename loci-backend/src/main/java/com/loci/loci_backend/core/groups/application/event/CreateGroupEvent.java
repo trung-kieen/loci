@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.loci.loci_backend.core.groups.domain.aggregate;
+package com.loci.loci_backend.core.groups.application.event;
 
 import java.time.Instant;
 
@@ -30,16 +30,16 @@ import org.jilt.Builder;
 import org.jilt.BuilderStyle;
 
 @Builder(style = BuilderStyle.STAGED)
-public record CreateGroupProfileEvent(
+public record CreateGroupEvent(
     ConversationId conversationId,
     GroupName groupName,
     GroupImageUrl groupProfilePicture,
     Instant lastActive,
     PublicId publicId)
     implements DomainEvent {
-  public static CreateGroupProfileEvent fromConversation(Conversation conversation,
+  public static CreateGroupEvent fromConversation(Conversation conversation,
       CreateGroupRequest request) {
-    return CreateGroupProfileEventBuilder.createGroupProfileEvent()
+    return CreateGroupEventBuilder.createGroupEvent()
         .conversationId(conversation.getId())
         .groupName(request.getGroupName())
         .groupProfilePicture(request.getProfileImage())

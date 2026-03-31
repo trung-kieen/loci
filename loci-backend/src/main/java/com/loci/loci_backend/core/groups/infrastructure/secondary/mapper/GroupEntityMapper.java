@@ -18,7 +18,7 @@ package com.loci.loci_backend.core.groups.infrastructure.secondary.mapper;
 
 import com.loci.loci_backend.common.ddd.infrastructure.contract.DomainEntityMapper;
 import com.loci.loci_backend.common.ddd.infrastructure.stereotype.SecondaryMapper;
-import com.loci.loci_backend.core.groups.domain.aggregate.CreateGroupProfileEvent;
+import com.loci.loci_backend.core.groups.application.event.CreateGroupEvent;
 import com.loci.loci_backend.core.groups.domain.aggregate.GroupProfile;
 import com.loci.loci_backend.core.groups.infrastructure.secondary.entity.GroupEntity;
 
@@ -29,7 +29,7 @@ import lombok.RequiredArgsConstructor;
 public class GroupEntityMapper implements DomainEntityMapper<GroupProfile, GroupEntity> {
   private final MapStructGroupEntityMapper mapper;
 
-  public GroupEntity from(CreateGroupProfileEvent request) {
+  public GroupEntity from(CreateGroupEvent request) {
     return mapper.from(request);
   }
 

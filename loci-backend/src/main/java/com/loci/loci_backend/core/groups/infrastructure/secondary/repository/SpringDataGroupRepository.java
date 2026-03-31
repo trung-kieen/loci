@@ -21,7 +21,7 @@ import java.util.Optional;
 import com.loci.loci_backend.common.ddd.infrastructure.stereotype.SecondaryPort;
 import com.loci.loci_backend.common.user.domain.vo.PublicId;
 import com.loci.loci_backend.core.conversation.domain.vo.ConversationId;
-import com.loci.loci_backend.core.groups.domain.aggregate.CreateGroupProfileEvent;
+import com.loci.loci_backend.core.groups.application.event.CreateGroupEvent;
 import com.loci.loci_backend.core.groups.domain.aggregate.GroupProfile;
 import com.loci.loci_backend.core.groups.domain.aggregate.GroupProfileChanges;
 import com.loci.loci_backend.core.groups.domain.repository.GroupRepository;
@@ -44,7 +44,7 @@ public class SpringDataGroupRepository implements GroupRepository {
   }
 
   @Override
-  public GroupProfile createProfile(CreateGroupProfileEvent request) {
+  public GroupProfile createProfile(CreateGroupEvent request) {
     GroupEntity entity = mapper.from(request);
     GroupEntity savedProfile = repository.save(entity);
     return mapper.toDomain(savedProfile);

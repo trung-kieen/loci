@@ -17,8 +17,8 @@
 package com.loci.loci_backend.core.groups.infrastructure.secondary.mapper;
 
 import com.loci.loci_backend.common.ddd.infrastructure.mapper.ValueObjectTypeConverter;
+import com.loci.loci_backend.core.groups.application.event.CreateGroupEvent;
 import com.loci.loci_backend.core.groups.domain.aggregate.GroupProfile;
-import com.loci.loci_backend.core.groups.domain.aggregate.CreateGroupProfileEvent;
 import com.loci.loci_backend.core.groups.infrastructure.secondary.entity.GroupEntity;
 
 import org.mapstruct.Mapper;
@@ -30,7 +30,7 @@ public interface MapStructGroupEntityMapper {
   @Mapping(target = "id", ignore = true) // create so make null for generate id
   @Mapping(target = "createdDate", ignore = true)
   @Mapping(target = "lastModifiedDate", ignore = true)
-  public GroupEntity from(CreateGroupProfileEvent request);
+  public GroupEntity from(CreateGroupEvent request);
 
   // @Mapping(source = "groupId", target = "id")
   @Mapping(target = "createdDate", ignore = true)

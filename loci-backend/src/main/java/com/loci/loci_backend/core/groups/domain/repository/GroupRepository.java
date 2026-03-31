@@ -20,7 +20,7 @@ import java.util.Optional;
 
 import com.loci.loci_backend.common.user.domain.vo.PublicId;
 import com.loci.loci_backend.core.conversation.domain.vo.ConversationId;
-import com.loci.loci_backend.core.groups.domain.aggregate.CreateGroupProfileEvent;
+import com.loci.loci_backend.core.groups.application.event.CreateGroupEvent;
 import com.loci.loci_backend.core.groups.domain.aggregate.GroupProfile;
 import com.loci.loci_backend.core.groups.domain.aggregate.GroupProfileChanges;
 
@@ -28,7 +28,7 @@ public interface GroupRepository {
 
   Optional<GroupProfile> getByConversationId(ConversationId conversationId);
 
-  GroupProfile createProfile(CreateGroupProfileEvent request);
+  GroupProfile createProfile(CreateGroupEvent request);
 
   public Optional<GroupProfile> getByPublicId(PublicId publicId);
 

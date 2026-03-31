@@ -16,6 +16,9 @@
 
 package com.loci.loci_backend.common.ddd.domain.contract;
 
+/**
+ * Use to regsiter Async event
+ */
 public interface DomainEventPublisher {
-    void publish(DomainEvent event);
+  void publish(DomainEvent event);
 }

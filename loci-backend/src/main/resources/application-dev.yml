@@ -10,7 +10,7 @@ spring:
     locations: classpath:db/migrations
     baseline-on-migrate: false
     baseline-version: 0
-    validate-on-migrate: true # for production
+    validate-on-migrate: false # for production
     url: ${SPRING_FLYWAY_URL:jdbc:postgresql://localhost:5432/locidb}
     user: ${SPRING_FLYWAY_USER:admin}
     schemas: public

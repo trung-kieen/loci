@@ -19,13 +19,14 @@ package com.loci.loci_backend.core.conversation.application;
 import com.loci.loci_backend.common.ddd.domain.contract.DomainEventPublisher;
 import com.loci.loci_backend.common.ddd.infrastructure.stereotype.ApplicationService;
 import com.loci.loci_backend.common.user.domain.vo.PublicId;
+import com.loci.loci_backend.core.conversation.domain.acl.ConversationGroupAcl;
 import com.loci.loci_backend.core.conversation.domain.aggregate.Conversation;
 import com.loci.loci_backend.core.conversation.domain.aggregate.CreateGroupRequest;
 import com.loci.loci_backend.core.conversation.domain.aggregate.GroupConversationInfo;
 import com.loci.loci_backend.core.conversation.domain.aggregate.UserChatList;
 import com.loci.loci_backend.core.conversation.domain.service.ConverationManagerService;
 import com.loci.loci_backend.core.conversation.domain.vo.ConversationQuery;
-import com.loci.loci_backend.core.groups.domain.aggregate.CreateGroupProfileEvent;
+import com.loci.loci_backend.core.groups.application.event.CreateGroupEvent;
 import com.loci.loci_backend.core.groups.domain.aggregate.GroupProfile;
 import com.loci.loci_backend.core.groups.domain.service.GroupManager;
 import com.loci.loci_backend.core.messaging.domain.aggregate.DirectChatInfo;
@@ -42,7 +43,7 @@ import lombok.extern.log4j.Log4j2;
 public class ConversationApplicationService {
 
   private final ConverationManagerService converationManager;
-  private final GroupManager groupManager;
+  private final ConversationGroupAcl groupManager;
   private final DomainEventPublisher eventPublisher;
 
   public Conversation getConversationByUser(PublicId targetUserId) {
@@ -64,11 +65,9 @@ public class ConversationApplicationService {
 
     request.provideMandatoryField();
 
-    CreateGroupProfileEvent createProfileRequest = CreateGroupProfileEvent
+    CreateGroupEvent createProfileRequest = CreateGroupEvent
         .fromConversation(currentUserConversation, request);
 
-    // TODO: use domain event to publish create group action
-    // Create group profile for conversation
     GroupProfile profile = groupManager.createGroupProfile(createProfileRequest);
     log.debug("Create group profile {} for conversation {}", profile, currentUserConversation);
 
