@@ -22,34 +22,52 @@
 // import org.springframework.messaging.simp.SimpMessageType;
 // import org.springframework.security.authorization.AuthorizationManager;
 // import org.springframework.security.config.annotation.web.socket.EnableWebSocketSecurity;
-// import org.springframework.security.core.Authentication;
+// import org.springframework.security.messaging.access.intercept.MessageAuthorizationContext;
 // import org.springframework.security.messaging.access.intercept.MessageMatcherDelegatingAuthorizationManager;
-//
-// import lombok.RequiredArgsConstructor;
-//
+
 // @Configuration
-// @RequiredArgsConstructor
 // @EnableWebSocketSecurity
 // public class WebSocketSecurityConfig {
-//
+
 //   @Bean
 //   public AuthorizationManager<Message<?>> messageAuthorizationManager(
 //       MessageMatcherDelegatingAuthorizationManager.Builder builder) {
-//
+
+//     AuthorizationManager<MessageAuthorizationContext<?>> customQueueAuth;
 //     return builder
-//         .simpTypeMatchers(SimpMessageType.CONNECT, SimpMessageType.DISCONNECT).permitAll()
-//         .simpDestMatchers("/app/**").permitAll()
-//         // .simpSubscribeDestMatchers("/user/**", "/topic/**").authenticated()
+//         .simpTypeMatchers(SimpMessageType.CONNECT,
+//             SimpMessageType.DISCONNECT,
+//             SimpMessageType.HEARTBEAT)
+//         .permitAll()
+
+//         // .simpDestMatchers("/app/public/**").permitAll()
+//         // .simpSubscribeDestMatchers("/topic/public/**").permitAll()
+
+//         // .simpDestMatchers("/app/private/**").authenticated()
+//         // // .simpSubscribeDestMatchers("/user/**").access(null)
+//         // .simpSubscribeDestMatchers("/user/**").authenticated()
+//         // .simpSubscribeDestMatchers("/topic/rooms/{roomId}/**").hasRole("ROOM_MEMBER")
+
+//         // Default deny
+//         // .anyMessage().denyAll()
 //         .anyMessage().permitAll()
-//         // .anyMessage().authenticated()
 //         .build();
+
 //   }
-//
-//   /*
-//    * sameOriginDisabled() is gone.
-//    * If you really want to turn the CSRF-like origin check off, add to
-//    * application.properties (or yaml):
-//    *
-//    * spring.security.websocket.same-origin-disabled=true
-//    */
+
+//   // private AuthorizationDecision userQueueAuthorization(
+//   // Supplier<Authentication> auth, Message<?> message) {
+//   // // authorization submit queue
+//   // String userId = auth.get().getName();
+//   // String dest = StompHeaderAccessor.getAccessor(message,
+//   // StompHeaderAccessor.class)
+//   // .getDestination();
+//   // return new AuthorizationDecision(dest.startsWith("/user/" + userId));
+//   // }
+
+//   // @Bean
+//   // public ChannelInterceptor csrfChannelInterceptor() {
+//   // return new XorCsrfChannelInterceptor();
+//   // }
+
 // }

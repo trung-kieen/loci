@@ -24,29 +24,35 @@ export class RxStompAdapterService extends RxStomp {
   private authService: KeycloakAuthenticationManager;
   constructor(authService: KeycloakAuthenticationManager) {
     super();
-    // if (!(authService instanceof AuthService && authService.getBearerToken)) {
     if (!authService.getBearerToken) {
-      // console.log(Object.getOwnPropertyNames(authService));
       throw new Error('Error auth object for rxstomp');
     }
-    // console.log("Get auth success for rxStomp")
     this.authService = authService;
   }
-  // add header to connrect frame
+  // add header to connect frame
   override configure(rxStompConfig: RxStompConfig): void {
-    const headers = {
-      Authorization: '',
-    };
-    this.authService.getBearerToken().then((token) => {
-      headers['Authorization'] = token;
-      // console.log("Header ", headers.Authorization)
-      super.configure({
-        ...rxStompConfig,
-        connectHeaders: {
-          ...rxStompConfig.connectHeaders,
-          ...headers,
-        },
-      });
+    const originalBeforeConnect = rxStompConfig.beforeConnect;
+
+    super.configure({
+      ...rxStompConfig,
+      beforeConnect: async (_client) => {
+        if (originalBeforeConnect) {
+          await originalBeforeConnect(_client);
+        }
+
+        try {
+          await this.authService.refreshToken(30);
+          const token = await this.authService.getBearerToken();
+
+          this.stompClient.connectHeaders = {
+            ...this.stompClient.connectHeaders,
+            Authorization: token,
+          };
+        } catch (err) {
+          console.error('RxStomp: token refresh failed before connect', err);
+          this.authService.logout();
+        }
+      },
     });
   }
   override publish(parameters: IRxStompPublishParams): void {

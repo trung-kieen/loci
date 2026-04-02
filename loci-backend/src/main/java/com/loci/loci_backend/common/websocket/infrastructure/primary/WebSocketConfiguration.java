@@ -22,6 +22,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.loci.loci_backend.common.websocket.infrastructure.WsPaths;
 import com.loci.loci_backend.common.websocket.infrastructure.primary.broker.InMemoryWebSocketBrokerAutoConfiguration;
 import com.loci.loci_backend.common.websocket.infrastructure.primary.broker.RabbitMQWebSocketBrokerAutoConfiguration;
+import com.loci.loci_backend.common.websocket.infrastructure.primary.security.RateLimitInterceptor;
 import com.loci.loci_backend.common.websocket.infrastructure.primary.security.SecurityChannelInterceptorAdapter;
 
 import org.springframework.context.annotation.Configuration;
@@ -36,6 +37,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
+import org.springframework.web.socket.config.annotation.WebSocketTransportRegistration;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -56,6 +58,7 @@ public class WebSocketConfiguration implements WebSocketMessageBrokerConfigurer 
 
   private final CorsConfiguration corsConfiguration;
   private final SecurityChannelInterceptorAdapter authChannelInterceptorAdapter;
+  private final RateLimitInterceptor rateLimitInterceptor;
 
   @Override
   public boolean configureMessageConverters(List<MessageConverter> messageConverters) {
@@ -96,8 +99,10 @@ public class WebSocketConfiguration implements WebSocketMessageBrokerConfigurer 
     // WsPaths.PRESENCE_ENDPOINT)
     // .setAllowedOrigins(origin)
     // .withSockJS();
-    // log.error("Receive the allowed origin {}", corsConfiguration.getAllowedOrigins());
-    // log.error("Receive the allowed origin pattern {}", corsConfiguration.getAllowedOrigins().toArray(new String[0]).toString());
+    // log.error("Receive the allowed origin {}",
+    // corsConfiguration.getAllowedOrigins());
+    // log.error("Receive the allowed origin pattern {}",
+    // corsConfiguration.getAllowedOrigins().toArray(new String[0]).toString());
 
     registry
         .addEndpoint(WsPaths.ENDPOINT, WsPaths.MESSAGE_ENDPOINT,
@@ -105,6 +110,7 @@ public class WebSocketConfiguration implements WebSocketMessageBrokerConfigurer 
             WsPaths.PRESENCE_ENDPOINT)
         .setAllowedOrigins(corsConfiguration.getAllowedOrigins().toArray(new String[0]));
 
+    // registry.setErrorHandler(errorHandler)
 
   }
 
@@ -112,8 +118,16 @@ public class WebSocketConfiguration implements WebSocketMessageBrokerConfigurer 
   @Override
   public void configureClientInboundChannel(ChannelRegistration registration) {
     log.info("Add stomp channel inbound interceptor for authenticaiton {}", authChannelInterceptorAdapter.getClass());
-    registration.interceptors(authChannelInterceptorAdapter);
+    registration.interceptors(authChannelInterceptorAdapter, rateLimitInterceptor);
     // registration.setErrorHandler(new CustomMessageErrorHandler());
+  }
+
+  @Override
+  public void configureWebSocketTransport(WebSocketTransportRegistration registry) {
+    registry
+        .setSendTimeLimit(30 * 1000)
+        .setSendBufferSizeLimit(512 * 1024)
+        .setMessageSizeLimit(128 * 1024);
   }
 
   // TODO: custom error handler

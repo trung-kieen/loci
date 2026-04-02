@@ -18,6 +18,9 @@ import { Injectable, inject } from '@angular/core';
 import { KeycloakService } from 'keycloak-angular';
 
 export class KeycloakAuthenticationManager {
+  public async refreshToken(minValidity = 30): Promise<void> {
+    await this.keycloakService.updateToken(minValidity);
+  }
   private keycloakService = inject(KeycloakService);
 
   public async getBearerToken(): Promise<string> {
@@ -38,4 +41,6 @@ export class KeycloakAuthenticationManager {
     this.keycloakService.logout("http://localhost:4200/");
 
   }
+
+
 }

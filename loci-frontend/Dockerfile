@@ -7,16 +7,14 @@ RUN npm install
 COPY . .
 RUN npm run build
 
-FROM nginx:alpine
+FROM node:20-alpine
+WORKDIR /app
 
-# Remove default config
-RUN rm -rf /etc/nginx/conf.d/default.conf
+RUN npm install -g http-server
 
-COPY nginx/default.conf /etc/nginx/conf.d/default.conf
+COPY --from=build /app/dist/loci-frontend/browser .
 
-# apply builded app
-RUN rm -rf /usr/share/nginx/html/*
-COPY --from=build /app/dist/loci-frontend/browser /usr/share/nginx/html
 
-EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
+EXPOSE 4200
+
+CMD ["http-server", "-p", "4200", "-a", "0.0.0.0", "--proxy", "http://localhost:4200?"]

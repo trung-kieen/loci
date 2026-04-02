@@ -16,29 +16,22 @@
 
 package com.loci.loci_backend.core.identity.domain.service;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.times;
 
-import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
 import com.loci.loci_backend.common.user.domain.vo.PublicId;
-import com.loci.loci_backend.core.messaging.domain.repository.ForwardIdTranslator;
 import com.loci.loci_backend.core.conversation.domain.repository.ConversationRepository;
 import com.loci.loci_backend.core.conversation.domain.vo.ConversationId;
 import com.loci.loci_backend.core.groups.domain.repository.GroupPresenceNotifier;
 import com.loci.loci_backend.core.groups.domain.vo.GroupConversationPresenceId;
-import com.loci.loci_backend.core.identity.domain.aggregate.UserPresence;
 import com.loci.loci_backend.core.identity.domain.repository.GroupPresenceIdTranslator;
 import com.loci.loci_backend.core.identity.domain.repository.UserPresenceNotifier;
 import com.loci.loci_backend.core.identity.domain.repository.UserPresenceRepository;
 import com.loci.loci_backend.core.identity.domain.vo.PresenceId;
 import com.loci.loci_backend.core.identity.domain.vo.PresenceStatus;
+import com.loci.loci_backend.core.messaging.domain.repository.ForwardIdTranslator;
 import com.loci.loci_backend.core.messaging.domain.vo.GroupSubscriberId;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -103,10 +96,6 @@ public class PresenceIndicatorTest {
     @Test
     @DisplayName("mark user online in repository with provided status")
     void markUserOnlineInRepository() {
-      stubGroupsForUser(twoGroups);
-      stubMemberForGroup();
-      subTranslator();
-
       // action
       presenceIndicator.setOnline(presenceId, PresenceStatus.online());
 
@@ -115,37 +104,6 @@ public class PresenceIndicatorTest {
 
     }
 
-    @Test
-    @DisplayName("broadcast status update when user presence change")
-    void broadcastsWhenUserComesBackOnline() {
-      UserPresence offlineBefore = UserPresence.offline(presenceId);
-      when(userPresenceRepository.getStatus(presenceId)).thenReturn(offlineBefore);
-      assertEquals(offlineBefore.isStatusDifference(PresenceStatus.online()), true);
-      // when(offlineBefore.isStatusDifference(PresenceStatus.online())).thenReturn(true);
-      stubGroupsForUser(twoGroups);
-      stubMemberForGroup();
-      subTranslator();
-      presenceIndicator.heartbeat(presenceId, PresenceStatus.online());
-      verify(groupPresenceNotifier, times(2)).boardcastPresenceChange(any(), any());
-
-    }
-  }
-
-  private void stubGroupsForUser(Set<GroupConversationPresenceId> groups) {
-    when(conversationRepository.getConversationOfPresence(presenceId))
-        .thenReturn(groups);
-  }
-
-  public void subTranslator() {
-    when(groupIdTranslator.toGroupSubscriberId(groupA)).thenReturn(subscriberA);
-    when(groupIdTranslator.toGroupSubscriberId(groupB)).thenReturn(subscriberB);
-  }
-
-  public void stubMemberForGroup() {
-    // return test presence user will belong to group A and B
-    when(conversationRepository.getMemberPresenceIds(groupA.value())).thenReturn(Set.of(presenceId));
-    when(conversationRepository.getMemberPresenceIds(groupB.value())).thenReturn(Set.of(presenceId));
-    when(userPresenceRepository.getMultipleStatus(any())).thenReturn(Map.of());
   }
 
 }

@@ -22,12 +22,14 @@ import com.loci.loci_backend.common.authentication.domain.CurrentUser;
 import com.loci.loci_backend.common.ddd.infrastructure.stereotype.DomainService;
 import com.loci.loci_backend.common.user.domain.aggregate.User;
 import com.loci.loci_backend.common.user.domain.repository.UserRepository;
+import com.loci.loci_backend.common.user.domain.vo.PublicId;
 import com.loci.loci_backend.core.identity.domain.aggregate.UserPresence;
 import com.loci.loci_backend.core.identity.domain.aggregate.UserSetting;
 import com.loci.loci_backend.core.identity.domain.repository.UserSettingRepository;
 import com.loci.loci_backend.core.identity.domain.vo.PresenceId;
 import com.loci.loci_backend.core.identity.domain.vo.PresenceStatus;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 
 @DomainService
@@ -43,6 +45,11 @@ public class UserPresenceService {
     User user = userRepository.getByPrincipalThrow(principal);
 
     PresenceId presenceId = idTranslator.toPresenceId(user.getUserPublicId());
+    return heartbeat(user, presenceId);
+  }
+
+  public UserPresence heartbeat(User user, PresenceId presenceId) {
+
     Optional<UserSetting> settings = userSettingRepository.getByUserId(user.getDbId());
 
     // get appropate presence status base on user setting preference
@@ -55,6 +62,12 @@ public class UserPresenceService {
       }
     }
     return presenceIndicator.heartbeat(presenceId, targetStatus);
+  }
+
+  public UserPresence heartbeat(PresenceId presenceId) {
+    PublicId publicId = presenceId.value();
+    User user = userRepository.getByPublicId(publicId).orElseThrow(EntityNotFoundException::new);
+    return heartbeat(user, presenceId);
   }
 
   private PresenceId getPresenceId() {

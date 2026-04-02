@@ -47,7 +47,7 @@ echo "Export postgresql database migration script to $backup_file"
 
 
 
-docker exec loci-keycloak  \
+docker exec loci-auth \
   /opt/keycloak/bin/kc.sh export --dir /opt/keycloak/data/export --realm loci-realm && echo "Export keycloak realm to  ./keycloak-data/export/"
 
 

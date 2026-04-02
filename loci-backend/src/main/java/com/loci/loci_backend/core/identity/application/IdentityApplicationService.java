@@ -104,6 +104,10 @@ public class IdentityApplicationService {
     return this.userPresenceService.heartbeatCurrentUser();
   }
 
+  public UserPresence heartbeat(PresenceId presenceId) {
+    return this.userPresenceService.heartbeat(presenceId);
+  }
+
   public UserPresence getStatus(PresenceId presenceId) {
     return this.presenceIndicator.getStatus(presenceId);
   }
@@ -119,7 +123,6 @@ public class IdentityApplicationService {
   public UserPresence getCurrentUserStatus() {
     return this.userPresenceService.getCurrentUserStatus();
   }
-
 
   // public int sweepStaleUsers(long threshold) {
   // return this.presenceIndicator.sweepStaleUsers(threshold);

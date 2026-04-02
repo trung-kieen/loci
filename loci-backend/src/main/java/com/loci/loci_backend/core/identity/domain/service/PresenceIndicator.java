@@ -32,7 +32,6 @@ import com.loci.loci_backend.core.identity.domain.repository.UserPresenceReposit
 import com.loci.loci_backend.core.identity.domain.vo.PresenceId;
 import com.loci.loci_backend.core.identity.domain.vo.PresenceStatus;
 import com.loci.loci_backend.core.messaging.domain.repository.ForwardIdTranslator;
-import com.loci.loci_backend.core.messaging.domain.vo.GroupSubscriberId;
 import com.loci.loci_backend.core.messaging.domain.vo.UserSubcriberId;
 
 import org.springframework.stereotype.Service;
@@ -58,16 +57,17 @@ public class PresenceIndicator {
 
     UserPresence presence = userPresenceRepository.setOnline(presenceId, status);
     broadcastUserPresenceUpdate(presenceId, presence);
-    broadcastPresenceToAllGroups(presenceId);
+    // broadcastPresenceToAllGroups(presenceId);
 
   }
 
   public UserPresence setOffline(PresenceId presenceId) {
 
     // get all gorup id user id participant and broadcast notification user offline
-    Set<GroupConversationPresenceId> groups = conversationRepository.getConversationOfPresence(presenceId);
+    // Set<GroupConversationPresenceId> groups =
+    // conversationRepository.getConversationOfPresence(presenceId);
     UserPresence presence = userPresenceRepository.setOffline(presenceId);
-    broadcastPresenceToGroups(presenceId, groups);
+    // broadcastPresenceToGroups(presenceId, groups);
 
     broadcastUserPresenceUpdate(presenceId, presence);
     return presence;
@@ -83,7 +83,7 @@ public class PresenceIndicator {
     Set<GroupConversationPresenceId> rooms = conversationRepository.getConversationOfPresence(presenceId);
     // // Cache entry is already gone — no need to call cachePort.setOffline()
     // // Just broadcast the updated (offline) snapshot to all affected rooms
-    broadcastPresenceToGroups(presenceId, rooms);
+    // broadcastPresenceToGroups(presenceId, rooms);
   }
 
   public UserPresence heartbeat(PresenceId presenceId, PresenceStatus targetStatus) {
@@ -94,7 +94,7 @@ public class PresenceIndicator {
     boolean isStatusChanged = before.isStatusDifference(targetStatus);
 
     if (isStatusChanged) {
-      broadcastPresenceToAllGroups(presenceId);
+      // broadcastPresenceToAllGroups(presenceId);
 
       broadcastUserPresenceUpdate(presenceId, after);
     }
@@ -139,7 +139,7 @@ public class PresenceIndicator {
     for (PresenceId presenceId : stateUsers) {
       userPresenceRepository.setOffline(presenceId);
       Set<GroupConversationPresenceId> groupUserBelongs = conversationRepository.getConversationOfPresence(presenceId);
-      broadcastPresenceToGroups(presenceId, groupUserBelongs);
+      // broadcastPresenceToGroups(presenceId, groupUserBelongs);
     }
 
     return stateUsers.size();
@@ -148,25 +148,29 @@ public class PresenceIndicator {
   /**
    * Fetch all rooms the user belongs to and broadcast updated presence to each.
    */
-  private void broadcastPresenceToAllGroups(PresenceId presenceId) {
-    Set<GroupConversationPresenceId> conversationIds = conversationRepository.getConversationOfPresence(presenceId);
-    broadcastPresenceToGroups(presenceId, conversationIds);
+  // private void broadcastPresenceToAllGroups(PresenceId presenceId) {
+  // Set<GroupConversationPresenceId> conversationIds =
+  // conversationRepository.getConversationOfPresence(presenceId);
+  // broadcastPresenceToGroups(presenceId, conversationIds);
 
-  }
+  // }
 
-  private void broadcastPresenceToGroups(PresenceId triggerUser, Set<GroupConversationPresenceId> conversationIds) {
-    if (conversationIds == null | conversationIds.isEmpty()) {
-      return;
-    }
+  // private void broadcastPresenceToGroups(PresenceId triggerUser,
+  // Set<GroupConversationPresenceId> conversationIds) {
+  // if (conversationIds == null | conversationIds.isEmpty()) {
+  // return;
+  // }
 
-    for (GroupConversationPresenceId groupPresenceId : conversationIds) {
-      Set<PresenceId> presenceIds = conversationRepository.getMemberPresenceIds(groupPresenceId.value());
-      GroupPresence groupPresence = buildGroupConversationPresence(groupPresenceId, presenceIds);
+  // for (GroupConversationPresenceId groupPresenceId : conversationIds) {
+  // Set<PresenceId> presenceIds =
+  // conversationRepository.getMemberPresenceIds(groupPresenceId.value());
+  // GroupPresence groupPresence = buildGroupConversationPresence(groupPresenceId,
+  // presenceIds);
 
-      GroupSubscriberId groupSubscriberId = groupPresenceIdTranslator
-          .toGroupSubscriberId(groupPresence.getGroupPresenceId());
-      groupNotifier.boardcastPresenceChange(groupSubscriberId, groupPresence);
-    }
-  }
+  // GroupSubscriberId groupSubscriberId = groupPresenceIdTranslator
+  // .toGroupSubscriberId(groupPresence.getGroupPresenceId());
+  // groupNotifier.boardcastPresenceChange(groupSubscriberId, groupPresence);
+  // }
+  // }
 
 }

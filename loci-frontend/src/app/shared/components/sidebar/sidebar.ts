@@ -80,20 +80,20 @@ export class Sidebar {
       route: '/contact/blocked',
       tooltip: 'Manager your blocked'
     },
-    {
-      label: 'Notifications',
-      icon: 'fa-bell',
-      route: '/notifications',
-      badge: 5, // Keep static or make reactive similarly
-      badgeColor: 'accent'
-    },
-    // Secondary Actions
-    {
-      label: 'Settings',
-      icon: 'fa-gear',
-      route: '/user/settings',
-      position: 'bottom'
-    },
+    // {
+    //   label: 'Notifications',
+    //   icon: 'fa-bell',
+    //   route: '/notifications',
+    //   badge: 5, // Keep static or make reactive similarly
+    //   badgeColor: 'accent'
+    // },
+    // // Secondary Actions
+    // {
+    //   label: 'Settings',
+    //   icon: 'fa-gear',
+    //   route: '/user/settings',
+    //   position: 'bottom'
+    // },
   ]);
 
 
