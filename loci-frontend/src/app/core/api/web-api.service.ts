@@ -23,7 +23,7 @@ import {
 } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable, retry } from 'rxjs';
-import { environment } from '../../../environments/environments';
+import { EnvService } from '../services/env.service';
 
 export interface RequestOptions {
   headers?: HttpHeaders | Record<string, string | string[]>;
@@ -55,7 +55,8 @@ export interface RequestOptions {
 @Injectable()
 export class WebApiService {
   private http = inject(HttpClient);
-  private apiBaseUrl = environment.apiUrl;
+  private env = inject(EnvService)
+  private apiBaseUrl = this.env.apiUrl;
 
   get<T>(endpoint: string, options?: RequestOptions): Observable<T> {
     const url = this.getFullUrl(endpoint);

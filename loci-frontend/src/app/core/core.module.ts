@@ -28,12 +28,13 @@ import { HttpErrorInterceptor } from './middleware/http-error.interceptor';
 import { initializeKeycloak } from './auth/keycloak/keycloak.init';
 import { rxStompServiceFactory } from './socket/rx-stomp-service-factory';
 import { RxStomp, RxStompConfig } from '@stomp/rx-stomp';
-import { rxStompConfig } from './socket/rx-stomp.config';
+import {  rxStompConfigFactory } from './socket/rx-stomp.config';
 import { KeycloakAuthenticationManager } from './auth/keycloak-auth-manager';
 import { WebApiService } from './api/web-api.service';
 import { LoggerService } from './services/logger.service';
 import { WebSocketService } from './socket/websocket.service';
 import { DateInterceptor } from './middleware/date.interceptor';
+import { EnvService } from './services/env.service';
 
 @NgModule({
   imports: [],
@@ -55,7 +56,7 @@ export class CoreModule {
           provide: APP_INITIALIZER,
           useFactory: initializeKeycloak,
           multi: true,
-          deps: [KeycloakService],
+          deps: [KeycloakService, EnvService],
         },
         WebApiService,
         KeycloakService, // Mark as provider in this module or auth module if separete
@@ -83,7 +84,8 @@ export class CoreModule {
 
         {
           provide: RxStompConfig,
-          useValue: rxStompConfig,
+          useFactory: rxStompConfigFactory,
+          deps: [EnvService],
         },
         {
           provide: RxStomp,

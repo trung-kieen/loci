@@ -15,9 +15,9 @@
  */
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Injectable, isDevMode } from '@angular/core';
-import { environment } from '../../../environments/environments';
+import { inject, Injectable, isDevMode } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
+import { EnvService } from './env.service';
 
 export enum LogLevel {
   Debug = 0,
@@ -28,7 +28,8 @@ export enum LogLevel {
 
 @Injectable({ providedIn: 'root' })
 export class LoggerService {
-  private minLevel: LogLevel = environment.production
+  private env = inject(EnvService)
+  private minLevel: LogLevel = this.env.production
     ? LogLevel.Warn
     : LogLevel.Debug;
 
@@ -140,7 +141,7 @@ export class LoggerService {
 
           return value;
         },
-        environment.production ? undefined : 2, // Pretty print in dev only
+        this.env.production ? undefined : 2, // Pretty print in dev only
       );
     } catch {
       return `[Unserializable: ${String(param).substring(0, 100)}]`;
@@ -163,7 +164,7 @@ export class LoggerService {
           const cssStyle = 'color: #8a8a8a; font-weight: bold;';
           const formatted = this.formatMessage('DEBUG', context, message);
 
-          const params = environment.production
+          const params = this.env.production
             ? optionalParams.map((p) => this.serializeParam(p))
             : optionalParams;
 
@@ -176,7 +177,7 @@ export class LoggerService {
           const cssStyle = 'color: #33ab33; font-weight: bold;';
           const formatted = this.formatMessage('INFO', context, message);
 
-          const params = environment.production
+          const params = this.env.production
             ? optionalParams.map((p) => this.serializeParam(p))
             : optionalParams;
 
@@ -189,7 +190,7 @@ export class LoggerService {
           const cssStyle = 'color: #ff8c00; font-weight: bold;';
           const formatted = this.formatMessage('WARN', context, message);
 
-          const params = environment.production
+          const params = this.env.production
             ? optionalParams.map((p) => this.serializeParam(p))
             : optionalParams;
 
@@ -206,7 +207,7 @@ export class LoggerService {
           const params = optionalParams.map((p) =>
             p instanceof Error
               ? this.serializeParam(p)
-              : environment.production
+              : this.env.production
                 ? this.serializeParam(p)
                 : p,
           );

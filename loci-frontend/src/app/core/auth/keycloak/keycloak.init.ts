@@ -15,21 +15,21 @@
  */
 
 import { KeycloakService } from 'keycloak-angular';
-import { environment } from '../../../../environments/environments';
+import { EnvService } from '../../services/env.service';
 
 // Call initialize function when call keycloak service as provider
-export function initializeKeycloak(keycloak: KeycloakService) {
+export function initializeKeycloak(keycloak: KeycloakService, env: EnvService) {
   return () =>
     keycloak.init({
       config: {
-        url: environment.keycloak.issuer,
-        realm: environment.keycloak.realm,
-        clientId: environment.keycloak.clientId,
+        url: env.keycloak.issuer,
+        realm: env.keycloak.realm,
+        clientId: env.keycloak.clientId,
       },
       initOptions: {
         onLoad: 'login-required', // Redirects to Keycloak login if not authenticated
         // onLoad: 'check-sso',
-        checkLoginIframe: true,
+        checkLoginIframe: false, // allow different subdomain to load
       },
       // initOptions: {
       //   onLoad: 'check-sso',

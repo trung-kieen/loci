@@ -34,11 +34,10 @@ export class KeycloakAuthenticationManager {
   }
 
   public logout(): void {
-    console.log("Call logout");
-    console.log(this.keycloakService);
+    const redirectUri = `${window.location.origin}/`;
     // this.keycloakService.clearToken();
     // this.keycloakService.logout().then(() => this.keycloakService.clearToken());
-    this.keycloakService.logout("http://localhost:4200/");
+    this.keycloakService.logout(redirectUri);
 
   }
 
